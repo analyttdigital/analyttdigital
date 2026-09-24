@@ -47,6 +47,15 @@ export type HeroSection = {
   cta: string;
   ctaHref: string;
   marquee: string[];
+  /** 3D dive chrome — all optional so legacy CMS entries keep rendering. */
+  scrollHint?: string;
+  dashboardTitle?: string;
+  dashboardMetric?: string;
+  statA_label?: string;
+  statA_value?: string;
+  statA_delta?: string;
+  statB_label?: string;
+  statB_value?: string;
 };
 
 export type ProblemSection = {
@@ -54,6 +63,9 @@ export type ProblemSection = {
   headline: string;
   paragraphs: string[];
   closing: string;
+  panelTitle?: string;
+  panelAlert?: string;
+  panelChips?: { label: string; value: string }[];
 };
 
 export type BeliefPoint = { title: string; body: string };
@@ -62,9 +74,10 @@ export type BeliefSection = {
   eyebrow: string;
   headline: string;
   points: BeliefPoint[];
+  stripLabel?: string;
 };
 
-export type ProcessStep = { title: string; body: string };
+export type ProcessStep = { title: string; body: string; depth?: string };
 
 export type ProcessSection = {
   eyebrow: string;
@@ -72,7 +85,7 @@ export type ProcessSection = {
   steps: ProcessStep[];
 };
 
-export type Capability = { tag: string; title: string; body: string };
+export type Capability = { tag: string; title: string; body: string; depth?: string };
 
 export type CapabilitiesSection = {
   eyebrow: string;
@@ -87,6 +100,7 @@ export type WorkCase = {
   body: string;
   metric: string;
   metricLabel: string;
+  depth?: string;
 };
 
 export type WorkSection = {
@@ -109,6 +123,7 @@ export type IndustriesSection = {
   headline: string;
   body: string;
   items: string[];
+  hint?: string;
 };
 
 export type InsightArticle = { index: string; title: string; description: string; href: string };
@@ -126,6 +141,7 @@ export type CtaSection = {
   cta: string;
   ctaHref: string;
   note: string;
+  portalLabel?: string;
 };
 
 /* ------------------------- section union ------------------------------ */

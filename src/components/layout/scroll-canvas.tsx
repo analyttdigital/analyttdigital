@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useScroll, useSpring } from 'framer-motion';
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 /**
@@ -75,6 +75,9 @@ export function ScrollCanvas() {
   const { scrollYProgress } = useScroll();
   // Slow the backdrop down slightly for a weighted, fluid feel.
   const drift = useSpring(scrollYProgress, { stiffness: 60, damping: 26, mass: 0.6 });
+  // 3D journey: the whole backdrop breathes toward the camera as you descend,
+  // so scene cross-fades feel like forward flight, not flat swaps.
+  const journeyScale = useTransform(drift, [0, 1], [1, 1.12]);
   const [activeIds, setActiveIds] = useState<string[]>(['hero']);
 
   useEffect(() => {
@@ -109,7 +112,7 @@ export function ScrollCanvas() {
   }, [drift]);
 
   return (
-    <div aria-hidden className="fixed inset-0 -z-10 overflow-hidden">
+    <motion.div aria-hidden className="fixed inset-0 -z-10 overflow-hidden" style={{ scale: journeyScale, transformOrigin: '50% 50%' }}>
       {SCENES.map((scene) => {
         const isActive = activeIds.includes(scene.id);
         return (
@@ -118,13 +121,13 @@ export function ScrollCanvas() {
             className="absolute inset-0"
             style={{ background: scene.background }}
             initial={false}
-            animate={{ opacity: isActive ? 1 : 0 }}
+            animate={{ opacity: isActive ? 1 : 0, scale: isActive ? 1 : 1.06 }}
             transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
           />
         );
       })}
       {/* film grain keeps gradients alive */}
       <div className="pointer-events-none absolute inset-0 opacity-[0.05] [background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E')]" />
-    </div>
+    </motion.div>
   );
 }

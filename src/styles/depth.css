@@ -41,3 +41,59 @@
     inset 0 1px 0 rgba(236, 238, 238, 0.08),
     inset 0 0 80px rgba(28, 26, 38, 0.35);
 }
+
+/* 3D scroll stage ---------------------------------------------------- */
+/* Parents set the viewing distance; children preserve depth so rotateX / */
+/* translateZ reads as a real tunnel instead of a flat fake. */
+
+.perspective-stage {
+  perspective: 1200px;
+  perspective-origin: 50% 40%;
+}
+
+.perspective-deep {
+  perspective: 1600px;
+  perspective-origin: 50% 50%;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* translateZ layers: foreground pops, background recedes */
+.translate-z- near {
+  transform: translateZ(70px);
+}
+.layer-near {
+  transform: translateZ(70px);
+}
+.layer-mid {
+  transform: translateZ(28px);
+}
+.layer-far {
+  transform: translateZ(-60px);
+}
+
+/* Sticky deck cards need their own stacking context + depth */
+.deck-3d {
+  perspective: 1400px;
+  perspective-origin: 50% 20%;
+}
+.deck-card-3d {
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+}
+
+/* Hide the 3D chrome for reduced-motion visitors */
+@media (prefers-reduced-motion: reduce) {
+  .perspective-stage,
+  .perspective-deep,
+  .deck-3d {
+    perspective: none;
+  }
+}

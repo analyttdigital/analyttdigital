@@ -1,4 +1,5 @@
 @import './depth.css';
+@import './digital.css';
 
 @tailwind base;
 @tailwind components;
