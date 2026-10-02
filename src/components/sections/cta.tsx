@@ -1,76 +1,59 @@
+import { SheetBlock } from '@/components/layout/sheet-block';
 import { MdiIcon } from '@/lib/icons/resolve-icon';
-import { Reveal } from '@/lib/motion/reveal';
+import { CouponTear, MaskedLine, Reveal } from '@/lib/motion/reveal';
 import type { CtaSection } from '@/lib/content/types';
 
 /**
- * CTA — screenshot 5 closing composition: centered headline with aurora
- * rings and floating input-row card, dark navy pill CTA, green free-bubble.
+ * CTA — the tear-off coupon.
+ *
+ * The offer prints as what it is: a stub with a perforated edge, a dashed
+ * tear line, the primary action inside it and the fine print below. The
+ * sheet ends with the one thing the reader came for held in their hand.
  */
 export function Cta({ cta }: { cta?: CtaSection }) {
   return (
-    <section
-      id="audit"
-      data-scene="audit"
-      data-snap
-      className="canvas relative flex min-h-[100svh] items-center overflow-hidden px-4 py-16 md:px-6"
-    >
-      <div className="stage relative mx-auto flex min-h-[calc(100svh-8rem)] w-full max-w-[1320px] flex-col items-center justify-center overflow-hidden px-6 py-20 text-center md:px-14">
-        {/* aurora rings */}
-        <div aria-hidden className="aurora pointer-events-none absolute left-1/2 top-1/2 h-[860px] w-[860px] -translate-x-1/2 -translate-y-1/2 opacity-60" />
+    <SheetBlock id="audit" folio="10" head={cta?.eyebrow} tone="c">
+      <div aria-hidden className="grain pointer-events-none absolute inset-0 opacity-[0.3] mix-blend-multiply" />
 
-        <Reveal>
-          <div className="flex items-center justify-center gap-3">
-            <p className="text-[15px] text-ink-700">{cta?.eyebrow}</p>
-            {cta?.portalLabel ? (
-              <span className="inline-flex items-center gap-1.5 rounded-pill bg-accent-500 px-3.5 py-1.5 text-[12px] font-bold text-white shadow-button-sm">
-                {cta.portalLabel}
-              </span>
-            ) : null}
+      <div className="relative mx-auto w-full max-w-[860px] text-center">
+        <Reveal delay={0.1}>
+          {cta?.portalLabel ? <p className="stamp stamp--spot">{cta.portalLabel}</p> : null}
+        </Reveal>
+
+        {/* the coupon */}
+        <CouponTear delay={0.18} className="mt-8">
+          <div className="perforate-top px-4 pb-1 pt-[11px] sm:px-8">
+            <div className="coupon rounded-[2px]">
+              <div className="px-6 pb-8 pt-10 sm:px-12 sm:pb-10 sm:pt-12">
+                <h2 className="sheet-title text-[clamp(1.9rem,4.4vw,3.1rem)] text-ink-950">
+                  {(cta?.headline ?? '').split('\n').map((line, i) => (
+                    <MaskedLine key={`${line}-${i}`} delay={0.3 + i * 0.08}>
+                      {line || ' '}
+                    </MaskedLine>
+                  ))}
+                </h2>
+
+                <p className="body-copy mx-auto mt-6 max-w-[52ch]">{cta?.body}</p>
+
+                <div aria-hidden className="tear-rule mx-auto my-9 w-full max-w-[420px]" />
+
+                <a href={cta?.ctaHref ?? 'mailto:hello@analyttdigital.com'} className="btn-sheet btn-sheet--spot">
+                  {cta?.cta ?? 'Request a free audit'} <MdiIcon name="arrowTopRight" size={0.6} />
+                </a>
+              </div>
+
+              {/* fine print, printed below the tear */}
+              <p className="w-narrow border-t border-ink-950/12 px-6 py-4 text-[11.5px] font-semibold uppercase tracking-[0.14em] text-ink-500">
+                {cta?.note ?? 'No deck. No obligation. Just the findings.'}
+              </p>
+            </div>
           </div>
-        </Reveal>
+        </CouponTear>
 
-        <Reveal delay={0.08}>
-          <h2 className="display mt-5 max-w-3xl text-[clamp(2.6rem,5.6vw,4.4rem)] leading-[1.06] text-ink-950">
-            {cta?.headline}
-          </h2>
+        <Reveal delay={0.5}>
+          <p className="folio w-narrow mt-9">hello@analyttdigital.com</p>
         </Reveal>
-
-        <Reveal delay={0.16}>
-          <p className="mx-auto mt-6 max-w-xl text-[16px] leading-relaxed text-ink-700">{cta?.body}</p>
-        </Reveal>
-
-        <Reveal delay={0.24}>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <a href={cta?.ctaHref ?? 'mailto:hello@analyttdigital.com'} className="btn-pill btn-pill--ink">
-              {cta?.cta} <MdiIcon name="arrowTopRight" size={0.65} />
-            </a>
-            <span className="callout">
-              {cta?.note ?? 'No deck. No obligation.'}
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-accent-100 text-[11px] font-bold text-accent-700">
-                10
-              </span>
-            </span>
-          </div>
-        </Reveal>
-
-        {/* floating method-row card — screenshot 5 bottom bar */}
-        <Reveal delay={0.32}>
-          <div className="card-float mt-14 hidden w-full max-w-2xl items-center gap-3 p-2.5 md:flex">
-            <span className="flex-1 rounded-pill bg-mist-100 px-5 py-3 text-left text-[14px] font-medium text-ink-600">
-              {cta?.note ?? 'No deck. No obligation. Just the findings.'}
-            </span>
-            <a
-              href={cta?.ctaHref ?? 'mailto:hello@analyttdigital.com'}
-              className="btn-disc btn-disc--accent"
-              aria-label={cta?.cta ?? 'Request audit'}
-            >
-              <MdiIcon name="arrowTopRight" size={0.8} />
-            </a>
-          </div>
-        </Reveal>
-
-        <div aria-hidden className="blob blob--violet left-1/4 top-10 h-56 w-56 opacity-50" />
       </div>
-    </section>
+    </SheetBlock>
   );
 }

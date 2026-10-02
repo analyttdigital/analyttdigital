@@ -83,3 +83,6 @@ opencode.jsonc
 .next-purge-baseline
 .next-dev
 *.txt
+
+#Design
+/design

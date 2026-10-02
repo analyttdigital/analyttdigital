@@ -1,93 +1,137 @@
-import { IconPanel } from '@/components/graphics/icon-panel';
 import { MdiIcon } from '@/lib/icons/resolve-icon';
-import { SectionHeader } from '@/components/motion/section-header';
-import { Reveal } from '@/lib/motion/reveal';
+import { SheetBlock, SheetTitle } from '@/components/layout/sheet-block';
+import { Impression, Reveal, RuleDraw } from '@/lib/motion/reveal';
+import { useChrome } from '@/lib/content/chrome';
 import type { ProblemSection } from '@/lib/content/types';
 
 /**
- * Problem — screenshot 3 composition: text left, collage right (app window,
- * report card, chat bubble callouts). Collage pieces drift at different
- * parallax rates for depth.
+ * Problem — where the money actually went.
+ *
+ * The argument gets one chart: a single full-width bar split into attributed,
+ * wasted and unknown, hatched the way a press hatches a loss, with a printed
+ * axis beneath it and the headline waste figure set above at display scale.
+ * The copy sits in the wide column beside it; the closing line is stamped.
  */
+
+const FILLS = ['bg-ink-950', 'hatch-wasted', 'hatch-unknown'];
+const INK_ON = ['text-paper', 'text-ink-950', 'text-ink-950'];
+
+function widthOf(value: string | undefined, total: number, fallback: number) {
+  const parsed = Number.parseFloat((value ?? '').replace(/[^\d.]/g, ''));
+  if (Number.isNaN(parsed) || total <= 0) return fallback;
+  return (parsed / total) * 100;
+}
+
 export function Problem({ problem }: { problem?: ProblemSection }) {
+  const chrome = useChrome();
   const chips = problem?.panelChips ?? [];
+  const total = chips.reduce((sum, chip) => {
+    const parsed = Number.parseFloat(chip.value.replace(/[^\d.]/g, ''));
+    return sum + (Number.isNaN(parsed) ? 0 : parsed);
+  }, 0);
+
   return (
-    <section
-      id="problem"
-      data-scene="problem"
-      data-snap
-      className="canvas relative flex min-h-[100svh] items-center overflow-hidden px-4 py-16 md:px-6"
-    >
-      <div className="stage mx-auto grid w-full max-w-[1320px] items-center gap-14 px-6 py-16 md:px-14 md:py-20 lg:grid-cols-[1fr_1.05fr]">
+    <SheetBlock id="problem" folio="02" head={problem?.eyebrow} tone="b">
+      <div className="grid gap-x-12 gap-y-14 lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)]">
+        {/* ---- the argument ---------------------------------------- */}
         <div>
-          <SectionHeader eyebrow={problem?.eyebrow ?? ''} title={problem?.headline} />
-          <div className="mt-8 space-y-5">
+          <SheetTitle lines={problem?.headline ?? ''} delay={0.1} />
+          <RuleDraw className="mt-8" delay={0.32}>
+            <div className="h-px w-full bg-ink-950/20" />
+          </RuleDraw>
+
+          <div className="mt-8 space-y-6">
             {problem?.paragraphs?.map((paragraph, i) => (
-              <Reveal key={i} delay={i * 0.08}>
-                <p className="max-w-lg text-[15.5px] leading-relaxed text-ink-700">{paragraph}</p>
+              <Reveal key={i} delay={0.16 + i * 0.08}>
+                <p className="body-copy">{paragraph}</p>
               </Reveal>
             ))}
           </div>
+
           {problem?.closing ? (
-            <Reveal delay={0.2}>
-              <p className="mt-8 inline-flex items-center gap-3 rounded-pill bg-ink-950 px-5 py-2.5 text-[13px] font-semibold text-paper shadow-button">
-                <MdiIcon name="check" size={0.7} className="text-accent-300" />
-                {problem.closing}
+            <Reveal delay={0.36}>
+              <p className="mt-9 inline-flex items-center gap-2.5">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-500 text-paper">
+                  <MdiIcon name="check" size={0.6} />
+                </span>
+                <span className="w-narrow text-[13px] font-bold uppercase tracking-[0.12em] text-ink-900">
+                  {problem.closing}
+                </span>
               </p>
             </Reveal>
           ) : null}
         </div>
 
-        {/* collage */}
-        <div className="relative h-[420px] md:h-[520px]">
-          {/* app window */}
-          <Reveal className="absolute left-0 top-0 w-[62%]" delay={0.1}>
-            <div className="card-float overflow-hidden p-2.5">
-              <div className="mb-2 flex items-center gap-1.5 px-1.5">
-                <span className="h-2 w-2 rounded-full bg-mist-400" />
-                <span className="h-2 w-2 rounded-full bg-mist-400" />
-                <span className="h-2 w-2 rounded-full bg-mist-400" />
-                <span className="ml-auto text-[11px] font-medium text-ink-400">{problem?.panelTitle ?? 'Account snapshot'}</span>
-              </div>
-              <div className="relative flex min-h-[280px] items-center justify-center overflow-hidden bg-gradient-to-b from-ink-50 via-paper to-mist-100">
-                <div aria-hidden className="aurora absolute inset-0 opacity-40" />
-                <IconPanel icon="crosshairs" size="lg" tint="ink" />
-              </div>
-            </div>
-          </Reveal>
+        {/* ---- the chart -------------------------------------------- */}
+        <div className="lg:pt-3">
+          <div className="flex items-baseline justify-between gap-6">
+            <p className="sheet-head">{problem?.panelTitle ?? 'Account snapshot'}</p>
+            <p className="folio w-narrow">{chrome.everyHundred}</p>
+          </div>
 
-          {/* report card */}
-          <Reveal className="absolute right-0 top-[38%] w-[46%]" delay={0.25}>
-            <div className="card-float p-5">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-500">Report</span>
-                <span className="text-[11px] font-medium text-ink-400">Last 90 days</span>
-              </div>
-              <div className="mt-4 space-y-2.5">
-                {chips.map((chip, i) => (
-                  <div key={`${chip.label}-${i}`} className="flex items-center justify-between rounded-xl bg-mist-100 px-3.5 py-2.5">
-                    <span className="text-[13px] text-ink-700">{chip.label}</span>
-                    <span className={`text-[15px] font-bold ${i === 1 ? 'text-accent-600' : 'text-ink-950'}`}>{chip.value}</span>
+          {/* the headline figure */}
+          <Impression delay={0.24} distance={5}>
+            <p className="figure mt-5 text-[clamp(2.6rem,5.4vw,4.2rem)] text-accent-600">
+              {problem?.panelAlert ?? 'Wasting −38%'}
+            </p>
+          </Impression>
+
+          {/* the bar */}
+          <Impression delay={0.3} distance={5}>
+            <div className="mt-6 flex h-[92px] w-full overflow-hidden border border-ink-950/25">
+              {chips.map((chip, i) => {
+                const share = widthOf(chip.value, total, 100 / chips.length);
+                return (
+                  <div
+                    key={`${chip.label}-${i}`}
+                    className={`relative flex items-end justify-center pb-2.5 ${FILLS[i % FILLS.length]} ${
+                      i > 0 ? 'border-l border-paper/60' : ''
+                    }`}
+                    style={{ width: `${share}%` }}
+                  >
+                    <span
+                      className={`figure tnum text-[13px] ${INK_ON[i % INK_ON.length]}`}
+                    >
+                      {chip.value}
+                    </span>
                   </div>
-                ))}
-              </div>
+                );
+              })}
             </div>
-          </Reveal>
+          </Impression>
 
-          {/* alert bubble */}
-          <Reveal className="absolute left-[8%] bottom-[6%]" delay={0.35}>
-            <span className="callout">
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-ink-950 text-paper">
-                <MdiIcon name="chart" size={0.65} />
+          {/* printed axis */}
+          <div aria-hidden className="mt-1.5 flex justify-between">
+            {Array.from({ length: 11 }).map((_, i) => (
+              <span key={i} className="flex w-0 flex-1 flex-col items-start">
+                <span className="h-1.5 w-px bg-ink-950/30" />
+                <span className="folio w-narrow mt-1 text-[9.5px] text-ink-400">
+                  {i * 10}
+                  {i === 10 ? '%' : ''}
+                </span>
               </span>
-              <strong className="text-ink-950">{problem?.panelAlert ?? 'Wasting −38%'}</strong>
-            </span>
-          </Reveal>
+            ))}
+          </div>
 
-          {/* violet blob */}
-          <div aria-hidden className="blob blob--violet -right-10 top-1/3 h-48 w-48 opacity-70" />
+          {/* legend */}
+          <dl className="mt-7 grid gap-x-8 gap-y-4 sm:grid-cols-3">
+            {chips.map((chip, i) => (
+              <div key={`${chip.label}-${i}`} className="border-t border-ink-950/15 pt-3">
+                <dt className="flex items-center gap-2.5">
+                  <span
+                    aria-hidden
+                    className={`inline-block h-3 w-3 shrink-0 border border-ink-950/30 ${FILLS[i % FILLS.length]}`}
+                  />
+                  <span className="w-narrow text-[11.5px] font-semibold uppercase tracking-[0.1em] text-ink-700">
+                    {chip.label}
+                  </span>
+                </dt>
+                <dd className="figure mt-2 text-[22px] text-ink-950">{chip.value}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </div>
-    </section>
+    </SheetBlock>
   );
 }

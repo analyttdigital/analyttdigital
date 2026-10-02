@@ -1,61 +1,55 @@
+import { SheetBlock, SheetTitle } from '@/components/layout/sheet-block';
 import { MdiIcon } from '@/lib/icons/resolve-icon';
-import { SectionHeader } from '@/components/motion/section-header';
-import { Reveal } from '@/lib/motion/reveal';
+import { Reveal, RuleDraw } from '@/lib/motion/reveal';
 import type { BeliefSection } from '@/lib/content/types';
 
 /**
- * Belief — screenshot 1 pricing-card language: two elevated rounded cards on
- * the light stage with dashed feature rows and circular arrow discs.
+ * Belief — the sheet's commitments, as ruled ledger rows.
+ *
+ * Three rows across the type area: a stamped mark, the commitment, and the
+ * mechanism that makes it true in the margin column. No cards, no icons in
+ * circles — the mark is a debossed stamp pressed into the stock, and the
+ * rules between rows are the only structure. The strip label closes the
+ * block as the sheet's colophon line.
  */
 export function Belief({ belief }: { belief?: BeliefSection }) {
   const points = belief?.points ?? [];
+
   return (
-    <section
-      id="belief"
-      data-scene="belief"
-      data-snap
-      className="canvas relative flex min-h-[100svh] items-center overflow-hidden px-4 py-16 md:px-6"
-    >
-      <div className="stage mx-auto w-full max-w-[1320px] px-6 py-16 md:px-14 md:py-20">
-        <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
-          <SectionHeader eyebrow={belief?.eyebrow ?? ''} title={belief?.headline} />
-          {belief?.stripLabel ? (
-            <Reveal delay={0.15}>
-              <span className="chip-pill">{belief.stripLabel}</span>
-            </Reveal>
-          ) : null}
-        </div>
-
-        <div className="mt-14 grid gap-6 md:grid-cols-3">
-          {points.map((point, i) => (
-            <Reveal key={point.title} delay={i * 0.1}>
-              <article className={`group relative flex h-full flex-col rounded-3xl p-8 shadow-float transition-transform duration-500 hover:-translate-y-1.5 ${i === 0 ? 'border border-paper-400/60 bg-paper' : 'border border-accent-200/70 bg-accent-50'}`}>
-                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-ink-950 text-paper shadow-button">
-                  <MdiIcon name={point.icon || 'crosshairs'} size={0.85} />
-                </div>
-                <h3 className="mt-6 font-display text-[22px] font-semibold tracking-tight text-ink-950">{point.title}</h3>
-                <p className="mt-3 text-[15px] leading-relaxed text-ink-700">{point.body}</p>
-
-                {/* dashed feature row — screenshot 1 language */}
-                <div className="mt-auto pt-8">
-                  <div className="flex items-center justify-between border-t border-dashed border-ink-950/15 pt-5">
-                    <span className="flex items-center gap-2 text-[13px] font-medium text-ink-600">
-                      <span className="h-4 w-4 rounded-full border border-dashed border-ink-400" />
-                      Step {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-ink-950 text-paper transition-transform duration-300 group-hover:rotate-45">
-                      <MdiIcon name="arrowTopRight" size={0.65} />
-                    </span>
-                  </div>
-                </div>
-              </article>
-            </Reveal>
-          ))}
-        </div>
-
-        {/* aurora rings backdrop */}
-        <div aria-hidden className="aurora pointer-events-none absolute -bottom-40 left-1/2 h-[520px] w-[820px] -translate-x-1/2 opacity-50" />
+    <SheetBlock id="belief" folio="03" head={belief?.eyebrow} tone="a">
+      <div className="grid gap-x-12 gap-y-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-end">
+        <SheetTitle lines={belief?.headline ?? ''} delay={0.1} />
+        {belief?.stripLabel ? (
+          <Reveal delay={0.2}>
+            <p className="stamp stamp--spot lg:justify-self-end">{belief.stripLabel}</p>
+          </Reveal>
+        ) : null}
       </div>
-    </section>
+
+      <RuleDraw className="mt-12" delay={0.26}>
+        <div className="h-0.5 w-full bg-ink-950/85" />
+      </RuleDraw>
+
+      <div className="mt-2">
+        {points.map((point, i) => (
+          <Reveal key={point.title} delay={0.12 + i * 0.09}>
+            <article className="group grid items-start gap-x-10 gap-y-3 border-b border-ink-950/12 py-8 transition-colors duration-300 hover:bg-paper/70 lg:grid-cols-[3rem_minmax(0,1fr)_minmax(0,0.82fr)] lg:py-9">
+              <span
+                aria-hidden
+                className="press-mark flex h-11 w-11 items-center justify-center rounded-[2px] text-ink-700 transition-colors duration-300 group-hover:text-accent-600"
+              >
+                <MdiIcon name={point.icon || 'crosshairs'} size={1} />
+              </span>
+
+              <h3 className="sheet-verb text-[clamp(1.35rem,2.4vw,1.9rem)] text-ink-950">
+                {point.title}
+              </h3>
+
+              <p className="body-copy max-w-[46ch] text-[15px]">{point.body}</p>
+            </article>
+          </Reveal>
+        ))}
+      </div>
+    </SheetBlock>
   );
 }

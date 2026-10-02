@@ -1,18 +1,19 @@
-@import './depth.css';
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ------------------------------------------------------------------ */
-/* Fluid design-system tokens (v3 — screenshot language)               */
-/* Cool grey-lavender canvas, dark navy ink, violet accent, periwinkle */
-/* gradient blobs. Space-separated RGB channels keep Tailwind opacity  */
-/* modifiers working (e.g. `text-ink/70`).                             */
+/* THE FIXTURE SHEET — design tokens                                    */
+/*                                                                     */
+/* The page is one printed fixture sheet. Five colour families only:   */
+/* ink/primary share the press-ink ramp (#4f4b63 family), accent is   */
+/* the single spot colour (ember #f04f26), mist is the newsprint      */
+/* stock, paper is the brighter stock for plates. Everything resolves  */
+/* through these families — no ad-hoc values in components.            */
 /* ------------------------------------------------------------------ */
 
 :root {
-  /* ink — dark navy-slate from Analytt Digital's #4f4b63 */
+  /* ink — press ink, dense violet-black from Analytt Digital #4f4b63 */
   --color-ink-50: 244 244 248;
   --color-ink-100: 233 232 239;
   --color-ink-200: 213 212 222;
@@ -25,7 +26,7 @@
   --color-ink-900: 38 36 49;
   --color-ink-950: 26 25 34;
 
-  /* primary — shares the #4f4b63 ink ramp */
+  /* primary — the brand ramp; identical to ink, exposed as its own family */
   --color-primary-50: 244 244 248;
   --color-primary-100: 233 232 239;
   --color-primary-200: 213 212 222;
@@ -38,7 +39,8 @@
   --color-primary-900: 38 36 49;
   --color-primary-950: 26 25 34;
 
-  /* accent — Analytt Digital ember #f04f26 */
+  /* accent — the spot colour. Used only where a mark is *live*:
+     the lock crosshair, wasted-spend hatch, the coupon, peak contours. */
   --color-accent-50: 255 244 240;
   --color-accent-100: 254 231 224;
   --color-accent-200: 253 209 191;
@@ -51,50 +53,45 @@
   --color-accent-900: 114 36 17;
   --color-accent-950: 76 24 12;
 
-  /* mist — cool grey-lavender canvas (#e9eaee family) */
+  /* mist — newsprint stock (the cool grey a daily broadsheet prints on) */
   --color-mist-50: 249 249 251;
-  --color-mist-100: 243 243 246;
-  --color-mist-200: 233 234 238;
-  --color-mist-300: 219 221 228;
-  --color-mist-400: 199 202 213;
-  --color-mist-500: 172 176 191;
-  --color-mist-600: 138 142 161;
-  --color-mist-700: 106 110 130;
-  --color-mist-800: 76 79 96;
-  --color-mist-900: 51 53 66;
-  --color-mist-950: 32 34 43;
+  --color-mist-100: 244 244 243;
+  --color-mist-200: 236 236 234;
+  --color-mist-300: 222 222 219;
+  --color-mist-400: 203 203 200;
+  --color-mist-500: 176 176 173;
+  --color-mist-600: 141 141 139;
+  --color-mist-700: 109 109 108;
+  --color-mist-800: 79 79 79;
+  --color-mist-900: 53 53 54;
+  --color-mist-950: 34 34 36;
 
-  /* paper — white surface for floating cards */
+  /* paper — brighter stock, for plates and coupon stock */
   --color-paper-DEFAULT: 255 255 255;
   --color-paper-50: 255 255 255;
-  --color-paper-100: 251 251 253;
-  --color-paper-200: 245 245 249;
-  --color-paper-300: 236 237 242;
-  --color-paper-400: 223 225 233;
-  --color-paper-500: 205 207 219;
-  --color-paper-600: 178 181 197;
-  --color-paper-700: 143 146 167;
-  --color-paper-800: 105 108 130;
-  --color-paper-900: 72 74 92;
-  --color-paper-950: 45 47 60;
+  --color-paper-100: 252 252 251;
+  --color-paper-200: 246 246 244;
+  --color-paper-300: 236 236 233;
+  --color-paper-400: 219 219 215;
+  --color-paper-500: 197 197 192;
+  --color-paper-600: 168 168 162;
+  --color-paper-700: 132 132 126;
+  --color-paper-800: 98 98 92;
+  --color-paper-900: 68 68 64;
+  --color-paper-950: 45 45 43;
 
-  /* ember — legacy accent alias (orange), retained for existing refs */
-  --color-ember-50: 255 244 240;
-  --color-ember-100: 253 232 225;
-  --color-ember-200: 251 202 185;
-  --color-ember-300: 247 164 141;
-  --color-ember-400: 244 122 87;
-  --color-ember-500: 240 79 38;
-  --color-ember-600: 214 67 29;
-  --color-ember-700: 181 56 23;
-  --color-ember-800: 143 45 19;
-  --color-ember-900: 111 35 16;
-  --color-ember-950: 74 23 11;
+  /* Stock tone bands — separation by paper tone, not by drawn rules.
+     The sheet alternates between these three values so sections read as
+     bands on one continuous sheet. */
+  --stock-a: var(--color-mist-100);
+  --stock-b: var(--color-paper-100);
+  --stock-c: var(--color-mist-200);
 }
 
 html {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
 }
 
 /* Lenis smooth scroll recommended styles */
@@ -113,142 +110,402 @@ html.lenis body {
 }
 
 body {
-  @apply bg-mist-100 font-sans text-ink;
+  @apply bg-mist-100 font-sans text-ink-900;
+  overflow-x: hidden;
 }
 
+/* ------------------------------------------------------------------ */
+/* Browser surfaces — the parts we did not draw still carry the design  */
+/* ------------------------------------------------------------------ */
+
 ::selection {
-  background: rgb(var(--color-ink-950));
+  background: rgb(var(--color-accent-500) / 0.9);
   color: #fff;
 }
 
+:focus-visible {
+  outline: 2px solid rgb(var(--color-accent-500));
+  outline-offset: 3px;
+}
+
+input,
+textarea,
+select {
+  caret-color: rgb(var(--color-accent-600));
+}
+
+::placeholder {
+  color: rgb(var(--color-ink-400));
+}
+
+/* A printed sheet has a thin, quiet scrollbar — not the platform's. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--color-ink-300)) rgb(var(--color-mist-200));
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: rgb(var(--color-mist-200));
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--color-ink-300));
+  border: 3px solid rgb(var(--color-mist-200));
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--color-ink-400));
+}
+
+a,
+button {
+  -webkit-tap-highlight-color: rgb(var(--color-accent-500) / 0.16);
+}
+
 /* ------------------------------------------------------------------ */
-/* Scene primitives (v3 — screenshot language)                         */
+/* Stock — paper ground, fibre, plate impression                        */
 /* ------------------------------------------------------------------ */
 
-/* Page canvas: light neutral with soft brand washes */
-.canvas {
-  background-color: rgb(var(--color-mist-100));
-  background-image:
-    radial-gradient(56rem 36rem at 85% -10%, rgb(var(--color-accent-100) / 0.55), transparent 65%),
-    radial-gradient(48rem 34rem at -15% 45%, rgb(var(--color-ink-100) / 0.7), transparent 60%),
-    radial-gradient(52rem 30rem at 55% 115%, rgb(var(--color-accent-200) / 0.35), transparent 65%);
+/* The sheet itself. Tones alternate between --stock-a/b/c so the page
+   reads as one imposed sheet in bands, never as stacked boxes. */
+.stock {
+  background-color: rgb(var(--stock-a));
+}
+.stock--b {
+  background-color: rgb(var(--stock-b));
+}
+.stock--c {
+  background-color: rgb(var(--stock-c));
 }
 
-/* Screen-in-screen stage: white-ish rounded panel like the reference artboard */
-.stage {
-  @apply relative overflow-hidden rounded-[2rem] border border-paper-400/30;
-  background:
-    radial-gradient(52rem 30rem at 78% 6%, rgb(var(--color-ink-100) / 0.8), transparent 60%),
-    radial-gradient(44rem 28rem at 6% 90%, rgb(var(--color-accent-100) / 0.55), transparent 62%),
-    linear-gradient(180deg, rgb(var(--color-paper-50)) 0%, rgb(var(--color-mist-100)) 100%);
-  box-shadow: 0 1px 2px rgb(var(--color-ink-950) / 0.04), 0 24px 48px rgb(var(--color-ink-950) / 0.05);
+/* Newsprint fibre: a fixed, deterministic grain that never scrolls, so the
+   paper reads as a material rather than as flat fill. */
+.grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  background-size: 140px 140px;
 }
 
-/* Giant concentric rings behind feature rows */
-.aurora {
-  background: repeating-radial-gradient(
-    circle at 50% 50%,
-    rgb(var(--color-ink-300) / 0.4) 0px,
-    rgb(var(--color-ink-300) / 0.4) 1px,
-    transparent 1px,
-    transparent 120px
-  );
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 30%, transparent 78%);
-  mask-image: radial-gradient(circle at 50% 50%, #000 30%, transparent 78%);
+/* Plate — brighter stock laid on the sheet. A press impression, not a
+   floating card: inset light along the top edge, a hairline all round. */
+.plate {
+  background-color: rgb(var(--color-paper-DEFAULT));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.9),
+    inset 0 0 0 1px rgb(var(--color-ink-950) / 0.08),
+    0 1px 2px rgb(var(--color-ink-950) / 0.06),
+    0 10px 26px -18px rgb(var(--color-ink-950) / 0.28);
 }
 
-/* Soft decorative blob */
-.blob {
-  @apply pointer-events-none absolute rounded-full;
-  filter: blur(60px);
-}
-.blob--violet {
-  background: rgb(var(--color-accent-400) / 0.28);
-}
-.blob--ink {
-  background: rgb(var(--color-ink-400) / 0.3);
-}
-.blob--lavender {
-  background: rgb(var(--color-accent-200) / 0.6);
+/* Press-mark — the deboss a die leaves when a slot is selected. Used for
+   active states instead of a colour change alone. */
+.press-mark {
+  box-shadow:
+    inset 0 1px 2px rgb(var(--color-ink-950) / 0.22),
+    inset 0 -1px 0 rgb(255 255 255 / 0.75),
+    inset 0 0 0 1px rgb(var(--color-ink-950) / 0.06);
 }
 
-/* Floating white card */
-.card-float {
-  @apply rounded-3xl border border-paper-400/60 bg-paper shadow-float;
+/* Debossed label plate — a stamped mark sitting on the stock. */
+.stamp {
+  @apply inline-flex items-center gap-2 rounded-[2px] px-2 py-1 text-[10.5px] font-semibold uppercase tracking-[0.16em];
+  color: rgb(var(--color-ink-700));
+  background-color: rgb(var(--color-ink-950) / 0.06);
+  box-shadow: inset 0 1px 2px rgb(var(--color-ink-950) / 0.16);
+}
+.stamp--spot {
+  color: rgb(var(--color-accent-600));
+  background-color: rgb(var(--color-accent-500) / 0.12);
+  box-shadow: inset 0 1px 2px rgb(var(--color-accent-700) / 0.22);
+}
+.stamp--live {
+  color: #fff;
+  background-color: rgb(var(--color-accent-500));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35);
 }
 
-/* Chat-style floating callout (screenshot 3/4) */
-.callout {
-  @apply inline-flex items-center gap-2 rounded-pill border border-paper-400/70 bg-paper/95 px-4 py-2.5 text-sm font-medium text-ink shadow-float backdrop-blur;
+/* ------------------------------------------------------------------ */
+/* Sheet furniture — rules, heads, folios, columns                     */
+/* ------------------------------------------------------------------ */
+
+/* A hairline rule. All structure in the sheet is a rule, never a border
+   drawn around a box. */
+.rule {
+  height: 1px;
+  background-color: rgb(var(--color-ink-950) / 0.14);
+}
+.rule--heavy {
+  height: 2px;
+  background-color: rgb(var(--color-ink-950) / 0.82);
+}
+.rule--spot {
+  height: 2px;
+  background-color: rgb(var(--color-accent-500));
 }
 
-/* Left-pointing tail on callouts, like the green "Pay now" bubble */
-.callout-tail {
+/* Sheet head: the label set into the rule above a section, the way a
+   broadsheet runs a head across its column rule. */
+.sheet-head {
+  @apply text-[10.5px] font-bold uppercase tracking-[0.18em];
+  font-variation-settings: 'wdth' 92;
+  color: rgb(var(--color-ink-700));
+}
+.sheet-head--spot {
+  color: rgb(var(--color-accent-600));
+}
+.sheet-head--inverse {
+  color: rgb(var(--color-paper-200) / 0.72);
+}
+
+/* Folio: the sheet's own position marker, set in the margin. */
+.folio {
+  @apply text-[10.5px] font-bold uppercase tracking-[0.18em];
+  font-variation-settings: 'wdth' 88;
+  font-variant-numeric: tabular-nums;
+  color: rgb(var(--color-ink-500));
+}
+.folio--inverse {
+  color: rgb(var(--color-paper-300) / 0.55);
+}
+
+/* Marginal note: the sheet's side column. */
+.margin-note {
+  @apply text-[13px] leading-[1.5];
+  font-variation-settings: 'wdth' 94;
+  color: rgb(var(--color-ink-600));
+}
+
+/* The type area: main column plus the margin note column, split by a
+   column rule. Collapses to a single column below lg. */
+.type-area {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 15rem;
+  column-gap: 2.5rem;
+}
+@media (max-width: 1023px) {
+  .type-area {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 1.75rem;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Lettering — one variable family across its width axis                */
+/* ------------------------------------------------------------------ */
+
+/* A chart sets hierarchy by size and column, never by card. Width axis
+   does the work: condensed for columns, expanded for mastheads. */
+.w-tight {
+  font-variation-settings: 'wdth' 76;
+}
+.w-narrow {
+  font-variation-settings: 'wdth' 88;
+}
+.w-normal {
+  font-variation-settings: 'wdth' 100;
+}
+.w-wide {
+  font-variation-settings: 'wdth' 112;
+}
+.w-max {
+  font-variation-settings: 'wdth' 124;
+}
+
+.masthead {
+  font-variation-settings: 'wdth' 116;
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.sheet-title {
+  font-variation-settings: 'wdth' 110;
+  font-weight: 700;
+  line-height: 0.98;
+  letter-spacing: -0.028em;
+  text-wrap: balance;
+}
+
+.sheet-verb {
+  font-variation-settings: 'wdth' 104;
+  font-weight: 750;
+  line-height: 1;
+  letter-spacing: -0.022em;
+}
+
+/* Every figure in the sheet is tabular and lining. */
+.figure {
+  font-variation-settings: 'wdth' 96;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.03em;
+  line-height: 0.9;
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.body-copy {
+  @apply text-[16px] leading-[1.62];
+  color: rgb(var(--color-ink-700));
+  text-wrap: pretty;
+  max-width: 68ch;
+}
+
+/* ------------------------------------------------------------------ */
+/* Controls — printed, square, pressable                               */
+/* ------------------------------------------------------------------ */
+
+.btn-sheet {
+  @apply inline-flex items-center justify-center gap-2 rounded-[2px] px-6 py-3 text-[14px] font-semibold;
+  font-variation-settings: 'wdth' 92;
+  color: rgb(var(--color-paper-DEFAULT));
+  background-color: rgb(var(--color-ink-950));
+  transition:
+    transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.18s ease,
+    box-shadow 0.18s ease;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.14);
+}
+.btn-sheet:hover {
+  background-color: rgb(var(--color-ink-800));
+}
+.btn-sheet:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 4px rgb(var(--color-ink-950) / 0.5);
+}
+
+.btn-sheet--spot {
+  color: #fff;
+  background-color: rgb(var(--color-accent-500));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3);
+}
+.btn-sheet--spot:hover {
+  background-color: rgb(var(--color-accent-600));
+}
+.btn-sheet--spot:active {
+  box-shadow: inset 0 2px 5px rgb(var(--color-accent-800) / 0.6);
+}
+
+.btn-sheet--quiet {
+  color: rgb(var(--color-ink-900));
+  background-color: transparent;
+  box-shadow: inset 0 0 0 1px rgb(var(--color-ink-950) / 0.28);
+}
+.btn-sheet--quiet:hover {
+  background-color: rgb(var(--color-ink-950) / 0.05);
+}
+.btn-sheet--quiet:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 4px rgb(var(--color-ink-950) / 0.18);
+}
+
+/* Imposition switch — the two settings a sheet can be printed in. */
+.switch {
+  @apply inline-flex items-stretch rounded-[2px] p-[2px];
+  background-color: rgb(var(--color-ink-950) / 0.06);
+  box-shadow: inset 0 1px 3px rgb(var(--color-ink-950) / 0.16);
+}
+.switch__option {
+  @apply px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] transition-colors duration-200;
+  font-variation-settings: 'wdth' 90;
+  color: rgb(var(--color-ink-600));
+}
+.switch__option[aria-pressed='true'] {
+  color: rgb(var(--color-paper-DEFAULT));
+  background-color: rgb(var(--color-ink-950));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.16);
+}
+
+/* Link: an underline with real offset that extends on hover. */
+.link-sheet {
+  color: rgb(var(--color-ink-900));
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  text-decoration-color: rgb(var(--color-ink-400));
+  transition: color 0.18s ease, text-decoration-color 0.18s ease;
+}
+.link-sheet:hover {
+  color: rgb(var(--color-accent-600));
+  text-decoration-color: rgb(var(--color-accent-500));
+}
+
+/* ------------------------------------------------------------------ */
+/* The coupon — the offer, as a tear-off stub                           */
+/* ------------------------------------------------------------------ */
+
+.coupon {
   position: relative;
+  background-color: rgb(var(--color-paper-DEFAULT));
+  box-shadow:
+    inset 0 0 0 1px rgb(var(--color-ink-950) / 0.1),
+    0 1px 2px rgb(var(--color-ink-950) / 0.06),
+    0 14px 34px -20px rgb(var(--color-ink-950) / 0.3);
 }
-.callout-tail::before {
-  content: '';
-  position: absolute;
-  top: -5px;
-  left: 18px;
-  width: 12px;
-  height: 12px;
-  transform: rotate(45deg);
-  border-radius: 3px;
-  background: rgb(var(--color-paper-DEFAULT) / 0.95);
-  border-left: 1px solid rgb(var(--color-paper-400) / 0.7);
-  border-top: 1px solid rgb(var(--color-paper-400) / 0.7);
+
+/* Perforation: the punched edge a coupon is torn along. */
+.perforate-top {
+  --perf: 11px;
+  -webkit-mask-image: radial-gradient(circle var(--perf) at var(--perf) 0, transparent 99%, #000 100%);
+  mask-image: radial-gradient(circle var(--perf) at var(--perf) 0, transparent 99%, #000 100%);
+  -webkit-mask-size: calc(var(--perf) * 2) calc(var(--perf) * 1.2);
+  mask-size: calc(var(--perf) * 2) calc(var(--perf) * 1.2);
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+}
+.perforate-bottom {
+  --perf: 11px;
+  -webkit-mask-image: radial-gradient(circle var(--perf) at var(--perf) 100%, transparent 99%, #000 100%);
+  mask-image: radial-gradient(circle var(--perf) at var(--perf) 100%, transparent 99%, #000 100%);
+  -webkit-mask-size: calc(var(--perf) * 2) calc(var(--perf) * 1.2);
+  mask-size: calc(var(--perf) * 2) calc(var(--perf) * 1.2);
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+}
+
+/* Tear rule: the dashed line the stub is torn along. */
+.tear-rule {
+  background-image: linear-gradient(
+    to right,
+    rgb(var(--color-ink-950) / 0.4) 0 6px,
+    transparent 6px 12px
+  );
+  background-size: 12px 1px;
+  background-repeat: repeat-x;
+  height: 1px;
 }
 
 /* ------------------------------------------------------------------ */
-/* Fluid primitives                                                    */
+/* Data marks                                                          */
 /* ------------------------------------------------------------------ */
 
-/* Pill CTA — dark navy (default) and violet variants */
-.btn-pill {
-  @apply inline-flex items-center justify-center gap-2 rounded-pill px-6 py-3 text-sm font-semibold text-paper transition-all duration-300 ease-out;
+/* Wasted spend is hatched the way a press hatches a loss. */
+.hatch-wasted {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgb(var(--color-accent-600) / 0.55) 0 1.5px,
+    transparent 1.5px 7px
+  );
 }
-.btn-pill--ink {
-  @apply bg-ink-950 shadow-button hover:-translate-y-px hover:bg-ink-900;
-}
-/* Brand-orange glow variant */
-.btn-pill--accent {
-  @apply bg-accent-500 shadow-button-accent hover:-translate-y-px hover:bg-accent-600;
-}
-.btn-pill--ghost {
-  @apply border border-ink-950/15 bg-paper/60 text-ink backdrop-blur hover:-translate-y-px hover:bg-paper;
-}
-
-/* Pill chip */
-.chip-pill {
-  @apply inline-flex items-center gap-1.5 rounded-pill border border-ink-950/10 bg-paper/80 px-3.5 py-1.5 text-xs font-semibold text-ink-700 shadow-button-sm backdrop-blur;
+.hatch-unknown {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgb(var(--color-ink-400) / 0.5) 0 1.5px,
+    transparent 1.5px 7px
+  );
 }
 
-/* Circular icon button (screenshot 1/3 arrow discs) */
-.btn-disc {
-  @apply inline-flex h-11 w-11 items-center justify-center rounded-full bg-ink-950 text-paper shadow-float transition-transform duration-300 hover:scale-105;
-}
-.btn-disc--accent {
-  @apply bg-accent-500;
-}
-.btn-disc--soft {
-  @apply bg-paper text-ink;
-}
-
-/* Frosted nav bar */
-.glass-panel {
-  @apply rounded-pill border border-paper-400/50 bg-paper/70 shadow-button backdrop-blur-xl;
-}
-
-/* ------------------------------------------------------------------ */
-/* Editorial primitive (legacy — kept while restyled headings use it).  */
-/* `.mono-label`, `.mono-btn`, `.prose-serif`, `.grain`, `.hairline`    */
-/* were retired in the M5 audit (zero references); `.display` remains   */
-/* for hero/cta/process headings.                                       */
-/* ------------------------------------------------------------------ */
-
-.display {
-  @apply font-display font-medium leading-[1.04] tracking-tightest;
+/* Index leaders: the dot rule that carries an index entry to its page. */
+.leader {
+  flex: 1;
+  height: 1px;
+  margin: 0 0.6rem 0.42rem;
+  background-image: radial-gradient(circle, rgb(var(--color-ink-400) / 0.9) 0.5px, transparent 0.6px);
+  background-size: 5px 1px;
+  background-repeat: repeat-x;
 }
 
 /* ------------------------------------------------------------------ */
@@ -256,11 +513,17 @@ body {
 /* ------------------------------------------------------------------ */
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+  .grain {
+    background-image: none;
   }
 }

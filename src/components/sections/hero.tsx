@@ -1,180 +1,173 @@
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
-
-import { IconPanel } from '@/components/graphics/icon-panel';
+import { TraceRecorder } from '@/components/graphics/trace-recorder';
 import { MdiIcon } from '@/lib/icons/resolve-icon';
-import { EASE_OUT } from '@/lib/motion/reveal';
+import { Impression, MaskedLine, Reveal, RuleDraw } from '@/lib/motion/reveal';
+import { useChrome } from '@/lib/content/chrome';
 import type { HeroSection } from '@/lib/content/types';
 
 /**
- * Hero — screenshot 2 composition: light stage, giant navy display headline,
- * floating dashboard card flanked by avatar bubbles, pill callouts and a
- * partner logo strip. Subtle 3D: bubbles drift at different parallax rates,
- * the dashboard tilts in, the whole stage folds away on scroll.
+ * Hero — the masthead of the sheet.
+ *
+ * Left: the chart masthead, set at expanded-black over the type area with the
+ * sub beneath a heavy rule and the primary action in the sheet's own
+ * button. Right: the demonstration — a plate carrying a chart-recorder trace
+ * that starts untriggered and locks standing still when tracking goes live,
+ * over the account's two figures. The imposition strip closes the block with
+ * the columns the sheet covers.
+ *
+ * Values on the plate are the product's own illustrative display figures, so
+ * the plate says so in its caption rather than letting them read as proof.
  */
 export function Hero({ hero }: { hero?: HeroSection }) {
-  const ref = useRef<HTMLElement>(null);
-  const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
-
-  // Stage fold: content rises, stage tilts back and fades as you leave.
-  const stageY = useTransform(scrollYProgress, [0, 1], [0, 120]);
-  const stageRotate = useTransform(scrollYProgress, [0, 1], [0, 6]);
-  const stageOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
-  // Bubble parallax rates (px drift per scroll progress)
-  const bubbleA = useTransform(scrollYProgress, [0, 1], [0, -60]);
-  const bubbleB = useTransform(scrollYProgress, [0, 1], [0, -110]);
-  const bubbleC = useTransform(scrollYProgress, [0, 1], [0, -40]);
-  const dashY = useTransform(scrollYProgress, [0, 1], [0, 60]);
-
+  const chrome = useChrome();
   const lines = (hero?.headline ?? '').split('\n');
   const marquee = hero?.marquee ?? [];
-
-  const bubbles = [
-    { style: { y: reduce ? 0 : bubbleA }, className: 'left-[4%] top-[16%] h-20 w-20 md:h-28 md:w-28', tint: 'bg-accent-200', label: 'A' },
-    { style: { y: reduce ? 0 : bubbleB }, className: 'right-[6%] top-[10%] h-16 w-16 md:h-24 md:w-24', tint: 'bg-accent-300', label: 'B' },
-    { style: { y: reduce ? 0 : bubbleC }, className: 'right-[14%] bottom-[18%] h-24 w-24 md:h-32 md:w-32', tint: 'bg-accent-100', label: 'C' },
-  ];
 
   return (
     <section
       id="hero"
-      data-snap
-      ref={ref}
-      className="canvas relative flex min-h-[100svh] items-center overflow-hidden px-4 pb-6 pt-24 md:px-6 md:pt-28"
+      data-sheet-block=""
+      className="stock relative overflow-hidden px-4 pb-0 pt-28 md:px-6 md:pt-32"
     >
-      <motion.div
-        style={reduce ? undefined : { y: stageY, rotateX: stageRotate, opacity: stageOpacity, transformOrigin: '50% 0%' }}
-        className="stage preserve-3d mx-auto flex min-h-[calc(100svh-8rem)] w-full max-w-[1320px] flex-col"
-      >
-        {/* floating avatar bubbles */}
-        {bubbles.map((bubble) => (
-          <motion.div
-            key={bubble.label}
-            aria-hidden
-            style={bubble.style}
-            className={`absolute z-0 hidden rounded-full lg:block ${bubble.className}`}
-          >
-            <div className={`h-full w-full rounded-full ${bubble.tint} shadow-float`} />
-          </motion.div>
-        ))}
+      {/* the surveyed ground reads through the masthead */}
+      <div aria-hidden className="grain pointer-events-none absolute inset-0 opacity-[0.35] mix-blend-multiply" />
 
-        <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center px-6 pt-16 text-center md:pt-20">
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: EASE_OUT, delay: 0.15 }}
-            className="text-[15px] text-ink-700"
-          >
-            {hero?.eyebrow}
-          </motion.p>
-
-          <h1 className="display mt-6 text-[clamp(2.8rem,6.5vw,5.4rem)] leading-[1.05] tracking-[-0.03em] text-ink-950">
-            {lines.map((line, i) => (
-              <span key={i} className="block overflow-hidden">
-                <motion.span
-                  className="block"
-                  initial={{ y: '110%' }}
-                  animate={{ y: '0%' }}
-                  transition={{ duration: 1, ease: EASE_OUT, delay: 0.3 + i * 0.12 }}
-                >
-                  {line || '\u00A0'}
-                </motion.span>
-              </span>
-            ))}
-          </h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: EASE_OUT, delay: 0.55 }}
-            className="mt-6 max-w-xl text-[17px] leading-relaxed text-ink-700"
-          >
-            {hero?.sub}
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: EASE_OUT, delay: 0.7 }}
-            className="mt-9 flex flex-wrap items-center justify-center gap-3"
-          >
-            <a href={hero?.ctaHref ?? '#contact'} className="btn-pill btn-pill--ink">
-              {hero?.cta ?? 'Start with a free audit'} <MdiIcon name="arrowTopRight" size={0.65} />
-            </a>
-            <a href="#process" className="btn-pill btn-pill--ghost">
-              {hero?.scrollHint ?? 'See how we work'} <MdiIcon name="arrowDown" size={0.65} />
-            </a>
-          </motion.div>
+      <div className="relative mx-auto w-full max-w-[1320px]">
+        {/* dateline — the sheet's own line, head set into the rule */}
+        <div className="flex items-center gap-4">
+          <span className="sheet-head">{hero?.eyebrow}</span>
+          <span className="h-px flex-1 bg-ink-950/15" />
+          <span className="folio">
+            {chrome.sheet} 01 / 10
+          </span>
         </div>
 
-        {/* dashboard cluster */}
-        <div className="relative z-10 mx-auto mt-12 w-full max-w-4xl flex-1 px-6 pb-14">
-          <motion.div
-            initial={{ opacity: 0, y: 60, rotateX: 14 }}
-            animate={{ opacity: 1, y: 0, rotateX: 0 }}
-            transition={{ duration: 1.1, ease: EASE_OUT, delay: 0.8 }}
-            style={reduce ? undefined : { y: dashY }}
-            className="relative mx-auto max-w-2xl preserve-3d"
-          >
-            {/* dashboard card */}
-            <div className="card-float overflow-hidden p-2.5">
-              <div className="overflow-hidden rounded-2xl bg-paper">
-                <div className="flex items-center justify-between px-4 py-2.5">
-                  <span className="text-[12px] font-semibold text-ink-900">{hero?.dashboardTitle ?? 'Campaign / Live'}</span>
-                  <span className="flex items-center gap-2 text-[12px] font-semibold text-accent-600">
-                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent-500" />
+        <div className="mt-10 grid items-start gap-x-12 gap-y-14 lg:grid-cols-[minmax(0,1.06fr)_minmax(0,0.94fr)]">
+          {/* ---- masthead ------------------------------------------- */}
+          <div>
+            <h1 className="masthead text-[clamp(2.7rem,7.2vw,6rem)] text-ink-950">
+              {lines.map((line, i) => (
+                <MaskedLine key={`${line}-${i}`} delay={0.12 + i * 0.1}>
+                  {line || ' '}
+                </MaskedLine>
+              ))}
+            </h1>
+
+            <RuleDraw className="mt-10" delay={0.5}>
+              <div className="h-0.5 w-full bg-ink-950/85" />
+            </RuleDraw>
+
+            <Reveal delay={0.55}>
+              <p className="body-copy mt-8 max-w-[54ch]">{hero?.sub}</p>
+            </Reveal>
+
+            <Reveal delay={0.62}>
+              <div className="mt-9 flex flex-wrap items-center gap-3">
+                <a href={hero?.ctaHref ?? '#contact'} className="btn-sheet btn-sheet--spot">
+                  {hero?.cta ?? 'Start with a free audit'} <MdiIcon name="arrowTopRight" size={0.6} />
+                </a>
+                <a href="#process" className="btn-sheet btn-sheet--quiet">
+                  {hero?.scrollHint ?? 'Scroll'} <MdiIcon name="arrowDown" size={0.6} />
+                </a>
+              </div>
+            </Reveal>
+          </div>
+
+          {/* ---- the demonstration ---------------------------------- */}
+          <Impression delay={0.42} distance={7}>
+            <figure className="plate rounded-[2px] p-2.5">
+              <div className="flex items-center justify-between px-3.5 py-2.5">
+                <p className="w-narrow text-[12px] font-bold uppercase tracking-[0.14em] text-ink-900">
+                  {hero?.dashboardTitle ?? 'Campaign / Live'}
+                </p>
+                <p className="flex items-center gap-2">
+                  <span aria-hidden className="inline-block h-1.5 w-1.5 bg-accent-500" />
+                  <span className="figure text-[13px] text-accent-600">
                     {hero?.dashboardMetric ?? 'ROAS 4.2×'}
                   </span>
+                </p>
+              </div>
+
+              {/* instrument: etched graticule + trace */}
+              <div className="relative rounded-[2px] bg-mist-100 px-4 pb-2 pt-6">
+                <svg
+                  aria-hidden
+                  viewBox="0 0 100 100"
+                  preserveAspectRatio="none"
+                  className="absolute inset-x-4 top-6 h-[132px] w-[calc(100%-2rem)]"
+                >
+                  {[0, 25, 50, 75, 100].map((y) => (
+                    <line
+                      key={y}
+                      x1="0"
+                      x2="100"
+                      y1={y}
+                      y2={y}
+                      stroke="rgb(var(--color-ink-950) / 0.12)"
+                      strokeWidth="0.4"
+                      vectorEffect="non-scaling-stroke"
+                    />
+                  ))}
+                </svg>
+                <div className="relative flex">
+                  {/* measure ticks down the left edge, as on a recorder chart */}
+                  <div
+                    aria-hidden
+                    className="mr-2 flex w-2 shrink-0 flex-col justify-between self-stretch py-px"
+                  >
+                    {[0, 1, 2, 3, 4].map((i) => (
+                      <span key={i} className="h-px w-2 bg-ink-950/25" />
+                    ))}
+                  </div>
+                  <TraceRecorder className="min-w-0 flex-1" height={132} />
                 </div>
-                <div className="relative flex min-h-[300px] items-center justify-center overflow-hidden bg-gradient-to-b from-accent-50 via-paper to-mist-100">
-                  <div aria-hidden className="aurora absolute inset-0 opacity-40" />
-                  <IconPanel icon="chart" size="lg" />
+                <div className="mt-2 flex items-center justify-between">
+                  <p className="folio w-narrow">{chrome.signal}</p>
+                  <p className="folio w-narrow text-accent-600">{chrome.trackingLive}</p>
                 </div>
               </div>
-            </div>
 
-            {/* pill callouts */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, ease: EASE_OUT, delay: 1.15 }}
-              className="absolute -left-8 top-1/3 hidden md:block"
-            >
-              <span className="callout callout-tail">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-ember/15 text-ember-600">
-                  <MdiIcon name="chart" size={0.7} />
-                </span>
-                {hero?.statA_label ?? 'CPL this month'} · <strong>{hero?.statA_value ?? 'KES 280'}</strong>
-              </span>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, ease: EASE_OUT, delay: 1.3 }}
-              className="absolute -right-6 bottom-10 hidden md:block"
-            >
-              <span className="callout">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-100 text-accent-600">
-                  <MdiIcon name="rocket" size={0.7} />
-                </span>
-                {hero?.statB_label ?? 'Leads / month'} · <strong>{hero?.statB_value ?? '1,200+'}</strong>
-              </span>
-            </motion.div>
-          </motion.div>
+              {/* the account's two figures, as a ledger */}
+              <dl className="mt-2.5 grid grid-cols-2">
+                <div className="border-r border-ink-950/10 px-3.5 py-3">
+                  <dt className="folio w-narrow">{hero?.statA_label ?? 'CPL this month'}</dt>
+                  <dd className="figure mt-1.5 text-[26px] text-ink-950">
+                    {hero?.statA_value ?? 'KES 280'}
+                    {hero?.statA_delta ? (
+                      <span className="ml-2 align-super text-[11px] font-bold text-accent-600">
+                        {hero.statA_delta}
+                      </span>
+                    ) : null}
+                  </dd>
+                </div>
+                <div className="px-3.5 py-3">
+                  <dt className="folio w-narrow">{hero?.statB_label ?? 'Leads / month'}</dt>
+                  <dd className="figure mt-1.5 text-[26px] text-ink-950">
+                    {hero?.statB_value ?? '1,200+'}
+                  </dd>
+                </div>
+              </dl>
+
+              <figcaption className="px-3.5 pb-1 pt-1 text-[11px] leading-snug text-ink-500">
+                {chrome.illustration}
+              </figcaption>
+            </figure>
+          </Impression>
         </div>
 
-        {/* logo strip */}
-        <div className="relative z-10 border-t border-ink-950/8 py-5">
-          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-3 px-6">
+        {/* ---- imposition strip: what the sheet covers -------------- */}
+        <div className="mt-16 border-y border-ink-950/12 py-4">
+          <ul className="flex flex-wrap items-center justify-center gap-x-7 gap-y-2">
             {marquee.map((item) => (
-              <span key={item} className="text-[13px] font-semibold uppercase tracking-[0.14em] text-ink-500">
-                {item}
-              </span>
+              <li key={item} className="flex items-center gap-7">
+                <span className="w-narrow text-[11px] font-bold uppercase tracking-[0.16em] text-ink-600">
+                  {item}
+                </span>
+                <span aria-hidden className="h-1.5 w-1.5 bg-ink-950/25" />
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }
