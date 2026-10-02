@@ -1,17 +1,23 @@
 # Analytt Digital — Landing Page Redesign
 
-A landing page redesign for **Analytt Digital**, a data-driven performance marketing agency in Kenya. The design language, structure, feel and scroll animations follow [oxigen.sa](https://www.oxigen.sa/); the branding, palette and content are Analytt Digital's.
+A landing page redesign for **Analytt Digital**, a data-driven performance marketing agency in Kenya helping startups and small businesses turn ad spend into measurable growth (paid media across Google/YouTube/Meta/TikTok/LinkedIn, 90-day growth strategy, content & reporting).
 
-- **Primary:** `#4f4b63` (ink) · **Accent:** `#f04f26` (ember) · **Theme:** light
+The visual language is a **fluid, continuous-scroll "product explorer" system**: soft gradient washes, glassmorphic panels, rounded surfaces, floating UI cards and avatar clusters, pill buttons/badges, and subtle, elegant 3D/motion accents — built from Analytt's own brand colors rather than a literal skin of any single reference.
+
+- **Primary:** `#4f4b63` · **Accent:** `#f04f26` · **Theme:** light
+
+> This replaces an earlier oxigen.sa-style editorial pass (mono labels, hard-edged bordered buttons, dark chapter bands). That system has been retired; section **content** carried over, section **visuals** did not. See `docs/design/plan.md` for what's been rebuilt.
 
 ## Stack
 
-| Layer      | Choice                                                      |
-| ---------- | ----------------------------------------------------------- |
-| Framework  | Next.js 15, **Pages Router**, `src/` directory, TypeScript  |
-| Styling    | Tailwind CSS 3 (design tokens in `tailwind.config.ts`)      |
-| Motion     | Framer Motion (reveals, scroll progress) + Lenis smooth scroll |
-| Content    | Keystatic (local storage, per-locale singletons)            |
+| Layer      | Choice                                                                 |
+| ---------- | ----------------------------------------------------------------------- |
+| Framework  | Next.js 15, **Pages Router**, `src/` directory, TypeScript              |
+| Styling    | Tailwind CSS 3 (token-based theme in `tailwind.config.ts`)              |
+| Motion     | Framer Motion (reveals, scroll-linked transforms, morph transitions) + Lenis smooth scroll |
+| 3D         | Three.js (ambient hero/background scenes, lazy-mounted, static fallback) |
+| Icons      | MDI, resolved at render time from content icon-name strings             |
+| Content    | Keystatic (local storage, per-locale singletons)                        |
 
 ## Quick start
 
@@ -30,47 +36,67 @@ npm run typecheck  # tsc --noEmit
 npm run lint       # eslint
 ```
 
+## Design system
+
+Five color families, each a full tint ramp (`50`–`950`) as CSS variables (e.g. `--color-paper`, `--color-paper-50`, …), consumed only through Tailwind tokens — no ad-hoc hex in components:
+
+- `primary` — brand primary (`#4f4b63` family)
+- `accent` — brand accent (`#f04f26` family)
+- `paper` — background for elevated surfaces (cards, glass panels)
+- `surface` — background for the page/body
+- `ink` — foreground/text family
+
+Visual primitives: soft rounded surfaces, diffuse shadows, glass (`backdrop-blur` + translucent `paper`), gradient washes, pill buttons/chips, floating media/avatar clusters, small circular badge marks. Motion: continuous rather than chaptered — layered scroll parallax, gentle morph/cross-fade reveals, subtle idle motion on floating elements, ambient Three.js accents behind hero/full-page sections. Reference material lives under `docs/design/` (mockups + notes) — treat it as a mood/pattern reference, not a literal template to clone.
+
+## Component contract
+
+Every shared/reusable component:
+
+- Takes a **`data`** prop (typed + defaulted from `src/lib/content/defaults.ts`) carrying its dynamic content — text, `icon` name strings (e.g. `"account-arrow-right"`), media refs (`{ url, alt, ... }`), etc.
+- Takes optional **slot-style props** (e.g. `classes: { childA: "bg-surface" }`) to style/override nested shared components without a proliferation of one-off variants.
+- Resolves `icon` names to MDI SVGs and media objects to `<Image>`-backed rendering through single shared resolvers, never ad hoc per section.
+- Can be reused across pages with full content/style customization via `data` + `classes`.
+
 ## Homepage sections
 
-1. **Hero** — full-height ink panel, display headline, channel marquee
-2. **Problem** — editorial chapter ("the spend was never the problem")
-3. **Belief** — what we believe + dithered pixel motif
-4. **Process** — five full-height sticky chapters (Diagnose → Scale) with scroll-driven counter
-5. **Capabilities** — service cards with mono tag chips and pixel graphics
-6. **Work** — numbered client results with oversized metrics
-7. **Stats** — dark philosophy band with proof stats
+Content and copy for the following sections are unchanged from the prior pass; only presentation is being rebuilt (see `docs/design/plan.md` for status):
+
+1. **Hero** — ambient gradient/3D backdrop, display headline, floating product-UI cluster
+2. **Problem** — editorial framing chapter
+3. **Belief** — what we believe, dithered/gradient motif
+4. **Process** — sticky/scroll-driven step sequence (Diagnose → Scale)
+5. **Capabilities** — service cards with tag chips and icon motifs
+6. **Work** — client results, oversized metrics
+7. **Stats** — proof stats band
 8. **Industries** — sector chips
-9. **Insights** — numbered article list
-10. **CTA** — closing audit offer, hands off into the footer
+9. **Insights** — article list
+10. **CTA** — closing audit offer into the footer
 
 ## Content model (Keystatic)
 
-- One **singleton per section per locale** (`hero-en`, `hero-sw`, …) — see `keystatic.config.ts`.
+- `layout-<locale>` **singletons**: shared chrome (nav, footer) — see `keystatic.config.ts`.
+- `pages-<locale>` **collections**: page documents (title, meta, ordered section blocks; one block type per section). Sections render via `section-renderer.tsx`, which maps each block's `type` to a component.
 - Schema factories live in `src/lib/keystatic/schemas.ts`.
 - **Defaults live in code** (`src/lib/content/defaults.ts`): Keystatic arrays start empty, so the reader (`src/lib/content/reader.ts`) falls back to code defaults when a CMS list is empty or the entry is missing. A fresh checkout renders a complete page with zero CMS edits.
-- The shared `getStaticProps` (`src/lib/keystatic/getStaticProps.ts`) reads Keystatic content at build time and passes a `sections` prop to `_app`, which feeds nav + footer; the page picks its sections.
+- The shared `getStaticProps` (`src/lib/keystatic/getStaticProps.ts`) reads Keystatic content at build time and passes a `bundle` prop (layout + page) to `_app`, which feeds the layout chrome; the page renders its section list.
 
 ### Editing content
 
 1. Run `npm run dev`
 2. Open `/keystatic`
-3. Pick a locale group (English / Kiswahili), edit a section, save — a YAML file appears under `src/content/<locale>/<section>/index.yaml`, committed to git like code.
+3. Pick a locale group (English / Kiswahili), edit a page's section blocks or the layout, save — YAML appears under `src/content/<locale>/` (`pages/` for page documents, `layout` for chrome), committed to git like code.
 
 ### Adding a locale
 
 1. Add the code to `locales` in `src/lib/content/types.ts` and defaults in `src/lib/content/defaults.ts`.
-2. Register `<section>-<code>` singletons in `keystatic.config.ts` (copy the `sw` block).
+2. Register a `pages-<code>` collection and a `layout-<code>` singleton in `keystatic.config.ts` (copy the `sw` entries).
 3. Add a nav entry in the Keystatic `ui.navigation` config.
-4. The `[locale]` page route picks it up automatically via `getStaticPaths`.
+4. Add the locale's home path to `getStaticPaths` in `src/pages/[locale]/[...slug].tsx` (currently only non-`en` `home` slugs are pre-rendered).
 
 ## Routing & locales
 
-- `/` — English homepage (default)
-- `/sw` — Kiswahili homepage (route-based locale from `src/pages/[locale]/index.tsx`)
-
-## Design system
-
-Tokens in `tailwind.config.ts`: `ink` ramp (primary `#4f4b63`), `ember` (accent `#f04f26`), `mist`/`line` neutrals; fonts via CSS variables (`--font-display`, `--font-sans`, `--font-serif`, `--font-mono`). Editorial primitives in `src/styles/globals.css`: `.mono-label`, `.mono-btn`, `.display`, `.prose-serif`, `.grain`.
+- `/` — English homepage (default, from `src/pages/index.tsx`)
+- `/sw/home` — Kiswahili homepage (route-based locale from `src/pages/[locale]/[...slug].tsx`; there is no bare `/sw` route)
 
 ## Docs
 

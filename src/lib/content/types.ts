@@ -38,6 +38,15 @@ export type LayoutContent = {
   legal: string;
 };
 
+/* ------------------------- icon + media refs -------------------------- */
+/* Convention (M2, mirrors `iconField`/`imageField` in schemas.ts):
+ * - `icon` is an MDI key from the shared map (see `mdi-icon.tsx`; formal
+ *   resolver lands in M3). Absent/empty = section's positional default.
+ * - `image` is a plain `{ src, alt }` ref; components resolve it through
+ *   the shared media resolver (M3). Empty/absent `src` = no image.        */
+
+export type ContentImage = { src: string; alt: string };
+
 /* ----------------------------- sections ------------------------------- */
 
 export type HeroSection = {
@@ -68,7 +77,7 @@ export type ProblemSection = {
   panelChips?: { label: string; value: string }[];
 };
 
-export type BeliefPoint = { title: string; body: string };
+export type BeliefPoint = { title: string; body: string; icon?: string };
 
 export type BeliefSection = {
   eyebrow: string;
@@ -85,7 +94,7 @@ export type ProcessSection = {
   steps: ProcessStep[];
 };
 
-export type Capability = { tag: string; title: string; body: string; depth?: string };
+export type Capability = { tag: string; title: string; body: string; depth?: string; icon?: string };
 
 export type CapabilitiesSection = {
   eyebrow: string;
@@ -101,6 +110,7 @@ export type WorkCase = {
   metric: string;
   metricLabel: string;
   depth?: string;
+  image?: ContentImage;
 };
 
 export type WorkSection = {
@@ -109,7 +119,7 @@ export type WorkSection = {
   cases: WorkCase[];
 };
 
-export type Stat = { value: string; label: string };
+export type Stat = { value: string; label: string; icon?: string };
 
 export type StatsSection = {
   eyebrow: string;
@@ -174,4 +184,25 @@ export type PageDoc = {
 export type PageBundle = {
   layout: LayoutContent;
   page: PageDoc;
+};
+
+/* ------------------------- component contract -------------------------
+ * (M3) Every shared/reusable component accepts:
+ * - `data`: its dynamic content, typed and defaulted from `defaults.ts`
+ *   (text, `icon` name strings, `{ src, alt }` media refs, …).
+ * - `classes`: optional slot overrides mapping child slot names to extra
+ *   class strings, so parents can restyle nested shared components
+ *   without prop-drilling one-off variants.
+ * - Ordinary component props (`className`, `id`) may ride alongside.
+ * Sections adopt this shape as they are restyled (M5); new shared
+ * components must use it from the start. `icon`/media values inside
+ * `data` resolve only through the shared resolvers, never inline.      */
+
+export type SlotClasses<TSlot extends string = string> = Partial<Record<TSlot, string>>;
+
+export type DataProps<TData, TSlot extends string = string> = {
+  data: TData;
+  classes?: SlotClasses<TSlot>;
+  className?: string;
+  id?: string;
 };

@@ -62,6 +62,29 @@ export const layoutFields = {
   legal: fields.text({ label: 'Legal line', defaultValue: '© 2026 Analytt Digital. All rights reserved.' }),
 };
 
+/* ------------------- icon + media field conventions ----------------
+ * Single source of truth for field shape (M2). Rules:
+ * - `icon` is a plain text field holding a key from the shared MDI map
+ *   (`src/lib/icons/resolve-icon.tsx`).
+ *   Empty string means "keep the section's positional default", so legacy
+ *   entries and code defaults render exactly as before.
+ * - `image` is a plain `{ src, alt }` object — never a Keystatic-managed
+ *   asset field. Resolution to `<Image>` happens in components through the
+ *   shared media resolver (M3), with empty `src` treated as absent.
+ * ---------------------------------------------------------------------- */
+
+export const iconField = (label = 'MDI icon name (e.g. chart — empty keeps default)') =>
+  fields.text({ label, defaultValue: '' });
+
+export const imageField = (label = 'Image') =>
+  fields.object(
+    {
+      src: fields.text({ label: 'Image URL', defaultValue: '' }),
+      alt: fields.text({ label: 'Alt text', defaultValue: '' }),
+    },
+    { label },
+  );
+
 /* ------------------------- section field groups ---------------------- */
 
 const heroFields = {
@@ -116,6 +139,7 @@ const beliefFields = {
     fields.object({
       title: fields.text({ label: 'Title' }),
       body: fields.text({ label: 'Body', multiline: true }),
+      icon: iconField(),
     }),
     { label: 'Belief points', itemLabel: (props) => props.fields.title.value || 'Point' },
   ),
@@ -143,6 +167,7 @@ const capabilitiesFields = {
       depth: fields.text({ label: 'Index (e.g. 01)', defaultValue: '' }),
       title: fields.text({ label: 'Title' }),
       body: fields.text({ label: 'Body', multiline: true }),
+      icon: iconField(),
     }),
     { label: 'Capabilities', itemLabel: (props) => props.fields.title.value || 'Capability' },
   ),
@@ -160,6 +185,7 @@ const workFields = {
       body: fields.text({ label: 'Body', multiline: true }),
       metric: fields.text({ label: 'Big metric' }),
       metricLabel: fields.text({ label: 'Metric label' }),
+      image: imageField('Case image (optional — empty keeps the generated graphic)'),
     }),
     { label: 'Case studies', itemLabel: (props) => props.fields.client.value || 'Case' },
   ),
@@ -178,6 +204,7 @@ const statsFields = {
     fields.object({
       value: fields.text({ label: 'Value' }),
       label: fields.text({ label: 'Label' }),
+      icon: iconField(),
     }),
     { label: 'Stats', itemLabel: (props) => props.fields.value.value || 'Stat' },
   ),

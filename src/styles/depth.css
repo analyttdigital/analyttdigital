@@ -66,9 +66,6 @@
 }
 
 /* translateZ layers: foreground pops, background recedes */
-.translate-z- near {
-  transform: translateZ(70px);
-}
 .layer-near {
   transform: translateZ(70px);
 }
