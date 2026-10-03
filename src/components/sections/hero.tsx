@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useMemo, useRef } from 'react';
+import { Fragment, useEffect, useMemo, useRef } from 'react';
 
 import { MdiIcon } from '@/lib/icons/resolve-icon';
-import type { HeroPanel, HeroSection } from '@/lib/content/types';
+import type { HeroPanel, HeroProof, HeroSection } from '@/lib/content/types';
 
 /**
  * Hero — full-screen audit route head (user-approved replica).
@@ -200,6 +200,13 @@ const FALLBACK = {
   cta: 'Get Started',
   secondary: 'Request Digital Audit',
 } as const;
+
+/** Fallback proof strip (legacy CMS entries without one). */
+const FALLBACK_PROOF: HeroProof[] = [
+  { value: '100%', label: 'campaigns tracked to conversion' },
+  { value: '7-day', label: 'optimization cycle' },
+  { value: 'Zero', label: 'vanity metrics reported', ember: true },
+];
 
 /** Deterministic RNG so server and client render the same first frame. */
 function mulberry32(seed: number) {
@@ -439,6 +446,7 @@ export function Hero({ hero }: { hero?: HeroSection }) {
   const cta = hero?.cta || FALLBACK.cta;
   const secondary = hero?.scrollHint || FALLBACK.secondary;
   const contentPanels = hero?.panels?.length ? hero.panels : FALLBACK_PANELS;
+  const proof = hero?.proof?.length ? hero.proof : FALLBACK_PROOF;
 
   // Seeded placements — identical on server and client first paint. Positions
   // are content-agnostic; each slot cycles through the content panels so every
@@ -554,7 +562,7 @@ export function Hero({ hero }: { hero?: HeroSection }) {
             return (
               <div
                 key={`${panel.kind}-${i}`}
-                className={`absolute left-1/2 top-1/2 w-64 flex-col rounded-xl border border-primary-900/10 bg-paper/80 p-5 backdrop-blur-md will-change-transform ${p.extra} ${
+                className={`absolute left-1/2 top-1/2 w-64 flex-col rounded-xl border border-primary-900/10 bg-paper p-5 backdrop-blur-lg will-change-transform ${p.extra} ${
                   panel.tone === 'alert' ? 'border-accent-500/30' : ''
                 }`}
                 style={{ boxShadow: '0 10px 30px rgb(var(--color-primary-600) / 0.10)' }}
@@ -580,15 +588,15 @@ export function Hero({ hero }: { hero?: HeroSection }) {
         <div className="pointer-events-auto flex flex-col items-center">
           <a
             href={ctaHref}
-            className="mb-8 inline-flex items-center gap-2 rounded-full border border-primary-900/15 bg-paper/80 px-3 py-1.5 text-xs font-medium text-primary-700 backdrop-blur-md transition-all hover:border-accent-500/40 hover:text-accent-600"
+            className="mb-8 inline-flex items-center gap-2 rounded-full border border-accent-500/15 bg-paper/80 px-3 py-1.5 text-xs font-medium text-primary-700 backdrop-blur-md transition-all hover:border-accent-500/40 hover:text-accent-600"
             style={{ boxShadow: '0 2px 10px rgb(var(--color-primary-600) / 0.06)' }}
           >
-            <span className="relative flex h-2 w-2">
+            {/* <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full rounded-full bg-accent-500 opacity-60 motion-safe:animate-ping" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-accent-500" />
-            </span>
+            </span> */}
             {eyebrow}
-            <MdiIcon name="arrowRight" size={0.55} />
+            <MdiIcon name="arrowRight" className="text-accent" size={0.55} />
           </a>
 
           <h1 className="mb-6 max-w-4xl text-4xl font-medium leading-[1.1] tracking-tight text-primary-900 md:text-6xl lg:text-7xl">
@@ -626,17 +634,17 @@ export function Hero({ hero }: { hero?: HeroSection }) {
       {/* Proof strip — operating commitments, also stated in Stats */}
       <div className="relative z-40 px-4 pb-6">
         <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-x-8 gap-y-2 text-[11px] text-primary-700 md:text-xs">
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-primary-900">100%</span> campaigns tracked to conversion
-          </div>
-          <span aria-hidden className="hidden h-3 w-px bg-primary-900/20 sm:block" />
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-primary-900">7-day</span> optimization cycle
-          </div>
-          <span aria-hidden className="hidden h-3 w-px bg-primary-900/20 sm:block" />
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-accent-600">Zero</span> vanity metrics reported
-          </div>
+          {proof.map((item, i) => (
+            <Fragment key={`${item.value}-${i}`}>
+              {i > 0 ? <span aria-hidden className="hidden h-3 w-px bg-primary-900/20 sm:block" /> : null}
+              <div className="flex items-center gap-2">
+                <span className={`font-semibold ${item.ember ? 'text-accent-600' : 'text-primary-900'}`}>
+                  {item.value}
+                </span>{' '}
+                {item.label}
+              </div>
+            </Fragment>
+          ))}
         </div>
       </div>
     </section>

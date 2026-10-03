@@ -69,6 +69,10 @@ export type HeroPanelStep = { label: string; state: 'done' | 'active' | 'todo' }
 
 export type HeroPanelMetric = { value: string; label: string };
 
+/** One proof-strip item under the hero copy. `ember` renders the value in
+ *  the live colour; everything else stays field ink. */
+export type HeroProof = { value: string; label: string; ember?: boolean };
+
 /** One floating result card in the hero tunnel. All copy lives in the
  *  content layer (`defaults.ts`, editable in Keystatic) — the component only
  *  picks a layout by `kind` and reads these fields. Layout groups:
@@ -103,6 +107,7 @@ export type HeroSection = {
   ctaHref: string;
   marquee: string[];
   panels?: HeroPanel[];
+  proof?: HeroProof[];
   /** 3D dive chrome — all optional so legacy CMS entries keep rendering. */
   scrollHint?: string;
   dashboardTitle?: string;

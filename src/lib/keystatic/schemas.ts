@@ -194,6 +194,17 @@ const heroFields = {
       itemLabel: (props) => props.fields.title.value || props.fields.kind.value || 'Panel',
     },
   ),
+  proof: fields.array(
+    fields.object({
+      value: fields.text({ label: 'Value (e.g. 100%)' }),
+      label: fields.text({ label: 'Label' }),
+      ember: fields.checkbox({ label: 'Ember value (live)', defaultValue: false }),
+    }),
+    {
+      label: 'Proof strip (empty = code defaults)',
+      itemLabel: (props) => `${props.fields.value.value || ''} ${props.fields.label.value || ''}`.trim() || 'Item',
+    },
+  ),
 };
 
 const problemFields = {
