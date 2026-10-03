@@ -49,6 +49,52 @@ export type ContentImage = { src: string; alt: string };
 
 /* ----------------------------- sections ------------------------------- */
 
+export type HeroPanelKind =
+  | 'cpl'
+  | 'leads'
+  | 'revenue'
+  | 'seo'
+  | 'process'
+  | 'code'
+  | 'alert'
+  | 'whatsapp'
+  | 'simkar'
+  | 'roas'
+  | 'attribution'
+  | 'audit'
+  | 'ctr'
+  | 'funnel';
+
+export type HeroPanelStep = { label: string; state: 'done' | 'active' | 'todo' };
+
+export type HeroPanelMetric = { value: string; label: string };
+
+/** One floating result card in the hero tunnel. All copy lives in the
+ *  content layer (`defaults.ts`, editable in Keystatic) — the component only
+ *  picks a layout by `kind` and reads these fields. Layout groups:
+ *  bars (cpl/roas/ctr), metric (leads/revenue/attribution/funnel),
+ *  progress (seo/audit), steps (process), code (code),
+ *  notice (alert/whatsapp), dual (simkar). `iconTone` recolours the panel's
+ *  icon (and its dot/tile) through three token steps — `default` keeps the
+ *  layout's positional colour, per the shared icon convention. */
+export type HeroPanel = {
+  kind: HeroPanelKind;
+  title: string;
+  subtitle?: string;
+  value?: string;
+  valueLabel?: string;
+  footer?: string;
+  delta?: string;
+  icon?: string;
+  iconTone?: 'default' | 'accent' | 'primary' | 'muted';
+  tone?: 'default' | 'alert';
+  bars?: number[];
+  progress?: number;
+  metrics?: HeroPanelMetric[];
+  steps?: HeroPanelStep[];
+  codeLines?: string[];
+};
+
 export type HeroSection = {
   eyebrow: string;
   headline: string;
@@ -56,6 +102,7 @@ export type HeroSection = {
   cta: string;
   ctaHref: string;
   marquee: string[];
+  panels?: HeroPanel[];
   /** 3D dive chrome — all optional so legacy CMS entries keep rendering. */
   scrollHint?: string;
   dashboardTitle?: string;

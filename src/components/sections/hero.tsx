@@ -1,184 +1,644 @@
-import { Action } from "@/components/layout/action";
-import { BandHead, DEEP, FIELD } from "@/components/layout/band";
-import { PixelDither } from "@/components/graphics/pixel-dither";
-import { TraceField } from "@/components/graphics/trace-field";
-import { SignalTrace } from "@/components/graphics/trace-recorder";
-import { MaskedLine, Reveal } from "@/lib/motion/reveal";
-import { useChrome } from "@/lib/content/chrome";
-import type { HeroSection } from "@/lib/content/types";
+'use client';
 
-/** The six things in the head the routes terminate on: the label, the
- *  statement, the action, the instrument, the figures under it, and the channel
- *  rail they all feed. Normalised to the content column, so 0 and 1 are its
- *  edges. */
-const HERO_NODES = [
-	{ x: 0.0, y: 0.31 },
-	{ x: 0.15, y: 0.41 },
-	//   { x: 0.0, y: 0.79 },
-	//   { x: 0.58, y: 0.31 },
-	//   { x: 0.58, y: 0.57 },
-	//   { x: 0.5, y: 0.92 },
-];
+import { useEffect, useMemo, useRef } from 'react';
+
+import { MdiIcon } from '@/lib/icons/resolve-icon';
+import type { HeroPanel, HeroSection } from '@/lib/content/types';
 
 /**
- * Hero — the head of the route.
+ * Hero — full-screen audit route head (user-approved replica).
  *
- * Left: the statement, set light at display scale on three lines, with the
- * sub at a reading measure and the audit action beneath it. Right: the
- * demonstration — one flat panel one step lighter than the field, carrying a
- * live trace that starts as an untriggered signal and locks standing still
- * the moment tracking goes live. That behaviour is the page's proof of what
- * it sells; the caption says plainly that the figures are illustrative.
+ * The visitor's choices are honoured verbatim here: the glass result-tunnel,
+ * pill audit link, halo copy block and proof strip ship as requested, even
+ * where they break the Signal Mesh bans (rounded glass, blur, shadows, an
+ * infinite loop, information inside decoration). That override was explicit.
  *
- * This is the page's arrival resolve: the deep band the reader came from
- * dissolves into the field they are now in, on a coarse pixel grid, once. The
- * trace net runs behind the whole viewport, routed between the statement, the
- * instrument and the channel rail so the visitor lands inside a network they
- * can see already carrying signal.
+ * What still holds: token colours only (primary/accent/paper/ink families),
+ * MDI resolution (no `iconify-icon` custom element), copy from the content
+ * layer, `aria-hidden` on the decorative tunnel so it never carries
+ * information for AT, and a static readable state under
+ * `prefers-reduced-motion` / mobile (fewer panels, no parallax, no loop).
+ *
+ * Tunnel cards are data, not markup: every panel's copy lives in
+ * `defaults.ts` (`hero.panels`, editable in Keystatic) and this file only
+ * picks a layout by `panel.kind`. Empty `icon` keeps the kind's positional
+ * default, per the shared icon convention.
  */
+
+/** Fallback tunnel when the content layer carries no panels (legacy CMS entries). */
+const FALLBACK_PANELS: HeroPanel[] = [
+  {
+    kind: 'cpl',
+    title: 'Cost per lead',
+    subtitle: 'ZoomTech Ke · Google Search',
+    footer: 'KES 1,800 → KES 280',
+    delta: '-84% in 60 days',
+    icon: 'chartBox',
+    bars: [100, 82, 64, 46, 31, 22, 17, 15],
+  },
+  {
+    kind: 'leads',
+    title: 'Kings Bliss Developers',
+    value: '37',
+    valueLabel: 'property inquiries per week',
+    footer: '9x growth from a KES 150K budget',
+    icon: 'pin',
+  },
+  {
+    kind: 'revenue',
+    title: 'Mandevu BeardCare',
+    value: 'KES 2.4M',
+    valueLabel: 'monthly revenue in 90 days',
+    footer: 'Up from a 1.1x ROAS',
+    icon: 'tag',
+  },
+  {
+    kind: 'seo',
+    title: 'Page 1 rankings',
+    subtitle: 'Mabati Yetu · 8 months',
+    value: '47',
+    valueLabel: 'high-intent keywords',
+    progress: 85,
+  },
+  {
+    kind: 'process',
+    title: 'Your 90-day plan',
+    icon: 'rocket',
+    steps: [
+      { label: 'Diagnose', state: 'done' },
+      { label: 'Blueprint', state: 'done' },
+      { label: 'Launch', state: 'active' },
+      { label: 'Optimise', state: 'todo' },
+      { label: 'Scale', state: 'todo' },
+    ],
+  },
+  {
+    kind: 'code',
+    title: 'server-side tracking',
+    icon: 'document',
+    codeLines: ["gtag('event', 'generate_lead',", "{ value: 280, currency: 'KES' }", '// conversion attributed'],
+  },
+  {
+    kind: 'alert',
+    title: 'Budget leak found',
+    subtitle: 'Most audits uncover KES 50K–200K in recoverable spend.',
+    icon: 'asterisk',
+    tone: 'alert',
+  },
+  {
+    kind: 'whatsapp',
+    title: 'New lead · WhatsApp',
+    subtitle: 'Instant follow-up from a retargeted virtual tour.',
+    icon: 'mail',
+  },
+  {
+    kind: 'simkar',
+    title: 'Simkar Group',
+    icon: 'chart',
+    metrics: [
+      { value: '+45%', label: 'lead generation' },
+      { value: '+80%', label: 'content engagement' },
+    ],
+  },
+  {
+    kind: 'roas',
+    title: 'Blended ROAS',
+    subtitle: 'Mandevu · Meta + Google',
+    footer: 'Up from 1.1× in 90 days',
+    delta: '+282%',
+    icon: 'chart',
+    bars: [18, 26, 34, 47, 61, 77, 89, 100],
+  },
+  {
+    kind: 'attribution',
+    title: 'GA4 + GTM + server-side',
+    value: '100%',
+    valueLabel: 'campaigns tracked to conversion',
+    footer: 'No vanity metrics reported',
+    icon: 'database',
+  },
+  {
+    kind: 'audit',
+    title: 'Measurement health',
+    subtitle: 'New account · 27 leaks fixed',
+    value: '38 → 92',
+    valueLabel: 'audit score',
+    delta: '+54 pts',
+    progress: 92,
+  },
+  {
+    kind: 'ctr',
+    title: 'Prospecting CTR',
+    subtitle: 'TikTok + Meta · Nairobi',
+    footer: 'Benchmark 1.1%',
+    delta: '3.8% · +2.7pts',
+    icon: 'bullhorn',
+    bars: [30, 42, 38, 55, 68, 74, 88, 95],
+  },
+  {
+    kind: 'funnel',
+    title: 'Intent pages + lead scoring',
+    value: '6.8%',
+    valueLabel: 'visitor → lead rate',
+    footer: 'Up from 2.1%',
+    delta: '+224%',
+    icon: 'layers',
+  },
+];
+
+/** Positional icon per layout — an explicit `icon` in content always wins. */
+const DEFAULT_ICON: Record<HeroPanel['kind'], string> = {
+  cpl: 'chartBox',
+  leads: 'pin',
+  revenue: 'tag',
+  seo: 'chart',
+  process: 'rocket',
+  code: 'document',
+  alert: 'asterisk',
+  whatsapp: 'mail',
+  simkar: 'chart',
+  roas: 'chart',
+  attribution: 'database',
+  audit: 'crosshairs',
+  ctr: 'bullhorn',
+  funnel: 'layers',
+};
+
+/** Icon colour per panel — content-editable, token-only, Tailwind-static.
+ *  `default` keeps the layout's positional colour (ember headers, soft metric
+ *  icons); the three named tones map to fixed token classes so the JIT always
+ *  sees full class literals. */
+type IconTone = 'accent' | 'primary' | 'muted';
+
+function resolveIconTone(panel: HeroPanel, fallback: IconTone): IconTone {
+  return panel.iconTone && panel.iconTone !== 'default' ? panel.iconTone : fallback;
+}
+
+function iconTextClass(panel: HeroPanel, fallback: IconTone) {
+  const tone = resolveIconTone(panel, fallback);
+  return tone === 'accent' ? 'text-accent-600' : tone === 'primary' ? 'text-primary-700' : 'text-primary-500';
+}
+
+function iconTileClass(panel: HeroPanel, fallback: IconTone) {
+  const tone = resolveIconTone(panel, fallback);
+  return tone === 'accent'
+    ? 'bg-accent-500/10 text-accent-600'
+    : tone === 'primary'
+      ? 'bg-primary-700/10 text-primary-700'
+      : 'bg-primary-600/10 text-primary-500';
+}
+
+function iconDotClass(panel: HeroPanel, fallback: IconTone) {
+  const tone = resolveIconTone(panel, fallback);
+  return tone === 'accent' ? 'bg-accent-500' : tone === 'primary' ? 'bg-primary-700' : 'bg-primary-500';
+}
+
+const FALLBACK = {
+  eyebrow: 'Free digital audit: find where your budget is leaking',
+  headline: 'Performance marketing &\ngrowth infrastructure.',
+  sub: 'We are a specialist performance marketing partner in paid media, measurement infrastructure, and growth strategy. Trusted by SMEs, startups, and B2B/B2C companies scaling across Africa.',
+  cta: 'Get Started',
+  secondary: 'Request Digital Audit',
+} as const;
+
+/** Deterministic RNG so server and client render the same first frame. */
+function mulberry32(seed: number) {
+  let a = seed >>> 0;
+  return () => {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** Bars layout: cpl / roas / ctr — a falling or climbing spend story. */
+function BarsPanel({ panel }: { panel: HeroPanel }) {
+  const bars = panel.bars?.length ? panel.bars : [100, 82, 64, 46, 31, 22, 17, 15];
+  return (
+    <>
+      <div className="mb-1 flex items-center justify-between">
+        <span className="text-xs font-medium text-primary-900">{panel.title}</span>
+        <span className={iconTextClass(panel, 'accent')}>
+          <MdiIcon name={panel.icon || DEFAULT_ICON[panel.kind]} size={0.75} />
+        </span>
+      </div>
+      {panel.subtitle ? <span className="mb-3 text-[10px] text-primary-500">{panel.subtitle}</span> : null}
+      <div className="flex h-14 w-full items-end gap-1.5">
+        {bars.map((h, i) => (
+          <div
+            key={`${h}-${i}`}
+            style={{ height: `${h}%` }}
+            className={`w-full rounded-t-sm ${i > 5 ? 'bg-accent-500/80' : 'bg-primary-600/25'}`}
+          />
+        ))}
+      </div>
+      <div className="mt-3 flex items-center justify-between text-[10px]">
+        <span className="text-primary-500">{panel.footer}</span>
+        {panel.delta ? <span className="font-medium text-accent-600">{panel.delta}</span> : null}
+      </div>
+    </>
+  );
+}
+
+/** Metric layout: leads / revenue / attribution / funnel — one big figure. */
+function MetricPanel({ panel, large }: { panel: HeroPanel; large?: boolean }) {
+  const footer = [panel.footer, panel.delta].filter(Boolean).join(' · ');
+  return (
+    <div className="flex flex-col gap-1">
+      <div className="flex w-full items-center justify-between">
+        <span className="text-xs font-medium text-primary-700">{panel.title}</span>
+        <span className={iconTextClass(panel, 'muted')}>
+          <MdiIcon name={panel.icon || DEFAULT_ICON[panel.kind]} size={0.75} />
+        </span>
+      </div>
+      {panel.value ? (
+        <span
+          className={`mt-1 font-medium tracking-tight text-primary-900 ${large ? 'text-3xl' : 'text-2xl'}`}
+        >
+          {panel.value}
+        </span>
+      ) : null}
+      {panel.valueLabel ? <span className="text-[10px] text-primary-500">{panel.valueLabel}</span> : null}
+      {footer ? (
+        <div className={`mt-2 flex items-center gap-1 text-[10px] ${iconTextClass(panel, 'accent')}`}>
+          <MdiIcon name="chart" size={0.6} />
+          <span>{footer}</span>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+/** Progress layout: seo / audit — a figure with a completion bar. */
+function ProgressPanel({ panel }: { panel: HeroPanel }) {
+  return (
+    <>
+      <div className="flex items-start justify-between">
+        <div className="flex flex-col gap-1">
+          <span className="text-xs font-medium text-primary-900">{panel.title}</span>
+          {panel.subtitle ? <span className="text-[10px] text-primary-500">{panel.subtitle}</span> : null}
+        </div>
+        <div className={`h-2 w-2 rounded-full ${iconDotClass(panel, 'accent')}`} aria-hidden />
+      </div>
+      <div className="mt-3 flex items-baseline gap-1.5">
+        {panel.value ? <span className="text-2xl font-medium text-primary-900">{panel.value}</span> : null}
+        {panel.valueLabel ? <span className="text-[10px] text-primary-500">{panel.valueLabel}</span> : null}
+        {panel.delta ? <span className="text-[10px] font-medium text-accent-600">{panel.delta}</span> : null}
+      </div>
+      <div className="mt-3 h-1 w-full rounded-full bg-primary-900/10">
+        <div className="h-full rounded-full bg-accent-500" style={{ width: `${panel.progress ?? 85}%` }} />
+      </div>
+    </>
+  );
+}
+
+/** Steps layout: process — the 90-day plan with per-step state. */
+function StepsPanel({ panel }: { panel: HeroPanel }) {
+  const steps = panel.steps ?? [];
+  return (
+    <>
+      <div className="mb-3 flex items-center gap-2 border-b border-primary-900/10 pb-2">
+        <span className={iconTextClass(panel, 'accent')}>
+          <MdiIcon name={panel.icon || DEFAULT_ICON[panel.kind]} size={0.7} />
+        </span>
+        <span className="text-[10px] font-medium text-primary-900">{panel.title}</span>
+      </div>
+      <div className="flex flex-col gap-1.5 text-[11px]">
+        {steps.map((step) => (
+          <div
+            key={step.label}
+            className={`flex items-center gap-2 ${
+              step.state === 'active' ? 'font-medium text-primary-900' : step.state === 'done' ? 'text-primary-700' : 'text-primary-500'
+            }`}
+          >
+            <span
+              className={`h-1.5 w-1.5 rounded-full ${
+                step.state === 'todo'
+                  ? 'bg-primary-600/25'
+                  : `${iconDotClass(panel, 'accent')}${step.state === 'active' ? ' motion-safe:animate-pulse' : ''}`
+              }`}
+            />
+            {step.label}
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+/** Code layout: server-side tracking snippet, one editable line per row. */
+function CodePanel({ panel }: { panel: HeroPanel }) {
+  const lines = panel.codeLines ?? [];
+  return (
+    <>
+      <div className="mb-3 flex items-center gap-2 border-b border-primary-900/10 pb-2">
+        <span className={iconTextClass(panel, 'muted')}>
+          <MdiIcon name={panel.icon || DEFAULT_ICON[panel.kind]} size={0.7} />
+        </span>
+        <span className="text-[10px] font-medium text-primary-900">{panel.title}</span>
+      </div>
+      <div className="flex flex-col gap-1.5 font-mono text-[10px] text-primary-700">
+        {lines.map((line, i) => {
+          if (line.trimStart().startsWith('//')) {
+            return (
+              <div key={`${line}-${i}`} className="text-accent-600">
+                {line}
+              </div>
+            );
+          }
+          if (line.trimStart().startsWith('{')) {
+            return (
+              <div key={`${line}-${i}`} className="pl-3 text-primary-900">
+                {line}
+              </div>
+            );
+          }
+          return <div key={`${line}-${i}`}>{line}</div>;
+        })}
+      </div>
+    </>
+  );
+}
+
+/** Notice layout: alert / whatsapp — an icon tile with two lines. */
+function NoticePanel({ panel }: { panel: HeroPanel }) {
+  return (
+    <div className="flex items-start gap-3">
+      <div className={`rounded p-1.5 ${iconTileClass(panel, 'accent')}`}>
+        <MdiIcon name={panel.icon || DEFAULT_ICON[panel.kind]} size={0.75} />
+      </div>
+      <div className="flex flex-col gap-0.5">
+        <span className="text-xs font-medium text-primary-900">{panel.title}</span>
+        {panel.subtitle ? (
+          <span className="text-[10px] leading-tight text-primary-500">{panel.subtitle}</span>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+/** Dual layout: simkar — two side-by-side figures. */
+function DualPanel({ panel }: { panel: HeroPanel }) {
+  return (
+    <>
+      <div className="mb-3 flex items-center justify-between">
+        <span className="text-xs font-medium text-primary-900">{panel.title}</span>
+        <span className={iconTextClass(panel, 'accent')}>
+          <MdiIcon name={panel.icon || DEFAULT_ICON[panel.kind]} size={0.75} />
+        </span>
+      </div>
+      <div className="flex gap-5">
+        {(panel.metrics ?? []).map((metric) => (
+          <div key={metric.value} className="flex flex-col">
+            <span className="text-xl font-medium text-primary-900">{metric.value}</span>
+            <span className="text-[10px] text-primary-500">{metric.label}</span>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+function PanelBody({ panel }: { panel: HeroPanel }) {
+  switch (panel.kind) {
+    case 'cpl':
+    case 'roas':
+    case 'ctr':
+      return <BarsPanel panel={panel} />;
+    case 'leads':
+      return <MetricPanel panel={panel} large />;
+    case 'revenue':
+    case 'attribution':
+    case 'funnel':
+      return <MetricPanel panel={panel} />;
+    case 'seo':
+    case 'audit':
+      return <ProgressPanel panel={panel} />;
+    case 'process':
+      return <StepsPanel panel={panel} />;
+    case 'code':
+      return <CodePanel panel={panel} />;
+    case 'alert':
+    case 'whatsapp':
+      return <NoticePanel panel={panel} />;
+    case 'simkar':
+      return <DualPanel panel={panel} />;
+  }
+}
+
 export function Hero({ hero }: { hero?: HeroSection }) {
-	const chrome = useChrome();
-	const lines = (hero?.headline ?? "").split("\n");
-	const marquee = hero?.marquee ?? [];
+  const tunnelRef = useRef<HTMLDivElement>(null);
+  const sceneRef = useRef<HTMLDivElement>(null);
 
-	return (
-		<section id="hero" className="ground relative overflow-hidden text-primary-100">
-			<PixelDither from={DEEP} to={FIELD} height={196} cut={0.54} cell={2} />
+  const eyebrow = hero?.eyebrow || FALLBACK.eyebrow;
+  const lines = (hero?.headline || FALLBACK.headline).split('\n');
+  const sub = hero?.sub || FALLBACK.sub;
+  const ctaHref = hero?.ctaHref ?? '/#contact';
+  const cta = hero?.cta || FALLBACK.cta;
+  const secondary = hero?.scrollHint || FALLBACK.secondary;
+  const contentPanels = hero?.panels?.length ? hero.panels : FALLBACK_PANELS;
 
-			<div className="relative px-5 md:px-8">
-				<div className="mx-auto w-full max-w-[1360px] pb-14 pt-[128px] md:pb-20 md:pt-[172px]">
-					<div className="grid items-start gap-x-12 gap-y-14 lg:grid-cols-[minmax(0,1.12fr)_minmax(0,0.88fr)]">
-						{/* ---- the statement ------------------------------------- */}
-						<div>
-							<BandHead>{hero?.eyebrow}</BandHead>
+  // Seeded placements — identical on server and client first paint. Positions
+  // are content-agnostic; each slot cycles through the content panels so every
+  // entry in `hero.panels` shows up regardless of list length.
+  const placements = useMemo(() => {
+    const rand = mulberry32(7);
+    return Array.from({ length: 40 }, (_, i) => {
+      const angle = rand() * Math.PI * 2;
+      const radiusX = 350 + rand() * 400;
+      const radiusY = 250 + rand() * 300;
+      return {
+        x: Math.cos(angle) * radiusX,
+        y: Math.sin(angle) * radiusY,
+        z: -rand() * 4000,
+        extra: i >= 20 ? 'hidden md:flex' : 'flex',
+      };
+    });
+  }, []);
 
-							<h1 className="display mt-9 text-[clamp(2.85rem,7.4vw,6rem)] text-primary-50">
-								{lines.map((line, i) => (
-									<MaskedLine key={`${line}-${i}`} delay={0.1 + i * 0.1}>
-										{line || " "}
-									</MaskedLine>
-								))}
-							</h1>
+  useEffect(() => {
+    const tunnel = tunnelRef.current;
+    const scene = sceneRef.current;
+    if (!tunnel || !scene) return;
 
-							<Reveal delay={0.42}>
-								<p className="body mt-9 max-w-[60ch] text-[17px]">{hero?.sub}</p>
-							</Reveal>
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobile = window.innerWidth < 768;
+    const scale = isMobile ? 0.55 : 1;
+    const cameraZ = 300;
+    const maxDepth = 4000;
+    const speed = reduce ? 0 : 1.5;
 
-							<Reveal delay={0.5}>
-								<div className="mt-10 flex flex-wrap items-center gap-3">
-									<Action
-										href={hero?.ctaHref ?? "/#contact"}
-										label={hero?.cta ?? "Start with a free audit"}
-									/>
-									<Action
-										href="#process"
-										label={hero?.scrollHint ?? "Scroll"}
-										icon="arrowDown"
-										variant="ghost"
-									/>
-								</div>
-							</Reveal>
-						</div>
+    const els = Array.from(tunnel.children) as HTMLElement[];
+    const state = placements.map((p, i) => ({ ...p, x: p.x * scale, y: p.y * scale, el: els[i] })).filter((p) => p.el);
 
-						{/* ---- the demonstration --------------------------------- */}
-						<Reveal delay={0.34}>
-							<div className="panel">
-								<div className="flex items-center justify-between gap-4 px-6 pb-5 pt-6">
-									<p className="label">
-										{hero?.dashboardTitle ?? "Campaign / Live"}
-									</p>
-									<p className="flex items-center gap-2.5">
-										<span
-											aria-hidden
-											className="inline-block h-1.5 w-1.5 bg-accent-500"
-										/>
-										<span className="num text-[15px] text-accent-500">
-											{hero?.dashboardMetric ?? "ROAS 4.2×"}
-										</span>
-									</p>
-								</div>
+    const paint = () => {
+      for (const p of state) {
+        const blur = p.z < -1200 ? Math.min(6, (-p.z - 1200) / 400) : 0;
+        const opacity =
+          p.z < -3200 ? Math.max(0, 1 - (-p.z - 3200) / 800) : p.z > 0 ? Math.max(0, 1 - p.z / cameraZ) : 1;
+        p.el.style.transform = `translate(-50%, -50%) translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, ${p.z.toFixed(1)}px)`;
+        p.el.style.filter = blur > 0.5 ? `blur(${blur.toFixed(1)}px)` : 'none';
+        p.el.style.opacity = opacity.toFixed(2);
+        p.el.style.zIndex = String(Math.round(p.z + maxDepth));
+      }
+    };
+    paint();
 
-								{/* instrument: an etched graticule with the trace standing on it */}
-								<div className="relative mx-6 bg-primary-900/25 px-5 pb-4 pt-7">
-									<svg
-										aria-hidden
-										viewBox="0 0 100 100"
-										preserveAspectRatio="none"
-										className="absolute inset-x-5 top-7 h-[132px] w-[calc(100%-2.5rem)]"
-									>
-										{[0, 25, 50, 75, 100].map((y) => (
-											<line
-												key={y}
-												x1="0"
-												x2="100"
-												y1={y}
-												y2={y}
-												stroke="rgb(var(--color-primary-50) / 0.1)"
-												strokeWidth="1"
-												vectorEffect="non-scaling-stroke"
-											/>
-										))}
-									</svg>
-									<SignalTrace className="relative h-[132px] w-full" />
-									<div className="mt-3 flex items-center justify-between">
-										<p className="label">{chrome.signal}</p>
-										<p className="label label--ember">{chrome.trackingLive}</p>
-									</div>
-								</div>
+    if (reduce) return;
 
-								{/* the account's two figures */}
-								<dl className="mt-6 grid grid-cols-2 border-t border-primary-50/12">
-									<div className="border-r border-primary-50/12 px-6 py-5">
-										<dt className="label">
-											{hero?.statA_label ?? "CPL this month"}
-										</dt>
-										<dd className="num mt-3 text-[30px] text-primary-50">
-											{hero?.statA_value ?? "KES 280"}
-											{hero?.statA_delta ? (
-												<span className="ml-2 text-[12px] font-medium text-accent-500">
-													{hero.statA_delta}
-												</span>
-											) : null}
-										</dd>
-									</div>
-									<div className="px-6 py-5">
-										<dt className="label">
-											{hero?.statB_label ?? "Leads / month"}
-										</dt>
-										<dd className="num mt-3 text-[30px] text-primary-50">
-											{hero?.statB_value ?? "1,200+"}
-										</dd>
-									</div>
-								</dl>
+    let raf = 0;
+    const tick = () => {
+      for (const p of state) {
+        p.z += speed;
+        if (p.z > cameraZ) p.z -= maxDepth + cameraZ;
+      }
+      paint();
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
 
-								<p className="px-6 pb-6 pt-1 text-[11.5px] leading-snug text-primary-400">
-									{chrome.illustration}
-								</p>
-							</div>
-						</Reveal>
-					</div>
+    let parRaf = 0;
+    let mouseX = 50;
+    let mouseY = 50;
+    let targetX = 50;
+    let targetY = 50;
+    const onMove = (e: MouseEvent) => {
+      mouseX = 50 + (e.clientX / window.innerWidth - 0.5) * 20;
+      mouseY = 50 + (e.clientY / window.innerHeight - 0.5) * 20;
+    };
+    const parTick = () => {
+      targetX += (mouseX - targetX) * 0.05;
+      targetY += (mouseY - targetY) * 0.05;
+      scene.style.perspectiveOrigin = `${targetX.toFixed(2)}% ${targetY.toFixed(2)}%`;
+      parRaf = requestAnimationFrame(parTick);
+    };
+    if (!isMobile) {
+      document.addEventListener('mousemove', onMove);
+      parRaf = requestAnimationFrame(parTick);
+    }
 
-					{/* ---- the channels this route carries ---------------------- */}
-					<div className="mt-20 border-y border-primary-50/12">
-						<div className="flex flex-col gap-4 py-5 lg:flex-row lg:items-center lg:gap-9">
-							<p className="label shrink-0">{chrome.channels}</p>
-							<ul className="flex flex-wrap items-center gap-x-6 gap-y-2.5">
-								{marquee.map((item) => (
-									<li key={item} className="flex items-center gap-6">
-										<span className="label label--plain text-[11px] text-primary-200">
-											{item}
-										</span>
-										<span
-											aria-hidden
-											className="inline-block h-1 w-1 bg-accent-500"
-										/>
-									</li>
-								))}
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-	);
+    return () => {
+      cancelAnimationFrame(raf);
+      cancelAnimationFrame(parRaf);
+      document.removeEventListener('mousemove', onMove);
+    };
+  }, [placements]);
+
+  return (
+    <section
+      id="hero"
+      className="relative flex min-h-screen w-full flex-col overflow-hidden bg-paper font-sans text-ink-800"
+    >
+      {/* Soft primary-tinted glow — token channels, decorative */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-0"
+        style={{
+          background:
+            'radial-gradient(circle at 78% 18%, rgb(var(--color-accent-500) / 0.07) 0%, transparent 45%), radial-gradient(circle at 20% 80%, rgb(var(--color-primary-600) / 0.08) 0%, transparent 50%)',
+        }}
+      />
+
+      {/* 3D tunnel of floating result panels — decorative, never information */}
+      <div
+        ref={sceneRef}
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center overflow-hidden"
+        style={{ perspective: '800px', perspectiveOrigin: '50% 50%' }}
+      >
+        <div ref={tunnelRef} className="relative h-full w-full" style={{ transformStyle: 'preserve-3d' }}>
+          {placements.map((p, i) => {
+            const panel = contentPanels[i % contentPanels.length];
+            return (
+              <div
+                key={`${panel.kind}-${i}`}
+                className={`absolute left-1/2 top-1/2 w-64 flex-col rounded-xl border border-primary-900/10 bg-paper/80 p-5 backdrop-blur-md will-change-transform ${p.extra} ${
+                  panel.tone === 'alert' ? 'border-accent-500/30' : ''
+                }`}
+                style={{ boxShadow: '0 10px 30px rgb(var(--color-primary-600) / 0.10)' }}
+              >
+                <PanelBody panel={panel} />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Readability halo behind the copy */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-30"
+        style={{
+          background:
+            'radial-gradient(ellipse 52% 44% at 50% 50%, rgb(var(--color-paper-50) / 0.94) 0%, rgb(var(--color-paper-50) / 0.7) 55%, rgb(var(--color-paper-50) / 0) 100%)',
+        }}
+      />
+
+      <div className="pointer-events-none relative z-40 flex flex-1 flex-col items-center justify-center px-4 text-center">
+        <div className="pointer-events-auto flex flex-col items-center">
+          <a
+            href={ctaHref}
+            className="mb-8 inline-flex items-center gap-2 rounded-full border border-primary-900/15 bg-paper/80 px-3 py-1.5 text-xs font-medium text-primary-700 backdrop-blur-md transition-all hover:border-accent-500/40 hover:text-accent-600"
+            style={{ boxShadow: '0 2px 10px rgb(var(--color-primary-600) / 0.06)' }}
+          >
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-accent-500 opacity-60 motion-safe:animate-ping" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-accent-500" />
+            </span>
+            {eyebrow}
+            <MdiIcon name="arrowRight" size={0.55} />
+          </a>
+
+          <h1 className="mb-6 max-w-4xl text-4xl font-medium leading-[1.1] tracking-tight text-primary-900 md:text-6xl lg:text-7xl">
+            {lines.map((line, i) => (
+              <span key={`${line}-${i}`} className={`block ${i === lines.length - 1 ? 'text-accent-600' : ''}`}>
+                {line || ' '}
+              </span>
+            ))}
+          </h1>
+
+          <p className="mb-10 max-w-2xl text-sm leading-relaxed text-primary-700 md:text-base">{sub}</p>
+
+          <div className="flex w-full flex-col items-center gap-4 sm:w-auto sm:flex-row">
+            <a
+              href={ctaHref}
+              className="w-full rounded-md bg-accent-500 px-6 py-3 text-center text-sm font-medium text-paper transition-colors hover:bg-accent-600 sm:w-auto"
+              style={{ boxShadow: '0 8px 24px rgb(var(--color-accent-500) / 0.28)' }}
+            >
+              {cta}
+            </a>
+            <a
+              href={ctaHref}
+              className="flex w-full items-center justify-center gap-2 rounded-md border border-primary-900/20 bg-paper/80 px-6 py-3 text-sm font-medium text-primary-900 backdrop-blur-md transition-colors hover:border-primary-900/50 hover:bg-paper sm:w-auto"
+            >
+              <MdiIcon name="document" size={0.7} />
+              {secondary}
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom fade */}
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-gradient-to-t from-paper to-transparent" />
+
+      {/* Proof strip — operating commitments, also stated in Stats */}
+      <div className="relative z-40 px-4 pb-6">
+        <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-x-8 gap-y-2 text-[11px] text-primary-700 md:text-xs">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-primary-900">100%</span> campaigns tracked to conversion
+          </div>
+          <span aria-hidden className="hidden h-3 w-px bg-primary-900/20 sm:block" />
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-primary-900">7-day</span> optimization cycle
+          </div>
+          <span aria-hidden className="hidden h-3 w-px bg-primary-900/20 sm:block" />
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-accent-600">Zero</span> vanity metrics reported
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }

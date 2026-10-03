@@ -31,12 +31,8 @@ export interface PathFlowCta {
 	href: string;
 }
 
-export interface PathFlowSectionProps {
+export interface PathFlowProps {
 	/* content */
-	eyebrow?: string;
-	title: ReactNode;
-	contentTitle?: ReactNode;
-	description?: ReactNode;
 	cta?: PathFlowCta;
 	/** Extra content rendered inside the content block, under the CTA. */
 	children?: ReactNode;
@@ -188,11 +184,7 @@ function AnimatedStroke({
  * Component
  * ------------------------------------------------------------------------- */
 
-function PathFlowSection({
-	eyebrow,
-	title,
-	contentTitle,
-	description,
+function PathFlow({
 	cta,
 	children,
 
@@ -216,9 +208,9 @@ function PathFlowSection({
 	className = "",
 	contentClassName = "",
 	id,
-}: PathFlowSectionProps) {
+}: PathFlowProps) {
 	const reduced = !!useReducedMotion();
-	const sectionRef = useRef<HTMLElement>(null);
+	const sectionRef = useRef<HTMLDivElement>(null);
 	const [boxRef, { width, height }] = useElementSize<HTMLDivElement>();
 
 	/* scroll progress → (optionally remapped) → (optionally sprung) */
@@ -247,7 +239,7 @@ function PathFlowSection({
 	} as CSSProperties;
 
 	return (
-		<section
+		<div
 			id={id}
 			ref={sectionRef}
 			style={cssVars}
@@ -292,26 +284,12 @@ function PathFlowSection({
 				)}
 			</div>
 
-			{/* heading */}
-			<div className="relative z-10 px-7 pt-24 md:pt-28">
-				{eyebrow && <p className="mb-3 text-xs opacity-80">{eyebrow}</p>}
-				<h2 className="max-w-[14ch] text-[clamp(2.5rem,6.2vw,5.5rem)] font-light leading-[1.02] tracking-tight">
-					{title}
-				</h2>
-			</div>
 
 			{/* content block */}
 			<div
 				className={`relative z-10 mt-16 max-w-[26rem] px-7 pb-24 md:absolute md:left-[var(--cx)] md:top-[var(--cy)] md:mt-0 md:px-0 md:pb-0 ${contentClassName}`}
 			>
-				{contentTitle && (
-					<h3 className="mb-4 text-[clamp(1.5rem,2.4vw,2.25rem)] font-light leading-[1.1] tracking-tight">
-						{contentTitle}
-					</h3>
-				)}
-				{description && (
-					<p className="mb-8 text-[13px] leading-[1.4] opacity-90">{description}</p>
-				)}
+				
 				{cta && (
 					<Link
 						href={cta.href}
@@ -329,8 +307,8 @@ function PathFlowSection({
 				)}
 				{children}
 			</div>
-		</section>
+		</div>
 	);
 }
 
-export default PathFlowSection;
+export default PathFlow;

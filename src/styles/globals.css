@@ -19,6 +19,7 @@
 
 :root {
   /* primary — the violet-ink field, anchored on the brand hex */
+--color-primary-DEFAULT: 79 75 99;
   --color-primary-50: 246 245 250;
   --color-primary-100: 233 230 243;
   --color-primary-200: 214 209 231;
@@ -32,6 +33,7 @@
   --color-primary-950: 16 13 26; /* the deep band */
 
   /* ink — neutral type, used on paper */
+--color-ink-DEFAULT: 104 100 124;
   --color-ink-50: 249 249 251;
   --color-ink-100: 236 235 240;
   --color-ink-200: 214 212 223;
@@ -74,6 +76,7 @@
   /* accent — ember. Reserved for live marks: the active process node, the
      recovering spend figure, the primary action, a resolve band's leading
      edge. It never decorates. */
+    --color-accent: 240 79 38; 
   --color-accent-50: 255 245 241;
   --color-accent-100: 255 232 223;
   --color-accent-200: 254 209 190;

@@ -1,6 +1,7 @@
+import Image from 'next/image';
+
 import { Action } from '@/components/layout/action';
 import { Band, BandHead } from '@/components/layout/band';
-import { PixelMark } from '@/components/graphics/pixel-mark';
 import { Reveal } from '@/lib/motion/reveal';
 import { useChrome } from '@/lib/content/chrome';
 import type { LayoutContent } from '@/lib/content/types';
@@ -52,12 +53,14 @@ export function SiteFooter({ footer }: { footer?: LayoutContent }) {
 
         <div className="mt-12 grid gap-x-12 gap-y-10 md:grid-cols-[minmax(0,1.25fr)_repeat(2,minmax(0,0.75fr))]">
           <div>
-            <p className="flex items-center gap-2.5 text-primary-50">
-              <PixelMark className="h-4 w-auto" />
-              <span className="text-[17px] font-medium tracking-[-0.02em]">
-                {brand}
-                <span className="text-accent-500">{emphasis}</span>
-              </span>
+            <p className="flex items-center">
+              <Image
+                src="/img/logo-alt.svg"
+                alt={`${brand} ${emphasis}`}
+                width={176}
+                height={44}
+                className="h-8 w-auto"
+              />
             </p>
             <p className="body mt-5 max-w-[42ch] text-[15px]">{footer?.tagline}</p>
             <p className="label mt-5">{footer?.footnote}</p>

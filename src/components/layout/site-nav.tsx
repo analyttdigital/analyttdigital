@@ -1,11 +1,11 @@
 'use client';
 
 import { motion, useMotionValueEvent, useScroll, useSpring } from 'framer-motion';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 import { Action } from '@/components/layout/action';
-import { PixelMark } from '@/components/graphics/pixel-mark';
 import { useChrome } from '@/lib/content/chrome';
 import type { LayoutContent } from '@/lib/content/types';
 
@@ -172,14 +172,17 @@ function Wordmark({ brand, emphasis }: { brand: string; emphasis: string }) {
   return (
     <Link
       href="/"
-      className="flex shrink-0 items-center gap-2.5 text-primary-50"
+      className="flex shrink-0 items-center"
       aria-label={`${brand} ${emphasis}`}
     >
-      <PixelMark className="h-[18px] w-auto" />
-      <span className="text-[16px] font-medium tracking-[-0.02em]">
-        {brand}
-        <span className="text-accent-500">{emphasis}</span>
-      </span>
+      <Image
+        src="/img/logo-alt.svg"
+        alt={`${brand} ${emphasis}`}
+        width={160}
+        height={40}
+        priority={true}
+        className="h-7 w-auto"
+      />
     </Link>
   );
 }
