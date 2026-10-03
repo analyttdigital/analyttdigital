@@ -1,6 +1,7 @@
 'use client';
 
 import { Fragment, useEffect, useMemo, useRef } from 'react';
+import Image from 'next/image';
 
 import { MdiIcon } from '@/lib/icons/resolve-icon';
 import type { HeroPanel, HeroProof, HeroSection } from '@/lib/content/types';
@@ -601,7 +602,7 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
             <div
                 key={`${panel.kind}-${i}`}
                 className={`absolute left-1/2 top-1/2 w-64 flex-col rounded-xl border p-5 backdrop-blur-md will-change-transform ${p.extra} ${
-                  panel.tone === 'alert'
+                  panel.tone === 'alert' 
                     ? 'border-accent-500/30'
                     : dark
                       ? 'border-primary-50/10'
@@ -627,13 +628,28 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
         }}
       />
 
-      <div className="pointer-events-none relative z-40 flex flex-1 flex-col items-center justify-center px-4 text-center">
-        <div className="pointer-events-auto flex flex-col items-center">
+      {/* Brand collage — the visual anchor of the scene. It sits above the
+          halo and the tunnel, so packets read as originating from behind it. */}
+      <div className="pointer-events-none z-40 flex flex-1 items-center justify-center px-4 py-8 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <Image
+          src="/img/logo-marketing-collage.svg"
+          alt=""
+          aria-hidden={true}
+          width={720}
+          height={720}
+          priority={true}
+          className="h-auto w-[min(68vw,300px)] md:w-[min(38vw,350px)]  -translate-y-16"
+        />
+      </div>
+
+      {/* Docked copy + proof — bottom-left, stacking on small screens */}
+      <div className="absolute bottom-0 w-full z-40 flex flex-col gap-6 px-4 pb-6 md:px-8 lg:flex-row lg:items-end lg:justify-between">
+        <div className="pointer-events-auto flex max-w-2xl flex-col items-start text-left">
           <a
             href={ctaHref}
-            className={`mb-8 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-md transition-all ${
+            className={`mb-5 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-md transition-all ${
               dark
-                ? 'border-primary-50/15 bg-primary-900/80 text-primary-100 hover:border-accent-500/40 hover:text-accent-300'
+                ? 'border-primary-50/15 bg-primary-900/80 text-accent-300 hover:border-accent-500/40 hover:text-accent-300'
                 : 'border-primary-900/15 bg-paper/80 text-primary-700 hover:border-accent-500/40 hover:text-accent-600'
             }`}
             style={{ boxShadow: '0 2px 10px rgb(var(--color-primary-600) / 0.06)' }}
@@ -647,14 +663,14 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
           </a>
 
           <h1
-            className={`mb-6 max-w-4xl text-4xl font-medium leading-[1.1] tracking-tight md:text-6xl lg:text-7xl ${
+            className={`mb-5 max-w-3xl text-[2.1rem] font-medium leading-[1.05] tracking-tight md:text-5xl lg:text-6xl ${
               dark ? 'text-primary-50' : 'text-primary-900'
             }`}
           >
             {lines.map((line, i) => (
               <span
                 key={`${line}-${i}`}
-                className={`block ${i === lines.length - 1 ? (dark ? 'text-accent-300' : 'text-accent-600') : ''}`}
+                className={`block ${i === lines.length - 1 ? (dark ? 'text-accent-400' : 'text-accent-600') : ''}`}
               >
                 {line || ' '}
               </span>
@@ -662,14 +678,14 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
           </h1>
 
           <p
-            className={`mb-10 max-w-2xl text-sm leading-relaxed md:text-base ${
+            className={`mb-8 max-w-xl text-sm leading-relaxed md:text-base ${
               dark ? 'text-primary-200' : 'text-primary-700'
             }`}
           >
             {sub}
           </p>
 
-          <div className="flex w-full flex-col items-center gap-4 sm:w-auto sm:flex-row">
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
             <a
               href={ctaHref}
               className="w-full rounded-md bg-accent-500 px-6 py-3 text-center text-sm font-medium text-paper transition-colors hover:bg-accent-600 sm:w-auto"
@@ -690,20 +706,10 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
             </a>
           </div>
         </div>
-      </div>
 
-      {/* Bottom fade */}
-      <div
-        aria-hidden
-        className={`pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-gradient-to-t to-transparent ${
-          dark ? 'from-primary-950' : 'from-paper'
-        }`}
-      />
-
-      {/* Proof strip — operating commitments, also stated in Stats */}
-      <div className="relative z-40 px-4 pb-6">
+        {/* Proof strip — operating commitments, also stated in Stats */}
         <div
-          className={`mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-x-8 gap-y-2 text-[11px] md:text-xs ${
+          className={`flex max-w-3xl flex-wrap items-center gap-x-8 gap-y-2 text-[11px] md:text-xs lg:max-w-sm lg:justify-end ${
             dark ? 'text-primary-200' : 'text-primary-700'
           }`}
         >
@@ -735,6 +741,14 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
           ))}
         </div>
       </div>
+
+      {/* Bottom fade — legibility scrim for the docked copy */}
+      <div
+        aria-hidden
+        className={`pointer-events-none absolute inset-x-0 bottom-0 z-10 h-64 bg-gradient-to-t to-transparent ${
+          dark ? 'from-primary-950' : 'from-paper'
+        }`}
+      />
     </section>
   );
 }
