@@ -174,13 +174,23 @@ function resolveIconTone(panel: HeroPanel, fallback: IconTone): IconTone {
   return panel.iconTone && panel.iconTone !== 'default' ? panel.iconTone : fallback;
 }
 
-function iconTextClass(panel: HeroPanel, fallback: IconTone) {
+function iconTextClass(panel: HeroPanel, fallback: IconTone, dark = false) {
   const tone = resolveIconTone(panel, fallback);
+  if (dark) {
+    return tone === 'accent' ? 'text-accent-300' : tone === 'primary' ? 'text-primary-200' : 'text-primary-300';
+  }
   return tone === 'accent' ? 'text-accent-600' : tone === 'primary' ? 'text-primary-700' : 'text-primary-500';
 }
 
-function iconTileClass(panel: HeroPanel, fallback: IconTone) {
+function iconTileClass(panel: HeroPanel, fallback: IconTone, dark = false) {
   const tone = resolveIconTone(panel, fallback);
+  if (dark) {
+    return tone === 'accent'
+      ? 'bg-accent-500/15 text-accent-300'
+      : tone === 'primary'
+        ? 'bg-primary-50/10 text-primary-200'
+        : 'bg-primary-50/10 text-primary-300';
+  }
   return tone === 'accent'
     ? 'bg-accent-500/10 text-accent-600'
     : tone === 'primary'
@@ -191,6 +201,22 @@ function iconTileClass(panel: HeroPanel, fallback: IconTone) {
 function iconDotClass(panel: HeroPanel, fallback: IconTone) {
   const tone = resolveIconTone(panel, fallback);
   return tone === 'accent' ? 'bg-accent-500' : tone === 'primary' ? 'bg-primary-700' : 'bg-primary-500';
+}
+
+/** Panel interior tones per hero variant — one map so all seven layouts flip
+ *  together. Ember stays the brand value (dots/bars read as marks, not type);
+ *  type steps up the ramp on dark per the token rule. */
+function panelTones(dark: boolean) {
+  return {
+    title: dark ? 'text-primary-50' : 'text-primary-900',
+    client: dark ? 'text-primary-200' : 'text-primary-700',
+    sub: dark ? 'text-primary-300' : 'text-primary-500',
+    rule: dark ? 'border-primary-50/10' : 'border-primary-900/10',
+    track: dark ? 'bg-primary-50/10' : 'bg-primary-900/10',
+    barOff: dark ? 'bg-primary-50/15' : 'bg-primary-600/25',
+    dotOff: dark ? 'bg-primary-50/20' : 'bg-primary-600/25',
+    delta: dark ? 'text-accent-300' : 'text-accent-600',
+  };
 }
 
 const FALLBACK = {
@@ -221,55 +247,57 @@ function mulberry32(seed: number) {
 }
 
 /** Bars layout: cpl / roas / ctr — a falling or climbing spend story. */
-function BarsPanel({ panel }: { panel: HeroPanel }) {
+function BarsPanel({ panel, dark }: { panel: HeroPanel; dark: boolean }) {
   const bars = panel.bars?.length ? panel.bars : [100, 82, 64, 46, 31, 22, 17, 15];
+  const t = panelTones(dark);
   return (
     <>
       <div className="mb-1 flex items-center justify-between">
-        <span className="text-xs font-medium text-primary-900">{panel.title}</span>
-        <span className={iconTextClass(panel, 'accent')}>
+        <span className={`text-xs font-medium ${t.title}`}>{panel.title}</span>
+        <span className={iconTextClass(panel, 'accent', dark)}>
           <MdiIcon name={panel.icon || DEFAULT_ICON[panel.kind]} size={0.75} />
         </span>
       </div>
-      {panel.subtitle ? <span className="mb-3 text-[10px] text-primary-500">{panel.subtitle}</span> : null}
+      {panel.subtitle ? <span className={`mb-3 text-[10px] ${t.sub}`}>{panel.subtitle}</span> : null}
       <div className="flex h-14 w-full items-end gap-1.5">
         {bars.map((h, i) => (
           <div
             key={`${h}-${i}`}
             style={{ height: `${h}%` }}
-            className={`w-full rounded-t-sm ${i > 5 ? 'bg-accent-500/80' : 'bg-primary-600/25'}`}
+            className={`w-full rounded-t-sm ${i > 5 ? 'bg-accent-500/80' : t.barOff}`}
           />
         ))}
       </div>
       <div className="mt-3 flex items-center justify-between text-[10px]">
-        <span className="text-primary-500">{panel.footer}</span>
-        {panel.delta ? <span className="font-medium text-accent-600">{panel.delta}</span> : null}
+        <span className={t.sub}>{panel.footer}</span>
+        {panel.delta ? <span className={`font-medium ${t.delta}`}>{panel.delta}</span> : null}
       </div>
     </>
   );
 }
 
 /** Metric layout: leads / revenue / attribution / funnel — one big figure. */
-function MetricPanel({ panel, large }: { panel: HeroPanel; large?: boolean }) {
+function MetricPanel({ panel, dark, large }: { panel: HeroPanel; dark: boolean; large?: boolean }) {
   const footer = [panel.footer, panel.delta].filter(Boolean).join(' · ');
+  const t = panelTones(dark);
   return (
     <div className="flex flex-col gap-1">
       <div className="flex w-full items-center justify-between">
-        <span className="text-xs font-medium text-primary-700">{panel.title}</span>
-        <span className={iconTextClass(panel, 'muted')}>
+        <span className={`text-xs font-medium ${t.client}`}>{panel.title}</span>
+        <span className={iconTextClass(panel, 'muted', dark)}>
           <MdiIcon name={panel.icon || DEFAULT_ICON[panel.kind]} size={0.75} />
         </span>
       </div>
       {panel.value ? (
         <span
-          className={`mt-1 font-medium tracking-tight text-primary-900 ${large ? 'text-3xl' : 'text-2xl'}`}
+          className={`mt-1 font-medium tracking-tight ${t.title} ${large ? 'text-3xl' : 'text-2xl'}`}
         >
           {panel.value}
         </span>
       ) : null}
-      {panel.valueLabel ? <span className="text-[10px] text-primary-500">{panel.valueLabel}</span> : null}
+      {panel.valueLabel ? <span className={`text-[10px] ${t.sub}`}>{panel.valueLabel}</span> : null}
       {footer ? (
-        <div className={`mt-2 flex items-center gap-1 text-[10px] ${iconTextClass(panel, 'accent')}`}>
+        <div className={`mt-2 flex items-center gap-1 text-[10px] ${iconTextClass(panel, 'accent', dark)}`}>
           <MdiIcon name="chart" size={0.6} />
           <span>{footer}</span>
         </div>
@@ -279,22 +307,23 @@ function MetricPanel({ panel, large }: { panel: HeroPanel; large?: boolean }) {
 }
 
 /** Progress layout: seo / audit — a figure with a completion bar. */
-function ProgressPanel({ panel }: { panel: HeroPanel }) {
+function ProgressPanel({ panel, dark }: { panel: HeroPanel; dark: boolean }) {
+  const t = panelTones(dark);
   return (
     <>
       <div className="flex items-start justify-between">
         <div className="flex flex-col gap-1">
-          <span className="text-xs font-medium text-primary-900">{panel.title}</span>
-          {panel.subtitle ? <span className="text-[10px] text-primary-500">{panel.subtitle}</span> : null}
+          <span className={`text-xs font-medium ${t.title}`}>{panel.title}</span>
+          {panel.subtitle ? <span className={`text-[10px] ${t.sub}`}>{panel.subtitle}</span> : null}
         </div>
         <div className={`h-2 w-2 rounded-full ${iconDotClass(panel, 'accent')}`} aria-hidden />
       </div>
       <div className="mt-3 flex items-baseline gap-1.5">
-        {panel.value ? <span className="text-2xl font-medium text-primary-900">{panel.value}</span> : null}
-        {panel.valueLabel ? <span className="text-[10px] text-primary-500">{panel.valueLabel}</span> : null}
-        {panel.delta ? <span className="text-[10px] font-medium text-accent-600">{panel.delta}</span> : null}
+        {panel.value ? <span className={`text-2xl font-medium ${t.title}`}>{panel.value}</span> : null}
+        {panel.valueLabel ? <span className={`text-[10px] ${t.sub}`}>{panel.valueLabel}</span> : null}
+        {panel.delta ? <span className={`text-[10px] font-medium ${t.delta}`}>{panel.delta}</span> : null}
       </div>
-      <div className="mt-3 h-1 w-full rounded-full bg-primary-900/10">
+      <div className={`mt-3 h-1 w-full rounded-full ${t.track}`}>
         <div className="h-full rounded-full bg-accent-500" style={{ width: `${panel.progress ?? 85}%` }} />
       </div>
     </>
@@ -302,28 +331,29 @@ function ProgressPanel({ panel }: { panel: HeroPanel }) {
 }
 
 /** Steps layout: process — the 90-day plan with per-step state. */
-function StepsPanel({ panel }: { panel: HeroPanel }) {
+function StepsPanel({ panel, dark }: { panel: HeroPanel; dark: boolean }) {
   const steps = panel.steps ?? [];
+  const t = panelTones(dark);
   return (
     <>
-      <div className="mb-3 flex items-center gap-2 border-b border-primary-900/10 pb-2">
-        <span className={iconTextClass(panel, 'accent')}>
+      <div className={`mb-3 flex items-center gap-2 border-b pb-2 ${t.rule}`}>
+        <span className={iconTextClass(panel, 'accent', dark)}>
           <MdiIcon name={panel.icon || DEFAULT_ICON[panel.kind]} size={0.7} />
         </span>
-        <span className="text-[10px] font-medium text-primary-900">{panel.title}</span>
+        <span className={`text-[10px] font-medium ${t.title}`}>{panel.title}</span>
       </div>
       <div className="flex flex-col gap-1.5 text-[11px]">
         {steps.map((step) => (
           <div
             key={step.label}
             className={`flex items-center gap-2 ${
-              step.state === 'active' ? 'font-medium text-primary-900' : step.state === 'done' ? 'text-primary-700' : 'text-primary-500'
+              step.state === 'active' ? `font-medium ${t.title}` : step.state === 'done' ? t.client : t.sub
             }`}
           >
             <span
               className={`h-1.5 w-1.5 rounded-full ${
                 step.state === 'todo'
-                  ? 'bg-primary-600/25'
+                  ? t.dotOff
                   : `${iconDotClass(panel, 'accent')}${step.state === 'active' ? ' motion-safe:animate-pulse' : ''}`
               }`}
             />
@@ -336,28 +366,29 @@ function StepsPanel({ panel }: { panel: HeroPanel }) {
 }
 
 /** Code layout: server-side tracking snippet, one editable line per row. */
-function CodePanel({ panel }: { panel: HeroPanel }) {
+function CodePanel({ panel, dark }: { panel: HeroPanel; dark: boolean }) {
   const lines = panel.codeLines ?? [];
+  const t = panelTones(dark);
   return (
     <>
-      <div className="mb-3 flex items-center gap-2 border-b border-primary-900/10 pb-2">
-        <span className={iconTextClass(panel, 'muted')}>
+      <div className={`mb-3 flex items-center gap-2 border-b pb-2 ${t.rule}`}>
+        <span className={iconTextClass(panel, 'muted', dark)}>
           <MdiIcon name={panel.icon || DEFAULT_ICON[panel.kind]} size={0.7} />
         </span>
-        <span className="text-[10px] font-medium text-primary-900">{panel.title}</span>
+        <span className={`text-[10px] font-medium ${t.title}`}>{panel.title}</span>
       </div>
-      <div className="flex flex-col gap-1.5 font-mono text-[10px] text-primary-700">
+      <div className={`flex flex-col gap-1.5 font-mono text-[10px] ${t.client}`}>
         {lines.map((line, i) => {
           if (line.trimStart().startsWith('//')) {
             return (
-              <div key={`${line}-${i}`} className="text-accent-600">
+              <div key={`${line}-${i}`} className={t.delta}>
                 {line}
               </div>
             );
           }
           if (line.trimStart().startsWith('{')) {
             return (
-              <div key={`${line}-${i}`} className="pl-3 text-primary-900">
+              <div key={`${line}-${i}`} className={`pl-3 ${t.title}`}>
                 {line}
               </div>
             );
@@ -370,16 +401,17 @@ function CodePanel({ panel }: { panel: HeroPanel }) {
 }
 
 /** Notice layout: alert / whatsapp — an icon tile with two lines. */
-function NoticePanel({ panel }: { panel: HeroPanel }) {
+function NoticePanel({ panel, dark }: { panel: HeroPanel; dark: boolean }) {
+  const t = panelTones(dark);
   return (
     <div className="flex items-start gap-3">
-      <div className={`rounded p-1.5 ${iconTileClass(panel, 'accent')}`}>
+      <div className={`rounded p-1.5 ${iconTileClass(panel, 'accent', dark)}`}>
         <MdiIcon name={panel.icon || DEFAULT_ICON[panel.kind]} size={0.75} />
       </div>
       <div className="flex flex-col gap-0.5">
-        <span className="text-xs font-medium text-primary-900">{panel.title}</span>
+        <span className={`text-xs font-medium ${t.title}`}>{panel.title}</span>
         {panel.subtitle ? (
-          <span className="text-[10px] leading-tight text-primary-500">{panel.subtitle}</span>
+          <span className={`text-[10px] leading-tight ${t.sub}`}>{panel.subtitle}</span>
         ) : null}
       </div>
     </div>
@@ -387,20 +419,21 @@ function NoticePanel({ panel }: { panel: HeroPanel }) {
 }
 
 /** Dual layout: simkar — two side-by-side figures. */
-function DualPanel({ panel }: { panel: HeroPanel }) {
+function DualPanel({ panel, dark }: { panel: HeroPanel; dark: boolean }) {
+  const t = panelTones(dark);
   return (
     <>
       <div className="mb-3 flex items-center justify-between">
-        <span className="text-xs font-medium text-primary-900">{panel.title}</span>
-        <span className={iconTextClass(panel, 'accent')}>
+        <span className={`text-xs font-medium ${t.title}`}>{panel.title}</span>
+        <span className={iconTextClass(panel, 'accent', dark)}>
           <MdiIcon name={panel.icon || DEFAULT_ICON[panel.kind]} size={0.75} />
         </span>
       </div>
       <div className="flex gap-5">
         {(panel.metrics ?? []).map((metric) => (
           <div key={metric.value} className="flex flex-col">
-            <span className="text-xl font-medium text-primary-900">{metric.value}</span>
-            <span className="text-[10px] text-primary-500">{metric.label}</span>
+            <span className={`text-xl font-medium ${t.title}`}>{metric.value}</span>
+            <span className={`text-[10px] ${t.sub}`}>{metric.label}</span>
           </div>
         ))}
       </div>
@@ -408,30 +441,30 @@ function DualPanel({ panel }: { panel: HeroPanel }) {
   );
 }
 
-function PanelBody({ panel }: { panel: HeroPanel }) {
+function PanelBody({ panel, dark }: { panel: HeroPanel; dark: boolean }) {
   switch (panel.kind) {
     case 'cpl':
     case 'roas':
     case 'ctr':
-      return <BarsPanel panel={panel} />;
+      return <BarsPanel panel={panel} dark={dark} />;
     case 'leads':
-      return <MetricPanel panel={panel} large />;
+      return <MetricPanel panel={panel} dark={dark} large />;
     case 'revenue':
     case 'attribution':
     case 'funnel':
-      return <MetricPanel panel={panel} />;
+      return <MetricPanel panel={panel} dark={dark} />;
     case 'seo':
     case 'audit':
-      return <ProgressPanel panel={panel} />;
+      return <ProgressPanel panel={panel} dark={dark} />;
     case 'process':
-      return <StepsPanel panel={panel} />;
+      return <StepsPanel panel={panel} dark={dark} />;
     case 'code':
-      return <CodePanel panel={panel} />;
+      return <CodePanel panel={panel} dark={dark} />;
     case 'alert':
     case 'whatsapp':
-      return <NoticePanel panel={panel} />;
+      return <NoticePanel panel={panel} dark={dark} />;
     case 'simkar':
-      return <DualPanel panel={panel} />;
+      return <DualPanel panel={panel} dark={dark} />;
   }
 }
 
@@ -447,8 +480,8 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
   const secondary = hero?.scrollHint || FALLBACK.secondary;
   const contentPanels = hero?.panels?.length ? hero.panels : FALLBACK_PANELS;
   const proof = hero?.proof?.length ? hero.proof : FALLBACK_PROOF;
-  /** Explicit prop wins, then content, then the light stage. Panels stay
-   *  paper on both variants — floating light cards over the dark field. */
+  /** Explicit prop wins, then content, then the light stage. Tunnel panels
+   *  flip with the variant through `panelTones` + the icon tone helpers. */
   const dark = (variant ?? hero?.variant ?? 'light') === 'dark';
 
   // Seeded placements — identical on server and client first paint. Positions
@@ -565,14 +598,18 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
           {placements.map((p, i) => {
             const panel = contentPanels[i % contentPanels.length];
             return (
-              <div
+            <div
                 key={`${panel.kind}-${i}`}
-                className={`absolute left-1/2 top-1/2 w-64 flex-col rounded-xl border border-primary-900/10 bg-paper p-5 backdrop-blur-lg will-change-transform ${p.extra} ${
-                  panel.tone === 'alert' ? 'border-accent-500/30' : ''
-                }`}
+                className={`absolute left-1/2 top-1/2 w-64 flex-col rounded-xl border p-5 backdrop-blur-md will-change-transform ${p.extra} ${
+                  panel.tone === 'alert'
+                    ? 'border-accent-500/30'
+                    : dark
+                      ? 'border-primary-50/10'
+                      : 'border-primary-900/10'
+                } ${dark ? 'bg-primary-800/80' : 'bg-paper/80'}`}
                 style={{ boxShadow: '0 10px 30px rgb(var(--color-primary-600) / 0.10)' }}
               >
-                <PanelBody panel={panel} />
+                <PanelBody panel={panel} dark={dark} />
               </div>
             );
           })}
