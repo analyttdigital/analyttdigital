@@ -638,7 +638,7 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
           width={720}
           height={720}
           priority={true}
-          className="h-auto w-[min(68vw,300px)] md:w-[min(38vw,350px)]  -translate-y-16"
+          className="h-auto w-[min(68vw,300px)] md:w-[min(38vw,350px)]  -translate-y-20"
         />
       </div>
 
@@ -649,7 +649,7 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
             href={ctaHref}
             className={`mb-5 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-md transition-all ${
               dark
-                ? 'border-primary-50/15 bg-primary-900/80 text-accent-300 hover:border-accent-500/40 hover:text-accent-300'
+                ? 'border-primary-50/15 bg-primary-900/80 text-accent-400 hover:border-accent-500/40 hover:text-accent-300'
                 : 'border-primary-900/15 bg-paper/80 text-primary-700 hover:border-accent-500/40 hover:text-accent-600'
             }`}
             style={{ boxShadow: '0 2px 10px rgb(var(--color-primary-600) / 0.06)' }}
@@ -659,7 +659,7 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
               <span className="relative inline-flex h-2 w-2 rounded-full bg-accent-500" />
             </span> */}
             {eyebrow}
-            <MdiIcon name="arrowRight" className="text-accent" size={0.55} />
+            <MdiIcon name="arrowRight" className="text-accent-300" size={0.55} />
           </a>
 
           <h1
