@@ -1,14 +1,17 @@
 import { Head, Html, Main, NextScript } from 'next/document';
 
+import { fontsClass } from '@/lib/fonts';
+
 export default function Document() {
   return (
-    <Html lang="en">
+    <Html lang="en" className={fontsClass}>
       <Head>
-        <meta name="theme-color" content="#4f4b63" />
+        {/* The rail is transparent over the field at rest, so the browser
+            chrome is tinted with the field itself. */}
+        <meta name="theme-color" content="#393154" />
       </Head>
-      {/* Page ground comes from the `body` rule (mist-100); sections paint
-          their own canvas/stage surfaces over it. */}
-      <body className="bg-mist-100 font-sans text-ink antialiased">
+      {/* Page ground is the deep band; each band paints its own ground over it. */}
+      <body className="bg-primary-950 font-sans text-primary-100 antialiased">
         <Main />
         <NextScript />
       </body>

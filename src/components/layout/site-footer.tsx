@@ -1,65 +1,75 @@
-import { PrinterMark } from '@/components/graphics/printer-mark';
-import { MdiIcon } from '@/lib/icons/resolve-icon';
+import { Action } from '@/components/layout/action';
+import { Band, BandHead } from '@/components/layout/band';
+import { PixelMark } from '@/components/graphics/pixel-mark';
 import { Reveal } from '@/lib/motion/reveal';
 import { useChrome } from '@/lib/content/chrome';
 import type { LayoutContent } from '@/lib/content/types';
 
 /**
- * Footer — the colophon.
+ * The footer — where the path terminates.
  *
- * A printed sheet ends with its imprint, not a dark panel: a heavy rule, the
- * closing call, then the colophon set in small caps with the sheet's own
- * metadata. Nothing here is rounded and nothing glows; the mark on the left
- * is the press's registration mark, the same one the masthead carries.
+ * The closing statement and the audit action sit on the deep band, then the
+ * rail: wordmark, tagline, the two link columns, and an imprint line that
+ * carries the operating facts rather than a slogan. Nothing here glows and
+ * nothing is boxed. The net runs one last time, wired from the closing
+ * statement through the columns, so the mesh closes with the page.
  */
+/** Closing statement and its action on the top row, then the brand block
+ *  and the two link columns, then the imprint rule. */
+const NODES = [
+  { x: 0.0, y: 0.28 },
+  { x: 0.82, y: 0.3 },
+  { x: 0.0, y: 0.68 },
+  { x: 0.56, y: 0.66 },
+  { x: 0.78, y: 0.66 },
+  { x: 0.0, y: 0.91 },
+];
+
 export function SiteFooter({ footer }: { footer?: LayoutContent }) {
   const chrome = useChrome();
   const brand = footer?.brand ?? 'analytt';
   const emphasis = footer?.brandEmphasis ?? 'digital';
 
   return (
-    <footer
-      id="contact"
-      data-sheet-block=""
-      data-sheet-head={footer?.tagline}
-      className="stock relative px-4 pb-20 pt-14 md:px-6 md:pb-24 md:pt-20"
-    >
-      <div className="mx-auto w-full max-w-[1320px]">
-        <Reveal>
-          <div className="grid items-end gap-x-12 gap-y-8 lg:grid-cols-[minmax(0,1fr)_auto]">
-            <h2 className="sheet-title max-w-[22ch] text-[clamp(1.8rem,4vw,2.9rem)] text-ink-950">
+    <footer id="contact" className="relative">
+      <Band ground="deep" mesh={{ seed: 71, count: 5, depth: 26, opacity: 0.46, anchors: NODES }}>
+        <div className="flex flex-col items-start gap-10 lg:flex-row lg:items-end lg:justify-between">
+          <Reveal>
+            <h2 className="display max-w-[20ch] text-[clamp(2.1rem,5vw,3.7rem)] text-primary-50">
               {footer?.footerHeadline ?? 'Ready to see exactly where your growth is hiding?'}
             </h2>
-            <a href={footer?.footerCtaHref ?? '#contact'} className="btn-sheet btn-sheet--spot">
-              {footer?.footerCta ?? 'Start with a free audit'} <MdiIcon name="arrowTopRight" size={0.6} />
-            </a>
-          </div>
-        </Reveal>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <Action
+              href={footer?.footerCtaHref ?? '/#contact'}
+              label={footer?.footerCta ?? 'Start with a free audit'}
+              variant="ember"
+            />
+          </Reveal>
+        </div>
 
-        <div aria-hidden className="mt-12 h-0.5 w-full bg-ink-950/85" />
+        <div aria-hidden className="hairline hairline--strong mt-16" />
 
-        <div className="mt-10 grid gap-x-12 gap-y-10 md:grid-cols-[minmax(0,1.3fr)_repeat(2,minmax(0,0.7fr))]">
+        <div className="mt-12 grid gap-x-12 gap-y-10 md:grid-cols-[minmax(0,1.25fr)_repeat(2,minmax(0,0.75fr))]">
           <div>
-            <p className="flex items-center gap-3 text-ink-950">
-              <PrinterMark className="h-7 w-7" />
-              <span className="w-wide text-[19px] font-extrabold tracking-[-0.03em]">
+            <p className="flex items-center gap-2.5 text-primary-50">
+              <PixelMark className="h-4 w-auto" />
+              <span className="text-[17px] font-medium tracking-[-0.02em]">
                 {brand}
-                <span className="text-accent-600">{emphasis}</span>
+                <span className="text-accent-500">{emphasis}</span>
               </span>
             </p>
-            <p className="body-copy mt-5 max-w-[38ch] text-[15px]">{footer?.tagline}</p>
-            <p className="w-narrow mt-4 text-[11.5px] font-semibold uppercase tracking-[0.14em] text-ink-500">
-              {footer?.footnote}
-            </p>
+            <p className="body mt-5 max-w-[42ch] text-[15px]">{footer?.tagline}</p>
+            <p className="label mt-5">{footer?.footnote}</p>
           </div>
 
           {footer?.footerColumns?.map((column) => (
             <nav key={column.title} aria-label={column.title}>
-              <p className="sheet-head">{column.title}</p>
+              <BandHead>{column.title}</BandHead>
               <ul className="mt-5 space-y-3">
                 {column.links.map((link) => (
                   <li key={link.label}>
-                    <a href={link.href} className="link-sheet text-[14.5px]">
+                    <a href={link.href} className="link text-[14.5px] text-primary-100">
                       {link.label}
                     </a>
                   </li>
@@ -69,16 +79,14 @@ export function SiteFooter({ footer }: { footer?: LayoutContent }) {
           ))}
         </div>
 
-        {/* the imprint line */}
-        <div className="mt-14 flex flex-col gap-2 border-t border-ink-950/12 pt-5 md:flex-row md:items-center md:justify-between">
-          <p className="w-narrow text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-500">
-            {footer?.legal}
-          </p>
-          <p className="w-narrow text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-500">
+        {/* the imprint */}
+        <div className="mt-14 flex flex-col gap-2 border-t border-primary-50/12 pt-5 md:flex-row md:items-center md:justify-between">
+          <p className="label">{footer?.legal}</p>
+          <p className="label">
             {footer?.contactNote} · {chrome.imprint}
           </p>
         </div>
-      </div>
+      </Band>
     </footer>
   );
 }

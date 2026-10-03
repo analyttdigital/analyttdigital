@@ -6,6 +6,6 @@ export const site = {
   url: 'https://analyttdigital.com',
   email: 'hello@analyttdigital.com',
   location: 'Nairobi, Kenya',
-  themeColor: '#4f4b63',
+  themeColor: '#29223d',
   accent: '#f04f26',
 } as const;

@@ -3,89 +3,88 @@
 @tailwind utilities;
 
 /* ------------------------------------------------------------------ */
-/* THE FIXTURE SHEET — design tokens                                    */
-/*                                                                     */
-/* The page is one printed fixture sheet. Five colour families only:   */
-/* ink/primary share the press-ink ramp (#4f4b63 family), accent is   */
-/* the single spot colour (ember #f04f26), mist is the newsprint      */
-/* stock, paper is the brighter stock for plates. Everything resolves  */
-/* through these families — no ad-hoc values in components.            */
+/* THE SIGNAL MESH — design tokens                                     */
+/*                                                                    */
+/* One routed signal path on a deep violet-ink ground. Five colour     */
+/* families, each a full 50–950 ramp exposed as space-separated RGB    */
+/* channels so Tailwind opacity modifiers keep working.                 */
+/*                                                                    */
+/*   primary  the field; step 600 is the brand hex #4f4b63, and       */
+/*            chroma rises as the ramp darkens                          */
+/*   ink      neutral type, for the paper plates and bands             */
+/*   surface  neutral chrome — rules, scrollbar, disabled              */
+/*   paper    warm plate stock: cards, buttons, one light band         */
+/*   accent   ember #f04f26 — the only saturated colour; it means LIVE */
 /* ------------------------------------------------------------------ */
 
 :root {
-  /* ink — press ink, dense violet-black from Analytt Digital #4f4b63 */
-  --color-ink-50: 244 244 248;
-  --color-ink-100: 233 232 239;
-  --color-ink-200: 213 212 222;
-  --color-ink-300: 179 177 194;
-  --color-ink-400: 140 137 163;
-  --color-ink-500: 107 103 136;
+  /* primary — the violet-ink field, anchored on the brand hex */
+  --color-primary-50: 246 245 250;
+  --color-primary-100: 233 230 243;
+  --color-primary-200: 214 209 231;
+  --color-primary-300: 181 173 207;
+  --color-primary-400: 145 135 178;
+  --color-primary-500: 108 97 140;
+  --color-primary-600: 79 75 99; /* #4f4b63 — brand */
+  --color-primary-700: 57 49 84;
+  --color-primary-800: 41 34 61; /* the field */
+  --color-primary-900: 27 22 41;
+  --color-primary-950: 16 13 26; /* the deep band */
+
+  /* ink — neutral type, used on paper */
+  --color-ink-50: 249 249 251;
+  --color-ink-100: 236 235 240;
+  --color-ink-200: 214 212 223;
+  --color-ink-300: 178 175 192;
+  --color-ink-400: 137 133 156;
+  --color-ink-500: 104 100 124;
   --color-ink-600: 79 75 99;
-  --color-ink-700: 63 59 79;
-  --color-ink-800: 50 47 64;
-  --color-ink-900: 38 36 49;
-  --color-ink-950: 26 25 34;
+  --color-ink-700: 58 55 75;
+  --color-ink-800: 42 40 56;
+  --color-ink-900: 28 27 38;
+  --color-ink-950: 18 17 24;
 
-  /* primary — the brand ramp; identical to ink, exposed as its own family */
-  --color-primary-50: 244 244 248;
-  --color-primary-100: 233 232 239;
-  --color-primary-200: 213 212 222;
-  --color-primary-300: 179 177 194;
-  --color-primary-400: 140 137 163;
-  --color-primary-500: 107 103 136;
-  --color-primary-600: 79 75 99;
-  --color-primary-700: 63 59 79;
-  --color-primary-800: 50 47 64;
-  --color-primary-900: 38 36 49;
-  --color-primary-950: 26 25 34;
+  /* surface — neutral chrome */
+  --color-surface-50: 250 250 251;
+  --color-surface-100: 240 240 243;
+  --color-surface-200: 222 221 228;
+  --color-surface-300: 190 188 199;
+  --color-surface-400: 142 139 155;
+  --color-surface-500: 107 104 122;
+  --color-surface-600: 81 78 96;
+  --color-surface-700: 59 56 72;
+  --color-surface-800: 40 38 51;
+  --color-surface-900: 27 26 35;
+  --color-surface-950: 17 16 23;
 
-  /* accent — the spot colour. Used only where a mark is *live*:
-     the lock crosshair, wasted-spend hatch, the coupon, peak contours. */
-  --color-accent-50: 255 244 240;
-  --color-accent-100: 254 231 224;
-  --color-accent-200: 253 209 191;
-  --color-accent-300: 251 181 148;
-  --color-accent-400: 247 141 95;
-  --color-accent-500: 240 79 38;
-  --color-accent-600: 216 69 32;
-  --color-accent-700: 184 57 26;
-  --color-accent-800: 147 46 21;
-  --color-accent-900: 114 36 17;
-  --color-accent-950: 76 24 12;
-
-  /* mist — newsprint stock (the cool grey a daily broadsheet prints on) */
-  --color-mist-50: 249 249 251;
-  --color-mist-100: 244 244 243;
-  --color-mist-200: 236 236 234;
-  --color-mist-300: 222 222 219;
-  --color-mist-400: 203 203 200;
-  --color-mist-500: 176 176 173;
-  --color-mist-600: 141 141 139;
-  --color-mist-700: 109 109 108;
-  --color-mist-800: 79 79 79;
-  --color-mist-900: 53 53 54;
-  --color-mist-950: 34 34 36;
-
-  /* paper — brighter stock, for plates and coupon stock */
+  /* paper — warm plate stock */
   --color-paper-DEFAULT: 255 255 255;
   --color-paper-50: 255 255 255;
-  --color-paper-100: 252 252 251;
-  --color-paper-200: 246 246 244;
-  --color-paper-300: 236 236 233;
-  --color-paper-400: 219 219 215;
-  --color-paper-500: 197 197 192;
-  --color-paper-600: 168 168 162;
-  --color-paper-700: 132 132 126;
-  --color-paper-800: 98 98 92;
-  --color-paper-900: 68 68 64;
-  --color-paper-950: 45 45 43;
+  --color-paper-100: 249 248 245;
+  --color-paper-200: 241 240 236;
+  --color-paper-300: 227 225 220;
+  --color-paper-400: 204 201 194;
+  --color-paper-500: 169 166 158;
+  --color-paper-600: 134 131 124;
+  --color-paper-700: 103 100 94;
+  --color-paper-800: 75 73 68;
+  --color-paper-900: 52 50 47;
+  --color-paper-950: 34 33 31;
 
-  /* Stock tone bands — separation by paper tone, not by drawn rules.
-     The sheet alternates between these three values so sections read as
-     bands on one continuous sheet. */
-  --stock-a: var(--color-mist-100);
-  --stock-b: var(--color-paper-100);
-  --stock-c: var(--color-mist-200);
+  /* accent — ember. Reserved for live marks: the active process node, the
+     recovering spend figure, the primary action, a resolve band's leading
+     edge. It never decorates. */
+  --color-accent-50: 255 245 241;
+  --color-accent-100: 255 232 223;
+  --color-accent-200: 254 209 190;
+  --color-accent-300: 252 178 144;
+  --color-accent-400: 248 137 88;
+  --color-accent-500: 240 79 38; /* #f04f26 — brand */
+  --color-accent-600: 216 68 30;
+  --color-accent-700: 181 55 24;
+  --color-accent-800: 143 43 19;
+  --color-accent-900: 111 33 15;
+  --color-accent-950: 74 22 10;
 }
 
 html {
@@ -110,17 +109,17 @@ html.lenis body {
 }
 
 body {
-  @apply bg-mist-100 font-sans text-ink-900;
+  @apply bg-primary-950 font-sans text-primary-100;
   overflow-x: hidden;
 }
 
 /* ------------------------------------------------------------------ */
-/* Browser surfaces — the parts we did not draw still carry the design  */
+/* Browser surfaces — the parts we did not draw still carry the design */
 /* ------------------------------------------------------------------ */
 
 ::selection {
-  background: rgb(var(--color-accent-500) / 0.9);
-  color: #fff;
+  background: rgb(var(--color-paper-50));
+  color: rgb(var(--color-primary-900));
 }
 
 :focus-visible {
@@ -131,381 +130,501 @@ body {
 input,
 textarea,
 select {
-  caret-color: rgb(var(--color-accent-600));
+  caret-color: rgb(var(--color-accent-500));
 }
 
 ::placeholder {
-  color: rgb(var(--color-ink-400));
+  color: rgb(var(--color-primary-400));
 }
 
-/* A printed sheet has a thin, quiet scrollbar — not the platform's. */
+/* A dark instrument has a dark scrollbar: thumb in ember, track in the
+   field's own deep band. */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgb(var(--color-ink-300)) rgb(var(--color-mist-200));
+  scrollbar-color: rgb(var(--color-accent-600)) rgb(var(--color-primary-950));
 }
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: rgb(var(--color-mist-200));
+  background: rgb(var(--color-primary-950));
 }
 ::-webkit-scrollbar-thumb {
-  background: rgb(var(--color-ink-300));
-  border: 3px solid rgb(var(--color-mist-200));
+  background: rgb(var(--color-accent-600));
+  border: 3px solid rgb(var(--color-primary-950));
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(var(--color-ink-400));
+  background: rgb(var(--color-accent-500));
 }
 
 a,
 button {
-  -webkit-tap-highlight-color: rgb(var(--color-accent-500) / 0.16);
+  -webkit-tap-highlight-color: rgb(var(--color-accent-500) / 0.2);
+}
+
+@layer components {
+/* ------------------------------------------------------------------ */
+/* Grounds — the three surfaces the page alternates between           */
+/* ------------------------------------------------------------------ */
+
+/* The field: most of the page. One step above the deep band, and one step
+   below the panels that sit on it — the whole page is three tones of the same
+   violet ramp, and the brand hex itself (#4f4b63) is what every card is. */
+.ground {
+  background-color: rgb(var(--color-primary-700));
+}
+/* The deep band: near-black, for the passages that argue rather than sell. */
+.ground--deep {
+  background-color: rgb(var(--color-primary-950));
+}
+/* The paper band: light stock, for the tallies. */
+.ground--paper {
+  background-color: rgb(var(--color-paper-100));
+  color: rgb(var(--color-ink-900));
 }
 
 /* ------------------------------------------------------------------ */
-/* Stock — paper ground, fibre, plate impression                        */
+/* Panels — flat, square, exactly one step lighter than their ground   */
 /* ------------------------------------------------------------------ */
 
-/* The sheet itself. Tones alternate between --stock-a/b/c so the page
-   reads as one imposed sheet in bands, never as stacked boxes. */
-.stock {
-  background-color: rgb(var(--stock-a));
+.panel {
+  background-color: rgb(var(--color-primary-600));
 }
-.stock--b {
-  background-color: rgb(var(--stock-b));
+.panel--hot {
+  background-color: rgb(var(--color-primary-500));
 }
-.stock--c {
-  background-color: rgb(var(--stock-c));
+/* On the deep band the step is in the neutral ramp, not the violet one. */
+.panel--deep {
+  background-color: rgb(var(--color-surface-800));
 }
-
-/* Newsprint fibre: a fixed, deterministic grain that never scrolls, so the
-   paper reads as a material rather than as flat fill. */
-.grain {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
-  background-size: 140px 140px;
+.panel--paper {
+  background-color: rgb(var(--color-paper-50));
 }
-
-/* Plate — brighter stock laid on the sheet. A press impression, not a
-   floating card: inset light along the top edge, a hairline all round. */
-.plate {
-  background-color: rgb(var(--color-paper-DEFAULT));
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.9),
-    inset 0 0 0 1px rgb(var(--color-ink-950) / 0.08),
-    0 1px 2px rgb(var(--color-ink-950) / 0.06),
-    0 10px 26px -18px rgb(var(--color-ink-950) / 0.28);
+.panel--ghost {
+  background-color: transparent;
+  box-shadow: inset 0 0 0 1px rgb(var(--color-primary-50) / 0.14);
+}
+.panel--ghost-paper {
+  background-color: transparent;
+  box-shadow: inset 0 0 0 1px rgb(var(--color-ink-950) / 0.16);
 }
 
-/* Press-mark — the deboss a die leaves when a slot is selected. Used for
-   active states instead of a colour change alone. */
-.press-mark {
-  box-shadow:
-    inset 0 1px 2px rgb(var(--color-ink-950) / 0.22),
-    inset 0 -1px 0 rgb(255 255 255 / 0.75),
-    inset 0 0 0 1px rgb(var(--color-ink-950) / 0.06);
+/* ------------------------------------------------------------------ */
+/* Type                                                               */
+/* ------------------------------------------------------------------ */
+
+/* Display: Space Grotesk, light, very tight. The whole hierarchy of this
+   page is carried by size and by the width of the measure — not by cards. */
+.display {
+  font-family: theme('fontFamily.display');
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.032em;
+  text-wrap: balance;
+}
+.display--heavy {
+  font-weight: 500;
+  letter-spacing: -0.026em;
 }
 
-/* Debossed label plate — a stamped mark sitting on the stock. */
-.stamp {
-  @apply inline-flex items-center gap-2 rounded-[2px] px-2 py-1 text-[10.5px] font-semibold uppercase tracking-[0.16em];
-  color: rgb(var(--color-ink-700));
-  background-color: rgb(var(--color-ink-950) / 0.06);
-  box-shadow: inset 0 1px 2px rgb(var(--color-ink-950) / 0.16);
+.title {
+  font-family: theme('fontFamily.display');
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.026em;
+  text-wrap: balance;
 }
-.stamp--spot {
-  color: rgb(var(--color-accent-600));
-  background-color: rgb(var(--color-accent-500) / 0.12);
-  box-shadow: inset 0 1px 2px rgb(var(--color-accent-700) / 0.22);
+
+.verb {
+  font-family: theme('fontFamily.display');
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.018em;
 }
-.stamp--live {
-  color: #fff;
+
+/* Label: the mono micro-caps that open every head, figure and chip. The
+   square bullet is drawn here so no section has to remember it, and the
+   colour is inherited from the ground it sits on so one class works on all
+   three of them. */
+.label {
+  @apply font-mono text-[10.5px] font-medium uppercase;
+  letter-spacing: 0.16em;
+  color: inherit;
+  opacity: 0.62;
+}
+.label::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 0.6em;
+  vertical-align: 0.1em;
   background-color: rgb(var(--color-accent-500));
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35);
 }
-
-/* ------------------------------------------------------------------ */
-/* Sheet furniture — rules, heads, folios, columns                     */
-/* ------------------------------------------------------------------ */
-
-/* A hairline rule. All structure in the sheet is a rule, never a border
-   drawn around a box. */
-.rule {
-  height: 1px;
-  background-color: rgb(var(--color-ink-950) / 0.14);
+/* The section head's bullet is a live mark, so it blinks. One per band, never
+   a field of them — this is the reference's `cube_tag`, not a decoration. */
+.label--live::before {
+  animation: label-blip 1.2s ease-in-out infinite;
 }
-.rule--heavy {
-  height: 2px;
-  background-color: rgb(var(--color-ink-950) / 0.82);
-}
-.rule--spot {
-  height: 2px;
-  background-color: rgb(var(--color-accent-500));
-}
-
-/* Sheet head: the label set into the rule above a section, the way a
-   broadsheet runs a head across its column rule. */
-.sheet-head {
-  @apply text-[10.5px] font-bold uppercase tracking-[0.18em];
-  font-variation-settings: 'wdth' 92;
-  color: rgb(var(--color-ink-700));
-}
-.sheet-head--spot {
-  color: rgb(var(--color-accent-600));
-}
-.sheet-head--inverse {
-  color: rgb(var(--color-paper-200) / 0.72);
-}
-
-/* Folio: the sheet's own position marker, set in the margin. */
-.folio {
-  @apply text-[10.5px] font-bold uppercase tracking-[0.18em];
-  font-variation-settings: 'wdth' 88;
-  font-variant-numeric: tabular-nums;
-  color: rgb(var(--color-ink-500));
-}
-.folio--inverse {
-  color: rgb(var(--color-paper-300) / 0.55);
-}
-
-/* Marginal note: the sheet's side column. */
-.margin-note {
-  @apply text-[13px] leading-[1.5];
-  font-variation-settings: 'wdth' 94;
-  color: rgb(var(--color-ink-600));
-}
-
-/* The type area: main column plus the margin note column, split by a
-   column rule. Collapses to a single column below lg. */
-.type-area {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 15rem;
-  column-gap: 2.5rem;
-}
-@media (max-width: 1023px) {
-  .type-area {
-    grid-template-columns: minmax(0, 1fr);
-    row-gap: 1.75rem;
+@keyframes label-blip {
+  0%,
+  100% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+  25% {
+    opacity: 0.52;
+    filter: brightness(1.08);
+  }
+  50% {
+    opacity: 0.22;
+    filter: brightness(1.16);
+  }
+  75% {
+    opacity: 0.9;
+    filter: brightness(1.06);
   }
 }
-
-/* ------------------------------------------------------------------ */
-/* Lettering — one variable family across its width axis                */
-/* ------------------------------------------------------------------ */
-
-/* A chart sets hierarchy by size and column, never by card. Width axis
-   does the work: condensed for columns, expanded for mastheads. */
-.w-tight {
-  font-variation-settings: 'wdth' 76;
+.label--plain::before {
+  display: none;
 }
-.w-narrow {
-  font-variation-settings: 'wdth' 88;
+/* Ember as *text* takes the pale steps. Ember at its brand value is a mark
+   and a fill; set as small type on a panel it cannot hold 4.5:1, so it steps
+   up the ramp wherever it has to be read. */
+.label--ember {
+  color: rgb(var(--color-accent-300));
+  opacity: 1;
 }
-.w-normal {
-  font-variation-settings: 'wdth' 100;
+.label--bright {
+  opacity: 0.92;
 }
-.w-wide {
-  font-variation-settings: 'wdth' 112;
-}
-.w-max {
-  font-variation-settings: 'wdth' 124;
+/* On a plate, a label needs to hold against white, so it takes the ink ramp
+   rather than the field's light steps. */
+.label--plate {
+  color: rgb(var(--color-ink-800));
+  opacity: 0.66;
 }
 
-.masthead {
-  font-variation-settings: 'wdth' 116;
-  font-weight: 800;
-  line-height: 0.92;
-  letter-spacing: -0.035em;
-  text-wrap: balance;
-}
-
-.sheet-title {
-  font-variation-settings: 'wdth' 110;
-  font-weight: 700;
-  line-height: 0.98;
-  letter-spacing: -0.028em;
-  text-wrap: balance;
-}
-
-.sheet-verb {
-  font-variation-settings: 'wdth' 104;
-  font-weight: 750;
-  line-height: 1;
-  letter-spacing: -0.022em;
-}
-
-/* Every figure in the sheet is tabular and lining. */
-.figure {
-  font-variation-settings: 'wdth' 96;
-  font-weight: 700;
+/* Every figure in the page is tabular so columns of numbers line up. */
+.num {
   font-variant-numeric: tabular-nums lining-nums;
+  font-family: theme('fontFamily.display');
+  font-weight: 500;
   letter-spacing: -0.03em;
   line-height: 0.9;
 }
 
-.tnum {
-  font-variant-numeric: tabular-nums lining-nums;
-}
-
-.body-copy {
+.body {
   @apply text-[16px] leading-[1.62];
-  color: rgb(var(--color-ink-700));
+  color: rgb(var(--color-primary-200));
   text-wrap: pretty;
-  max-width: 68ch;
+  max-width: 66ch;
+}
+.body--paper {
+  color: rgb(var(--color-ink-700));
+}
+.body--sm {
+  @apply text-[14.5px] leading-[1.6];
 }
 
 /* ------------------------------------------------------------------ */
-/* Controls — printed, square, pressable                               */
+/* Rules — 1px, never 2px, never a border drawn around a box            */
 /* ------------------------------------------------------------------ */
 
-.btn-sheet {
-  @apply inline-flex items-center justify-center gap-2 rounded-[2px] px-6 py-3 text-[14px] font-semibold;
-  font-variation-settings: 'wdth' 92;
-  color: rgb(var(--color-paper-DEFAULT));
-  background-color: rgb(var(--color-ink-950));
+.rule {
+  height: 1px;
+  background-color: rgb(var(--color-primary-50) / 0.12);
+}
+/* A rule that inverts with the ground it sits on: it takes the band's own
+   colour at low strength, so one class works on all three grounds. */
+.hairline {
+  height: 1px;
+  background-color: currentColor;
+  opacity: 0.2;
+}
+.hairline--strong {
+  opacity: 0.42;
+}
+.rule--paper {
+  background-color: rgb(var(--color-ink-950) / 0.14);
+}
+
+/* ------------------------------------------------------------------ */
+/* Controls — paper plate, label left, attached square arrow key right  */
+/* ------------------------------------------------------------------ */
+
+.btn {
+  @apply inline-flex select-none items-stretch overflow-hidden text-left;
+  background-color: rgb(var(--color-paper-50));
+  color: rgb(var(--color-primary-900));
+  transition: background-color 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.btn__label {
+  @apply flex items-center px-5 py-3 text-[14.5px] font-medium;
+  font-family: theme('fontFamily.sans');
+}
+.btn__key {
+  position: relative;
+  overflow: hidden;
+  @apply grid w-12 shrink-0 place-items-center;
+  border-left: 1px solid rgb(var(--color-primary-900) / 0.18);
   transition:
-    transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 0.18s ease,
-    box-shadow 0.18s ease;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.14);
+    background-color 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.18s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.btn-sheet:hover {
-  background-color: rgb(var(--color-ink-800));
+/* The key's arrow exits through the top-right corner and the mirrored arrow
+   arrives from the bottom-left, so the control reads as pointing somewhere on
+   hover rather than just changing colour. */
+.key-arrow {
+  position: absolute;
+  transition:
+    transform 0.62s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.42s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.btn-sheet:active {
-  transform: translateY(1px);
-  box-shadow: inset 0 2px 4px rgb(var(--color-ink-950) / 0.5);
+.key-arrow--in {
+  transform: translate(-24px, 24px) scale(0.85);
+  opacity: 0;
 }
-
-.btn-sheet--spot {
-  color: #fff;
+.btn:hover .key-arrow--out,
+.btn:focus-visible .key-arrow--out {
+  transform: translate(24px, -24px) scale(0.85);
+  opacity: 0;
+}
+.btn:hover .key-arrow--in,
+.btn:focus-visible .key-arrow--in {
+  transform: translate(0, 0) scale(1);
+  opacity: 1;
+}
+.btn:hover .btn__key {
   background-color: rgb(var(--color-accent-500));
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3);
+  color: #fff;
 }
-.btn-sheet--spot:hover {
+.btn:active {
+  background-color: rgb(var(--color-paper-300));
+}
+
+.btn--ember {
   background-color: rgb(var(--color-accent-600));
+  color: #fff;
 }
-.btn-sheet--spot:active {
-  box-shadow: inset 0 2px 5px rgb(var(--color-accent-800) / 0.6);
+.btn--ember .btn__key {
+  border-left-color: rgb(255 255 255 / 0.32);
+}
+.btn--ember:hover {
+  background-color: rgb(var(--color-accent-700));
+}
+.btn--ember:hover .btn__key {
+  background-color: rgb(var(--color-accent-800));
+  color: #fff;
+}
+.btn--ember:active {
+  background-color: rgb(var(--color-accent-700));
 }
 
-.btn-sheet--quiet {
-  color: rgb(var(--color-ink-900));
+.btn--ghost {
   background-color: transparent;
-  box-shadow: inset 0 0 0 1px rgb(var(--color-ink-950) / 0.28);
+  color: rgb(var(--color-primary-100));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-primary-50) / 0.28);
 }
-.btn-sheet--quiet:hover {
-  background-color: rgb(var(--color-ink-950) / 0.05);
+.btn--ghost .btn__key {
+  border-left-color: rgb(var(--color-primary-50) / 0.22);
 }
-.btn-sheet--quiet:active {
-  transform: translateY(1px);
-  box-shadow: inset 0 2px 4px rgb(var(--color-ink-950) / 0.18);
+.btn--ghost:hover {
+  background-color: rgb(var(--color-primary-50) / 0.07);
 }
-
-/* Imposition switch — the two settings a sheet can be printed in. */
-.switch {
-  @apply inline-flex items-stretch rounded-[2px] p-[2px];
-  background-color: rgb(var(--color-ink-950) / 0.06);
-  box-shadow: inset 0 1px 3px rgb(var(--color-ink-950) / 0.16);
+.btn--ghost:hover .btn__key {
+  background-color: rgb(var(--color-primary-50) / 0.1);
+  color: rgb(var(--color-accent-500));
 }
-.switch__option {
-  @apply px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] transition-colors duration-200;
-  font-variation-settings: 'wdth' 90;
-  color: rgb(var(--color-ink-600));
-}
-.switch__option[aria-pressed='true'] {
-  color: rgb(var(--color-paper-DEFAULT));
-  background-color: rgb(var(--color-ink-950));
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.16);
+.btn--ghost:active {
+  background-color: rgb(var(--color-primary-50) / 0.12);
 }
 
-/* Link: an underline with real offset that extends on hover. */
-.link-sheet {
-  color: rgb(var(--color-ink-900));
+/* Chip — a bordered mono tag, square, the way this world marks state. */
+.chip {
+  @apply inline-flex items-center font-mono text-[10.5px] font-medium uppercase;
+  letter-spacing: 0.14em;
+  padding: 0.34rem 0.6rem;
+  color: rgb(var(--color-primary-100));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-primary-50) / 0.24);
+  transition:
+    box-shadow 0.18s ease,
+    color 0.18s ease,
+    background-color 0.18s ease;
+}
+.chip:hover {
+  box-shadow: inset 0 0 0 1px rgb(var(--color-accent-500));
+  color: #fff;
+}
+.chip--ember {
+  color: rgb(var(--color-accent-300));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-accent-500) / 0.6);
+}
+.chip--paper {
+  color: rgb(var(--color-ink-700));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-ink-950) / 0.2);
+}
+.chip--paper:hover {
+  box-shadow: inset 0 0 0 1px rgb(var(--color-ink-950) / 0.6);
+  color: rgb(var(--color-ink-950));
+}
+
+/* Link — an underline with real offset that fills with ember on hover. */
+.link {
+  color: inherit;
   text-decoration: underline;
   text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
-  text-decoration-color: rgb(var(--color-ink-400));
+  text-underline-offset: 5px;
+  text-decoration-color: rgb(var(--color-primary-50) / 0.32);
   transition: color 0.18s ease, text-decoration-color 0.18s ease;
 }
-.link-sheet:hover {
-  color: rgb(var(--color-accent-600));
+.link:hover {
+  color: rgb(var(--color-accent-500));
   text-decoration-color: rgb(var(--color-accent-500));
 }
+.link--paper {
+  text-decoration-color: rgb(var(--color-ink-950) / 0.3);
+}
+.link--paper:hover {
+  color: rgb(var(--color-accent-600));
+}
 
 /* ------------------------------------------------------------------ */
-/* The coupon — the offer, as a tear-off stub                           */
+/* Traces — the routed signal network                                  */
 /* ------------------------------------------------------------------ */
 
-.coupon {
+/* The net is now drawn in the band's own coordinate space, so this is a
+   colour role rather than a positioning one. */
+.trace-line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.2;
+}
+.trace-line--ghost {
+  opacity: 0.09;
+}
+.trace-pulse {
+  fill: none;
+  stroke: rgb(var(--color-accent-500));
+  stroke-width: 1;
+  stroke-linecap: round;
+  opacity: 0.5;
+}
+.trace-pad {
+  fill: currentColor;
+  opacity: 0.34;
+}
+/* On paper the route is drawn in ink instead of light, at a strength that
+   stays under the type. */
+.trace-plate {
+  color: rgb(var(--color-ink-950));
+}
+.trace-plate .trace-line {
+  opacity: 0.13;
+}
+.trace-plate .trace-line--ghost {
+  opacity: 0.06;
+}
+.trace-plate .trace-pad {
+  opacity: 0.13;
+}
+.trace-plate .trace-pulse {
+  opacity: 0.26;
+}
+
+/* ------------------------------------------------------------------ */
+/* Resolve band — where one ground becomes another                     */
+/* ------------------------------------------------------------------ */
+
+.resolve {
   position: relative;
-  background-color: rgb(var(--color-paper-DEFAULT));
-  box-shadow:
-    inset 0 0 0 1px rgb(var(--color-ink-950) / 0.1),
-    0 1px 2px rgb(var(--color-ink-950) / 0.06),
-    0 14px 34px -20px rgb(var(--color-ink-950) / 0.3);
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+.resolve canvas,
+.resolve__fallback {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
-/* Perforation: the punched edge a coupon is torn along. */
-.perforate-top {
-  --perf: 11px;
-  -webkit-mask-image: radial-gradient(circle var(--perf) at var(--perf) 0, transparent 99%, #000 100%);
-  mask-image: radial-gradient(circle var(--perf) at var(--perf) 0, transparent 99%, #000 100%);
-  -webkit-mask-size: calc(var(--perf) * 2) calc(var(--perf) * 1.2);
-  mask-size: calc(var(--perf) * 2) calc(var(--perf) * 1.2);
-  -webkit-mask-repeat: repeat-x;
-  mask-repeat: repeat-x;
-}
-.perforate-bottom {
-  --perf: 11px;
-  -webkit-mask-image: radial-gradient(circle var(--perf) at var(--perf) 100%, transparent 99%, #000 100%);
-  mask-image: radial-gradient(circle var(--perf) at var(--perf) 100%, transparent 99%, #000 100%);
-  -webkit-mask-size: calc(var(--perf) * 2) calc(var(--perf) * 1.2);
-  mask-size: calc(var(--perf) * 2) calc(var(--perf) * 1.2);
-  -webkit-mask-repeat: repeat-x;
-  mask-repeat: repeat-x;
-}
-
-/* Tear rule: the dashed line the stub is torn along. */
-.tear-rule {
-  background-image: linear-gradient(
-    to right,
-    rgb(var(--color-ink-950) / 0.4) 0 6px,
-    transparent 6px 12px
-  );
-  background-size: 12px 1px;
-  background-repeat: repeat-x;
+/* The seam — where a ground changes without dissolving.
+   The resolve is rationed to three moments on the page; everywhere else the
+   signal simply crosses the boundary in one hairline with a packet on it, so
+   an undissolved join reads as routed rather than as an accidental cut. */
+.seam {
+  position: relative;
   height: 1px;
+  background-color: currentColor;
+  opacity: 0.2;
+}
+.seam::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 1px;
+  width: 26%;
+  background: linear-gradient(to right, transparent, rgb(var(--color-accent-500)) 55%, transparent);
+  animation: seam-packet 5.6s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  opacity: 0.85;
+}
+@keyframes seam-packet {
+  from {
+    transform: translateX(-110%);
+  }
+  to {
+    transform: translateX(500%);
+  }
 }
 
 /* ------------------------------------------------------------------ */
-/* Data marks                                                          */
+/* Media slot — the frame that stands in until the client ships artwork  */
 /* ------------------------------------------------------------------ */
 
-/* Wasted spend is hatched the way a press hatches a loss. */
-.hatch-wasted {
-  background-image: repeating-linear-gradient(
-    -45deg,
-    rgb(var(--color-accent-600) / 0.55) 0 1.5px,
-    transparent 1.5px 7px
-  );
+/* A hairline frame with two solid squares in opposite corners — the pixel
+   language at plate scale. No grid, no dashed border: a plate waiting for an
+   image should read as an empty mount, not as an empty table. */
+.slot {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: rgb(var(--color-primary-400));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-primary-50) / 0.2);
 }
-.hatch-unknown {
-  background-image: repeating-linear-gradient(
-    -45deg,
-    rgb(var(--color-ink-400) / 0.5) 0 1.5px,
-    transparent 1.5px 7px
-  );
+.slot::before,
+.slot::after {
+  content: '';
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  background-color: currentColor;
+  opacity: 0.55;
 }
-
-/* Index leaders: the dot rule that carries an index entry to its page. */
-.leader {
-  flex: 1;
-  height: 1px;
-  margin: 0 0.6rem 0.42rem;
-  background-image: radial-gradient(circle, rgb(var(--color-ink-400) / 0.9) 0.5px, transparent 0.6px);
-  background-size: 5px 1px;
-  background-repeat: repeat-x;
+.slot::before {
+  top: 10px;
+  left: 10px;
+}
+.slot::after {
+  right: 10px;
+  bottom: 10px;
+}
+.slot--paper {
+  color: rgb(var(--color-ink-400));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-ink-950) / 0.18);
+}
+.slot--paper::before,
+.slot--paper::after {
+  background-color: rgb(var(--color-accent-500));
+  opacity: 0.8;
 }
 
 /* ------------------------------------------------------------------ */
@@ -523,7 +642,9 @@ button {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  .grain {
-    background-image: none;
+  .seam::after {
+    animation: none;
+    opacity: 0;
   }
+}
 }

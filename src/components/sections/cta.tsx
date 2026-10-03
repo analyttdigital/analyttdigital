@@ -1,59 +1,73 @@
-import { SheetBlock } from '@/components/layout/sheet-block';
-import { MdiIcon } from '@/lib/icons/resolve-icon';
-import { CouponTear, MaskedLine, Reveal } from '@/lib/motion/reveal';
+import { Action } from '@/components/layout/action';
+import { Band, BandHead } from '@/components/layout/band';
+import { MaskedLine, Reveal } from '@/lib/motion/reveal';
 import type { CtaSection } from '@/lib/content/types';
 
 /**
- * CTA — the tear-off coupon.
+ * CTA — where the route terminates.
  *
- * The offer prints as what it is: a stub with a perforated edge, a dashed
- * tear line, the primary action inside it and the fine print below. The
- * sheet ends with the one thing the reader came for held in their hand.
+ * The offer, stated once and in full: the recoverable-spend headline, what the
+ * audit is, the single action, and the fine print under it. The page ends on
+ * paper with the trace net running behind it in ink, its routes converging on
+ * the one button, so the last thing the reader sees is the same network they
+ * arrived in — with a single address on it.
  */
+/** Three on the centre line — label, claim, action — with the outer two
+ *  pairs feeding in from the margins, so the single button is the terminus
+ *  every route is aiming at. */
+const NODES = [
+  { x: 0.08, y: 0.3 },
+  { x: 0.5, y: 0.13 },
+  { x: 0.5, y: 0.4 },
+  { x: 0.5, y: 0.77 },
+  { x: 0.92, y: 0.3 },
+];
+
 export function Cta({ cta }: { cta?: CtaSection }) {
   return (
-    <SheetBlock id="audit" folio="10" head={cta?.eyebrow} tone="c">
-      <div aria-hidden className="grain pointer-events-none absolute inset-0 opacity-[0.3] mix-blend-multiply" />
+    <Band
+      id="audit"
+      ground="paper"
+      mesh={{ seed: 23, count: 5, depth: 30, opacity: 0.44, tone: 'plate', anchors: NODES }}
+    >
+      <div className="relative">
+        <div className="relative mx-auto max-w-[880px] text-center">
+          <BandHead center>{cta?.eyebrow}</BandHead>
 
-      <div className="relative mx-auto w-full max-w-[860px] text-center">
-        <Reveal delay={0.1}>
-          {cta?.portalLabel ? <p className="stamp stamp--spot">{cta.portalLabel}</p> : null}
-        </Reveal>
+          {cta?.portalLabel ? (
+            <Reveal delay={0.14}>
+              <p className="label label--plate mt-8">{cta.portalLabel}</p>
+            </Reveal>
+          ) : null}
 
-        {/* the coupon */}
-        <CouponTear delay={0.18} className="mt-8">
-          <div className="perforate-top px-4 pb-1 pt-[11px] sm:px-8">
-            <div className="coupon rounded-[2px]">
-              <div className="px-6 pb-8 pt-10 sm:px-12 sm:pb-10 sm:pt-12">
-                <h2 className="sheet-title text-[clamp(1.9rem,4.4vw,3.1rem)] text-ink-950">
-                  {(cta?.headline ?? '').split('\n').map((line, i) => (
-                    <MaskedLine key={`${line}-${i}`} delay={0.3 + i * 0.08}>
-                      {line || ' '}
-                    </MaskedLine>
-                  ))}
-                </h2>
+          <h2 className="display mt-8 text-[clamp(2.1rem,5.4vw,4rem)] text-ink-950">
+            {(cta?.headline ?? '').split('\n').map((line, i) => (
+              <MaskedLine key={`${line}-${i}`} delay={0.22 + i * 0.08}>
+                {line || ' '}
+              </MaskedLine>
+            ))}
+          </h2>
 
-                <p className="body-copy mx-auto mt-6 max-w-[52ch]">{cta?.body}</p>
+          <Reveal delay={0.4}>
+            <p className="body body--paper mx-auto mt-7 max-w-[54ch]">{cta?.body}</p>
+          </Reveal>
 
-                <div aria-hidden className="tear-rule mx-auto my-9 w-full max-w-[420px]" />
-
-                <a href={cta?.ctaHref ?? 'mailto:hello@analyttdigital.com'} className="btn-sheet btn-sheet--spot">
-                  {cta?.cta ?? 'Request a free audit'} <MdiIcon name="arrowTopRight" size={0.6} />
-                </a>
-              </div>
-
-              {/* fine print, printed below the tear */}
-              <p className="w-narrow border-t border-ink-950/12 px-6 py-4 text-[11.5px] font-semibold uppercase tracking-[0.14em] text-ink-500">
-                {cta?.note ?? 'No deck. No obligation. Just the findings.'}
-              </p>
+          <Reveal delay={0.5}>
+            <div className="mt-11 flex justify-center">
+              <Action
+                href={cta?.ctaHref ?? 'mailto:hello@analyttdigital.com'}
+                label={cta?.cta ?? 'Request a free audit'}
+              />
             </div>
-          </div>
-        </CouponTear>
+          </Reveal>
 
-        <Reveal delay={0.5}>
-          <p className="folio w-narrow mt-9">hello@analyttdigital.com</p>
-        </Reveal>
+          <Reveal delay={0.58}>
+            <p className="label label--plate mt-9">
+              {cta?.note ?? 'No deck. No obligation. Just the findings.'}
+            </p>
+          </Reveal>
+        </div>
       </div>
-    </SheetBlock>
+    </Band>
   );
 }

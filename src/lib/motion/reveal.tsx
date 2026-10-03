@@ -3,20 +3,22 @@ import type { ReactNode } from 'react';
 
 export const EASE_OUT: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
-const VIEWPORT = { once: true, margin: '-12% 0px' } as const;
+const VIEWPORT = { once: true, margin: '0px 0px -6% 0px' } as const;
 
 /**
- * The sheet's motion vocabulary.
+ * The mesh's motion vocabulary.
  *
- * A printed sheet does not bounce. Everything here is one idea in different
- * guises: material arriving on press — a line rises out of its rule, a rule
- * draws itself, a plate wipes into place, a figure rises from its baseline.
- * All of it is scroll-linked through Framer's `whileInView` (never a scroll
- * listener), all of it runs on one exponential ease-out, and every variant
- * degrades to a plain fade under `prefers-reduced-motion`.
+ * Nothing here bounces and nothing loops. The world is a routed signal, so a
+ * section arrives the way a signal resolves: a panel wipes in along one edge,
+ * a row lands and settles, a figure rises off its own baseline, a rule draws
+ * itself across. Every entrance is scroll-linked through Framer's
+ * `whileInView` (never a scroll listener), every one runs on the same
+ * exponential ease-out, and every one degrades to a plain fade under
+ * `prefers-reduced-motion`.
  *
- * Sections compose these instead of hand-rolling transforms, so timing,
- * easing and the reduced path stay in one file.
+ * The two *loops* on the page — the packets travelling the traces and the
+ * pixel resolve — are authored once, in `src/components/graphics`, and are
+ * not repeated here. One authored moment, not an effect on every section.
  */
 
 export function useRevealVariants(delay = 0) {
@@ -30,14 +32,14 @@ export function useRevealVariants(delay = 0) {
     };
   }
   return {
-    initial: { opacity: 0, y: 24, filter: 'blur(6px)' },
-    whileInView: { opacity: 1, y: 0, filter: 'blur(0px)' },
+    initial: { opacity: 0, y: 22 },
+    whileInView: { opacity: 1, y: 0 },
     viewport: VIEWPORT,
-    transition: { duration: 0.85, ease: EASE_OUT, delay },
+    transition: { duration: 0.8, ease: EASE_OUT, delay },
   };
 }
 
-/** Text arriving on press: rise + de-blur, the sheet's default entrance. */
+/** Content arriving: rise + fade, the mesh's default entrance. */
 export function Reveal({
   children,
   delay = 0,
@@ -67,17 +69,17 @@ export function Reveal({
   return (
     <Component
       className={className}
-      initial={{ opacity: 0, y: 24, filter: 'blur(6px)' }}
-      whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+      initial={{ opacity: 0, y: 22 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={VIEWPORT}
-      transition={{ duration: 0.85, ease: EASE_OUT, delay }}
+      transition={{ duration: 0.8, ease: EASE_OUT, delay }}
     >
       {children}
     </Component>
   );
 }
 
-/** A line rising out of its own rule, masked — headlines and the masthead. */
+/** A line of display type rising out of its own mask. */
 export function MaskedLine({
   children,
   delay = 0,
@@ -119,8 +121,8 @@ export function MaskedLine({
 }
 
 /**
- * A hairline rule drawing itself from the left, as a print pass pulls it.
- * `children` is the rule itself (weight and colour live in the call site).
+ * A hairline drawing itself from the left, as a signal pulls across the wire.
+ * `children` is the rule itself — weight and colour live at the call site.
  */
 export function RuleDraw({
   children,
@@ -147,15 +149,18 @@ export function RuleDraw({
       initial={{ scaleX: 0 }}
       whileInView={{ scaleX: 1 }}
       viewport={VIEWPORT}
-      transition={{ duration: 1.1, ease: EASE_OUT, delay }}
+      transition={{ duration: 1, ease: EASE_OUT, delay }}
     >
       {children}
     </motion.div>
   );
 }
 
-/** A plate wiping into place along the sheet — data blocks and coupons. */
-export function Impression({
+/**
+ * A panel resolving into place along one edge. Square corners, no radius —
+ * the wipe is the same gesture as the resolve band, at panel scale.
+ */
+export function PanelIn({
   children,
   className,
   delay = 0,
@@ -165,11 +170,15 @@ export function Impression({
   children: ReactNode;
   className?: string;
   delay?: number;
-  from?: 'left' | 'center';
+  from?: 'left' | 'bottom' | 'center';
   distance?: number;
 }) {
   const reduce = useReducedMotion();
-  const inset = from === 'left' ? `inset(0 ${distance}% 0 0 round 2px)` : `inset(0 ${distance}% 0 ${distance}% round 2px)`;
+  const closed: Record<string, string> = {
+    left: `inset(0 ${distance}% 0 0)`,
+    bottom: `inset(0 0 ${distance}% 0)`,
+    center: `inset(${distance}% ${distance}% ${distance}% ${distance}%)`,
+  };
   if (reduce) {
     return (
       <motion.div
@@ -186,31 +195,34 @@ export function Impression({
   return (
     <motion.div
       className={className}
-      style={{ clipPath: inset }}
+      style={{ clipPath: closed[from] }}
       initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1, clipPath: 'inset(0 0% 0 0 round 2px)' }}
+      whileInView={{ opacity: 1, clipPath: 'inset(0 0% 0 0)' }}
       viewport={VIEWPORT}
-      transition={{ duration: 1, ease: EASE_OUT, delay }}
+      transition={{ duration: 0.95, ease: EASE_OUT, delay }}
     >
       {children}
     </motion.div>
   );
 }
 
-/** A row of a table or ledger pressing into place, staggered down the sheet. */
-export function RowPress({
+/** A row of a readout or a grid landing in place, staggered down the page. */
+export function NodeIn({
   children,
   className,
   delay = 0,
+  as = 'div',
 }: {
   children: ReactNode;
   className?: string;
   delay?: number;
+  as?: 'div' | 'li' | 'article';
 }) {
   const reduce = useReducedMotion();
+  const Component = motion[as];
   if (reduce) {
     return (
-      <motion.div
+      <Component
         className={className}
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -218,23 +230,23 @@ export function RowPress({
         transition={{ duration: 0.3, delay }}
       >
         {children}
-      </motion.div>
+      </Component>
     );
   }
   return (
-    <motion.div
+    <Component
       className={className}
-      initial={{ opacity: 0, y: 14, clipPath: 'inset(0 0 100% 0)' }}
-      whileInView={{ opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)' }}
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={VIEWPORT}
       transition={{ duration: 0.7, ease: EASE_OUT, delay }}
     >
       {children}
-    </motion.div>
+    </Component>
   );
 }
 
-/** A figure rising from its own baseline, the way type sits on a rule. */
+/** A figure rising off its own baseline — how every number arrives here. */
 export function TallyRise({
   children,
   className,
@@ -262,8 +274,8 @@ export function TallyRise({
     <motion.div
       className={className}
       style={{ transformOrigin: '50% 100%' }}
-      initial={{ opacity: 0, scaleY: 0.72, y: 8 }}
-      whileInView={{ opacity: 1, scaleY: 1, y: 0 }}
+      initial={{ opacity: 0, y: 26 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={VIEWPORT}
       transition={{ duration: 0.95, ease: EASE_OUT, delay }}
     >
@@ -272,44 +284,7 @@ export function TallyRise({
   );
 }
 
-/** The coupon tearing into the sheet along its perforated edge. */
-export function CouponTear({
-  children,
-  className,
-  delay = 0,
-}: {
-  children: ReactNode;
-  className?: string;
-  delay?: number;
-}) {
-  const reduce = useReducedMotion();
-  if (reduce) {
-    return (
-      <motion.div
-        className={className}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={VIEWPORT}
-        transition={{ duration: 0.3, delay }}
-      >
-        {children}
-      </motion.div>
-    );
-  }
-  return (
-    <motion.div
-      className={className}
-      initial={{ opacity: 0, y: 42, clipPath: 'inset(0 0 100% 0)' }}
-      whileInView={{ opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)' }}
-      viewport={VIEWPORT}
-      transition={{ duration: 1.05, ease: EASE_OUT, delay }}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-/** Stagger container for the repeated rows of a ledger or an index. */
+/** Stagger container for the repeated rows of a readout or a grid. */
 export const rowStagger: Variants = {
   hidden: {},
   shown: { transition: { staggerChildren: 0.07, delayChildren: 0.05 } },

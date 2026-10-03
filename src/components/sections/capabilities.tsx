@@ -1,64 +1,72 @@
-import { SheetBlock, SheetTitle } from '@/components/layout/sheet-block';
-import { MdiIcon } from '@/lib/icons/resolve-icon';
-import { Impression } from '@/lib/motion/reveal';
+import { Band, BandHead, BandTitle } from '@/components/layout/band';
+import { PanelIn } from '@/lib/motion/reveal';
 import type { CapabilitiesSection } from '@/lib/content/types';
 
 /**
- * Capabilities — the one colour field on the sheet.
+ * Capabilities — the services, as four panels on the deep band.
  *
- * Services are printed as a directory, not as cards: four cells divided by
- * rules on the spot-colour band, each with its tag set as a column head, its
- * title large, and its mechanism in the margin. Depth numerals sit in the
- * corner the way a directory's column numbers do. This is the only block that
- * floods with colour — the sheet spends the spot colour once, here, and
- * everywhere else it appears only on a live mark.
+ * Each panel is one step lighter than the band it sits on, carries a tag chip,
+ * and holds its own copy. Depth numerals sit in the corner the way a
+ * directory's column numbers do. No icons in circles: the chip is the mark.
+ *
+ * The trace net runs once across the whole band, not once inside each card —
+ * four little nets at card scale were fragments, not wiring. These routes come
+ * in past the head, land on each panel in turn, and leave the other side, so
+ * the four services read as four nodes on one route.
  */
+/** One pad per panel, on the panel's own edge: 0 and 1 are the column
+ *  edges, 0.5 is the gutter between them. Nothing terminates inside an opaque
+ *  panel, because a pad behind a panel is a pad nobody sees. */
+const NODES = [
+  { x: 0.0, y: 0.09 },
+  { x: 0.2, y: 0.18 },
+  { x: 0.0, y: 0.46 },
+  { x: 0.5, y: 0.46 },
+  { x: 1.0, y: 0.46 },
+  { x: 0.0, y: 0.78 },
+  { x: 0.5, y: 0.78 },
+  { x: 1.0, y: 0.78 },
+];
+
 export function Capabilities({ capabilities }: { capabilities?: CapabilitiesSection }) {
   const items = capabilities?.items ?? [];
 
   return (
-    <SheetBlock id="capabilities" folio="05" head={capabilities?.eyebrow} tone="spot">
-      <SheetTitle lines={capabilities?.headline ?? ''} delay={0.1} className="max-w-[20ch]" />
+    <Band
+      id="capabilities"
+      ground="deep"
+      mesh={{ seed: 31, count: 6, depth: 44, opacity: 0.55, anchors: NODES }}
+    >
+      <BandHead>{capabilities?.eyebrow}</BandHead>
 
-      <div aria-hidden className="mt-10 h-0.5 w-full bg-paper/70" />
+      <div className="mt-10 grid gap-x-14 gap-y-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-end">
+        <BandTitle lines={capabilities?.headline ?? ''} />
+        <p className="body body--sm max-w-[42ch] lg:justify-self-end">
+          Four things we are hired for, and the order they happen in.
+        </p>
+      </div>
 
-      <div className="mt-0 grid sm:grid-cols-2">
+      <div className="mt-14 grid gap-5 md:grid-cols-2">
         {items.map((item, i) => (
-          <Impression
-            key={item.title}
-            delay={0.1 + i * 0.08}
-            from={i % 2 === 0 ? 'left' : 'center'}
-            className="border-b border-paper/30 sm:[&:nth-child(odd)]:border-l sm:[&:nth-child(odd)]:border-paper/30"
-          >
-            <article className="group relative h-full px-1 py-9 transition-colors duration-300 hover:bg-paper/10 sm:px-8 sm:py-11">
+          <PanelIn key={item.title} from={i % 2 === 0 ? 'left' : 'bottom'} distance={4} delay={0.08 + i * 0.07}>
+            <article className="panel--deep group flex h-full flex-col p-7 transition-colors duration-300 hover:bg-surface-700 md:p-9">
               <div className="flex items-start justify-between gap-6">
-                <p className="flex items-center gap-2.5">
-                  <span
-                    aria-hidden
-                    className="flex h-8 w-8 items-center justify-center rounded-[2px] bg-paper/15 text-paper transition-colors duration-300 group-hover:bg-accent-500"
-                  >
-                    <MdiIcon name={item.icon || 'bullhorn'} size={0.8} />
-                  </span>
-                  <span className="w-narrow text-[11px] font-bold uppercase tracking-[0.16em] text-paper/85">
-                    {item.tag}
-                  </span>
-                </p>
-                <span
-                  aria-hidden
-                  className="figure text-[26px] text-paper/35 transition-colors duration-300 group-hover:text-paper/70"
-                >
+                <span className="chip">{item.tag}</span>
+                <span className="num text-[24px] text-primary-50/25 transition-colors duration-300 group-hover:text-accent-500">
                   {item.depth ?? String(i + 1).padStart(2, '0')}
                 </span>
               </div>
 
-              <h3 className="sheet-verb mt-7 text-[clamp(1.35rem,2.3vw,1.85rem)] text-paper">
-                {item.title}
-              </h3>
-              <p className="mt-4 max-w-[48ch] text-[15px] leading-[1.6] text-paper/85">{item.body}</p>
+              <div className="mt-auto pt-16">
+                <h3 className="verb max-w-[20ch] text-[clamp(1.3rem,2.2vw,1.7rem)] text-primary-50">
+                  {item.title}
+                </h3>
+                <p className="body body--sm mt-4 max-w-[44ch] text-primary-200">{item.body}</p>
+              </div>
             </article>
-          </Impression>
+          </PanelIn>
         ))}
       </div>
-    </SheetBlock>
+    </Band>
   );
 }

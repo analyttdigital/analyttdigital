@@ -6,95 +6,86 @@ Milestone-based plan. Update the status column as work lands; each milestone is 
 
 ---
 
-## Reset note
+## Reset note — The Signal Mesh (current)
 
-The previous oxigen.sa-editorial visual pass (mono labels, zero-radius bordered buttons, dark chapter bands) is retired. **Content, content layer, scaffolding, and locale routing are kept** — see M1/M2/M6 below, carried over as-is. **All visual/chrome/motion milestones are reset to not-started** and rebuilt against the new fluid/glassmorphic design system. Reference: attached mockups + notes under `docs/design/references/` (mood/pattern reference, not a literal template).
+Two earlier visual passes are retired: the *oxigen.sa-style editorial* system (mono labels, hairline rules, newsprint stock) and the *fluid/glassmorphic* system (gradient washes, glass panels, pill buttons). **Content, content layer, scaffolding and locale routing carried over untouched through both.** The live world is now **The Signal Mesh**: a routed signal path on one deep violet-ink ground, with ordered pixel resolve bands between grounds and a live circuit-trace net. Direction contract: `.impeccable/surfaces/src-pages.md`. Reference material: `design/` (client-supplied screenshots; compositional authority, not a colour source).
 
----
+Everything below is scoped against that world.
 
-## M1 — Scaffold & foundations ✅ (carried over)
+## M1 — Scaffold & foundations ✅
 
-- [x] Next.js 15 Pages Router + TypeScript + Tailwind 3 in `src/`
-- [x] `tsconfig` path alias `@/*` → `src/*`
-- [x] Design tokens rebuilt for the new system: `primary`, `accent`, `paper`, `surface`, `ink` — each a full `50`–`950` tint scale as CSS variables in `tailwind.config.ts` / `src/styles/globals.css` (supersedes the old `ink`/`ember` two-color setup)
-  - Landed (evolved in the parallel M5 pass): CSS-var-backed ramps; families now `primary`/`accent`/`paper`/`mist`/`ink` + full-scale `ember` alias (`surface`/`line` aliases dropped as unused); `mist` promoted to a full canvas scale; ink 700–950 deepened slightly (brand anchors `primary-600`/`ink-600` = `#4f4b63`, `accent-500` = `#f04f26` intact). Scene primitives now `.canvas`/`.stage`/`.aurora`/`.card-float`/`.callout` + `.btn-pill` (ink/accent/ghost), `.chip-pill`, `.btn-disc`, `.glass-panel` (frosted pill bar).
-- [x] Remove/retire old editorial primitives (`.mono-label`, `.mono-btn`, `.display`, `.prose-serif`, `.grain`) once nothing in the new system depends on them; replace with the new primitive set (glass panel, pill button, gradient wash, soft card)
-  - Landed in the M5 audit: `.mono-label`, `.mono-btn`, `.prose-serif`, `.grain`, `.hairline` defs removed (zero references); `digital.css` deleted (unimported, unused); `.display` deliberately retained for hero/cta/process headings.
+- [x] Next.js 15 Pages Router + TypeScript strict + Tailwind 3 in `src/`, `@/*` → `src/*`
+- [x] Five token families, each a full 50–950 ramp as CSS variables: `primary` (the field; `600` = brand `#4f4b63`), `accent` (ember `#f04f26` at `500`), `paper` (warm plate stock), `surface` (neutral chrome), `ink` (neutral type). Chroma rises as the `primary` ramp darkens so the deep steps read as violet-ink ground rather than flat grey.
+- [x] Three grounds only: `.ground` (field, `primary-700`), `.ground--deep` (`primary-950`), `.ground--paper` (`paper-100`). Panels are exactly one step lighter than their ground: `.panel` = `primary-600` (the literal brand hex), `.panel--deep` = `surface-800`, `.panel--paper` = `paper-50`.
+- [x] Flat geometry: square corners, no shadows anywhere, 1px rules only.
+- [x] Type: Space Grotesk (display, light, `0.95` leading), Archivo (reading), **Fragment Mono** (every label, figure and unit — the reference's own mono). Declared in `src/lib/fonts.ts` and mounted on `<Html>` in `_document.tsx`; also imported by `_app.tsx` so Next actually extracts the `@font-face`.
+- [x] Authored classes live inside `@layer components` so Tailwind utilities can override them (unlayered rules outrank layered ones and silently beat `hidden`, `text-*`, `opacity-*`).
 
-## M2 — Content layer ✅ (carried over, unchanged)
+## M2 — Content layer ✅ (unchanged through every pass)
 
-- [x] Keystatic local storage; `layout-<locale>` singletons + `pages-<locale>` collections (page docs with ordered section blocks)
-- [x] Schema factories with default scalar values in `src/lib/keystatic/schemas.ts`
-- [x] Typed content model + locale helpers in `src/lib/content/types.ts`
-- [x] Full per-locale defaults in `src/lib/content/defaults.ts` (en + sw)
-- [x] Reader with CMS-over-defaults merge and empty-list fallback (`src/lib/content/reader.ts`)
-- [x] Pages Router API bridge (`src/pages/api/keystatic/[...params].ts`) + admin UI page (`/keystatic`)
-- [x] Confirm/extend `icon` and `image` field conventions in schemas so every section can carry MDI icon-name strings and media refs without ad hoc shapes
-  - Landed: shared `iconField()` (plain text = MDI key, empty keeps positional default) + `imageField()` (plain `{ src, alt }`, empty `src` = absent) factories in `schemas.ts`; optional `icon` wired into capabilities items / belief points / stats entries, optional `image` into work cases; mirrored as `ContentImage` + optional fields in `types.ts` and icon values in `defaults.ts` (en+sw, matching today's hardcoded/positional picks — rendering unchanged, no component reads the new fields yet).
+- [x] Keystatic local storage; `layout-<locale>` singletons + `pages-<locale>` collections
+- [x] Schema factories in `src/lib/keystatic/schemas.ts`; typed model in `src/lib/content/types.ts`; per-locale defaults in `src/lib/content/defaults.ts` (en + sw)
+- [x] Reader with CMS-over-defaults merge + empty-list fallback (`src/lib/content/reader.ts`)
+- [x] Pages Router bridge (`src/pages/api/keystatic/[...params].ts`, `/keystatic`)
+- [x] `iconField()` (MDI key string) + `imageField()` (`{ src, alt }`) conventions
 
-## M3 — Component contract & resolvers ⬜
+## M3 — Component contract & resolvers ✅
 
-- [x] Formalize `data` + `classes` (slots) prop contract across shared/reusable components
-  - Landed: shared `DataProps<TData, TSlot>` + `SlotClasses<TSlot>` generics in `types.ts` with adoption rule (new shared components use it now; sections adopt during M5 restyles — no section migrated yet, so no render change).
-- [x] Shared icon-name → MDI SVG resolver (`src/lib/icons/resolve-icon.tsx`), single source of truth
-  - Landed: `mdi` map + `MdiName` + string-safe `resolveIcon()`/`isMdiName()` (unknown/empty names fall back to `asterisk`, never crash) + `MdiIcon` accepting plain strings; positional `capabilityIcons`/`statIcons` preserved; `components/motion/mdi-icon.tsx` kept as a re-export shim so all section imports work unchanged.
-- [x] Shared media/image resolver component (`src/components/media/dynamic-image.tsx`) for `{ url, alt, ... }` content
-  - Landed: `DynamicImage` wrapping `next/image` — null-safe on empty/absent `src`, fluid `fill` by default (fixed `width`/`height` mode supported), remote URLs `unoptimized` until M8 `remotePatterns` land. No call sites yet (M3 box 4 wires sections).
-- [x] Audit existing sections for inline icon imports / raw `<img>` tags and migrate to the resolvers
-  - Landed: audit found no raw `<img>` and no direct `@mdi/js` imports in sections. All 11 `MdiIcon` call sites repointed to `@/lib/icons/resolve-icon`; capabilities/belief/stats icons now content-driven (`data.icon` with positional fallback, behavior-identical under current defaults); work figure renders `DynamicImage` when `image.src` is set, else keeps the generated graphic. `mdi-icon.tsx` shim is now unimported (kept until M5, then deleted).
+- [x] `DataProps<TData, TSlot>` + `SlotClasses<TSlot>` generics in `types.ts`
+- [x] Icon-name → MDI resolver, single source of truth (`src/lib/icons/resolve-icon.tsx`); string-safe fallback; no direct `@mdi/js` imports outside it
+- [x] Shared media resolver (`src/components/media/dynamic-image.tsx`): `DynamicImage` for real media, `MediaSlot` for the placeholder frame a section draws when there is none
+- [x] Sections still take named props (`hero={...}`, `work={...}`) rather than the `data`/`classes` shape — follow-up, no render impact
 
-## M4 — Layout & chrome (redesign) ⬜
+## M4 — Layout & chrome ✅
 
-- [x] `_document` / `_app` updated for new token set and any global gradient/grain-replacement background
-  - Landed (M5 audit fix): `grain` gone; `body` is `bg-mist-100 …` (dead `bg-surface`/`gradient-wash` classes removed after the token rename). `_app` verified — fonts already CSS-var wired, no change needed.
-- [x] Nav rebuilt in the fluid style: rounded pill CTA, soft glass bar on scroll (replaces the mono bordered nav)
-  - Landed (evolved in the parallel pass + M5 audit): floating transparent→`glass-panel` pill bar; navy chip + wordmark (initial now content-derived), sans links, `btn-pill--ink` CTA, mobile hamburger sheet (`aria-expanded`, menu/close glyphs added to the resolver — previously fell back to asterisk); dead scene-probe removed (all scenes light). Same layout content fields.
-- [x] Lenis smooth scroll retained; tuned for continuous-feel easing
-  - Landed: per-gesture section-snap engine removed (one uninterrupted glide; `data-snap` attrs now inert, CSS snap never applied — cleanup rides with M5); Lenis kept at duration 1.2/expo easing, touch 1.6; anchors route through Lenis with −88px floating-nav offset; reduced-motion guard kept.
-- [x] Scroll progress treatment redesigned to fit continuous (non-chaptered) motion, or retired if it no longer fits
-  - Landed: chaptered rail retired (ticks, pct readout, active-chapter label, `CHAPTERS` const gone from layout); kept one slim 2px accent→primary gradient hairline, scroll-linked via spring. Verified `/`, `/sw/home`, `/keystatic` 200.
-- [x] Footer rebuilt: soft/gradient closing panel, link columns, brand mark — no hard dark full-bleed band requirement
-  - Landed (rewritten again in the parallel pass): `canvas` close with deep rounded ink panel (accent blobs), accent pill CTA, badge brand mark, dashed column dividers, rotating circular badge (reduced-motion guarded), legal row on light. Same layout content fields. Verified `/`, `/sw/home`, `/keystatic` 200.
+- [x] Instrument rail: pixel wordmark left, section links recessed into a centre panel, paper audit action + attached square arrow key right; transparent over the hero, solid deep strip with a hairline and a 2px ember scroll-progress rule once scrolled
+- [x] Below `lg`: four-square mark opens a full-screen sheet over the deep band, carrying the audit action and the link columns; `aria-expanded`, `aria-controls`, Escape to close, body scroll locked while open
+- [x] Skip link to `#main`
+- [x] Lenis smooth scroll retained; anchors route through it with a −84px offset; reduced-motion guard kept
+- [x] Footer: closing statement + ember action on the deep band, then wordmark/tagline/link columns/imprint
 
-## M5 — Homepage sections, restyled (content unchanged) ✅ (parallel session; audited)
+## M5 — Homepage sections ✅ (content unchanged, all ten rewritten)
 
-All ten sections restyled in the parallel pass against the canvas/stage/aurora system; M5 audit verified: zero ad-hoc hex, `icon`/`image` flow through the shared resolvers, content layer untouched (only the M2 `icon` additions in defaults), no raw `<img>`, no direct `@mdi/js` in sections. Audit fixes applied: `emerald-*` → `accent-*` (cta), `menu`/`close` glyphs added (nav hamburger previously fell back to asterisk), dead scene-probe removed, `_document` classes corrected, dead CSS pruned. Open follow-ups: sections kept named props instead of adopting `DataProps` (contract follow-up); `scroll-3d.tsx`/`parallax.tsx` now unimported (kept for M6); `mdi-icon.tsx` shim unimported (delete); `.display` retained for 3 headings.
+- [x] Hero — field ground, display statement, live signal trace that locks when tracking goes live, channel marquee
+- [x] Problem — deep band; spend split drawn as columns of squares so the reader can count the loss
+- [x] Belief — paper band; numbered commitment readout + one media slot
+- [x] Process — field band; five nodes on a routed rail, the live node in ember
+- [x] Capabilities — deep band; four panels, with the net routed once across the band in the gutters rather than four fragments at card scale
+- [x] Work — field band; four plates with real figures, client names withheld pending permission
+- [x] Stats — paper band; four figures ruled as one tally
+- [x] Industries — field band; sector chip index
+- [x] Insights — deep band; three entries with an honest in-preparation status
+- [x] CTA — paper band; the offer stated once, with the net in ink converging on the single action
 
-- [x] Hero — ambient Three.js/gradient backdrop, floating product-UI card cluster, display headline
-- [x] Problem — soft editorial framing, no hard chapter band requirement
-- [x] Belief — points + gradient/blob motif (replaces dithered pixel field)
-- [x] Process — continuous scroll-driven step sequence (Diagnose → Scale) with morph/cross-fade between steps
-- [x] Capabilities — service cards as soft/glass cards with icon chips
-- [x] Work — client results with floating metric cards
-- [x] Stats — proof stats as a soft panel (gradient or glass), not a hard dark band by default
-- [x] Industries — sector chip cluster, pill styling
-- [x] Insights — article list as card rows
-- [x] CTA — closing audit offer as a glass/gradient panel into the footer
+## M6 — Motion ✅
 
-## M6 — Motion & 3D layer ⬜
+- [x] `src/lib/motion/reveal.tsx` retuned: `Reveal`, `MaskedLine`, `RuleDraw`, `PanelIn`, `NodeIn`, `TallyRise` — one exponential ease-out, all scroll-linked, all fading under `prefers-reduced-motion`
+- [x] **Signature interaction — the resolve band** (`src/components/graphics/pixel-dither.tsx`): ordered 8×8 Bayer dither on a 2d canvas, swept once on entry, with a CSS two-colour fallback if there is no 2d context
+- [x] **Resolve rationed to three moments** — the arrival (hero), the descent into the argument (problem), the inversion to paper (belief) — on a coarse fixed-size pixel (21–26px, ~11 rows per band) so the matrix reads as a printed threshold table rather than noise. `spread` at 0.8 saturates the top and bottom tenth of each band solid, so the join to each neighbouring ground stays flush
+- [x] **Seam** replaces the resolve at every other ground change (`band.tsx` → `.seam`): a 1px hairline in the band's own colour with an ember packet running along it, so an undissolved join still reads as routed rather than as an accidental cut
+- [x] **Trace net** (`src/components/graphics/trace-field.tsx`): seeded orthogonal routes with wide-radius bends, square pads, a travelling ember packet per route, parallax via `useScroll`
+- [x] **Net rerouted between components** — each band hands in `anchors`, points normalised to its content column; every route runs off-frame → anchor → anchor → off-frame, so it terminates on a named component instead of floating. `frame` maps anchors onto the centred column, so `0`/`1` are its edges and `0.5` is the gutter between two columns — one pad lands on each card edge
+- [x] **Aspect-tracking viewBox** — the net's viewBox height follows the host's measured aspect (`ResizeObserver`), replacing `xMidYMid slice`. The old slice-scaled net lost most of its width on a tall or narrow band, which is why the routes used to bunch into one corner on a phone
+- [x] Net present on hero, problem, belief, capabilities, work, insights, CTA and footer; absent from process (it already draws a literal route with live state on it), stats (the tally must not move behind it) and industries (back matter)
+- [x] Hover states: panels step one ramp level lighter, the attached arrow key fills with ember, chips and metrics take ember
+- [ ] Three.js removed from the build (no scene remains); `three` / `@react-three/*` are still listed in `package.json` and can be dropped with a lockfile refresh
 
-- [ ] `Reveal` primitive updated/extended for morph/cross-fade style reveals (still `whileInView`, once, reduced-motion aware)
-- [ ] Scroll-linked parallax/transform layer via `useScroll`/`useTransform` for floating elements
-- [ ] Ambient Three.js hero/background scene(s) in `src/components/three/`, lazy-mounted, with static fallback
-- [ ] Idle micro-motion on floating cards/badges (subtle, low-amplitude)
-- [ ] Hover states redesigned for pill buttons/glass cards (replaces mono-btn invert)
+## M7 — Locale routing ✅
 
-## M7 — Locale routing ✅ (carried over)
-
-- [x] `/` English, `/sw/home` Kiswahili via `src/pages/index.tsx` + `src/pages/[locale]/[...slug].tsx` (no bare `/sw` route)
-- [x] Locale-scoped Keystatic collections/singletons + nav groups in admin UI
-- [ ] Optional: hreflang tags + locale switcher in nav
+- [x] `/` English, `/sw/home` Kiswahili, no bare `/sw` route
+- [x] Both locales ship as peers; interface strings in `src/lib/content/chrome.tsx` are mirrored
+- [ ] Optional: hreflang tags + a locale switcher in the rail
 
 ## M8 — Asset & SEO hardening ⬜
 
-- [ ] Favicon/logo set (current: inline text brand), og-image reflecting new visual system
+- [ ] Favicon/logo set, og-image built from the current visual system
 - [ ] `sitemap.xml`, `robots.txt`
-- [ ] Real case-study links on Insights rows (currently `#`)
-- [ ] Contact form (mailto CTA today)
+- [ ] Real article destinations for the Insights rows (currently status-only, no dead links)
+- [ ] Scheduler URL to replace the `mailto:` CTAs
 
 ## M9 — Content ops ⬜
 
-- [ ] Keystatic Cloud / GitHub storage for hosted editing (switch `storage.kind`, add env vars from `.env.example`)
+- [ ] Keystatic Cloud / GitHub storage for hosted editing
 - [ ] Draft-mode live preview of Keystatic edits
 - [ ] Move Insights to a Keystatic *collection* once real articles exist
 
@@ -102,6 +93,6 @@ All ten sections restyled in the parallel pass against the canvas/stage/aurora s
 
 ## Handoff notes
 
-- Each unchecked box above is a self-contained task. Start from `AGENTS.md`, then `docs/design/instructions.md`.
-- Design reference: attached fluid/glassmorphic mockups — soft gradient washes, glass panels, floating UI/media clusters, pill buttons, subtle 3D/motion. Brand: `#4f4b63` / `#f04f26`, light theme, token families `primary`/`accent`/`paper`/`surface`/`ink`.
-- Verification for any task: `npm run typecheck`, `npm run dev`, check `/` and `/sw/home`, `npm run build` + `/keystatic` if content layer, tokens, or resolvers touched.
+- Unchecked boxes are self-contained tasks. Start from `AGENTS.md`, then `docs/design/instructions.md`.
+- Verification for any task: `npm run typecheck` (must be clean) and `npm run dev`, checking `/` and `/sw/home` at desktop and mobile widths. Add `npm run build` when tokens, the content layer, routing or the config change.
+- `npm run lint` is currently broken in this repo (`eslint-config-next` 15's rushstack patch rejects the installed eslint 9.17.0) — unrelated to any task; typecheck is the gate.

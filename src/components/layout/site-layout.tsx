@@ -2,19 +2,16 @@ import type { ReactNode } from 'react';
 
 import { SiteFooter } from '@/components/layout/site-footer';
 import { SiteNav } from '@/components/layout/site-nav';
-import { SurveyField } from '@/components/three/survey-field';
-import { TransectReadout } from '@/components/layout/transect-readout';
 import { SmoothScroll } from '@/components/smooth-scroll';
 import type { LayoutContent } from '@/lib/content/types';
 
 /**
- * Shared chrome: the surveyed background, the masthead that becomes a
- * running head, the transect readout, and the colophon.
+ * Shared chrome: the instrument rail, the page, and the terminus.
  *
- * The background field is mounted once, fixed and behind everything; every
- * section sits directly on the stock so the survey reads continuously through
- * the whole sheet. Both are client-only and self-disabling (reduced motion,
- * lost context), so the layout is complete without them.
+ * There is no page-wide background layer in this world. The grounds belong to
+ * the bands that carry them, the trace network is drawn inside the bands that
+ * want it, and the resolve between them belongs to whichever band changes — so
+ * the layout is three pieces and nothing else.
  */
 export function SiteLayout({
   children,
@@ -26,11 +23,11 @@ export function SiteLayout({
   return (
     <>
       <SmoothScroll />
-      <SurveyField />
       <SiteNav nav={layout} />
-      <main className="relative z-10">{children}</main>
+      <main id="main" className="relative z-10">
+        {children}
+      </main>
       <SiteFooter footer={layout} />
-      <TransectReadout />
     </>
   );
 }

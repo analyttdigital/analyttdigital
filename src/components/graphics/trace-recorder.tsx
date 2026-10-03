@@ -4,15 +4,13 @@ import { useReducedMotion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
 /**
- * TraceRecorder — the sheet's one authored moment, and the demonstration
- * the page is built around.
+ * SignalTrace — the demonstration the whole page is arranged around.
  *
- * A chart recorder, the kind that used to sit on every desk: a needle
- * raster driven along the time axis. Here it starts as an untriggered
- * signal — needles jittering around nothing — and when tracking goes live
- * the trigger fires, the jitter is gone and the trace stands perfectly
- * still. That is what measurement looks like: not a claim that the numbers
- * are good, the signal ceasing to lie.
+ * A chart recorder raster: needles standing on the time axis. It starts as an
+ * untriggered signal — needles jittering around nothing — and when tracking
+ * goes live the trigger fires, the jitter is cut dead and the trace locks
+ * perfectly still. That is what measurement looks like: not a claim that the
+ * numbers are good, the signal ceasing to lie.
  *
  * Why a raster of needles rather than an SVG polyline: one rAF writing 96
  * transforms beats 96 motion components, it stays sharp at any device pixel
@@ -20,7 +18,7 @@ import { useEffect, useRef, useState } from 'react';
  * (seeded) so the server and client render the same first frame.
  */
 
-const BARS = 96;
+const BARS = 72;
 const LOCK_AT = 0.46; // where the trigger fires along the time axis
 const DURATION = 2100;
 
@@ -38,10 +36,10 @@ function mulberry32(seed: number) {
 function steady(x: number) {
   const spike = (at: number, width: number, height: number) =>
     height * Math.exp(-Math.pow((x - at) / width, 2));
-  return 0.26 + spike(0.16, 0.075, 0.58) + spike(0.63, 0.13, 0.42) + spike(0.86, 0.05, 0.2);
+  return 0.24 + spike(0.16, 0.075, 0.6) + spike(0.63, 0.13, 0.44) + spike(0.86, 0.05, 0.2);
 }
 
-export function TraceRecorder({
+export function SignalTrace({
   className,
   height = 132,
   seed = 7,
@@ -63,8 +61,8 @@ export function TraceRecorder({
     const bars = Array.from(host.querySelectorAll<HTMLElement>('[data-needle]'));
     const random = mulberry32(seed);
 
-    // Fixed noise offsets per needle: the "untriggered" signal is the same
-    // every visit, so the page does not reshuffle under the reader.
+    // Fixed noise offsets per needle: the untriggered signal is the same every
+    // visit, so the page does not reshuffle under the reader.
     const jitter = Array.from({ length: BARS }, () => random() * 2 - 1);
     const steadyHeights = Array.from({ length: BARS }, (_, i) => steady(i / (BARS - 1)));
 
@@ -83,9 +81,9 @@ export function TraceRecorder({
     const frame = (now: number) => {
       const t = Math.min(1, (now - start) / DURATION);
 
-      // Before the trigger, the signal only settles a little. After it, the
-      // jitter is cut dead and the trace locks, with a brief overshoot at
-      // the lock so the eye catches the moment it happened.
+      // Before the trigger the signal only settles a little. After it the
+      // jitter is cut dead, with a brief overshoot at the lock so the eye
+      // catches the moment it happened.
       let amp: number;
       if (t < LOCK_AT) {
         const k = t / LOCK_AT;
@@ -114,14 +112,13 @@ export function TraceRecorder({
   }, [reduce, seed]);
 
   return (
-    <div className={className}>
-      {/* The raster: needles standing on the time axis. */}
+    <div ref={hostRef} className={className}>
       <div
-        ref={hostRef}
         className="relative flex h-full w-full items-end gap-px overflow-hidden"
-        style={{ height }}
         role="img"
-        aria-label={label ?? 'Signal trace: untriggered, then locked and steady once tracking is live'}
+        aria-label={
+          label ?? 'Signal trace: untriggered, then locked and steady once tracking is live'
+        }
       >
         {Array.from({ length: BARS }).map((_, i) => {
           const atLock = Math.abs(i / (BARS - 1) - LOCK_AT) < 0.006;
@@ -129,7 +126,9 @@ export function TraceRecorder({
             <span
               key={i}
               data-needle
-              className={`min-w-px flex-1 origin-bottom ${atLock && locked ? 'bg-accent-500' : 'bg-ink-950/70'}`}
+              className={`min-w-px flex-1 origin-bottom transition-colors duration-500 ${
+                atLock && locked ? 'bg-accent-500' : 'bg-primary-100/55'
+              }`}
               style={{ height: '100%', transform: 'translateY(0%)' }}
             />
           );

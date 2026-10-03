@@ -1,51 +1,62 @@
-import { SheetBlock, SheetTitle } from '@/components/layout/sheet-block';
-import { Reveal } from '@/lib/motion/reveal';
+import { Band, BandHead, BandTitle } from '@/components/layout/band';
+import { MediaSlot } from '@/components/media/dynamic-image';
+import { NodeIn, Reveal } from '@/lib/motion/reveal';
 import { useChrome } from '@/lib/content/chrome';
 import type { InsightsSection } from '@/lib/content/types';
 
 /**
  * Insights — the notice board.
  *
- * Nothing here is published yet, and a link to nowhere is a lie the agency
- * does not need to tell. The three entries print as a notice board: index,
- * title, summary, and an honest status stamp. When real articles exist the
- * stamp is the only thing that changes.
+ * Nothing here is published yet, and a link to nowhere is a lie the agency does
+ * not need to tell. Three entries print as rows: plate, index, title, summary,
+ * and an honest status stamp. When real articles exist the stamp is the only
+ * thing that changes.
+ *
+ * The net runs across the three plates on one route, so the row reads as a
+ * board with three entries rather than three separate cards.
  */
+/** The two gutters between the three plates, where the row's routes run. */
+const NODES = [
+  { x: 0.0, y: 0.11 },
+  { x: 0.2, y: 0.2 },
+  { x: 0.95, y: 0.22 },
+  { x: 0.33, y: 0.6 },
+  { x: 0.66, y: 0.6 },
+];
+
 export function Insights({ insights }: { insights?: InsightsSection }) {
   const articles = insights?.articles ?? [];
   const chrome = useChrome();
 
   return (
-    <SheetBlock id="insights" folio="09" head={insights?.eyebrow} tone="a">
-      <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
-        <SheetTitle lines={insights?.headline ?? ''} delay={0.1} />
-        <Reveal delay={0.18}>
-          <p className="stamp">{chrome.inPreparation}</p>
+    <Band id="insights" ground="deep" mesh={{ seed: 57, count: 5, depth: 38, opacity: 0.5, anchors: NODES }}>
+      <div className="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-end">
+        <div>
+          <BandHead>{insights?.eyebrow}</BandHead>
+          <BandTitle lines={insights?.headline ?? ''} className="mt-9" />
+        </div>
+        <Reveal delay={0.16}>
+          <span className="chip chip--ember">{chrome.inPreparation}</span>
         </Reveal>
       </div>
 
-      <div aria-hidden className="mt-12 h-0.5 w-full bg-ink-950/85" />
-
-      <ol>
+      <ol className="mt-14 grid gap-5 md:grid-cols-3">
         {articles.map((article, i) => (
-          <Reveal key={article.title} delay={0.1 + i * 0.08}>
-            <li className="group grid items-start gap-x-10 gap-y-3 border-b border-ink-950/15 py-9 transition-colors duration-300 hover:bg-paper/70 lg:grid-cols-[4rem_minmax(0,1fr)_minmax(0,0.72fr)]">
-              <span className="figure text-[22px] text-ink-300 transition-colors duration-300 group-hover:text-accent-600">
-                {article.index}
-              </span>
-              <div>
-                <h3 className="sheet-verb text-[clamp(1.2rem,2.1vw,1.6rem)] text-ink-950">
-                  {article.title}
-                </h3>
-                <p className="body-copy mt-3 max-w-[58ch] text-[14.5px]">{article.description}</p>
-              </div>
-              <p className="w-narrow text-[10.5px] font-bold uppercase tracking-[0.14em] text-ink-400 lg:justify-self-end">
-                {chrome.inPreparation}
-              </p>
-            </li>
-          </Reveal>
+          <NodeIn as="li" key={article.title} delay={0.08 + i * 0.08}>
+            <article className="panel--deep flex h-full flex-col p-6 transition-colors duration-300 hover:bg-surface-700">
+              <MediaSlot
+                icon="document"
+                label={chrome.mediaSlot}
+                className="aspect-[16/10] w-full"
+              />
+              <p className="num mt-6 text-[20px] text-primary-50/45">{article.index}</p>
+              <h3 className="verb mt-3 text-[19px] text-primary-50">{article.title}</h3>
+              <p className="body body--sm mt-3 flex-1 text-primary-200">{article.description}</p>
+              <p className="label label--ember mt-6">{chrome.inPreparation}</p>
+            </article>
+          </NodeIn>
         ))}
       </ol>
-    </SheetBlock>
+    </Band>
   );
 }

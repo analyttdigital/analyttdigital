@@ -1,167 +1,210 @@
 'use client';
 
-import { useMotionValueEvent, useScroll } from 'framer-motion';
+import { motion, useMotionValueEvent, useScroll, useSpring } from 'framer-motion';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { PrinterMark } from '@/components/graphics/printer-mark';
+import { Action } from '@/components/layout/action';
+import { PixelMark } from '@/components/graphics/pixel-mark';
 import { useChrome } from '@/lib/content/chrome';
-import { MdiIcon } from '@/lib/icons/resolve-icon';
 import type { LayoutContent } from '@/lib/content/types';
 
 /**
- * Masthead → running head.
+ * The header: an instrument rail, not a floating nav.
  *
- * A printed sheet carries a masthead on its first page and a running head on
- * every page after it. This bar does both: full-bleed and transparent over
- * the masthead of the hero, condensing to a ruled running head once the
- * reader is into the sheet — where the centre slot reports the block
- * currently under survey, and the nav steps down to printed column heads.
+ * Wordmark left, the section links recessed into a panel dead centre, the
+ * audit action and its square key at the right. Over the hero the rail is
+ * transparent so the resolve band resolves behind it; once the reader is into
+ * the page it becomes a solid deep strip with a hairline under it, which is
+ * the only chrome that ever gains a background.
+ *
+ * Below `lg` the rail collapses to wordmark plus a four-square mark — the
+ * pixel language, at the size it was invented — and the links open as a full
+ * screen sheet over the deep band, carrying the audit action with them.
  */
 export function SiteNav({ nav }: { nav?: LayoutContent }) {
   const chrome = useChrome();
-  const { scrollY } = useScroll();
+  const { scrollY, scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, { stiffness: 220, damping: 40, mass: 0.4 });
   const [scrolled, setScrolled] = useState(false);
-  const [current, setCurrent] = useState(nav?.tagline ?? '');
-  const [menuOpen, setMenuOpen] = useState(false);
-  const blocks = useRef<{ top: number; head: string }[]>([]);
+  const [open, setOpen] = useState(false);
 
   const brand = nav?.brand ?? 'analytt';
   const emphasis = nav?.brandEmphasis ?? 'digital';
   const links = nav?.navLinks ?? [];
   const cta = nav?.navCta ?? 'Get a free audit';
-  const ctaHref = nav?.navCtaHref ?? '#contact';
+  const ctaHref = nav?.navCtaHref ?? '/#contact';
 
-  useMotionValueEvent(scrollY, 'change', (y) => {
-    setScrolled(y > 40);
-    const probe = y + 160;
-    let head = '';
-    for (const block of blocks.current) {
-      if (block.top <= probe) head = block.head;
-      else break;
-    }
-    setCurrent(head);
-  });
+  useMotionValueEvent(scrollY, 'change', (y) => setScrolled(y > 24));
 
-  // Cache each block's position once, and again on resize: the running head
-  // must not read layout on every frame.
+  // The sheet owns the viewport while it is open.
   useEffect(() => {
-    const measure = () => {
-      blocks.current = Array.from(document.querySelectorAll<HTMLElement>('[data-sheet-block]'))
-        .filter((el) => el.dataset.sheetHead)
-        .map((el) => ({
-          top: el.getBoundingClientRect().top + window.scrollY,
-          head: el.dataset.sheetHead ?? '',
-        }));
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
     };
-    measure();
-    window.addEventListener('resize', measure);
-    return () => window.removeEventListener('resize', measure);
-  }, []);
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = previous;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
-      <div
-        className={`transition-all duration-500 ease-out ${
-          scrolled
-            ? 'border-b border-ink-950/12 bg-paper/90 backdrop-blur-md'
-            : 'border-b border-transparent bg-transparent'
+    <>
+      <a
+        href="#main"
+        className="label label--bright sr-only focus:not-sr-only focus:fixed focus:left-5 focus:top-5 focus:z-[60] focus:bg-primary-950 focus:px-4 focus:py-3"
+      >
+        {chrome.skip}
+      </a>
+
+      <header
+        className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
+          scrolled && !open ? 'bg-primary-950/92 backdrop-blur-md' : 'bg-transparent'
         }`}
       >
-        <div
-          className={`mx-auto flex w-full max-w-[1320px] items-center gap-4 px-4 transition-all duration-500 ease-out md:px-6 ${
-            scrolled ? 'h-14' : 'h-20'
-          }`}
-        >
-          <Link
-            href="/"
-            className="group flex items-center gap-2.5 text-ink-950"
-            aria-label={`${brand} ${emphasis}`}
-          >
-            <PrinterMark
-              className={`transition-all duration-500 ease-out ${scrolled ? 'h-5 w-5' : 'h-7 w-7'}`}
-            />
-            <span
-              className={`w-wide font-extrabold tracking-[-0.03em] transition-all duration-500 ease-out ${
-                scrolled ? 'text-[17px]' : 'text-[21px]'
-              }`}
-            >
-              {brand}
-              <span className="text-accent-600">{emphasis}</span>
-            </span>
-          </Link>
+        <div className="mx-auto flex h-[72px] w-full max-w-[1360px] items-center gap-6 px-5 md:px-8">
+          <Wordmark brand={brand} emphasis={emphasis} />
 
-          {/* Running head: the block currently under survey. */}
-          <div className="hidden min-w-0 flex-1 items-center gap-3 lg:flex">
-            <span className={`rule ${scrolled ? '' : 'opacity-0'} h-px flex-1 bg-ink-950/15`} />
-            <p
-              className={`truncate font-narrow text-[11px] font-bold uppercase tracking-[0.18em] transition-opacity duration-500 ${
-                scrolled && current ? 'text-ink-700 opacity-100' : 'opacity-0'
-              }`}
-            >
-              {current}
-            </p>
-            <span className={`rule ${scrolled ? '' : 'opacity-0'} h-px flex-1 bg-ink-950/15`} />
-          </div>
-
-          <nav className="ml-auto hidden items-center gap-6 xl:flex">
-            {links.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className={`w-narrow font-semibold uppercase tracking-[0.14em] text-ink-800 transition-colors duration-200 hover:text-accent-600 ${
-                  scrolled ? 'text-[11px]' : 'text-[12px]'
-                }`}
-              >
-                {link.label}
-              </a>
-            ))}
+          {/* The recessed link panel. */}
+          <nav aria-label="Sections" className="ml-auto hidden lg:block">
+            <ul className="flex items-stretch bg-primary-900/55">
+              {links.map((link, i) => (
+                <li key={link.label} className={i > 0 ? 'border-l border-primary-50/10' : ''}>
+                  <a
+                    href={link.href}
+                    className="block px-5 py-2.5 text-[12.5px] font-medium text-primary-200 transition-colors duration-200 hover:bg-primary-50/8 hover:text-primary-50"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </nav>
 
-          <div className="ml-auto flex items-center gap-2 xl:ml-0">
-            <a
-              href={ctaHref}
-              className={`btn-sheet btn-sheet--spot transition-all duration-500 ease-out ${
-                scrolled ? 'px-4 py-2 text-[12px]' : 'px-5 py-2.5 text-[13px]'
-              }`}
-            >
-              {cta}
-              <MdiIcon name="arrowTopRight" size={0.6} />
-            </a>
+          <div className="ml-auto flex items-center gap-2 lg:ml-0">
+            {!open ? (
+              <Action
+                href={ctaHref}
+                label={cta}
+                className="hidden whitespace-nowrap sm:inline-flex"
+              />
+            ) : null}
             <button
               type="button"
-              aria-label={chrome.contents}
-              aria-expanded={menuOpen}
-              aria-controls="sheet-menu"
-              onClick={() => setMenuOpen((open) => !open)}
-              className="press-mark flex h-9 w-9 items-center justify-center rounded-[2px] text-ink-900 transition-colors hover:bg-ink-950/5"
+              onClick={() => setOpen((value) => !value)}
+              aria-label={open ? chrome.close : chrome.menu}
+              aria-expanded={open}
+              aria-controls="site-menu"
+              className="grid h-11 w-11 place-items-center border border-primary-50/22 text-primary-100 transition-colors duration-200 hover:border-accent-500 hover:text-accent-500 lg:hidden"
             >
-              <MdiIcon name={menuOpen ? 'close' : 'menu'} size={0.75} />
+              {open ? <CloseGlyph /> : <GridGlyph />}
             </button>
           </div>
         </div>
-      </div>
+        <div aria-hidden className="h-px w-full bg-primary-50/12">
+          {/* The route covered so far, drawn in the colour that means live. */}
+          <motion.div
+            className="h-full origin-left bg-accent-500"
+            style={{ scaleX: progress, opacity: scrolled && !open ? 1 : 0 }}
+            transition={{ opacity: { duration: 0.3 } }}
+          />
+        </div>
+      </header>
 
-      {/* Contents sheet */}
-      {menuOpen ? (
-        <div id="sheet-menu" className="px-4 pt-2 md:px-6 xl:hidden">
-          <div className="plate mx-auto max-w-[1320px] rounded-[2px] p-2">
-            <nav className="flex flex-col">
+      {open ? (
+        <div
+          id="site-menu"
+          className="fixed inset-0 z-40 overflow-y-auto bg-primary-950 pt-[72px] lg:hidden"
+        >
+          <nav aria-label="Sections" className="px-5 pt-4">
+            <ul>
               {links.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center justify-between border-b border-ink-950/8 px-4 py-3.5 text-[15px] font-semibold text-ink-900 transition-colors last:border-0 hover:bg-ink-950/4 hover:text-accent-600"
-                >
-                  {link.label}
-                  <MdiIcon name="arrowTopRight" size={0.6} />
-                </a>
+                <li key={link.label} className="border-t border-primary-50/12">
+                  <a
+                    href={link.href}
+                    onClick={() => setOpen(false)}
+                    className="display block py-3 text-[clamp(2.1rem,9vw,3rem)] text-primary-50 transition-colors duration-200 hover:text-accent-500"
+                  >
+                    {link.label}
+                  </a>
+                </li>
               ))}
-            </nav>
+            </ul>
+          </nav>
+
+          <div className="px-5 pb-10 pt-8">
+            <Action
+              href={ctaHref}
+              label={cta}
+              variant="ember"
+              className="w-full"
+              onClick={() => setOpen(false)}
+            />
+          </div>
+
+          <div className="grid gap-8 border-t border-primary-50/12 px-5 py-8 sm:grid-cols-2">
+            {nav?.footerColumns?.map((column) => (
+              <nav key={column.title} aria-label={column.title}>
+                <p className="label">{column.title}</p>
+                <ul className="mt-4 space-y-2.5">
+                  {column.links.map((link) => (
+                    <li key={link.label}>
+                      <a href={link.href} className="link text-[15px] text-primary-100">
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            ))}
           </div>
         </div>
       ) : null}
-    </header>
+    </>
+  );
+}
+
+function Wordmark({ brand, emphasis }: { brand: string; emphasis: string }) {
+  return (
+    <Link
+      href="/"
+      className="flex shrink-0 items-center gap-2.5 text-primary-50"
+      aria-label={`${brand} ${emphasis}`}
+    >
+      <PixelMark className="h-[18px] w-auto" />
+      <span className="text-[16px] font-medium tracking-[-0.02em]">
+        {brand}
+        <span className="text-accent-500">{emphasis}</span>
+      </span>
+    </Link>
+  );
+}
+
+/** Four squares — the menu mark, drawn at the world's own resolution. */
+function GridGlyph() {
+  return (
+    <svg viewBox="0 0 20 20" className="h-5 w-5" aria-hidden="true" fill="currentColor">
+      <rect x="0" y="0" width="8" height="8" />
+      <rect x="12" y="0" width="8" height="8" />
+      <rect x="0" y="12" width="8" height="8" />
+      <rect x="12" y="12" width="8" height="8" />
+    </svg>
+  );
+}
+
+function CloseGlyph() {
+  // Two square-ended bars, turned 45° — a cross that reads as a close mark
+  // while staying in the world's own stroke.
+  return (
+    <svg viewBox="0 0 20 20" className="h-5 w-5" aria-hidden="true" fill="currentColor">
+      <g transform="rotate(45 10 10)">
+        <rect x="2" y="8.5" width="16" height="3" />
+        <rect x="8.5" y="2" width="3" height="16" />
+      </g>
+    </svg>
   );
 }

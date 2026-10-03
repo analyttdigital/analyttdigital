@@ -1,8 +1,7 @@
 /**
- * Backwards-compat shim — the icon map, resolver, and `MdiIcon` now live in
- * `@/lib/icons/resolve-icon` (single source of truth, M3). Existing section
- * imports keep working; new code should import from `@/lib/icons/resolve-icon`
- * directly. Removed once M5 restyles migrate every section.
+ * Backwards-compat shim — the icon map, resolver, and `MdiIcon` live in
+ * `@/lib/icons/resolve-icon` (single source of truth). Existing imports keep
+ * working; new code should import from `@/lib/icons/resolve-icon` directly.
  */
 export {
   MdiIcon,

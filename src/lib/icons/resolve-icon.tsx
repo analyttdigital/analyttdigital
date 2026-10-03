@@ -1,38 +1,53 @@
 import Icon from '@mdi/react';
 import {
+  mdiAccessPoint,
   mdiAnchor,
+  mdiArrowBottomRight,
   mdiArrowDown,
   mdiArrowRight,
   mdiArrowTopRight,
   mdiAsterisk,
   mdiBullhornOutline,
+  mdiChartBoxOutline,
   mdiChartLine,
   mdiCheck,
   mdiClose,
   mdiCompassOutline,
   mdiCrosshairsGps,
+  mdiDatabaseOutline,
+  mdiEmailOutline,
+  mdiFileDocumentOutline,
+  mdiImageOutline,
+  mdiLayersOutline,
   mdiMapMarkerOutline,
   mdiMenu,
-  mdiPlus,
+  mdiOpenInNew,
+  mdiPercentOutline,
   mdiRadar,
   mdiRadioTower,
   mdiRocketLaunchOutline,
+  mdiSitemapOutline,
+  mdiTagOutline,
+  mdiTarget,
+  mdiViewGridOutline,
   mdiWaves,
 } from '@mdi/js';
 
 /**
- * Icon-name → MDI SVG resolver — single source of truth (M3).
+ * Icon-name → MDI SVG resolver — single source of truth.
  *
- * Content carries icons as plain strings (see `iconField` in schemas.ts);
- * this module is the only place that maps those strings to `@mdi/js`
- * paths. Never import `@mdi/js` directly in sections — resolve here.
- * Token-currentColor only; sizing via `size` (1 = 24px, matches @mdi/react).
+ * Content carries icons as plain strings (see `iconField` in schemas.ts); this
+ * module is the only place that maps those strings to `@mdi/js` paths. Never
+ * import `@mdi/js` directly in sections — resolve here. Token-currentColor
+ * only; sizing via `size` (1 = 24px, matches @mdi/react).
  * Add new entries to `mdi` below; the type + guard pick them up.
  */
 export const mdi = {
   arrowRight: mdiArrowRight,
   arrowDown: mdiArrowDown,
+  arrowBottomRight: mdiArrowBottomRight,
   arrowTopRight: mdiArrowTopRight,
+  open: mdiOpenInNew,
   asterisk: mdiAsterisk,
   anchor: mdiAnchor,
   waves: mdiWaves,
@@ -40,14 +55,25 @@ export const mdi = {
   compass: mdiCompassOutline,
   close: mdiClose,
   crosshairs: mdiCrosshairsGps,
+  target: mdiTarget,
+  node: mdiAccessPoint,
+  net: mdiSitemapOutline,
   bullhorn: mdiBullhornOutline,
   chart: mdiChartLine,
+  chartBox: mdiChartBoxOutline,
+  database: mdiDatabaseOutline,
+  layers: mdiLayersOutline,
+  percent: mdiPercentOutline,
   rocket: mdiRocketLaunchOutline,
   radio: mdiRadioTower,
   pin: mdiMapMarkerOutline,
   menu: mdiMenu,
+  grid: mdiViewGridOutline,
+  image: mdiImageOutline,
+  document: mdiFileDocumentOutline,
+  tag: mdiTagOutline,
+  mail: mdiEmailOutline,
   check: mdiCheck,
-  plus: mdiPlus,
 } as const;
 
 export type MdiName = keyof typeof mdi;
@@ -62,17 +88,17 @@ export function isMdiName(name: string | undefined): name is MdiName {
 
 /**
  * Resolve a content icon-name string to an SVG path. Unknown, empty, or
- * missing names fall back instead of crashing — sections stay render-safe
- * no matter what the CMS holds.
+ * missing names fall back instead of crashing — sections stay render-safe no
+ * matter what the CMS holds.
  */
 export function resolveIcon(name: string | undefined, fallback: MdiName = fallbackIcon): string {
   return isMdiName(name) ? mdi[name] : mdi[fallback];
 }
 
-/** Positional defaults (M2 convention: empty `icon` keeps these). */
-export const capabilityIcons: MdiName[] = ['bullhorn', 'radar', 'compass', 'radio'];
+/** Positional defaults (content convention: an empty `icon` keeps these). */
+export const capabilityIcons: MdiName[] = ['bullhorn', 'database', 'compass', 'layers'];
 
-/** Positional defaults (M2 convention: empty `icon` keeps these). */
+/** Positional defaults (content convention: an empty `icon` keeps these). */
 export const statIcons: MdiName[] = ['crosshairs', 'waves', 'chart', 'rocket'];
 
 /**
