@@ -435,7 +435,7 @@ function PanelBody({ panel }: { panel: HeroPanel }) {
   }
 }
 
-export function Hero({ hero }: { hero?: HeroSection }) {
+export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSection['variant'] }) {
   const tunnelRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<HTMLDivElement>(null);
 
@@ -447,6 +447,9 @@ export function Hero({ hero }: { hero?: HeroSection }) {
   const secondary = hero?.scrollHint || FALLBACK.secondary;
   const contentPanels = hero?.panels?.length ? hero.panels : FALLBACK_PANELS;
   const proof = hero?.proof?.length ? hero.proof : FALLBACK_PROOF;
+  /** Explicit prop wins, then content, then the light stage. Panels stay
+   *  paper on both variants — floating light cards over the dark field. */
+  const dark = (variant ?? hero?.variant ?? 'light') === 'dark';
 
   // Seeded placements — identical on server and client first paint. Positions
   // are content-agnostic; each slot cycles through the content panels so every
@@ -537,7 +540,9 @@ export function Hero({ hero }: { hero?: HeroSection }) {
   return (
     <section
       id="hero"
-      className="relative flex min-h-screen w-full flex-col overflow-hidden bg-paper font-sans text-ink-800"
+      className={`relative flex min-h-screen w-full flex-col overflow-hidden font-sans ${
+        dark ? 'bg-primary-950 text-primary-100' : 'bg-paper text-ink-800'
+      }`}
     >
       {/* Soft primary-tinted glow — token channels, decorative */}
       <div
@@ -574,13 +579,14 @@ export function Hero({ hero }: { hero?: HeroSection }) {
         </div>
       </div>
 
-      {/* Readability halo behind the copy */}
+      {/* Readability halo behind the copy — paper on light, ink on dark */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 z-30"
         style={{
-          background:
-            'radial-gradient(ellipse 52% 44% at 50% 50%, rgb(var(--color-paper-50) / 0.94) 0%, rgb(var(--color-paper-50) / 0.7) 55%, rgb(var(--color-paper-50) / 0) 100%)',
+          background: dark
+            ? 'radial-gradient(ellipse 52% 44% at 50% 50%, rgb(var(--color-primary-950) / 0.94) 0%, rgb(var(--color-primary-950) / 0.7) 55%, rgb(var(--color-primary-950) / 0) 100%)'
+            : 'radial-gradient(ellipse 52% 44% at 50% 50%, rgb(var(--color-paper-50) / 0.94) 0%, rgb(var(--color-paper-50) / 0.7) 55%, rgb(var(--color-paper-50) / 0) 100%)',
         }}
       />
 
@@ -588,7 +594,11 @@ export function Hero({ hero }: { hero?: HeroSection }) {
         <div className="pointer-events-auto flex flex-col items-center">
           <a
             href={ctaHref}
-            className="mb-8 inline-flex items-center gap-2 rounded-full border border-accent-500/15 bg-paper/80 px-3 py-1.5 text-xs font-medium text-primary-700 backdrop-blur-md transition-all hover:border-accent-500/40 hover:text-accent-600"
+            className={`mb-8 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-md transition-all ${
+              dark
+                ? 'border-primary-50/15 bg-primary-900/80 text-primary-100 hover:border-accent-500/40 hover:text-accent-300'
+                : 'border-primary-900/15 bg-paper/80 text-primary-700 hover:border-accent-500/40 hover:text-accent-600'
+            }`}
             style={{ boxShadow: '0 2px 10px rgb(var(--color-primary-600) / 0.06)' }}
           >
             {/* <span className="relative flex h-2 w-2">
@@ -599,15 +609,28 @@ export function Hero({ hero }: { hero?: HeroSection }) {
             <MdiIcon name="arrowRight" className="text-accent" size={0.55} />
           </a>
 
-          <h1 className="mb-6 max-w-4xl text-4xl font-medium leading-[1.1] tracking-tight text-primary-900 md:text-6xl lg:text-7xl">
+          <h1
+            className={`mb-6 max-w-4xl text-4xl font-medium leading-[1.1] tracking-tight md:text-6xl lg:text-7xl ${
+              dark ? 'text-primary-50' : 'text-primary-900'
+            }`}
+          >
             {lines.map((line, i) => (
-              <span key={`${line}-${i}`} className={`block ${i === lines.length - 1 ? 'text-accent-600' : ''}`}>
+              <span
+                key={`${line}-${i}`}
+                className={`block ${i === lines.length - 1 ? (dark ? 'text-accent-300' : 'text-accent-600') : ''}`}
+              >
                 {line || ' '}
               </span>
             ))}
           </h1>
 
-          <p className="mb-10 max-w-2xl text-sm leading-relaxed text-primary-700 md:text-base">{sub}</p>
+          <p
+            className={`mb-10 max-w-2xl text-sm leading-relaxed md:text-base ${
+              dark ? 'text-primary-200' : 'text-primary-700'
+            }`}
+          >
+            {sub}
+          </p>
 
           <div className="flex w-full flex-col items-center gap-4 sm:w-auto sm:flex-row">
             <a
@@ -619,7 +642,11 @@ export function Hero({ hero }: { hero?: HeroSection }) {
             </a>
             <a
               href={ctaHref}
-              className="flex w-full items-center justify-center gap-2 rounded-md border border-primary-900/20 bg-paper/80 px-6 py-3 text-sm font-medium text-primary-900 backdrop-blur-md transition-colors hover:border-primary-900/50 hover:bg-paper sm:w-auto"
+              className={`flex w-full items-center justify-center gap-2 rounded-md border px-6 py-3 text-sm font-medium backdrop-blur-md transition-colors sm:w-auto ${
+                dark
+                  ? 'border-primary-50/20 bg-primary-900/80 text-primary-50 hover:border-primary-50/50 hover:bg-primary-800'
+                  : 'border-primary-900/20 bg-paper/80 text-primary-900 hover:border-primary-900/50 hover:bg-paper'
+              }`}
             >
               <MdiIcon name="document" size={0.7} />
               {secondary}
@@ -629,16 +656,40 @@ export function Hero({ hero }: { hero?: HeroSection }) {
       </div>
 
       {/* Bottom fade */}
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-gradient-to-t from-paper to-transparent" />
+      <div
+        aria-hidden
+        className={`pointer-events-none absolute inset-x-0 bottom-0 z-10 h-40 bg-gradient-to-t to-transparent ${
+          dark ? 'from-primary-950' : 'from-paper'
+        }`}
+      />
 
       {/* Proof strip — operating commitments, also stated in Stats */}
       <div className="relative z-40 px-4 pb-6">
-        <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-x-8 gap-y-2 text-[11px] text-primary-700 md:text-xs">
+        <div
+          className={`mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-x-8 gap-y-2 text-[11px] md:text-xs ${
+            dark ? 'text-primary-200' : 'text-primary-700'
+          }`}
+        >
           {proof.map((item, i) => (
             <Fragment key={`${item.value}-${i}`}>
-              {i > 0 ? <span aria-hidden className="hidden h-3 w-px bg-primary-900/20 sm:block" /> : null}
+              {i > 0 ? (
+                <span
+                  aria-hidden
+                  className={`hidden h-3 w-px sm:block ${dark ? 'bg-primary-50/20' : 'bg-primary-900/20'}`}
+                />
+              ) : null}
               <div className="flex items-center gap-2">
-                <span className={`font-semibold ${item.ember ? 'text-accent-600' : 'text-primary-900'}`}>
+                <span
+                  className={`font-semibold ${
+                    item.ember
+                      ? dark
+                        ? 'text-accent-300'
+                        : 'text-accent-600'
+                      : dark
+                        ? 'text-primary-50'
+                        : 'text-primary-900'
+                  }`}
+                >
                   {item.value}
                 </span>{' '}
                 {item.label}

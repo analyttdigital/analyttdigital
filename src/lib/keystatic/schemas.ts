@@ -98,6 +98,14 @@ const heroFields = {
   }),
   cta: fields.text({ label: 'Primary CTA', defaultValue: 'Start with a free audit' }),
   ctaHref: fields.text({ label: 'Primary CTA href', defaultValue: '#contact' }),
+  variant: fields.select({
+    label: 'Variant',
+    options: [
+      { label: 'Light (paper stage)', value: 'light' },
+      { label: 'Dark (violet-ink stage)', value: 'dark' },
+    ],
+    defaultValue: 'light',
+  }),
   scrollHint: fields.text({ label: 'Scroll hint', defaultValue: 'Scroll' }),
   dashboardTitle: fields.text({ label: 'Dashboard title', defaultValue: 'Campaign / Live' }),
   dashboardMetric: fields.text({ label: 'Dashboard metric', defaultValue: 'ROAS 4.2×' }),

@@ -106,6 +106,8 @@ export type HeroSection = {
   cta: string;
   ctaHref: string;
   marquee: string[];
+  /** Light (paper stage) or dark (violet-ink stage). Defaults to light. */
+  variant?: 'light' | 'dark';
   panels?: HeroPanel[];
   proof?: HeroProof[];
   /** 3D dive chrome — all optional so legacy CMS entries keep rendering. */
