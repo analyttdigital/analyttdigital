@@ -4,7 +4,9 @@ import { Fragment, useEffect, useMemo, useRef } from 'react';
 import Image from 'next/image';
 
 import { MdiIcon } from '@/lib/icons/resolve-icon';
+import { GlowButton } from '@/components/layout/glow-button';
 import type { HeroPanel, HeroProof, HeroSection } from '@/lib/content/types';
+import { TextReveal } from '../graphics/text-reveal';
 
 /**
  * Hero — full-screen audit route head (user-approved replica).
@@ -595,189 +597,182 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
   }, [placements]);
 
   return (
-    <section
-      id="hero"
-      className={`relative flex min-h-screen w-full flex-col overflow-hidden font-sans ${
-        dark ? 'bg-primary-950 text-primary-100' : 'bg-paper text-ink-800'
-      }`}
-    >
-      {/* Soft primary-tinted glow — token channels, decorative */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-0"
-        style={{
-          background:
-            'radial-gradient(circle at 78% 18%, rgb(var(--color-accent-500) / 0.07) 0%, transparent 45%), radial-gradient(circle at 20% 80%, rgb(var(--color-primary-600) / 0.08) 0%, transparent 50%)',
-        }}
-      />
+		<section
+			id="hero"
+			className={`relative flex min-h-screen w-full flex-col overflow-hidden font-sans ${
+				dark ? "bg-primary-950 text-primary-100" : "bg-paper text-ink-800"
+			}`}
+		>
+			{/* Soft primary-tinted glow — token channels, decorative */}
+			<div
+				aria-hidden
+				className="pointer-events-none absolute inset-0 z-0"
+				style={{
+					background:
+						"radial-gradient(circle at 78% 18%, rgb(var(--color-accent-500) / 0.07) 0%, transparent 45%), radial-gradient(circle at 20% 80%, rgb(var(--color-primary-600) / 0.08) 0%, transparent 50%)",
+				}}
+			/>
 
-      {/* 3D tunnel of floating result panels — decorative, never information */}
-      <div
-        ref={sceneRef}
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center overflow-hidden"
-        style={{ perspective: '800px', perspectiveOrigin: '50% 50%' }}
-      >
-        <div ref={tunnelRef} className="relative h-full w-full" style={{ transformStyle: 'preserve-3d' }}>
-          {placements.map((p, i) => {
-            const panel = contentPanels[i % contentPanels.length];
-            return (
-            <div
-                key={`${panel.kind}-${i}`}
-                onMouseEnter={() => {
-                  hoveredRef.current = i;
-                }}
-                onMouseLeave={() => {
-                  if (hoveredRef.current === i) hoveredRef.current = null;
-                }}
-                className={`tunnel-panel pointer-events-auto absolute left-1/2 top-1/2 w-64 flex-col rounded-xl border p-5 backdrop-blur-md will-change-transform ${p.extra} ${
-                  panel.tone === 'alert' 
-                    ? 'border-accent-500/30'
-                    : dark
-                      ? 'border-primary-50/10'
-                      : 'border-primary-900/10'
-                } ${dark ? 'bg-primary-800/80' : 'bg-paper/80'}`}
-                style={{ boxShadow: '0 10px 30px rgb(var(--color-primary-600) / 0.10)' }}
-              >
-                <PanelBody panel={panel} dark={dark} />
-              </div>
-            );
-          })}
-        </div>
-      </div>
+			{/* 3D tunnel of floating result panels — decorative, never information */}
+			<div
+				ref={sceneRef}
+				aria-hidden
+				className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center overflow-hidden"
+				style={{ perspective: "800px", perspectiveOrigin: "50% 50%" }}
+			>
+				<div
+					ref={tunnelRef}
+					className="relative h-full w-full"
+					style={{ transformStyle: "preserve-3d" }}
+				>
+					{placements.map((p, i) => {
+						const panel = contentPanels[i % contentPanels.length];
+						return (
+							<div
+								key={`${panel.kind}-${i}`}
+								onMouseEnter={() => {
+									hoveredRef.current = i;
+								}}
+								onMouseLeave={() => {
+									if (hoveredRef.current === i) hoveredRef.current = null;
+								}}
+								className={`tunnel-panel pointer-events-auto absolute left-1/2 top-1/2 w-64 flex-col rounded-xl border p-5 backdrop-blur-md will-change-transform ${p.extra} ${
+									panel.tone === "alert"
+										? "border-accent-500/30"
+										: dark
+											? "border-primary-50/10"
+											: "border-primary-900/10"
+								} ${dark ? "bg-primary-800/80" : "bg-paper/80"}`}
+								style={{
+									boxShadow: "0 10px 30px rgb(var(--color-primary-600) / 0.10)",
+								}}
+							>
+								<PanelBody panel={panel} dark={dark} />
+							</div>
+						);
+					})}
+				</div>
+			</div>
 
-      {/* Readability halo behind the copy — paper on light, ink on dark */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-30"
-        style={{
-          background: dark
-            ? 'radial-gradient(ellipse 52% 44% at 50% 50%, rgb(var(--color-primary-950) / 0.94) 0%, rgb(var(--color-primary-950) / 0.7) 55%, rgb(var(--color-primary-950) / 0) 100%)'
-            : 'radial-gradient(ellipse 52% 44% at 50% 50%, rgb(var(--color-paper-50) / 0.94) 0%, rgb(var(--color-paper-50) / 0.7) 55%, rgb(var(--color-paper-50) / 0) 100%)',
-        }}
-      />
+			{/* Readability halo behind the copy — paper on light, ink on dark */}
+			<div
+				aria-hidden
+				className="pointer-events-none absolute inset-0 z-30"
+				style={{
+					background: dark
+						? "radial-gradient(ellipse 52% 44% at 50% 50%, rgb(var(--color-primary-950) / 0.94) 0%, rgb(var(--color-primary-950) / 0.7) 55%, rgb(var(--color-primary-950) / 0) 100%)"
+						: "radial-gradient(ellipse 52% 44% at 50% 50%, rgb(var(--color-paper-50) / 0.94) 0%, rgb(var(--color-paper-50) / 0.7) 55%, rgb(var(--color-paper-50) / 0) 100%)",
+				}}
+			/>
 
-      {/* Brand collage — the visual anchor of the scene. It sits above the
+			{/* Brand collage — the visual anchor of the scene. It sits above the
           halo and the tunnel, so packets read as originating from behind it. */}
-      <div className="pointer-events-none z-40 flex flex-1 items-center justify-center px-4 py-8 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-        <Image
-          src="/img/logo-marketing-collage.svg"
-          alt=""
-          aria-hidden={true}
-          width={720}
-          height={720}
-          priority={true}
-          className="h-auto w-[min(68vw,300px)] md:w-[min(38vw,350px)]  -translate-y-20"
-        />
-      </div>
+			<div className="pointer-events-none z-40 flex flex-1 items-center justify-center px-4 py-8 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+				<Image
+					src="/img/logo-marketing-collage.svg"
+					alt=""
+					aria-hidden={true}
+					width={720}
+					height={720}
+					priority={true}
+					className="h-auto w-[min(68vw,300px)] md:w-[min(38vw,350px)]  -translate-y-20"
+				/>
+			</div>
 
-      {/* Docked copy + proof — bottom-left, stacking on small screens */}
-      <div className="absolute bottom-0 w-full z-40 flex flex-col gap-6 px-4 pb-6 md:px-8 lg:flex-row lg:items-end lg:justify-between">
-        <div className="pointer-events-auto flex max-w-2xl flex-col items-start text-left">
-          <a
-            href={ctaHref}
-            className={`mb-5 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-md transition-all ${
-              dark
-                ? 'border-primary-50/15 bg-primary-900/80 text-accent-400 hover:border-accent-500/40 hover:text-accent-300'
-                : 'border-primary-900/15 bg-paper/80 text-primary-700 hover:border-accent-500/40 hover:text-accent-600'
-            }`}
-            style={{ boxShadow: '0 2px 10px rgb(var(--color-primary-600) / 0.06)' }}
-          >
-            {/* <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-accent-500 opacity-60 motion-safe:animate-ping" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-accent-500" />
-            </span> */}
-            {eyebrow}
-            <MdiIcon name="arrowRight" className="text-accent-300" size={0.55} />
-          </a>
+			{/* Docked copy + proof — bottom-left, stacking on small screens */}
+			<div className="absolute bottom-0 w-full z-40 flex flex-col gap-6 px-4 pb-6 md:px-8 lg:flex-row lg:items-end lg:justify-between">
+				<div className="pointer-events-auto flex max-w-2xl flex-col items-start text-left">
+					<a
+						href={ctaHref}
+						className={`mb-5 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-md transition-all ${
+							dark
+								? "border-primary-50/15 bg-primary-900/80 text-accent-400 hover:border-accent-500/40 hover:text-accent-300"
+								: "border-primary-900/15 bg-paper/80 text-accent hover:border-accent-500/40 hover:text-accent-600"
+						}`}
+						style={{ boxShadow: "0 2px 10px rgb(var(--color-primary-600) / 0.06)" }}
+					>
+						
+						{eyebrow}
+						<MdiIcon name="arrowRight" className="text-accent-300" size={0.55} />
+					</a>
 
-          <h1
-            className={`mb-5 max-w-3xl text-[2.1rem] font-medium leading-[1.05] tracking-tight md:text-5xl lg:text-6xl ${
-              dark ? 'text-primary-50' : 'text-primary-900'
-            }`}
-          >
-            {lines.map((line, i) => (
-              <span
-                key={`${line}-${i}`}
-                className={`block ${i === lines.length - 1 ? (dark ? 'text-accent-400' : 'text-accent-600') : ''}`}
-              >
-                {line || ' '}
-              </span>
-            ))}
-          </h1>
+					<h1
+						className={`mb-5 max-w-3xl text-[2.1rem] font-medium leading-[1.05] tracking-tight md:text-5xl lg:text-6xl ${
+							dark ? "text-primary-50" : "text-primary-900"
+						}`}
+					>
+						{lines.map((line, i) => (
+							<TextReveal
+								as="span"
+								key={`${line}-${i}`}
+								className={`block ${i === lines.length - 1 ? (dark ? "text-accent-400" : "text-accent-600") : ""}`}
+								text={line || " "}
+								delay={0.1 + i * 0.1}
+							/>
+						))}
+					</h1>
 
-          <p
-            className={`mb-8 max-w-xl text-sm leading-relaxed md:text-base ${
-              dark ? 'text-primary-200' : 'text-primary-700'
-            }`}
-          >
-            {sub}
-          </p>
+                  <TextReveal
+                        as="p"
+						className={`mb-8 max-w-xl text-sm leading-relaxed md:text-base ${
+							dark ? "text-primary-200" : "text-primary-700"
+                            }`}
+                        text={sub || " "}
+                        delay={0.1 + lines.length * 0.1}
+					/>
 
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-            <a
-              href={ctaHref}
-              className="w-full rounded-md bg-accent-500 px-6 py-3 text-center text-sm font-medium text-paper transition-colors hover:bg-accent-600 sm:w-auto"
-              style={{ boxShadow: '0 8px 24px rgb(var(--color-accent-500) / 0.28)' }}
-            >
-              {cta}
-            </a>
-            <a
-              href={ctaHref}
-              className={`flex w-full items-center justify-center gap-2 rounded-md border px-6 py-3 text-sm font-medium backdrop-blur-md transition-colors sm:w-auto ${
-                dark
-                  ? 'border-primary-50/20 bg-primary-900/80 text-primary-50 hover:border-primary-50/50 hover:bg-primary-800'
-                  : 'border-primary-900/20 bg-paper/80 text-primary-900 hover:border-primary-900/50 hover:bg-paper'
-              }`}
-            >
-              <MdiIcon name="document" size={0.7} />
-              {secondary}
-            </a>
-          </div>
-        </div>
+            <GlowButton data={{ label: cta, href: ctaHref }} className="w-full sm:w-auto" />
+            <GlowButton
+              tone="violet"
+              data={{ label: secondary, href: ctaHref, leadIcon: 'document', trailIcon: false }}
+              className="w-full sm:w-auto"
+            />
+					</div>
+				</div>
 
-        {/* Proof strip — operating commitments, also stated in Stats */}
-        <div
-          className={`flex max-w-3xl flex-wrap items-center gap-x-8 gap-y-2 text-[11px] md:text-xs lg:max-w-sm lg:justify-end ${
-            dark ? 'text-primary-200' : 'text-primary-700'
-          }`}
-        >
-          {proof.map((item, i) => (
-            <Fragment key={`${item.value}-${i}`}>
-              {i > 0 ? (
-                <span
-                  aria-hidden
-                  className={`hidden h-3 w-px sm:block ${dark ? 'bg-primary-50/20' : 'bg-primary-900/20'}`}
-                />
-              ) : null}
-              <div className="flex items-center gap-2">
-                <span
-                  className={`font-semibold ${
-                    item.ember
-                      ? dark
-                        ? 'text-accent-300'
-                        : 'text-accent-600'
-                      : dark
-                        ? 'text-primary-50'
-                        : 'text-primary-900'
-                  }`}
-                >
-                  {item.value}
-                </span>{' '}
-                {item.label}
-              </div>
-            </Fragment>
-          ))}
-        </div>
-      </div>
+				{/* Proof strip — operating commitments, also stated in Stats */}
+				<div
+					className={`flex max-w-3xl flex-wrap items-center gap-x-8 gap-y-2 text-[11px] md:text-xs lg:max-w-sm lg:justify-end ${
+						dark ? "text-primary-200" : "text-primary-700"
+					}`}
+				>
+					{proof.map((item, i) => (
+						<Fragment key={`${item.value}-${i}`}>
+							{i > 0 ? (
+								<span
+									aria-hidden
+									className={`hidden h-3 w-px sm:block ${dark ? "bg-primary-50/20" : "bg-primary-900/20"}`}
+								/>
+							) : null}
+							<div className="flex items-center gap-2">
+								<span
+									className={`font-semibold ${
+										item.ember
+											? dark
+												? "text-accent-300"
+												: "text-accent-600"
+											: dark
+												? "text-primary-50"
+												: "text-primary-900"
+									}`}
+								>
+									{item.value}
+								</span>{" "}
+								{item.label}
+							</div>
+						</Fragment>
+					))}
+				</div>
+			</div>
 
-      {/* Bottom fade — legibility scrim for the docked copy */}
-      <div
-        aria-hidden
-        className={`pointer-events-none absolute inset-x-0 bottom-0 z-10 h-64 bg-gradient-to-t to-transparent ${
-          dark ? 'from-primary-950' : 'from-paper'
-        }`}
-      />
-    </section>
+			{/* Bottom fade — legibility scrim for the docked copy */}
+			<div
+				aria-hidden
+				className={`pointer-events-none absolute inset-x-0 bottom-0 z-10 h-64 bg-gradient-to-t to-transparent ${
+					dark ? "from-primary-950" : "from-paper"
+				}`}
+			/>
+		</section>
   );
 }

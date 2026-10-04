@@ -28,6 +28,7 @@ import {
   mdiRefresh,
   mdiRocketLaunchOutline,
   mdiSitemapOutline,
+  mdiCreation,
   mdiTagOutline,
   mdiTarget,
   mdiViewGridOutline,
@@ -76,6 +77,7 @@ export const mdi = {
   tag: mdiTagOutline,
   mail: mdiEmailOutline,
   check: mdiCheck,
+  sparkles: mdiCreation,
 } as const;
 
 export type MdiName = keyof typeof mdi;
