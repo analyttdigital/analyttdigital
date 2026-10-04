@@ -235,16 +235,65 @@ const problemFields = {
 };
 
 const beliefFields = {
-  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'WHAT WE BELIEVE' }),
-  headline: fields.text({ label: 'Headline', defaultValue: 'Decisions, not dashboards.' }),
-  stripLabel: fields.text({ label: 'Tunnel strip label', defaultValue: 'Measured · Attributed · Scaled' }),
-  points: fields.array(
-    fields.object({
-      title: fields.text({ label: 'Title' }),
-      body: fields.text({ label: 'Body', multiline: true }),
-      icon: iconField(),
-    }),
-    { label: 'Belief points', itemLabel: (props) => props.fields.title.value || 'Point' },
+  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'OUR PHILOSOPHY' }),
+  headline: fields.text({ label: 'Headline', defaultValue: "Data is not a dashboard, it's your" }),
+  headlineAccent: fields.text({ label: 'Headline accent (ember)', defaultValue: 'competitive edge.' }),
+  lede: fields.text({
+    label: 'Intro paragraph',
+    defaultValue:
+      'We harness the power of data to inform and optimise every aspect of our clients’ marketing across Kenya and East Africa.',
+    multiline: true,
+  }),
+  terrain: fields.object(
+    {
+      title: fields.text({ label: 'Card title', defaultValue: 'When your customers actually convert' }),
+      caption: fields.text({ label: 'Card caption', defaultValue: '', multiline: true }),
+      metricGroupLabel: fields.text({ label: 'Metric group label', defaultValue: 'Metric' }),
+      viewGroupLabel: fields.text({ label: 'Camera group label', defaultValue: 'Camera view' }),
+      perspectiveLabel: fields.text({ label: 'Perspective label', defaultValue: 'Perspective' }),
+      topLabel: fields.text({ label: 'Top view label', defaultValue: 'Top view' }),
+      resetLabel: fields.text({ label: 'Reset view label', defaultValue: 'Reset view' }),
+      clearLabel: fields.text({ label: 'Clear-selection label', defaultValue: 'Clear selection' }),
+      canvasLabel: fields.text({ label: 'Canvas accessible label', defaultValue: '', multiline: true }),
+      hintTouch: fields.text({ label: 'Touch hint', defaultValue: '' }),
+      hintDesktop: fields.text({ label: 'Desktop hint', defaultValue: '' }),
+      statsNote: fields.text({ label: 'Stats note (e.g. vs last week)', defaultValue: 'vs last week' }),
+      avgNote: fields.text({ label: 'Average note', defaultValue: 'on average' }),
+      belowNote: fields.text({ label: 'Below-average note', defaultValue: 'below the week average' }),
+      betweenNote: fields.text({ label: 'Work-hours note', defaultValue: 'between 08:00 and 18:00' }),
+      tableCaption: fields.text({ label: 'Data-table caption', defaultValue: 'Hourly values by day of the week' }),
+      days: fields.array(fields.text({ label: 'Day' }), {
+        label: 'Axis day labels (7)',
+        itemLabel: (props) => props.value || 'Day',
+      }),
+      dayNames: fields.array(fields.text({ label: 'Day' }), {
+        label: 'Full day names (7)',
+        itemLabel: (props) => props.value || 'Day',
+      }),
+      metrics: fields.array(
+        fields.object({
+          key: fields.select({
+            label: 'Dataset',
+            options: [
+              { label: 'Leads', value: 'leads' },
+              { label: 'Ad clicks', value: 'clicks' },
+              { label: 'Cost per lead', value: 'cpl' },
+            ],
+            defaultValue: 'leads',
+          }),
+          label: fields.text({ label: 'Tab label' }),
+          title: fields.text({ label: 'Stats title' }),
+          peakLabel: fields.text({ label: 'Peak stat label' }),
+          dayLabel: fields.text({ label: 'Best-day stat label' }),
+          noun: fields.text({ label: 'Noun (e.g. leads)' }),
+          lessLabel: fields.text({ label: 'Legend “low” end', defaultValue: 'Fewer' }),
+          moreLabel: fields.text({ label: 'Legend “high” end', defaultValue: 'More' }),
+          delta: fields.number({ label: 'Week delta %', defaultValue: 0 }),
+        }),
+        { label: 'Metrics', itemLabel: (props) => props.fields.label.value || 'Metric' },
+      ),
+    },
+    { label: 'Activity terrain' },
   ),
 };
 

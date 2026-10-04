@@ -131,13 +131,51 @@ export type ProblemSection = {
   panelChips?: { label: string; value: string }[];
 };
 
-export type BeliefPoint = { title: string; body: string; icon?: string };
+export type TerrainMetricKey = 'leads' | 'clicks' | 'cpl';
+
+export type TerrainMetric = {
+  key: TerrainMetricKey;
+  label: string;
+  title: string;
+  peakLabel: string;
+  dayLabel: string;
+  noun: string;
+  lessLabel: string;
+  moreLabel: string;
+  delta: number;
+};
+
+/** Copy + config for the reusable activity-terrain graphic. The hourly grids
+ *  themselves are generated deterministically in code (seeded, documented as
+ *  illustrative) — everything a reader sees is content-editable here. */
+export type TerrainData = {
+  title: string;
+  caption: string;
+  metricGroupLabel: string;
+  viewGroupLabel: string;
+  perspectiveLabel: string;
+  topLabel: string;
+  resetLabel: string;
+  clearLabel: string;
+  canvasLabel: string;
+  hintTouch: string;
+  hintDesktop: string;
+  statsNote: string;
+  avgNote: string;
+  belowNote: string;
+  betweenNote: string;
+  tableCaption: string;
+  days: string[];
+  dayNames: string[];
+  metrics: TerrainMetric[];
+};
 
 export type BeliefSection = {
   eyebrow: string;
   headline: string;
-  points: BeliefPoint[];
-  stripLabel?: string;
+  headlineAccent: string;
+  lede: string;
+  terrain: TerrainData;
 };
 
 export type ProcessStep = { title: string; body: string; depth?: string };
