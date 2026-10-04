@@ -472,6 +472,9 @@ function PanelBody({ panel, dark }: { panel: HeroPanel; dark: boolean }) {
 export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSection['variant'] }) {
   const tunnelRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<HTMLDivElement>(null);
+  /** Index of the hovered packet — pausing it is handled in the paint loop
+   *  via ref so hovering never re-renders the hero. */
+  const hoveredRef = useRef<number | null>(null);
 
   const eyebrow = hero?.eyebrow || FALLBACK.eyebrow;
   const lines = (hero?.headline || FALLBACK.headline).split('\n');
@@ -487,7 +490,9 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
 
   // Seeded placements — identical on server and client first paint. Positions
   // are content-agnostic; each slot cycles through the content panels so every
-  // entry in `hero.panels` shows up regardless of list length.
+  // entry in `hero.panels` shows up regardless of list length. Each slot keeps
+  // a base offset; the paint step scales it by depth so panels spawn near the
+  // centre (behind the collage) and sweep outward as they approach.
   const placements = useMemo(() => {
     const rand = mulberry32(7);
     return Array.from({ length: 40 }, (_, i) => {
@@ -495,8 +500,8 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
       const radiusX = 350 + rand() * 400;
       const radiusY = 250 + rand() * 300;
       return {
-        x: Math.cos(angle) * radiusX,
-        y: Math.sin(angle) * radiusY,
+        bx: Math.cos(angle) * radiusX,
+        by: Math.sin(angle) * radiusY,
         z: -rand() * 4000,
         extra: i >= 20 ? 'hidden md:flex' : 'flex',
       };
@@ -516,15 +521,29 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
     const speed = reduce ? 0 : 1.5;
 
     const els = Array.from(tunnel.children) as HTMLElement[];
-    const state = placements.map((p, i) => ({ ...p, x: p.x * scale, y: p.y * scale, el: els[i] })).filter((p) => p.el);
+    const state = placements.map((p, i) => ({ ...p, i, el: els[i] })).filter((p) => p.el);
 
     const paint = () => {
       for (const p of state) {
+        // Depth progress 0 (far) → 1 (at the camera). The lateral offset grows
+        // with easing, so panels emerge from behind the collage and accelerate
+        // outward past the viewer instead of flying on fixed rails.
+        const progress = Math.min(1, Math.max(0, (p.z + maxDepth) / (cameraZ + maxDepth)));
+        const grow = 0.06 + 0.94 * Math.pow(progress, 1.6);
+        const x = p.bx * grow * scale;
+        const y = p.by * grow * scale;
+        // A hovered packet holds still and steps forward: sharp, opaque, proud.
+        const hot = hoveredRef.current === p.i;
         const blur = p.z < -1200 ? Math.min(6, (-p.z - 1200) / 400) : 0;
-        const opacity =
-          p.z < -3200 ? Math.max(0, 1 - (-p.z - 3200) / 800) : p.z > 0 ? Math.max(0, 1 - p.z / cameraZ) : 1;
-        p.el.style.transform = `translate(-50%, -50%) translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, ${p.z.toFixed(1)}px)`;
-        p.el.style.filter = blur > 0.5 ? `blur(${blur.toFixed(1)}px)` : 'none';
+        const opacity = hot
+          ? 1
+          : p.z < -3200
+            ? Math.max(0, 1 - (-p.z - 3200) / 800)
+            : p.z > 0
+              ? Math.max(0, 1 - p.z / cameraZ)
+              : 1;
+        p.el.style.transform = `translate(-50%, -50%) translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, ${p.z.toFixed(1)}px)${hot ? ' scale(1.08)' : ''}`;
+        p.el.style.filter = !hot && blur > 0.5 ? `blur(${blur.toFixed(1)}px)` : 'none';
         p.el.style.opacity = opacity.toFixed(2);
         p.el.style.zIndex = String(Math.round(p.z + maxDepth));
       }
@@ -535,40 +554,44 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
 
     let raf = 0;
     const tick = () => {
-      for (const p of state) {
-        p.z += speed;
-        if (p.z > cameraZ) p.z -= maxDepth + cameraZ;
+      // Holding any packet stills the whole stream; the hovered card keeps
+      // its full-opacity highlight from the paint loop.
+      if (hoveredRef.current === null) {
+        for (const p of state) {
+          p.z += speed;
+          if (p.z > cameraZ) p.z -= maxDepth + cameraZ;
+        }
       }
       paint();
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
-
+    /* 
     let parRaf = 0;
-    let mouseX = 50;
-    let mouseY = 50;
-    let targetX = 50;
-    let targetY = 50;
-    const onMove = (e: MouseEvent) => {
-      mouseX = 50 + (e.clientX / window.innerWidth - 0.5) * 20;
-      mouseY = 50 + (e.clientY / window.innerHeight - 0.5) * 20;
-    };
-    const parTick = () => {
-      targetX += (mouseX - targetX) * 0.05;
-      targetY += (mouseY - targetY) * 0.05;
-      scene.style.perspectiveOrigin = `${targetX.toFixed(2)}% ${targetY.toFixed(2)}%`;
-      parRaf = requestAnimationFrame(parTick);
-    };
-    if (!isMobile) {
-      document.addEventListener('mousemove', onMove);
-      parRaf = requestAnimationFrame(parTick);
-    }
-
-    return () => {
-      cancelAnimationFrame(raf);
-      cancelAnimationFrame(parRaf);
-      document.removeEventListener('mousemove', onMove);
-    };
+	let mouseX = 50;
+	let mouseY = 50;
+	let targetX = 50;
+	let targetY = 50;
+	const onMove = (e: MouseEvent) => {
+		mouseX = 50 + (e.clientX / window.innerWidth - 0.5) * 20;
+		mouseY = 50 + (e.clientY / window.innerHeight - 0.5) * 20;
+	};
+	const parTick = () => {
+		targetX += (mouseX - targetX) * 0.05;
+		targetY += (mouseY - targetY) * 0.05;
+		scene.style.perspectiveOrigin = `${targetX.toFixed(2)}% ${targetY.toFixed(2)}%`;
+		parRaf = requestAnimationFrame(parTick);
+	};
+	if (!isMobile) {
+		document.addEventListener("mousemove", onMove);
+		parRaf = requestAnimationFrame(parTick);
+	}
+    */
+	return () => {
+		cancelAnimationFrame(raf);
+		// cancelAnimationFrame(parRaf);
+		// document.removeEventListener("mousemove", onMove);
+	};
   }, [placements]);
 
   return (
@@ -601,7 +624,13 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
             return (
             <div
                 key={`${panel.kind}-${i}`}
-                className={`absolute left-1/2 top-1/2 w-64 flex-col rounded-xl border p-5 backdrop-blur-md will-change-transform ${p.extra} ${
+                onMouseEnter={() => {
+                  hoveredRef.current = i;
+                }}
+                onMouseLeave={() => {
+                  if (hoveredRef.current === i) hoveredRef.current = null;
+                }}
+                className={`tunnel-panel pointer-events-auto absolute left-1/2 top-1/2 w-64 flex-col rounded-xl border p-5 backdrop-blur-md will-change-transform ${p.extra} ${
                   panel.tone === 'alert' 
                     ? 'border-accent-500/30'
                     : dark

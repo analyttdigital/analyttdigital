@@ -540,6 +540,27 @@ button {
 }
 
 /* ------------------------------------------------------------------ */
+/* Tunnel cards — packets a visitor can hold                           */
+/* ------------------------------------------------------------------ */
+
+/* Hovering a packet pauses it (see the hero paint loop) and steps it
+   forward with an ember edge and a deeper shadow. Sharpness, opacity and
+   scale are handled in the paint loop; border and shadow live here because
+   paint never writes them. Both are set elsewhere (utility + inline style),
+   so the hover state carries !important. */
+.tunnel-panel {
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.25s ease;
+}
+.tunnel-panel:hover {
+  border-color: rgb(var(--color-accent-500) / 0.65) !important;
+  box-shadow:
+    0 14px 44px rgb(var(--color-accent-500) / 0.22),
+    0 10px 30px rgb(var(--color-primary-600) / 0.1) !important;
+}
+
+/* ------------------------------------------------------------------ */
 /* Resolve band — where one ground becomes another                     */
 /* ------------------------------------------------------------------ */
 
