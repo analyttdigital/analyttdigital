@@ -137,6 +137,7 @@ const heroFields = {
           { label: 'Audit score (progress)', value: 'audit' },
           { label: 'Prospecting CTR (bars)', value: 'ctr' },
           { label: 'Landing conversion (metric)', value: 'funnel' },
+          { label: 'Partner logo', value: 'partner' },
         ],
         defaultValue: 'cpl',
       }),
@@ -157,6 +158,8 @@ const heroFields = {
         ],
         defaultValue: 'default',
       }),
+      logo: imageField('Partner logo (partner layout only)'),
+      logoDark: imageField('Partner logo on dark (partner layout only)'),
       tone: fields.select({
         label: 'Tone',
         options: [

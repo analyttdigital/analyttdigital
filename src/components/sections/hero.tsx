@@ -4,6 +4,7 @@ import { Fragment, useEffect, useMemo, useRef } from 'react';
 import Image from 'next/image';
 
 import { MdiIcon } from '@/lib/icons/resolve-icon';
+import { DynamicImage } from '@/components/media/dynamic-image';
 import { GlowButton } from '@/components/layout/glow-button';
 import type { HeroPanel, HeroProof, HeroSection } from '@/lib/content/types';
 import { TextReveal } from '../graphics/text-reveal';
@@ -147,6 +148,41 @@ const FALLBACK_PANELS: HeroPanel[] = [
     delta: '+224%',
     icon: 'layers',
   },
+  {
+    kind: 'partner',
+    title: 'Google',
+    subtitle: 'Search · YouTube · Analytics',
+    logo: { src: '/img/partners/google.svg', alt: 'Google' },
+    logoDark: { src: '/img/partners/google-light.svg', alt: 'Google' },
+  },
+  {
+    kind: 'partner',
+    title: 'Meta',
+    subtitle: 'Facebook · Instagram · WhatsApp',
+    logo: { src: '/img/partners/meta.svg', alt: 'Meta' },
+    logoDark: { src: '/img/partners/meta-light.svg', alt: 'Meta' },
+  },
+  {
+    kind: 'partner',
+    title: 'HubSpot',
+    subtitle: 'CRM & attribution',
+    logo: { src: '/img/partners/hubspot.svg', alt: 'HubSpot' },
+    logoDark: { src: '/img/partners/hubspot-light.svg', alt: 'HubSpot' },
+  },
+  {
+    kind: 'partner',
+    title: 'TikTok',
+    subtitle: 'Discovery & prospecting',
+    logo: { src: '/img/partners/tiktok.svg', alt: 'TikTok' },
+    logoDark: { src: '/img/partners/tiktok-light.svg', alt: 'TikTok' },
+  },
+  {
+    kind: 'partner',
+    title: 'LinkedIn',
+    subtitle: 'B2B demand',
+    logo: { src: '/img/partners/linkedin.svg', alt: 'LinkedIn' },
+    logoDark: { src: '/img/partners/linkedin-light.svg', alt: 'LinkedIn' },
+  },
 ];
 
 /** Positional icon per layout — an explicit `icon` in content always wins. */
@@ -165,6 +201,7 @@ const DEFAULT_ICON: Record<HeroPanel['kind'], string> = {
   audit: 'crosshairs',
   ctr: 'bullhorn',
   funnel: 'layers',
+  partner: 'check',
 };
 
 /** Icon colour per panel — content-editable, token-only, Tailwind-static.
@@ -444,6 +481,21 @@ function DualPanel({ panel, dark }: { panel: HeroPanel; dark: boolean }) {
   );
 }
 
+/** Logo layout: partner — the mark is the message, centred and prominent. */
+function LogoPanel({ panel, dark }: { panel: HeroPanel; dark: boolean }) {
+  const t = panelTones(dark);
+  const logo = dark && panel.logoDark?.src?.trim() ? panel.logoDark : panel.logo;
+  return (
+    <div className="flex flex-col gap-2">
+      <span className={`text-xs font-medium ${t.client}`}>{panel.title}</span>
+      <div className="relative flex h-16 items-center justify-center">
+        <DynamicImage image={logo ?? null} className="h-full w-full object-contain" sizes="256px" />
+      </div>
+      {panel.subtitle ? <span className={`text-center text-[10px] ${t.sub}`}>{panel.subtitle}</span> : null}
+    </div>
+  );
+}
+
 function PanelBody({ panel, dark }: { panel: HeroPanel; dark: boolean }) {
   switch (panel.kind) {
     case 'cpl':
@@ -468,6 +520,8 @@ function PanelBody({ panel, dark }: { panel: HeroPanel; dark: boolean }) {
       return <NoticePanel panel={panel} dark={dark} />;
     case 'simkar':
       return <DualPanel panel={panel} dark={dark} />;
+    case 'partner':
+      return <LogoPanel panel={panel} dark={dark} />;
   }
 }
 

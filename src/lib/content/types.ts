@@ -63,7 +63,8 @@ export type HeroPanelKind =
   | 'attribution'
   | 'audit'
   | 'ctr'
-  | 'funnel';
+  | 'funnel'
+  | 'partner';
 
 export type HeroPanelStep = { label: string; state: 'done' | 'active' | 'todo' };
 
@@ -78,9 +79,11 @@ export type HeroProof = { value: string; label: string; ember?: boolean };
  *  picks a layout by `kind` and reads these fields. Layout groups:
  *  bars (cpl/roas/ctr), metric (leads/revenue/attribution/funnel),
  *  progress (seo/audit), steps (process), code (code),
- *  notice (alert/whatsapp), dual (simkar). `iconTone` recolours the panel's
- *  icon (and its dot/tile) through three token steps — `default` keeps the
- *  layout's positional colour, per the shared icon convention. */
+ *  notice (alert/whatsapp), dual (simkar), logo (partner). `iconTone`
+ *  recolours the panel's icon (and its dot/tile) through three token steps —
+ *  `default` keeps the layout's positional colour, per the shared icon
+ *  convention. `logo`/`logoDark` carry a partner mark (`logoDark` shows on the
+ *  dark variant, falling back to `logo`). */
 export type HeroPanel = {
   kind: HeroPanelKind;
   title: string;
@@ -91,6 +94,8 @@ export type HeroPanel = {
   delta?: string;
   icon?: string;
   iconTone?: 'default' | 'accent' | 'primary' | 'muted';
+  logo?: ContentImage;
+  logoDark?: ContentImage;
   tone?: 'default' | 'alert';
   bars?: number[];
   progress?: number;
