@@ -1038,7 +1038,9 @@ export function ActivityTerrain({
         </div>
       ) : null}
 
-      <table className="sr-only">
+      {/* Screen-reader table: fixed layout pins it to the 1px sr-only box —
+          auto layout would size to content and stretch the page on mobile. */}
+      <table className="sr-only table-fixed">
         <caption>
           {cfg ? `${cfg.title} — ${data.tableCaption}` : data.tableCaption}
         </caption>

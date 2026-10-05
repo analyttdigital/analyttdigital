@@ -715,10 +715,16 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
 				style={{
 					background: dark
 						? "radial-gradient(ellipse 52% 44% at 50% 50%, rgb(var(--color-primary-950) / 0.94) 0%, rgb(var(--color-primary-950) / 0.7) 55%, rgb(var(--color-primary-950) / 0) 100%)"
-						: "radial-gradient(ellipse 52% 44% at 50% 50%, rgb(var(--color-paper-50) / 0.94) 0%, rgb(var(--color-paper-50) / 0.7) 55%, rgb(var(--color-paper-50) / 0) 100%)",
+						: "radial-gradient(circle, rgb(var(--color-paper-50)) 7%, rgb(var(--color-accent-50) / 0.1) 15%, rgb(var(--color-paper-50) / 0)  25%, rgb(var(--color-paper-50) / 0) 100%)",
 				}}
 			/>
-
+			{/* <div
+				aria-hidden
+				className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(68vw,300px)] md:w-[min(38vw,350px)] rounded-full blur-2xl ${
+					dark ? "bg-accent-500/25" : "bg-accent-500/20"
+				}`}
+			/> */}
+			{/* <div aria-hidden className={`absolute inset-[-6%] rounded-full ${dark ? 'bg-primary-950' : 'bg-paper-50'}`} /> */}
 			{/* Brand collage — the visual anchor of the scene. It sits above the
           halo and the tunnel, so packets read as originating from behind it. */}
 			<div className="pointer-events-none z-40 flex flex-1 items-center justify-center px-4 py-8 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -729,7 +735,7 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
 					width={720}
 					height={720}
 					priority={true}
-					className="h-auto w-[min(68vw,300px)] md:w-[min(38vw,350px)]  -translate-y-20"
+					className="h-auto w-[min(68vw,300px)] md:w-[min(38vw,350px)]  -translate-y-12"
 				/>
 			</div>
 
@@ -745,7 +751,6 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
 						}`}
 						style={{ boxShadow: "0 2px 10px rgb(var(--color-primary-600) / 0.06)" }}
 					>
-						
 						{eyebrow}
 						<MdiIcon name="arrowRight" className="text-accent-300" size={0.55} />
 					</a>
@@ -766,22 +771,30 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
 						))}
 					</h1>
 
-                  <TextReveal
-                        as="p"
+					<TextReveal
+						as="p"
 						className={`mb-8 max-w-xl text-sm leading-relaxed md:text-base ${
 							dark ? "text-primary-200" : "text-primary-700"
-                            }`}
-                        text={sub || " "}
-                        delay={0.1 + lines.length * 0.1}
+						}`}
+						text={sub || " "}
+						delay={0.1 + lines.length * 0.1}
 					/>
 
-          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-            <GlowButton data={{ label: cta, href: ctaHref }} className="w-full sm:w-auto" />
-            <GlowButton
-              tone="violet"
-              data={{ label: secondary, href: ctaHref, leadIcon: 'document', trailIcon: false }}
-              className="w-full sm:w-auto"
-            />
+					<div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+						<GlowButton
+							data={{ label: cta, href: ctaHref }}
+							className="w-full sm:w-auto"
+						/>
+						<GlowButton
+							tone="violet"
+							data={{
+								label: secondary,
+								href: ctaHref,
+								leadIcon: "document",
+								trailIcon: false,
+							}}
+							className="w-full sm:w-auto"
+						/>
 					</div>
 				</div>
 
