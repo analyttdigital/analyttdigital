@@ -646,6 +646,246 @@ button {
 }
 
 /* ------------------------------------------------------------------ */
+/* Process player — stepper, labelled control, soft chips, check rows  */
+/* ------------------------------------------------------------------ */
+
+/* The labelled control beside the segmented groups: tray, label, ember on
+   hover. Ember focus like every other control in this file. */
+.pillbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 12px;
+  background-color: rgb(var(--color-paper-200));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-primary-600) / 0.1);
+  color: rgb(var(--color-primary-600));
+  font-size: 13px;
+  font-weight: 500;
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease,
+    opacity 0.15s ease;
+}
+.pillbtn:hover {
+  color: rgb(var(--color-accent-600));
+  background-color: rgb(var(--color-paper-50));
+}
+.pillbtn:disabled {
+  opacity: 0.5;
+}
+.pillbtn:focus-visible {
+  outline: 2px solid rgb(var(--color-accent-500));
+  outline-offset: 2px;
+}
+
+/* The stepper: one rail, an ember fill, five tab dots with labels. Dots are
+   circles here — the player's own instrument, and the one round shape the
+   page allows itself outside the tunnel. */
+.pstep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  padding: 0 2px;
+  background: none;
+  border: 0;
+  font: inherit;
+  color: inherit;
+}
+.ptrack {
+  position: absolute;
+  top: 19px;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background-color: rgb(var(--color-primary-600) / 0.14);
+  border-radius: 2px;
+}
+.pfill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  background-color: rgb(var(--color-accent-500));
+  border-radius: 2px;
+}
+.pdot {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgb(var(--color-paper-50));
+  border: 1.6px solid rgb(var(--color-primary-600) / 0.22);
+  font-size: 13px;
+  font-weight: 600;
+  color: rgb(var(--color-primary-500));
+  transition:
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease;
+  font-variant-numeric: tabular-nums;
+}
+.plbl {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgb(var(--color-primary-500));
+  transition: color 0.25s ease;
+}
+.pstep:hover .plbl {
+  color: rgb(var(--color-primary-900));
+}
+.pstep[data-state='done'] .pdot {
+  background-color: rgb(var(--color-primary-600));
+  border-color: rgb(var(--color-primary-600));
+  color: rgb(var(--color-paper-50));
+}
+.pstep[data-state='active'] .pdot {
+  border-color: rgb(var(--color-accent-500));
+  color: rgb(var(--color-accent-600));
+  box-shadow: 0 0 0 5px rgb(var(--color-accent-500) / 0.12);
+}
+.pstep[data-state='active'] .plbl {
+  color: rgb(var(--color-primary-900));
+  font-weight: 600;
+}
+.pstep:focus-visible {
+  outline: none;
+}
+.pstep:focus-visible .pdot {
+  outline: 2px solid rgb(var(--color-accent-500));
+  outline-offset: 3px;
+}
+@media (max-width: 520px) {
+  .plbl {
+    font-size: 11px;
+  }
+  .pdot {
+    width: 36px;
+    height: 36px;
+  }
+  .ptrack {
+    top: 17px;
+  }
+}
+
+/* Soft chip — the plain-reader cousin of `.chip`, for card interiors. */
+.tagchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background-color: rgb(var(--color-paper-200));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-primary-600) / 0.1);
+  font-size: 12px;
+  font-weight: 500;
+  color: rgb(var(--color-primary-600));
+}
+
+/* Launch checklist rows: white plates with an ember check badge. */
+.checkrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background-color: rgb(var(--color-paper-50));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-primary-600) / 0.12);
+  font-size: 13px;
+  font-weight: 500;
+  color: rgb(var(--color-primary-900));
+}
+.checkrow__badge {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: rgb(var(--color-accent-500));
+  color: #fff;
+  flex: none;
+}
+
+/* Step-visual entrances — one per switch, replayed by remount. */
+.pv-in {
+  animation: pv-fade 0.45s ease both;
+}
+@keyframes pv-fade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.pv-grow {
+  transform-box: fill-box;
+  transform-origin: bottom;
+  animation: pv-grow 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes pv-grow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+.pv-wide {
+  transform-box: fill-box;
+  transform-origin: left;
+  animation: pv-wide 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes pv-wide {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.pv-pop {
+  animation: pv-pop 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.4) both;
+}
+@keyframes pv-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.pv-leak {
+  animation: pv-leak 1.8s ease-in infinite;
+}
+@keyframes pv-leak {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /* Resolve band — where one ground becomes another                     */
 /* ------------------------------------------------------------------ */
 

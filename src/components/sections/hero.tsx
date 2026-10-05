@@ -548,11 +548,13 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
   // are content-agnostic; each slot cycles through the content panels so every
   // entry in `hero.panels` shows up regardless of list length. Each slot keeps
   // a base offset; the paint step scales it by depth so panels spawn near the
-  // centre (behind the collage) and sweep outward as they approach.
+  // centre (behind the collage) and sweep outward as they approach. Angles are
+  // confined to the upper half-plane, so nothing ever flies downwards into
+  // the docked copy — only left, up, and right.
   const placements = useMemo(() => {
     const rand = mulberry32(7);
     return Array.from({ length: 40 }, (_, i) => {
-      const angle = rand() * Math.PI * 2;
+      const angle = Math.PI + rand() * Math.PI;
       const radiusX = 350 + rand() * 400;
       const radiusY = 250 + rand() * 300;
       return {

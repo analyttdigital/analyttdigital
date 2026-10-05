@@ -183,12 +183,59 @@ export type BeliefSection = {
   terrain: TerrainData;
 };
 
-export type ProcessStep = { title: string; body: string; depth?: string };
+export type ProcessBarTone = 'soft' | 'mid' | 'deep' | 'field' | 'ember';
+
+export type ProcessFunnelRow = { label: string; width: number; tone: ProcessBarTone };
+
+export type ProcessChannel = { label: string; pct: number; tone: ProcessBarTone };
+
+/** Per-step visual spec — flat, mirroring the Keystatic object: `kind` picks
+ *  the layout and only its fields are read. Widths/pcts are 0–100, raw values
+ *  are scaled to the tallest bar. The pictures stay illustrative, exactly as
+ *  the card's note says. */
+export type ProcessVisual = {
+  kind: 'funnel' | 'channels' | 'checklist' | 'weekly' | 'scale';
+  title?: string;
+  leakNote?: string;
+  rows?: ProcessFunnelRow[];
+  mixTitle?: string;
+  channels?: ProcessChannel[];
+  targetsTitle?: string;
+  targets?: string[];
+  items?: string[];
+  doneNote?: string;
+  doneTag?: string;
+  values?: number[];
+  winnerNote?: string;
+  tags?: string[];
+};
+
+export type ProcessStep = {
+  n: string;
+  title: string;
+  desc: string;
+  chips: string[];
+  visual: ProcessVisual;
+};
 
 export type ProcessSection = {
   eyebrow: string;
-  chapterTitle: string;
+  headline: string;
+  headlineAccent: string;
+  lede: string;
+  chapterTitle?: string;
+  cardTitle: string;
+  cardSub: string;
+  playLabel: string;
+  pauseLabel: string;
+  stepOfTemplate: string;
+  illustrativeNote: string;
+  /** Ms each step holds while autoplaying. */
+  dwellMs: number;
   steps: ProcessStep[];
+  closing: string;
+  cta: string;
+  ctaHref: string;
 };
 
 export type Capability = { tag: string; title: string; body: string; depth?: string; icon?: string };
