@@ -50,8 +50,8 @@ Everything below is scoped against that world.
 - [x] Problem — deep band; spend split drawn as columns of squares so the reader can count the loss
 - [x] Belief — paper band; numbered commitment readout + one media slot
 - [x] Process — field band; five nodes on a routed rail, the live node in ember
-- [x] Capabilities — deep band; four panels, with the net routed once across the band in the gutters rather than four fragments at card scale
-- [x] Work — field band; four plates with real figures, client names withheld pending permission
+- [x] Capabilities — paper band, path-flow rebuild (Oct 2026): four services as flat `panel--paper` nodes on `PathFlowSection`'s `rail` layout — a two-up grid in normal document flow (so no panel can overlap another) with a switchback spine routed through the measured card boxes; scroll-driven ember trail with glow + head, header restored to `BandHead` + `BandTitle`. Content shape unchanged. DEVIATION: the flow's glow/head/reveal add authored motion beyond the Mesh's single resolve + trace packets — per owner sign-off for the full path-flow look; trail reuses the ember token, never the component blue default.
+- [x] Work — paper band, same path-flow rebuild (Oct 2026): four cases as flat `panel--paper` nodes with media slots on `PathFlowSection`'s `rail` layout — normal-flow grid keeps the tall media plates from colliding, the routed spine follows their real positions. Real figures carried over untouched; client names still pending clearance. Same Mesh deviation as Capabilities.
 - [x] Stats — paper band; four figures ruled as one tally
 - [x] Industries — field band; sector chip index
 - [x] Insights — deep band; three entries with an honest in-preparation status

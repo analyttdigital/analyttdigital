@@ -9,6 +9,7 @@ import { ProcessChapter } from '@/components/sections/process-chapter';
 import { Stats } from '@/components/sections/stats';
 import { Work } from '@/components/sections/work';
 import type { Section } from '@/lib/content/types';
+import PathFlowSection from '../graphics/path-flow-section';
 
 /** Render a page document's ordered section list. */
 export function SectionRenderer({ sections }: { sections: Section[] }) {
@@ -30,7 +31,23 @@ function SectionBlock({ section }: { section: Section }) {
     case 'belief':
       return <Belief belief={section} />;
     case 'process':
-      return <ProcessChapter process={section} />;
+          return (
+				<div className="relative w-full flex flex-col">
+					<PathFlowSection
+						// variant="staircase-ltr" // "staircase-ltr" | "staircase-rtl" | "edges-converge" | "cross-flow"
+						variant="cross-flow"
+						mode="scroll" // or "auto"
+						trailColor="#2563eb"
+						header={<h2>…</h2>}
+					>
+						<div className="bg-accent p-4 h-full rounded-lg" />
+						<div className="bg-accent p-4 h-full rounded-lg" />
+						<div className="bg-accent p-4 h-full rounded-lg" />
+						{/* child N goes in slot N of the variant */}
+					</PathFlowSection>
+					<ProcessChapter process={section} />
+				</div>
+			);
     case 'capabilities':
       return <Capabilities capabilities={section} />;
     case 'work':

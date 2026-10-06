@@ -1,91 +1,78 @@
 import { Band, BandHead, BandTitle } from '@/components/layout/band';
+import { PathFlowSection } from '@/components/graphics/path-flow-section';
 import { MediaSlot } from '@/components/media/dynamic-image';
 import { CountUp } from '@/lib/motion/counter';
-import { NodeIn, Reveal } from '@/lib/motion/reveal';
 import { useChrome } from '@/lib/content/chrome';
-import type { WorkCase, WorkSection } from '@/lib/content/types';
+import type { WorkSection } from '@/lib/content/types';
 
 /**
- * Work — four results, four plates.
+ * Work — the proof as nodes on a routed path.
  *
- * Each engagement prints as one panel: the plate at the top (empty, awaiting
- * artwork), then who it was and in what sector, the result in a sentence, and
- * the figure set large enough to read from across the room. Client names are
- * withheld pending permission, so the section says exactly that underneath
- * rather than implying these are cleared case studies.
+ * Path-flow rebuild (Oct 2026, per owner sign-off): the four cases ride
+ * `PathFlowSection` in its `rail` layout — a two-up grid in normal document
+ * flow, so the tall media plates can never overlap, with a switchback spine
+ * routed through their measured positions. Trail is scroll-driven with glow +
+ * head; the ember trail reuses the brand token rather than the component's
+ * blue default. Nodes are flat `panel--paper` plates — square, no shadows —
+ * each with its media slot, so the four empty mounts travel the path with
+ * their figures.
  *
- * One net across the band, routed panel to panel, so the four results are
- * wired to each other rather than sitting in four separate boxes.
+ * Content shape is unchanged: `client / industry / depth / headline / body /
+ * metric / metricLabel / image` per case. Figures are the content's own real
+ * numbers, carried over untouched.
  */
-/** One pad per case panel, on its edge — see capabilities. */
-const NODES = [
-  { x: 0.0, y: 0.04 },
-  { x: 0.22, y: 0.08 },
-  { x: 0.0, y: 0.31 },
-  { x: 0.5, y: 0.31 },
-  { x: 1.0, y: 0.31 },
-  { x: 0.0, y: 0.7 },
-  { x: 0.5, y: 0.7 },
-  { x: 1.0, y: 0.7 },
-];
-
 export function Work({ work }: { work?: WorkSection }) {
   const cases = work?.cases ?? [];
   const chrome = useChrome();
 
   return (
-    <Band id="work" ground="field" mesh={{ seed: 41, count: 6, depth: 42, opacity: 0.5, anchors: NODES }}>
-      <BandHead>{work?.eyebrow}</BandHead>
-
-      <div className="mt-10 flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-end">
-        <BandTitle lines={work?.headline ?? ''} />
-        <Reveal delay={0.16}>
-          <p className="body body--sm max-w-[32ch] text-primary-300">{chrome.workNote}</p>
-        </Reveal>
-      </div>
-
-      <div className="mt-14 grid gap-5 md:grid-cols-2">
-        {cases.map((kase, i) => (
-          <CasePanel key={kase.client} kase={kase} index={i} />
+    <Band id="work" ground="paper">
+      <PathFlowSection
+        layout="rail"
+        mode="scroll"
+        color="rgb(var(--color-ink-950))"
+        trailColor="rgb(var(--color-accent-500))"
+        trailLength={0.14}
+        strokeWidth={1.5}
+        glow={true}
+        head={true}
+        rails={true}
+        revealItems={true}
+        header={
+          <div>
+            <BandHead>{work?.eyebrow ?? 'Selected work'}</BandHead>
+            <BandTitle lines={work?.headline ?? ''} delay={0.06} size="lg" className="mt-6 text-ink-950" />
+            <p className="body body--paper body--sm mt-6 max-w-[38ch]">{chrome.workNote}</p>
+          </div>
+        }
+      >
+        {cases.map((kase) => (
+          <article key={kase.client} aria-label={`${kase.depth ?? kase.client} — ${kase.headline}`} className="panel--paper">
+            <MediaSlot image={kase.image} icon="chartBox" label={kase.client} tone="paper" className="aspect-[16/9] w-full" />
+            <div className="flex flex-col p-6 md:p-7">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[10.5px] font-medium uppercase tracking-[0.16em] text-ink-800">
+                <span className="text-accent-700">{kase.depth ?? kase.client}</span>
+                <span aria-hidden className="text-ink-800/40">/</span>
+                <span>{kase.industry}</span>
+              </div>
+              <p className="mt-4 text-[15px] font-medium text-ink-900">{kase.client}</p>
+              <h3 className="verb mt-3 max-w-[30ch] text-[clamp(1.2rem,2vw,1.5rem)] text-ink-950">
+                {kase.headline}
+              </h3>
+              <p className="body body--paper body--sm mt-3 max-w-[56ch]">{kase.body}</p>
+              <div className="mt-6">
+                <CountUp
+                  value={kase.metric}
+                  className="num block text-[clamp(2.4rem,4.4vw,3.4rem)] text-accent-700"
+                />
+                <span className="mt-3 block max-w-[26ch] font-mono text-[10.5px] font-medium uppercase leading-relaxed tracking-[0.16em] text-ink-800">
+                  {kase.metricLabel}
+                </span>
+              </div>
+            </div>
+          </article>
         ))}
-      </div>
+      </PathFlowSection>
     </Band>
-  );
-}
-
-function CasePanel({ kase, index }: { kase: WorkCase; index: number }) {
-  return (
-    <NodeIn delay={0.06 + index * 0.07}>
-      <article className="panel group flex h-full flex-col transition-colors duration-300 hover:bg-primary-500">
-        <MediaSlot
-          image={kase.image}
-          icon="chartBox"
-          label={kase.client}
-          className="aspect-[16/10] w-full"
-        />
-
-        <div className="flex flex-1 flex-col p-7 md:p-8">
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-            <span className="chip chip--ember">{kase.depth ?? `Case ${String(index + 1).padStart(2, '0')}`}</span>
-            <span className="label">{kase.industry}</span>
-          </div>
-
-          <p className="mt-6 text-[17px] font-medium text-primary-50">{kase.client}</p>
-
-          <h3 className="verb mt-4 text-[clamp(1.2rem,2vw,1.5rem)] text-primary-50">
-            {kase.headline}
-          </h3>
-          <p className="body body--sm mt-4 max-w-[50ch]">{kase.body}</p>
-
-          <div className="mt-8 border-t border-primary-50/14 pt-6">
-            <CountUp
-              value={kase.metric}
-              className="num block text-[clamp(2.4rem,4.4vw,3.4rem)] text-primary-50 transition-colors duration-300 group-hover:text-accent-400"
-            />
-            <span className="label mt-4 block max-w-[26ch] leading-relaxed">{kase.metricLabel}</span>
-          </div>
-        </div>
-      </article>
-    </NodeIn>
   );
 }

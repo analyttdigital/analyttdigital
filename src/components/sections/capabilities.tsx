@@ -1,72 +1,74 @@
 import { Band, BandHead, BandTitle } from '@/components/layout/band';
-import { PanelIn } from '@/lib/motion/reveal';
+import { PathFlowSection } from '@/components/graphics/path-flow-section';
+import { MdiIcon, capabilityIcons } from '@/lib/icons/resolve-icon';
 import type { CapabilitiesSection } from '@/lib/content/types';
 
 /**
- * Capabilities — the services, as four panels on the deep band.
+ * Capabilities — the services as nodes on a routed path.
  *
- * Each panel is one step lighter than the band it sits on, carries a tag chip,
- * and holds its own copy. Depth numerals sit in the corner the way a
- * directory's column numbers do. No icons in circles: the chip is the mark.
+ * Path-flow rebuild (Oct 2026, per owner sign-off): the four services ride
+ * `PathFlowSection` in its `rail` layout — a two-up grid in normal document
+ * flow, so no panel can ever overlap another, with a switchback spine routed
+ * through their measured positions. Trail is scroll-driven with glow + head;
+ * the ember trail reuses the brand token rather than the component's blue
+ * default. Nodes are flat `panel--paper` plates — square, no shadows — so the
+ * flow carries the composition and the tokens carry the colour.
  *
- * The trace net runs once across the whole band, not once inside each card —
- * four little nets at card scale were fragments, not wiring. These routes come
- * in past the head, land on each panel in turn, and leave the other side, so
- * the four services read as four nodes on one route.
+ * Content shape is unchanged: `tag / depth / title / body / icon` per item.
+ * The lede sentence below is pre-existing copy carried over verbatim.
  */
-/** One pad per panel, on the panel's own edge: 0 and 1 are the column
- *  edges, 0.5 is the gutter between them. Nothing terminates inside an opaque
- *  panel, because a pad behind a panel is a pad nobody sees. */
-const NODES = [
-  { x: 0.0, y: 0.09 },
-  { x: 0.2, y: 0.18 },
-  { x: 0.0, y: 0.46 },
-  { x: 0.5, y: 0.46 },
-  { x: 1.0, y: 0.46 },
-  { x: 0.0, y: 0.78 },
-  { x: 0.5, y: 0.78 },
-  { x: 1.0, y: 0.78 },
-];
-
 export function Capabilities({ capabilities }: { capabilities?: CapabilitiesSection }) {
   const items = capabilities?.items ?? [];
 
   return (
-    <Band
-      id="capabilities"
-      ground="deep"
-      mesh={{ seed: 31, count: 6, depth: 44, opacity: 0.55, anchors: NODES }}
-    >
-      <BandHead>{capabilities?.eyebrow}</BandHead>
-
-      <div className="mt-10 grid gap-x-14 gap-y-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-end">
-        <BandTitle lines={capabilities?.headline ?? ''} />
-        <p className="body body--sm max-w-[42ch] lg:justify-self-end">
-          Four things we are hired for, and the order they happen in.
-        </p>
-      </div>
-
-      <div className="mt-14 grid gap-5 md:grid-cols-2">
+    <Band id="capabilities" ground="paper">
+      <PathFlowSection
+        layout="rail"
+        mode="scroll"
+        color="rgb(var(--color-ink-950))"
+        trailColor="rgb(var(--color-accent-500))"
+        trailLength={0.14}
+        strokeWidth={1.5}
+        glow={true}
+        head={true}
+        rails={true}
+        revealItems={true}
+        header={
+          <div>
+            <BandHead>{capabilities?.eyebrow ?? 'Our services'}</BandHead>
+            <BandTitle lines={capabilities?.headline ?? ''} delay={0.06} size="lg" className="mt-6 text-ink-950" />
+            <p className="body body--paper body--sm mt-6 max-w-[42ch]">
+              Four things we are hired for, and the order they happen in.
+            </p>
+          </div>
+        }
+      >
         {items.map((item, i) => (
-          <PanelIn key={item.title} from={i % 2 === 0 ? 'left' : 'bottom'} distance={4} delay={0.08 + i * 0.07}>
-            <article className="panel--deep group flex h-full flex-col p-7 transition-colors duration-300 hover:bg-surface-700 md:p-9">
-              <div className="flex items-start justify-between gap-6">
-                <span className="chip">{item.tag}</span>
-                <span className="num text-[24px] text-primary-50/25 transition-colors duration-300 group-hover:text-accent-500">
-                  {item.depth ?? String(i + 1).padStart(2, '0')}
-                </span>
-              </div>
-
-              <div className="mt-auto pt-16">
-                <h3 className="verb max-w-[20ch] text-[clamp(1.3rem,2.2vw,1.7rem)] text-primary-50">
-                  {item.title}
-                </h3>
-                <p className="body body--sm mt-4 max-w-[44ch] text-primary-200">{item.body}</p>
-              </div>
-            </article>
-          </PanelIn>
+          <article key={item.title} aria-label={`${item.depth ?? String(i + 1).padStart(2, '0')} — ${item.title}`} className="panel--paper p-6 md:p-7">
+            <div className="flex items-center gap-4">
+              <span className="num text-[15px] text-accent-700">
+                {item.depth ?? String(i + 1).padStart(2, '0')}
+              </span>
+              <span
+                aria-hidden
+                className="grid h-10 w-10 place-items-center text-ink-800"
+                style={{ boxShadow: 'inset 0 0 0 1px rgb(var(--color-ink-950) / 0.2)' }}
+              >
+                <MdiIcon name={item.icon || capabilityIcons[i % capabilityIcons.length]} size={0.85} />
+              </span>
+              <span className="chip chip--paper ml-auto">{item.tag}</span>
+            </div>
+            <h3 className="verb mt-5 max-w-[28ch] text-[clamp(1.25rem,2.2vw,1.65rem)] text-ink-950">
+              {item.title}
+            </h3>
+            <p className="body body--paper body--sm mt-3 max-w-[58ch]">{item.body}</p>
+          </article>
         ))}
-      </div>
+      </PathFlowSection>
+
+      <p className="mx-auto mt-2 w-full max-w-5xl px-6 font-mono text-[10.5px] font-medium uppercase tracking-[0.16em] text-ink-800">
+        Read top to bottom — the engagement runs in this order.
+      </p>
     </Band>
   );
 }

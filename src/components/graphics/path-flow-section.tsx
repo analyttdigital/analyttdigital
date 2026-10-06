@@ -145,6 +145,35 @@ export type FlowVariant = keyof typeof FLOW_VARIANTS;
 
 const clamp = (v: number, min = 0, max = 1) => Math.min(max, Math.max(min, v));
 
+type Pt = { x: number; y: number };
+
+/** Orthogonal route with wide, board-trace fillets at every corner. Points are
+ *  expected to already be axis-aligned waypoints; collinear runs pass through. */
+function roundedPath(points: Pt[], radius: number): string {
+  if (points.length < 2) return "";
+  const n = (v: number) => Math.round(v * 100) / 100;
+  let d = `M ${n(points[0].x)} ${n(points[0].y)}`;
+  for (let i = 1; i < points.length - 1; i++) {
+    const p = points[i - 1];
+    const c = points[i];
+    const q = points[i + 1];
+    const v1x = c.x - p.x;
+    const v1y = c.y - p.y;
+    const v2x = q.x - c.x;
+    const v2y = q.y - c.y;
+    const l1 = Math.hypot(v1x, v1y);
+    const l2 = Math.hypot(v2x, v2y);
+    if (l1 < 0.5 || l2 < 0.5) continue;
+    const rr = Math.min(radius, l1 / 2, l2 / 2);
+    const a = { x: c.x - (v1x / l1) * rr, y: c.y - (v1y / l1) * rr };
+    const b = { x: c.x + (v2x / l2) * rr, y: c.y + (v2y / l2) * rr };
+    d += ` L ${n(a.x)} ${n(a.y)} Q ${n(c.x)} ${n(c.y)} ${n(b.x)} ${n(b.y)}`;
+  }
+  const last = points[points.length - 1];
+  d += ` L ${n(last.x)} ${n(last.y)}`;
+  return d;
+}
+
 function useMinWidth(px: number) {
   const subscribe = useCallback(
     (cb: () => void) => {
@@ -432,6 +461,14 @@ export interface PathFlowSectionProps {
   /** content rendered above the path area (e.g. heading + intro) */
   header?: ReactNode;
   variant?: FlowVariant;
+  /**
+   * "path": children are absolutely placed in the variant's viewBox slots
+   * (dense, but cards can collide when their content heights differ).
+   * "rail": children sit in normal document flow — a two-up grid on desktop,
+   * a stack on mobile — so they never overlap, and the routed spine is drawn
+   * from their measured positions instead of a fixed aspect box.
+   */
+  layout?: "path" | "rail";
   /** "scroll": trail follows scroll progress. "auto": trail loops by itself. */
   mode?: "scroll" | "auto";
   /** base line color (any CSS color, default currentColor) */
@@ -472,6 +509,7 @@ export function PathFlowSection({
   children,
   header,
   variant = "staircase-ltr",
+  layout = "path",
   mode = "scroll",
   color = "currentColor",
   trailColor = "#2563eb",
@@ -497,9 +535,15 @@ export function PathFlowSection({
 
   const sectionRef = useRef<HTMLDivElement>(null);
   const stackRef = useRef<HTMLDivElement>(null);
+  const railRef = useRef<HTMLDivElement>(null);
   const pathEls = useRef<(SVGPathElement | null)[]>([]);
   const [ats, setAts] = useState<number[]>([]);
   const [stackH, setStackH] = useState(0);
+  const [railGeo, setRailGeo] = useState<{ w: number; h: number; nodes: Pt[] }>({
+    w: 0,
+    h: 0,
+    nodes: [],
+  });
 
   /* ---- progress sources ---- */
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: scrollOffset });
@@ -530,12 +574,13 @@ export function PathFlowSection({
 
   const items = Children.toArray(children);
   const stack = !wide;
+  const rail = layout === "rail";
   const pathReverse = v.reverse !== reverse;
-  const travelReverse = stack ? reverse : pathReverse;
+  const travelReverse = stack || rail ? reverse : pathReverse;
 
   /* ---- desktop: find where along the path each slot sits ---- */
   useLayoutEffect(() => {
-    if (stack) return;
+    if (stack || rail) return;
     const els = pathEls.current.filter(Boolean) as SVGPathElement[];
     if (!els.length) return;
     const N = 240;
@@ -558,7 +603,7 @@ export function PathFlowSection({
       return (pathReverse ? 1 - bt : bt) / (1 + trailLength);
     });
     setAts(next);
-  }, [stack, v, pathReverse, trailLength]);
+  }, [stack, rail, v, pathReverse, trailLength]);
 
   /* ---- mobile: measure stack height + item positions ---- */
   useLayoutEffect(() => {
@@ -582,6 +627,58 @@ export function PathFlowSection({
     ro.observe(el);
     return () => ro.disconnect();
   }, [stack, travelReverse, trailLength, items.length]);
+
+  /* ---- desktop rail: measure the real card boxes, then route the spine ---- */
+  useLayoutEffect(() => {
+    if (!rail || stack) return;
+    const el = railRef.current;
+    if (!el) return;
+    const measure = () => {
+      const r = el.getBoundingClientRect();
+      if (!r.height) return;
+      const nodes = Array.from(el.querySelectorAll<HTMLElement>("[data-rail-node]")).map((n) => {
+        const b = n.getBoundingClientRect();
+        const left = b.left - r.left;
+        const isLeft = left + b.width / 2 < r.width / 2;
+        return {
+          x: isLeft ? b.right - r.left + 8 : left - 8,
+          y: b.top + b.height / 2 - r.top,
+        };
+      });
+      setRailGeo({ w: Math.round(r.width), h: Math.round(r.height), nodes });
+      setAts(
+        nodes.map((n) => (travelReverse ? 1 - clamp(n.y / r.height) : clamp(n.y / r.height)) / (1 + trailLength)),
+      );
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [rail, stack, travelReverse, trailLength, items.length]);
+
+  /** The rail route: a switchback down the centre that arrives at every card
+   *  edge in order and never doubles back on itself, so the trail reads as one
+   *  continuous signal rather than a branch with a bounce. */
+  const railPath = useMemo(() => {
+    const { w, h, nodes } = railGeo;
+    if (!w || !h || !nodes.length) return "";
+    const cx = w / 2;
+    const pts: Pt[] = [{ x: cx, y: 0 }];
+    nodes.forEach((node, i) => {
+      if (i === 0) pts.push({ x: cx, y: node.y });
+      pts.push({ x: node.x, y: node.y });
+      if (i < nodes.length - 1) {
+        const next = nodes[i + 1];
+        const ymid = (node.y + next.y) / 2;
+        pts.push({ x: node.x, y: ymid });
+        pts.push({ x: next.x, y: ymid });
+      }
+    });
+    const last = nodes[nodes.length - 1];
+    pts.push({ x: last.x, y: h });
+    pts.push({ x: cx, y: h });
+    return roundedPath(pts, 26);
+  }, [railGeo]);
 
   const lineProps = {
     progress,
@@ -627,8 +724,32 @@ export function PathFlowSection({
             </FlowItem>
           ))}
         </div>
+      ) : rail ? (
+        /* ---------- desktop rail: normal-flow cards, measured spine ---------- */
+        <div
+          ref={railRef}
+          className={["relative mx-auto w-full max-w-5xl", contentClassName].filter(Boolean).join(" ")}
+        >
+          {railGeo.w > 0 && (
+            <Lines
+              {...lineProps}
+              w={railGeo.w}
+              h={railGeo.h}
+              fadeAxis="y"
+              paths={[{ d: railPath, rail: [-6, 0] }]}
+            />
+          )}
+          <div className="relative z-10 grid grid-cols-1 gap-x-[11%] gap-y-12 py-10 md:grid-cols-2">
+            {items.map((child, i) => (
+              <div key={i} data-rail-node className={i % 2 === 1 ? "md:mt-16" : undefined}>
+                <FlowItem reveal={revealSource} at={atOf(i)} enabled={revealItems}>
+                  {child}
+                </FlowItem>
+              </div>
+            ))}
+          </div>
+        </div>
       ) : (
-        /* ---------- desktop: content distributed along the path ---------- */
         <>
           <div
             className={["relative w-full", contentClassName].filter(Boolean).join(" ")}
