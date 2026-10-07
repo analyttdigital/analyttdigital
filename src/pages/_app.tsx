@@ -9,24 +9,45 @@ import { LocaleProvider } from '@/lib/content/chrome';
 // can see them); this import is what makes the CSS exist at all.
 import { fontsClass } from '@/lib/fonts';
 import type { PageProps } from '@/lib/keystatic/getStaticProps';
+import { ReactLenis } from "lenis/react";
+import type { LenisRef } from "lenis/react";
+import { cancelFrame, frame } from "framer-motion";
+import { useEffect, useRef } from "react";
 
-import '@/styles/globals.css';
+import '../styles/globals.css';
 
 type Props = AppProps & { pageProps: PageProps };
 
 export default function App({ Component, pageProps, router }: Props) {
+    const lenisRef = useRef<LenisRef>(null);
+
+    useEffect(() => {
+        if (!router.pathname.startsWith("/keystatic")) {
+            function update(data: { timestamp: number }) {
+				const time = data.timestamp;
+				lenisRef.current?.lenis?.raf(time);
+			}
+
+			frame.update(update, true);
+
+			return () => cancelFrame(update);
+		}
+		
+	}, []);
   // /keystatic renders the admin UI untouched, outside the site layout.
   if (router.pathname.startsWith('/keystatic')) {
     return <div className={fontsClass} />;
   }
 
   return (
-    <div className={fontsClass}>
-      <LocaleProvider locale={pageProps.locale}>
-        <SiteLayout layout={pageProps.bundle?.layout}>
-          <Component {...pageProps} />
-        </SiteLayout>
-      </LocaleProvider>
-    </div>
+		<div className={fontsClass}>
+			<ReactLenis root options={{ autoRaf: false }} ref={lenisRef} >
+			<LocaleProvider locale={pageProps.locale}>
+				<SiteLayout layout={pageProps.bundle?.layout}>
+					<Component {...pageProps} />
+				</SiteLayout>
+              </LocaleProvider>
+            </ReactLenis>
+		</div>
   );
 }

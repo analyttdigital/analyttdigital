@@ -99,7 +99,7 @@ export function Band({
         <div aria-hidden className="seam" />
       )}
 
-      {mesh ? (
+      {/*mesh ? (
         <TraceField
           seed={mesh.seed}
           count={mesh.count ?? 5}
@@ -109,7 +109,7 @@ export function Band({
           tone={mesh.tone ?? 'dark'}
           anchors={mesh.anchors}
         />
-      ) : null}
+      ) : null */}
 
       <div className={`relative px-5 md:px-8 ${className ?? ''}`}>
         <div className="mx-auto w-full max-w-[1360px] py-14 md:py-20">{children}</div>

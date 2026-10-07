@@ -11,7 +11,7 @@ export default function Document() {
         <meta name="theme-color" content="#393154" />
       </Head>
       {/* Page ground is the deep band; each band paints its own ground over it. */}
-      <body className="bg-primary-950 font-sans text-primary-100 antialiased">
+      <body className="font-sans text-primary-100 antialiased">
         <Main />
         <NextScript />
       </body>

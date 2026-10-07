@@ -2,7 +2,6 @@ import type { ReactNode } from 'react';
 
 import { SiteFooter } from '@/components/layout/site-footer';
 import { SiteNav } from '@/components/layout/site-nav';
-import { SmoothScroll } from '@/components/smooth-scroll';
 import type { LayoutContent } from '@/lib/content/types';
 
 /**
@@ -22,7 +21,6 @@ export function SiteLayout({
 }) {
   return (
     <>
-      <SmoothScroll />
       <SiteNav nav={layout} />
       <main id="main" className="relative z-10">
         {children}

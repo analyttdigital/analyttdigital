@@ -33,18 +33,22 @@ function SectionBlock({ section }: { section: Section }) {
     case 'process':
           return (
 				<div className="relative w-full flex flex-col">
-					<PathFlowSection
-						// variant="staircase-ltr" // "staircase-ltr" | "staircase-rtl" | "edges-converge" | "cross-flow"
-						variant="cross-flow"
-						mode="scroll" // or "auto"
-						trailColor="#2563eb"
-						header={<h2>…</h2>}
-					>
-						<div className="bg-accent p-4 h-full rounded-lg" />
-						<div className="bg-accent p-4 h-full rounded-lg" />
-						<div className="bg-accent p-4 h-full rounded-lg" />
-						{/* child N goes in slot N of the variant */}
-					</PathFlowSection>
+					<div className="h-screen z-0 pointer-events-none">
+						<PathFlowSection
+							// variant="staircase-ltr" // "staircase-ltr" | "staircase-rtl" | "edges-converge" | "cross-flow"
+							variant="staircase-ltr"
+							mode="scroll" // or "auto"
+							trailColor="#2563eb"
+							
+                            header={<h2>…</h2>}
+                            contentClassName="h-screen"
+						>
+							<div className="bg-accent p-4 h-full rounded-lg" />
+							<div className="bg-accent p-4 h-full rounded-lg" />
+							{/* child N goes in slot N of the variant */}
+						</PathFlowSection>
+					</div>
+
 					<ProcessChapter process={section} />
 				</div>
 			);
