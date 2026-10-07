@@ -697,8 +697,8 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
 				aria-hidden
 				className={`absolute inset-0 -z-30 ${
 					dark
-						? "bg-primary-950 bg-[radial-gradient(55%_70%_at_70%_48%,rgba(240,79,38,.16),transparent_70%),radial-gradient(45%_55%_at_8%_100%,rgba(79,75,99,.4),transparent_70%)]"
-						: "bg-paper bg-[radial-gradient(55%_70%_at_70%_48%,rgba(240,79,38,.11),transparent_70%),radial-gradient(45%_55%_at_8%_100%,rgba(79,75,99,.12),transparent_70%)]"
+						? "bg-primary-950 bg-[radial-gradient(55%_70%_at_70%_48%,rgba(240,79,38,.16),transparent_70%),radial-gradient(45%_55%_at_8%_100%,transparent_70%,transparent_70%)]"
+						: "bg-paper bg-[radial-gradient(55%_70%_at_70%_48%,rgba(240,79,38,.11),transparent_70%),radial-gradient(45%_55%_at_8%_100%,transparent_70%,transparent_70%)]"
 				}`}
 				style={reduce ? undefined : { opacity: glowOpacity, rotate: orbitTurn }}
 			/>
