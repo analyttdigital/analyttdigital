@@ -114,10 +114,14 @@ const heroFields = {
   statA_delta: fields.text({ label: 'Stat A delta', defaultValue: '-84%' }),
   statB_label: fields.text({ label: 'Stat B label', defaultValue: 'Leads / month' }),
   statB_value: fields.text({ label: 'Stat B value', defaultValue: '1,200+' }),
-  marquee: fields.array(fields.text({ label: 'Item' }), {
-    label: 'Marquee items',
-    itemLabel: (props) => props.value,
-  }),
+  marquee: fields.array(
+    fields.object({
+      label: fields.text({ label: 'Label (e.g. Meta Business Partner)' }),
+      logo: imageField('Logo'),
+      logoDark: imageField('Logo (dark stage)'),
+    }),
+    { label: 'Partner marquee', itemLabel: (props) => props.fields.label.value || 'Partner' },
+  ),
   panels: fields.array(
     fields.object({
       kind: fields.select({

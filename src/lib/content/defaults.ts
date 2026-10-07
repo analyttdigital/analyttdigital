@@ -9,43 +9,43 @@ import type { LayoutContent, Locale, PageDoc } from '@/lib/content/types';
  */
 
 const enLayout: LayoutContent = {
-  brand: 'analytt',
-    brandEmphasis: 'digital',
-  
-  navLinks: [
-    { label: 'Services', href: '/#capabilities' },
-    { label: 'Process', href: '/#process' },
-    { label: 'Work', href: '/#work' },
-    { label: 'Insights', href: '/#insights' },
-  ],
-  navCta: 'Get a free audit',
-  navCtaHref: '/#contact',
-  footerHeadline: 'Ready to see exactly where your growth is hiding?',
-  footerCta: 'Start with a free audit',
-  footerCtaHref: '/#contact',
-  tagline: 'Performance marketing & growth infrastructure, from Nairobi.',
-  footnote: 'A measurement-first agency, by design.',
-  footerColumns: [
-    {
-      title: 'Navigate',
-      links: [
-        { label: 'Services', href: '/#capabilities' },
-        { label: 'Process', href: '/#process' },
-        { label: 'Work', href: '/#work' },
-        { label: 'Insights', href: '/#insights' },
-      ],
-    },
-    {
-      title: 'Contact',
-      links: [
-        { label: 'hello@analyttdigital.com', href: 'mailto:hello@analyttdigital.com' },
-        { label: 'Request an audit', href: '/#contact' },
-      ],
-    },
-  ],
-  contactEmail: 'hello@analyttdigital.com',
-  contactNote: 'Nairobi · across East Africa',
-  legal: '© 2026 Analytt Digital. All rights reserved.',
+	brand: "analytt",
+	brandEmphasis: "digital",
+
+	navLinks: [
+		{ label: "Services", href: "/services" },
+		{ label: "Digital Audit", href: "/digital-audit" },
+		{ label: "Blog", href: "/blog" },
+		{ label: "Contact", href: "/contact" },
+	],
+	navCta: "Get a free audit",
+	navCtaHref: "/#contact",
+	footerHeadline: "Ready to see exactly where your growth is hiding?",
+	footerCta: "Start with a free audit",
+	footerCtaHref: "/#contact",
+	tagline: "Performance marketing & growth infrastructure, from Nairobi.",
+	footnote: "A measurement-first agency, by design.",
+	footerColumns: [
+		{
+			title: "Navigate",
+			links: [
+				{ label: "Services", href: "/#capabilities" },
+				{ label: "Process", href: "/#process" },
+				{ label: "Work", href: "/#work" },
+				{ label: "Insights", href: "/#insights" },
+			],
+		},
+		{
+			title: "Contact",
+			links: [
+				{ label: "hello@analyttdigital.com", href: "mailto:hello@analyttdigital.com" },
+				{ label: "Request an audit", href: "/#contact" },
+			],
+		},
+	],
+	contactEmail: "hello@analyttdigital.com",
+	contactNote: "Nairobi · across East Africa",
+	legal: "© 2026 Analytt Digital. All rights reserved.",
 };
 
 const enHome: PageDoc = {
@@ -70,14 +70,12 @@ const enHome: PageDoc = {
 			statB_label: "Leads / month",
 			statB_value: "1,200+",
 			marquee: [
-				"GOOGLE ADS",
-				"META",
-				"YOUTUBE",
-				"TIKTOK",
-				"LINKEDIN",
-				"GA4 + GTM",
-				"90-DAY GROWTH PLANS",
-				"MONTHLY REPORTS",
+				{ label: "Google Ads Partner", logo: { src: "/img/partners/google.svg", alt: "Google" }, logoDark: { src: "/img/partners/google-light.svg", alt: "Google" } },
+				{ label: "Meta Business Partner", logo: { src: "/img/partners/meta.svg", alt: "Meta" }, logoDark: { src: "/img/partners/meta-light.svg", alt: "Meta" } },
+				{ label: "TikTok Marketing Partner", logo: { src: "/img/partners/tiktok.svg", alt: "TikTok" }, logoDark: { src: "/img/partners/tiktok-light.svg", alt: "TikTok" } },
+				{ label: "LinkedIn Marketing Partner", logo: { src: "/img/partners/linkedin.svg", alt: "LinkedIn" }, logoDark: { src: "/img/partners/linkedin-light.svg", alt: "LinkedIn" } },
+				{ label: "HubSpot Solutions Partner", logo: { src: "/img/partners/hubspot.svg", alt: "HubSpot" }, logoDark: { src: "/img/partners/hubspot-light.svg", alt: "HubSpot" } },
+				{ label: "Google Analytics 4 Certified", logo: { src: "/img/partners/google.svg", alt: "Google Analytics" }, logoDark: { src: "/img/partners/google-light.svg", alt: "Google Analytics" } },
 			],
 			panels: [
 				{
@@ -630,14 +628,12 @@ const swHome: PageDoc = {
 			statB_label: "Wateja / mwezi",
 			statB_value: "1,200+",
 			marquee: [
-				"GOOGLE ADS",
-				"META",
-				"YOUTUBE",
-				"TIKTOK",
-				"LINKEDIN",
-				"GA4 + GTM",
-				"MPANGO WA SIKU 90",
-				"RIPOTI ZA KILA MWEZI",
+				{ label: "Mshirika wa Google Ads", logo: { src: "/img/partners/google.svg", alt: "Google" }, logoDark: { src: "/img/partners/google-light.svg", alt: "Google" } },
+				{ label: "Mshirika wa Meta Business", logo: { src: "/img/partners/meta.svg", alt: "Meta" }, logoDark: { src: "/img/partners/meta-light.svg", alt: "Meta" } },
+				{ label: "Mshirika wa TikTok Marketing", logo: { src: "/img/partners/tiktok.svg", alt: "TikTok" }, logoDark: { src: "/img/partners/tiktok-light.svg", alt: "TikTok" } },
+				{ label: "Mshirika wa LinkedIn Marketing", logo: { src: "/img/partners/linkedin.svg", alt: "LinkedIn" }, logoDark: { src: "/img/partners/linkedin-light.svg", alt: "LinkedIn" } },
+				{ label: "Mshirika wa HubSpot", logo: { src: "/img/partners/hubspot.svg", alt: "HubSpot" }, logoDark: { src: "/img/partners/hubspot-light.svg", alt: "HubSpot" } },
+				{ label: "Imethibitishwa Google Analytics 4", logo: { src: "/img/partners/google.svg", alt: "Google Analytics" }, logoDark: { src: "/img/partners/google-light.svg", alt: "Google Analytics" } },
 			],
 			panels: [
 				{

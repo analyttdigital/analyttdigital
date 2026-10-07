@@ -104,13 +104,16 @@ export type HeroPanel = {
   codeLines?: string[];
 };
 
+export type HeroPartner = { label: string; logo: ContentImage; logoDark?: ContentImage };
+
 export type HeroSection = {
   eyebrow: string;
   headline: string;
   sub: string;
   cta: string;
   ctaHref: string;
-  marquee: string[];
+  /** Partner marks rowed along the hero foot: a logo + a credential label. */
+  marquee?: HeroPartner[];
   /** Light (paper stage) or dark (violet-ink stage). Defaults to light. */
   variant?: 'light' | 'dark';
   panels?: HeroPanel[];

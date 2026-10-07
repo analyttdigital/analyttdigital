@@ -1,13 +1,10 @@
 'use client';
 
-import { Fragment, useEffect, useMemo, useRef } from 'react';
-import Image from 'next/image';
 
 import { MdiIcon } from '@/lib/icons/resolve-icon';
 import { DynamicImage } from '@/components/media/dynamic-image';
-import { GlowButton } from '@/components/layout/glow-button';
-import type { HeroPanel, HeroProof, HeroSection } from '@/lib/content/types';
-import { TextReveal } from '../graphics/text-reveal';
+import type { HeroPartner, HeroPanel, HeroProof, HeroSection } from '@/lib/content/types';
+import { HeroGather } from '@/components/graphics/hero-gather';
 
 /**
  * Hero — full-screen audit route head (user-approved replica).
@@ -525,323 +522,201 @@ function PanelBody({ panel, dark }: { panel: HeroPanel; dark: boolean }) {
   }
 }
 
-export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSection['variant'] }) {
-  const tunnelRef = useRef<HTMLDivElement>(null);
-  const sceneRef = useRef<HTMLDivElement>(null);
-  /** Index of the hovered packet — pausing it is handled in the paint loop
-   *  via ref so hovering never re-renders the hero. */
-  const hoveredRef = useRef<number | null>(null);
+/** Partner marks rowed along the hero's foot (fallback when CMS list is empty). */
+const FALLBACK_PARTNERS: HeroPartner[] = [
+  { label: 'Google Ads Partner', logo: { src: '/img/partners/google.svg', alt: 'Google' }, logoDark: { src: '/img/partners/google-light.svg', alt: 'Google' } },
+  { label: 'Meta Business Partner', logo: { src: '/img/partners/meta.svg', alt: 'Meta' }, logoDark: { src: '/img/partners/meta-light.svg', alt: 'Meta' } },
+  { label: 'TikTok Marketing Partner', logo: { src: '/img/partners/tiktok.svg', alt: 'TikTok' }, logoDark: { src: '/img/partners/tiktok-light.svg', alt: 'TikTok' } },
+  { label: 'LinkedIn Marketing Partner', logo: { src: '/img/partners/linkedin.svg', alt: 'LinkedIn' }, logoDark: { src: '/img/partners/linkedin-light.svg', alt: 'LinkedIn' } },
+  { label: 'HubSpot Solutions Partner', logo: { src: '/img/partners/hubspot.svg', alt: 'HubSpot' }, logoDark: { src: '/img/partners/hubspot-light.svg', alt: 'HubSpot' } },
+];
 
+export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSection['variant'] }) {
   const eyebrow = hero?.eyebrow || FALLBACK.eyebrow;
   const lines = (hero?.headline || FALLBACK.headline).split('\n');
   const sub = hero?.sub || FALLBACK.sub;
   const ctaHref = hero?.ctaHref ?? '/#contact';
   const cta = hero?.cta || FALLBACK.cta;
   const secondary = hero?.scrollHint || FALLBACK.secondary;
-  const contentPanels = hero?.panels?.length ? hero.panels : FALLBACK_PANELS;
   const proof = hero?.proof?.length ? hero.proof : FALLBACK_PROOF;
+  const partners = hero?.marquee?.length ? hero.marquee : FALLBACK_PARTNERS;
   /** Explicit prop wins, then content, then the light stage. Tunnel panels
    *  flip with the variant through `panelTones` + the icon tone helpers. */
   const dark = (variant ?? hero?.variant ?? 'light') === 'dark';
 
-  // Seeded placements — identical on server and client first paint. Positions
-  // are content-agnostic; each slot cycles through the content panels so every
-  // entry in `hero.panels` shows up regardless of list length. Each slot keeps
-  // a base offset; the paint step scales it by depth so panels spawn near the
-  // centre (behind the collage) and sweep outward as they approach. Angles are
-  // confined to the upper half-plane, so nothing ever flies downwards into
-  // the docked copy — only left, up, and right.
-  const placements = useMemo(() => {
-    const rand = mulberry32(7);
-    return Array.from({ length: 40 }, (_, i) => {
-      const angle = Math.PI + rand() * Math.PI;
-      const radiusX = 350 + rand() * 400;
-      const radiusY = 250 + rand() * 300;
-      return {
-        bx: Math.cos(angle) * radiusX,
-        by: Math.sin(angle) * radiusY,
-        z: -rand() * 4000,
-        extra: i >= 20 ? 'hidden md:flex' : 'flex',
-      };
-    });
-  }, []);
-
-  useEffect(() => {
-    const tunnel = tunnelRef.current;
-    const scene = sceneRef.current;
-    if (!tunnel || !scene) return;
-
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const isMobile = window.innerWidth < 768;
-    const scale = isMobile ? 0.55 : 1;
-    const cameraZ = 300;
-    const maxDepth = 4000;
-    const speed = reduce ? 0 : 1.5;
-
-    const els = Array.from(tunnel.children) as HTMLElement[];
-    const state = placements.map((p, i) => ({ ...p, i, el: els[i] })).filter((p) => p.el);
-
-    const paint = () => {
-      for (const p of state) {
-        // Depth progress 0 (far) → 1 (at the camera). The lateral offset grows
-        // with easing, so panels emerge from behind the collage and accelerate
-        // outward past the viewer instead of flying on fixed rails.
-        const progress = Math.min(1, Math.max(0, (p.z + maxDepth) / (cameraZ + maxDepth)));
-        const grow = 0.06 + 0.94 * Math.pow(progress, 1.6);
-        const x = p.bx * grow * scale;
-        const y = p.by * grow * scale;
-        // A hovered packet holds still and steps forward: sharp, opaque, proud.
-        const hot = hoveredRef.current === p.i;
-        const blur = p.z < -1200 ? Math.min(6, (-p.z - 1200) / 400) : 0;
-        const opacity = hot
-          ? 1
-          : p.z < -3200
-            ? Math.max(0, 1 - (-p.z - 3200) / 800)
-            : p.z > 0
-              ? Math.max(0, 1 - p.z / cameraZ)
-              : 1;
-        p.el.style.transform = `translate(-50%, -50%) translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, ${p.z.toFixed(1)}px)${hot ? ' scale(1.08)' : ''}`;
-        p.el.style.filter = !hot && blur > 0.5 ? `blur(${blur.toFixed(1)}px)` : 'none';
-        p.el.style.opacity = opacity.toFixed(2);
-        p.el.style.zIndex = String(Math.round(p.z + maxDepth));
-      }
-    };
-    paint();
-
-    if (reduce) return;
-
-    let raf = 0;
-    const tick = () => {
-      // Holding any packet stills the whole stream; the hovered card keeps
-      // its full-opacity highlight from the paint loop.
-      if (hoveredRef.current === null) {
-        for (const p of state) {
-          p.z += speed;
-          if (p.z > cameraZ) p.z -= maxDepth + cameraZ;
-        }
-      }
-      paint();
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    /* 
-    let parRaf = 0;
-	let mouseX = 50;
-	let mouseY = 50;
-	let targetX = 50;
-	let targetY = 50;
-	const onMove = (e: MouseEvent) => {
-		mouseX = 50 + (e.clientX / window.innerWidth - 0.5) * 20;
-		mouseY = 50 + (e.clientY / window.innerHeight - 0.5) * 20;
-	};
-	const parTick = () => {
-		targetX += (mouseX - targetX) * 0.05;
-		targetY += (mouseY - targetY) * 0.05;
-		scene.style.perspectiveOrigin = `${targetX.toFixed(2)}% ${targetY.toFixed(2)}%`;
-		parRaf = requestAnimationFrame(parTick);
-	};
-	if (!isMobile) {
-		document.addEventListener("mousemove", onMove);
-		parRaf = requestAnimationFrame(parTick);
-	}
-    */
-	return () => {
-		cancelAnimationFrame(raf);
-		// cancelAnimationFrame(parRaf);
-		// document.removeEventListener("mousemove", onMove);
-	};
-  }, [placements]);
 
   return (
 		<section
 			id="hero"
-			className={`relative flex min-h-screen w-full flex-col overflow-hidden font-sans ${
+			className={`group relative isolate flex min-h-[max(100svh,760px)] flex-col overflow-hidden font-sans ${
 				dark ? "bg-primary-950 text-primary-100" : "bg-paper text-ink-800"
 			}`}
 		>
-			{/* Soft primary-tinted glow — token channels, decorative */}
 			<div
 				aria-hidden
-				className="pointer-events-none absolute inset-0 z-0"
-				style={{
-					background:
-						"radial-gradient(circle at 78% 18%, rgb(var(--color-accent-500) / 0.07) 0%, transparent 45%), radial-gradient(circle at 20% 80%, rgb(var(--color-primary-600) / 0.08) 0%, transparent 50%)",
-				}}
-			/>
-
-			{/* 3D tunnel of floating result panels — decorative, never information */}
-			<div
-				ref={sceneRef}
-				aria-hidden
-				className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center overflow-hidden"
-				style={{ perspective: "800px", perspectiveOrigin: "50% 50%" }}
-			>
-				<div
-					ref={tunnelRef}
-					className="relative h-full w-full"
-					style={{ transformStyle: "preserve-3d" }}
-				>
-					{placements.map((p, i) => {
-						const panel = contentPanels[i % contentPanels.length];
-						return (
-							<div
-								key={`${panel.kind}-${i}`}
-								onMouseEnter={() => {
-									hoveredRef.current = i;
-								}}
-								onMouseLeave={() => {
-									if (hoveredRef.current === i) hoveredRef.current = null;
-								}}
-								className={`tunnel-panel pointer-events-auto absolute left-1/2 top-1/2 w-64 flex-col rounded-xl border p-5 backdrop-blur-md will-change-transform ${p.extra} ${
-									panel.tone === "alert"
-										? "border-accent-500/30"
-										: dark
-											? "border-primary-50/10"
-											: "border-primary-900/10"
-								} ${dark ? "bg-primary-800/80" : "bg-paper/80"}`}
-								style={{
-									boxShadow: "0 10px 30px rgb(var(--color-primary-600) / 0.10)",
-								}}
-							>
-								<PanelBody panel={panel} dark={dark} />
-							</div>
-						);
-					})}
-				</div>
-			</div>
-
-			{/* Readability halo behind the copy — paper on light, ink on dark */}
-			<div
-				aria-hidden
-				className="pointer-events-none absolute inset-0 z-30"
-				style={{
-					background: dark
-						? "radial-gradient(ellipse 52% 44% at 50% 50%, rgb(var(--color-primary-950) / 0.94) 0%, rgb(var(--color-primary-950) / 0.7) 55%, rgb(var(--color-primary-950) / 0) 100%)"
-						: "radial-gradient(circle, rgb(var(--color-paper-50)) 7%, rgb(var(--color-accent-50) / 0.1) 15%, rgb(var(--color-paper-50) / 0)  25%, rgb(var(--color-paper-50) / 0) 100%)",
-				}}
-			/>
-			{/* <div
-				aria-hidden
-				className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(68vw,300px)] md:w-[min(38vw,350px)] rounded-full blur-2xl ${
-					dark ? "bg-accent-500/25" : "bg-accent-500/20"
+				className={`absolute inset-0 -z-30 ${
+					dark
+						? "bg-primary-950 bg-[radial-gradient(55%_70%_at_70%_48%,rgba(240,79,38,.16),transparent_70%),radial-gradient(45%_55%_at_8%_100%,rgba(79,75,99,.4),transparent_70%)]"
+						: "bg-paper bg-[radial-gradient(55%_70%_at_70%_48%,rgba(240,79,38,.11),transparent_70%),radial-gradient(45%_55%_at_8%_100%,rgba(79,75,99,.12),transparent_70%)]"
 				}`}
-			/> */}
-			{/* <div aria-hidden className={`absolute inset-[-6%] rounded-full ${dark ? 'bg-primary-950' : 'bg-paper-50'}`} /> */}
-			{/* Brand collage — the visual anchor of the scene. It sits above the
-          halo and the tunnel, so packets read as originating from behind it. */}
-			<div className="pointer-events-none z-40 flex flex-1 items-center justify-center px-4 py-8 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-				<Image
-					src="/img/logo-marketing-collage.svg"
-					alt=""
-					aria-hidden={true}
-					width={720}
-					height={720}
-					priority={true}
-					className="h-auto w-[min(68vw,300px)] md:w-[min(38vw,350px)]  -translate-y-12"
-				/>
-			</div>
+			/>
 
-			{/* Docked copy + proof — bottom-left, stacking on small screens */}
-			<div className="absolute bottom-0 w-full z-40 flex flex-col gap-6 px-4 pb-6 md:px-8 lg:flex-row lg:items-end lg:justify-between">
-				<div className="pointer-events-auto flex max-w-2xl flex-col items-start text-left">
-					<a
-						href={ctaHref}
-						className={`mb-5 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-md transition-all ${
-							dark
-								? "border-primary-50/15 bg-primary-900/80 text-accent-400 hover:border-accent-500/40 hover:text-accent-300"
-								: "border-primary-900/15 bg-paper/80 text-accent hover:border-accent-500/40 hover:text-accent-600"
-						}`}
-						style={{ boxShadow: "0 2px 10px rgb(var(--color-primary-600) / 0.06)" }}
-					>
-						{eyebrow}
-						<MdiIcon name="arrowRight" className="text-accent-300" size={0.55} />
-					</a>
+			{/* WebGL icon-gather scene — full-bleed background layer */}
+			<HeroGather />
 
-					<h1
-						className={`mb-5 max-w-3xl text-[2.1rem] font-medium leading-[1.05] tracking-tight md:text-5xl lg:text-6xl ${
-							dark ? "text-primary-50" : "text-primary-900"
-						}`}
-					>
-						{lines.map((line, i) => (
-							<TextReveal
-								as="span"
-								key={`${line}-${i}`}
-								className={`block ${i === lines.length - 1 ? (dark ? "text-accent-400" : "text-accent-600") : ""}`}
-								text={line || " "}
-								delay={0.1 + i * 0.1}
+			{/* Copy block — bottom on mobile, vertically centered on desktop */}
+			<div className="relative z-30 flex flex-1 items-end px-5 sm:px-[clamp(20px,6vw,96px)] md:items-center">
+				<div className="mx-auto w-full max-w-7xl pb-[120px] md:pb-16">
+					<div className="w-full max-w-[640px]">
+						<a
+							href={ctaHref}
+							className={`mb-5 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-md transition-all ${
+								dark
+									? "border-primary-50/15 bg-primary-900/80 text-accent-400 hover:border-accent-500/40 hover:text-accent-300"
+									: "border-primary-900/15 bg-paper/80 text-accent hover:border-accent-500/40 hover:text-accent-600"
+							}`}
+							style={{ boxShadow: "0 2px 10px rgb(var(--color-primary-600) / 0.06)" }}
+						>
+							{eyebrow}
+							<MdiIcon name="arrowRight" className="text-accent-300" size={0.55} />
+						</a>
+
+						<h1
+							className={`font-display text-[clamp(1.6rem,4.2vw,3.6rem)] font-bold leading-[1.02] tracking-tightest ${
+								dark ? "text-primary-50" : "text-primary-900"
+							}`}
+						>
+							{lines.map((line, i) => (
+								<span
+									key={`${line}-${i}`}
+									className={`block whitespace-nowrap ${i === lines.length - 1 ? (dark ? "text-accent-400" : "text-accent-600") : ""}`}
+								>
+									{line}
+								</span>
+							))}
+						</h1>
+
+						<p
+							data-rise
+							className={`mt-[18px] max-w-[30em] text-[clamp(1rem,1.25vw,1.12rem)] leading-relaxed sm:mt-6 ${dark ? "text-primary-200" : "text-ink-500"}`}
+						>
+							{sub}
+						</p>
+
+						<div
+							data-rise
+							className="mt-[26px] flex flex-wrap items-center gap-4 sm:mt-[34px] sm:gap-[22px]"
+						>
+							<a
+								href={ctaHref}
+								className="group/btn inline-flex items-center gap-3 rounded-full bg-accent px-7 py-4 text-[.95rem] font-semibold text-white shadow-[0_10px_30px_-10px_rgba(240,79,38,.6)] transition hover:bg-accent-600"
+							>
+								{cta}
+								<svg
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									strokeWidth="2.2"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									aria-hidden="true"
+									className="h-4 w-4 transition-transform group-hover/btn:translate-x-1"
+								>
+									<path d="M5 12h14M13 6l6 6-6 6" />
+								</svg>
+							</a>
+							<a
+								href={ctaHref}
+								className={`border-b pb-[3px] text-[.95rem] font-medium transition ${dark ? "border-primary-50/35 text-primary-100 hover:border-accent-400 hover:text-accent-300" : "border-primary-700/35 text-primary-700 hover:border-ink-800 hover:text-ink-800"}`}
+							>
+								{secondary}
+							</a>
+						</div>
+
+						<div className="mt-[30px] sm:mt-11">
+							<div
+								aria-hidden
+								className="mb-[18px] h-px bg-accent-500 sm:mb-[22px]"
+								style={{
+									maskImage:
+										"linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
+									WebkitMaskImage:
+										"linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
+								}}
 							/>
-						))}
-					</h1>
-
-					<TextReveal
-						as="p"
-						className={`mb-8 max-w-xl text-sm leading-relaxed md:text-base ${
-							dark ? "text-primary-200" : "text-primary-700"
-						}`}
-						text={sub || " "}
-						delay={0.1 + lines.length * 0.1}
-					/>
-
-					<div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-						<GlowButton
-							data={{ label: cta, href: ctaHref }}
-							className="w-full sm:w-auto"
-						/>
-						<GlowButton
-							tone="violet"
-							data={{
-								label: secondary,
-								href: ctaHref,
-								leadIcon: "document",
-								trailIcon: false,
-							}}
-							className="w-full sm:w-auto"
-						/>
+							<div className="grid grid-cols-3 gap-4 md:grid-cols-[repeat(3,auto)] md:justify-start md:gap-14">
+								{proof.map((item, i) => {
+									const m = /^(-?)(\d+)(.*)$/.exec(item.value);
+									return (
+										<div data-rise key={`${item.value}-${i}`}>
+											<b
+												{...(m
+													? {
+															"data-to": m[2],
+															"data-pre": m[1],
+															"data-suf": m[3],
+														}
+													: {})}
+												className={`block font-display text-[clamp(1.35rem,2.2vw,1.9rem)] font-bold tracking-tightest ${dark ? "text-primary-50" : ""}`}
+											>
+												{item.value}
+											</b>
+											<span
+												className={`mt-0.5 block max-w-[11em] text-[.78rem] leading-snug ${dark ? "text-primary-300" : "text-ink-400"}`}
+											>
+												{item.label}
+											</span>
+										</div>
+									);
+								})}
+							</div>
+						</div>
 					</div>
 				</div>
+			</div>
 
-				{/* Proof strip — operating commitments, also stated in Stats */}
-				<div
-					className={`flex max-w-3xl flex-wrap items-center gap-x-8 gap-y-2 text-[11px] md:text-xs lg:max-w-sm lg:justify-end ${
-						dark ? "text-primary-200" : "text-primary-700"
-					}`}
-				>
-					{proof.map((item, i) => (
-						<Fragment key={`${item.value}-${i}`}>
-							{i > 0 ? (
-								<span
-									aria-hidden
-									className={`hidden h-3 w-px sm:block ${dark ? "bg-primary-50/20" : "bg-primary-900/20"}`}
-								/>
-							) : null}
-							<div className="flex items-center gap-2">
-								<span
-									className={`font-semibold ${
-										item.ember
-											? dark
-												? "text-accent-300"
-												: "text-accent-600"
-											: dark
-												? "text-primary-50"
-												: "text-primary-900"
-									}`}
-								>
-									{item.value}
-								</span>{" "}
-								{item.label}
-							</div>
-						</Fragment>
+			{/* Partner marquee — bottom of the hero */}
+			<div
+				className={`relative z-30 mx-auto w-full max-w-7xl overflow-hidden  py-5 px-5 sm:px-[clamp(20px,6vw,96px)] ${dark ? "border-primary-50/15" : "border-primary-900/15"}`}
+				aria-label="Partners"
+				style={{
+					maskImage:
+						"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+					WebkitMaskImage:
+						"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+				}}
+			>
+				<div className="flex w-max animate-marquee motion-reduce:animate-none">
+					{[0, 1].map((copy) => (
+						<div
+							key={copy}
+							aria-hidden={copy === 1}
+							className="flex items-center gap-16 pr-16"
+						>
+							{partners.map((p, i) => {
+								const logo = dark && p.logoDark?.src?.trim() ? p.logoDark : p.logo;
+								return (
+									<div
+										key={`${p.label}-${i}`}
+										className="flex items-center gap-3"
+									>
+										<img
+											src={logo.src}
+											alt={copy === 0 ? logo.alt : ""}
+											className="h-7 w-auto opacity-80 transition-opacity hover:opacity-100 md:h-8"
+										/>
+										<span
+											className={`whitespace-nowrap text-sm font-medium tracking-tight ${dark ? "text-primary-200" : "text-primary-700"}`}
+										>
+											{p.label}
+										</span>
+									</div>
+								);
+							})}
+						</div>
 					))}
 				</div>
 			</div>
-
-			{/* Bottom fade — legibility scrim for the docked copy */}
-			<div
-				aria-hidden
-				className={`pointer-events-none absolute inset-x-0 bottom-0 z-10 h-64 bg-gradient-to-t to-transparent ${
-					dark ? "from-primary-950" : "from-paper"
-				}`}
-			/>
 		</section>
   );
 }

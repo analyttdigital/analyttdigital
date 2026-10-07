@@ -33,7 +33,7 @@ function SectionBlock({ section }: { section: Section }) {
     case 'process':
           return (
 				<div className="relative w-full flex flex-col">
-					<div className="h-screen z-0 pointer-events-none">
+					{/* <div className="h-screen z-0 pointer-events-none">
 						<PathFlowSection
 							// variant="staircase-ltr" // "staircase-ltr" | "staircase-rtl" | "edges-converge" | "cross-flow"
 							variant="staircase-ltr"
@@ -45,9 +45,8 @@ function SectionBlock({ section }: { section: Section }) {
 						>
 							<div className="bg-accent p-4 h-full rounded-lg" />
 							<div className="bg-accent p-4 h-full rounded-lg" />
-							{/* child N goes in slot N of the variant */}
 						</PathFlowSection>
-					</div>
+					</div> */}
 
 					<ProcessChapter process={section} />
 				</div>

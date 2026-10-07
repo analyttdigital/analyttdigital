@@ -1,30 +1,43 @@
-import { Archivo, Fragment_Mono, Space_Grotesk } from 'next/font/google';
+import { Fragment_Mono } from 'next/font/google';
+import localFont from 'next/font/local';
 
 /**
- * Faces, declared once and mounted on `<html>` in `_document.tsx`.
+ * Faces, declared once and mounted on `<html>` in `_document.tsx` (and on a
+ * wrapper div in `_app.tsx`, because Next only extracts the `@font-face`
+ * rules through the `_app` module graph).
  *
- * They have to live here rather than in `_app.tsx` for a specific reason:
- * `next/font`'s `variable` option emits a class that defines the CSS variable,
- * and if that class is applied to a div inside `<body>` then `body` itself
- * cannot see the variable — so any `font-sans` declared on `body` resolves to
- * an empty `var()` and the whole declaration is dropped at computed-value time,
- * silently leaving the page in Times New Roman. Mounting on `<Html>` puts the
- * variables in scope for `body` and everything below it.
- *
- * Three faces, three jobs. Space Grotesk is set light and very tight and owns
- * every display size; Archivo reads; Fragment Mono is the reference's own mono
- * and labels every figure, unit and state. `latin` covers both locales —
- * Kiswahili uses no diacritics.
+ * Three jobs. Mont-Black fronts Brother 1816 for every display size; Google
+ * Sans Flex is the default face for all reading text; Fragment Mono keeps the
+ * label/unit voice. Kiswahili uses no diacritics, so `latin` covers both
+ * locales.
  */
 
-export const display = Space_Grotesk({
-  subsets: ['latin'],
+export const montBlack = localFont({
+  src: '../fonts/mont-black/mont-black.otf',
+  weight: '900',
   variable: '--font-display',
   display: 'swap',
 });
 
-export const sans = Archivo({
-  subsets: ['latin'],
+export const brother = localFont({
+  src: '../fonts/Brother1816/Brother-1816-Black.woff2',
+  weight: '900',
+  variable: '--font-brother',
+  display: 'swap',
+});
+
+export const sans = localFont({
+  src: [
+    { path: '../fonts/GoogleSansFlex/google-sans-flex-latin-100-normal.woff2', weight: '100', style: 'normal' },
+    { path: '../fonts/GoogleSansFlex/google-sans-flex-latin-200-normal.woff2', weight: '200', style: 'normal' },
+    { path: '../fonts/GoogleSansFlex/google-sans-flex-latin-300-normal.woff2', weight: '300', style: 'normal' },
+    { path: '../fonts/GoogleSansFlex/google-sans-flex-latin-400-normal.woff2', weight: '400', style: 'normal' },
+    { path: '../fonts/GoogleSansFlex/google-sans-flex-latin-500-normal.woff2', weight: '500', style: 'normal' },
+    { path: '../fonts/GoogleSansFlex/google-sans-flex-latin-600-normal.woff2', weight: '600', style: 'normal' },
+    { path: '../fonts/GoogleSansFlex/google-sans-flex-latin-700-normal.woff2', weight: '700', style: 'normal' },
+    { path: '../fonts/GoogleSansFlex/google-sans-flex-latin-800-normal.woff2', weight: '800', style: 'normal' },
+    { path: '../fonts/GoogleSansFlex/google-sans-flex-latin-900-normal.woff2', weight: '900', style: 'normal' },
+  ],
   variable: '--font-sans',
   display: 'swap',
 });
@@ -36,4 +49,4 @@ export const mono = Fragment_Mono({
   display: 'swap',
 });
 
-export const fontsClass = `${display.variable} ${sans.variable} ${mono.variable}`;
+export const fontsClass = `${montBlack.variable} ${brother.variable} ${sans.variable} ${mono.variable}`;

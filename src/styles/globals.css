@@ -1027,3 +1027,17 @@ button {
 }
 
 
+
+/* Partner marquee — right to left, looped by duplicating the row. Lives here,
+   not in tailwind.config, because the dev server only emits `@keyframes` for
+   animation utilities it has already seen, so a config-only keyframe silently
+   never lands in the CSS. */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@layer utilities {
+  .animate-marquee {
+    animation: marquee 32s linear infinite;
+  }
+}

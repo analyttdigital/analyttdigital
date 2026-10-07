@@ -59,7 +59,7 @@ const config: Config = {
       fontFamily: {
         // Faces are wired through CSS variables set in `_app.tsx`; never
         // hard-code a family in JSX.
-        display: ['var(--font-display)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['var(--font-display)', 'var(--font-brother)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         sans: ['var(--font-sans)', 'Archivo', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         mono: ['var(--font-mono)', 'Fragment Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },

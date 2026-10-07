@@ -71,12 +71,12 @@ export function SiteNav({ nav }: { nav?: LayoutContent }) {
 
           {/* The recessed link panel. */}
           <nav aria-label="Sections" className="ml-auto hidden lg:block">
-            <ul className="flex items-stretch bg-primary-900/55">
-              {links.map((link, i) => (
-                <li key={link.label} className={i > 0 ? 'border-l border-primary-50/10' : ''}>
+            <ul className="flex items-center gap-8">
+              {links.map((link) => (
+                <li key={link.label}>
                   <a
                     href={link.href}
-                    className="block px-5 py-2.5 text-[12.5px] font-medium text-primary-200 transition-colors duration-200 hover:bg-primary-50/8 hover:text-primary-50"
+                    className="text-[13px] font-medium text-primary-300 transition-colors duration-200 hover:text-primary-50 hover:underline hover:decoration-accent-500 hover:decoration-2 hover:underline-offset-8"
                   >
                     {link.label}
                   </a>
@@ -87,11 +87,12 @@ export function SiteNav({ nav }: { nav?: LayoutContent }) {
 
           <div className="ml-auto flex items-center gap-2 lg:ml-0">
             {!open ? (
-              <Action
+              <a
                 href={ctaHref}
-                label={cta}
-                className="hidden whitespace-nowrap sm:inline-flex"
-              />
+                className="hidden whitespace-nowrap rounded-full bg-accent-500 px-5 py-2.5 text-[13px] font-medium text-white transition-colors duration-200 hover:bg-accent-600 sm:inline-flex"
+              >
+                {cta}
+              </a>
             ) : null}
             <button
               type="button"
