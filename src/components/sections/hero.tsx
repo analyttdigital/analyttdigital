@@ -629,9 +629,10 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
 							</a>
 							<a
 								href={ctaHref}
-								className={`border-b pb-[3px] text-[.95rem] font-medium transition ${dark ? "border-primary-50/35 text-primary-100 hover:border-accent-400 hover:text-accent-300" : "border-primary-700/35 text-primary-700 hover:border-ink-800 hover:text-ink-800"}`}
+								className={`inline-flex items-center gap-3 rounded-full border px-7 py-4 text-[.95rem] font-semibold transition ${dark ? "border-primary-50/25 text-primary-100 hover:border-accent-500 hover:text-accent-300" : "border-ink-950/20 text-ink-800 hover:border-accent-500 hover:text-accent-600"}`}
 							>
 								{secondary}
+								<MdiIcon name="document" size={0.85} />
 							</a>
 						</div>
 
