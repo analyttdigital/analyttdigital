@@ -16,16 +16,24 @@ export function SectionRenderer({ sections }: { sections: Section[] }) {
   return (
     <>
       {sections.map((section, i) => (
-        <SectionBlock key={`${section.type}-${i}`} section={section} />
+        <SectionBlock key={`${section.type}-${i}`} section={section} sections={sections} />
       ))}
     </>
   );
 }
 
-function SectionBlock({ section }: { section: Section }) {
+function SectionBlock({ section, sections }: { section: Section; sections: Section[] }) {
   switch (section.type) {
-    case 'hero':
-      return <Hero hero={section} />;
+    case 'hero': {
+      // The portal flood carries the next ground's own words: bridge copy is
+      // read from the Process section's content layer, never hard-coded.
+      const proc = sections.find((s) => s.type === 'process');
+      const bridge =
+        proc && proc.type === 'process'
+          ? { eyebrow: proc.eyebrow, headline: `${proc.headline} ${proc.headlineAccent}`.trim() }
+          : undefined;
+      return <Hero hero={section} bridge={bridge} />;
+    }
     case 'problem':
       return <Problem problem={section} />;
     case 'belief':

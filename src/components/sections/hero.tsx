@@ -1,11 +1,21 @@
 'use client';
 
+import { useEffect, useRef, useState } from 'react';
+import {
+  motion,
+  useMotionTemplate,
+  useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from 'framer-motion';
 
 import { MdiIcon } from '@/lib/icons/resolve-icon';
 import { DynamicImage } from '@/components/media/dynamic-image';
 import type { HeroPartner, HeroPanel, HeroProof, HeroSection } from '@/lib/content/types';
 import { HeroGather } from '@/components/graphics/hero-gather';
 import { TextReveal } from '@/components/graphics/text-reveal';
+import { smooth } from '@/lib/motion/smooth';
 
 /**
  * Hero — full-screen audit route head (user-approved replica).
@@ -532,7 +542,66 @@ const FALLBACK_PARTNERS: HeroPartner[] = [
   { label: 'HubSpot Solutions Partner', logo: { src: '/img/partners/hubspot.svg', alt: 'HubSpot' }, logoDark: { src: '/img/partners/hubspot-light.svg', alt: 'HubSpot' } },
 ];
 
-export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSection['variant'] }) {
+/** Bridge copy shown inside the portal flood. Supplied by the section
+ *  renderer from the Process section's own content layer — never hard-coded
+ *  here, per the content-layer rule. Absent = the portal floods flat. */
+export type HeroPortalBridge = { eyebrow?: string; headline?: string };
+
+/* ------------------------------------------------------------------ */
+/* Portal transition — scroll-scrubbed circular reveal into Process     */
+/*                                                                    */
+/* The hero is a tall runway section with a sticky 100svh stage. As    */
+/* scroll progress `p` (one framer-motion source, zero re-renders)     */
+/* approaches the end, a Process-ground circle floods out of the 3D    */
+/* mark and fills the viewport; the sticky stage then unpins onto the  */
+/* Process section, which continues in the same ground with no seam.   */
+/* Every window below is a pure function of `p`: fully reversible.     */
+/* ------------------------------------------------------------------ */
+
+/** Total runway: 100svh of stage + 150svh of portal beat. */
+export const HERO_RUNWAY_SVH = 250;
+/** Portal circle window — ends at 0.985 so a hold of flat ground sits
+ *  between full coverage and the unpin. */
+export const PORTAL_START = 0.78;
+export const PORTAL_END = 0.985;
+/** Bridge copy window inside the flood. */
+export const PORTAL_TEXT_START = 0.8;
+export const PORTAL_TEXT_END = 0.93;
+/** Percentage radius at full open. `circle()` resolves % against
+ *  sqrt(w²+h²)/√2, so 100% can leave the far corner bare from an
+ *  off-centre origin; 125% covers 16:9, ultrawide and portrait. */
+export const PORTAL_MAX_RADIUS = 125;
+/** Clip origin = the mark's final on-screen position. Desktop: the gather
+ *  lays the mark at ~72.5% X; the portal-beat drift (-12vw) and 1.28×
+ *  growth about the viewport centre carry it to ~67% X / ~51% Y.
+ *  Mobile: the mark sits top-centre (~50% / ~28%) and only grows. */
+export const ORIGIN_DESKTOP = '67% 51%';
+export const ORIGIN_MOBILE = '50% 26%';
+/** Must stay exactly the Process section's ground: the paper-100 token,
+ *  not a similar value. */
+export const PROCESS_BG = 'rgb(var(--color-paper-100))';
+
+/** Supporting choreography windows (fractions of `p`). */
+const CHAPTER_OUT_START = 0.64;
+const CHAPTER_OUT_END = 0.78;
+const TOOLBAR_FADE_START = 0.66;
+const TOOLBAR_FADE_END = 0.79;
+/** Past this point the copy is fully transparent, so it leaves the tab
+ *  order and the pointer gives up the stage to the portal. The WebGL
+ *  canvas itself stays visible — the model must be seen turning as the
+ *  circle opens — and only parks its pointer interaction. */
+const CONTROLS_PARK_AT = 0.79;
+const FOOTER_FADE_START = 0.78;
+const FOOTER_FADE_END = 0.87;
+const CANVAS_SHIFT_START = 0.62;
+const CANVAS_SHIFT_END = 0.82;
+const CANVAS_SHIFT_AMOUNT = 0.12;
+const CANVAS_GROW_START = 0.57;
+const CANVAS_GROW_END = 0.88;
+const CANVAS_GROW_DESKTOP = 0.28;
+const CANVAS_GROW_MOBILE = 0.16;
+
+export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: HeroSection['variant']; bridge?: HeroPortalBridge }) {
   const eyebrow = hero?.eyebrow || FALLBACK.eyebrow;
   const lines = (hero?.headline || FALLBACK.headline).split('\n');
   const sub = hero?.sub || FALLBACK.sub;
@@ -544,29 +613,116 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
   /** Explicit prop wins, then content, then the light stage. Tunnel panels
    *  flip with the variant through `panelTones` + the icon tone helpers. */
   const dark = (variant ?? hero?.variant ?? 'light') === 'dark';
+  const reduce = useReducedMotion();
 
+  /* ---- the single scroll-progress source for the portal timeline ---- */
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress: p } = useScroll({ target: heroRef, offset: ['start start', 'end end'] });
+  const [isMobile, setIsMobile] = useState(false);
+  /* Threshold-crossing flags only: the one acceptable state change on
+   * scroll. Everything else rides MotionValues with zero re-renders. */
+  const [parked, setParked] = useState(false);
+  const [footGone, setFootGone] = useState(false);
+  const [portalLive, setPortalLive] = useState(false);
+  const viewportW = useRef(0);
+
+  useEffect(() => {
+    const update = () => {
+      viewportW.current = window.innerWidth;
+      setIsMobile(
+        window.innerWidth < 760 || (window.innerHeight > window.innerWidth && window.innerWidth < 1024),
+      );
+    };
+    update();
+    window.addEventListener('resize', update);
+    window.addEventListener('orientationchange', update);
+    return () => {
+      window.removeEventListener('resize', update);
+      window.removeEventListener('orientationchange', update);
+    };
+  }, []);
+
+  useMotionValueEvent(p, 'change', (v) => {
+    const nextParked = v > CONTROLS_PARK_AT;
+    setParked((prev) => (prev === nextParked ? prev : nextParked));
+    const nextFoot = v > FOOTER_FADE_END;
+    setFootGone((prev) => (prev === nextFoot ? prev : nextFoot));
+    const nextLive = smooth(PORTAL_TEXT_START, PORTAL_TEXT_END, v) >= 0.8;
+    setPortalLive((prev) => (prev === nextLive ? prev : nextLive));
+  });
+
+  /* ---- the whole timeline as pure functions of `p` ---- */
+  const portalOpen = useTransform(p, (v) => smooth(PORTAL_START, PORTAL_END, v));
+  const portalRadius = useTransform(portalOpen, (v) => v * PORTAL_MAX_RADIUS);
+  const origin = isMobile ? ORIGIN_MOBILE : ORIGIN_DESKTOP;
+  const clipPath = useMotionTemplate`circle(${portalRadius}% at ${origin})`;
+  const portalText = useTransform(p, (v) => smooth(PORTAL_TEXT_START, PORTAL_TEXT_END, v));
+  const portalTextY = useTransform(portalText, (v) => (1 - v) * 45);
+  const chapterOut = useTransform(p, (v) => smooth(CHAPTER_OUT_START, CHAPTER_OUT_END, v));
+  const copyOpacity = useTransform(chapterOut, (v) => 1 - v);
+  const copyY = useTransform(chapterOut, (v) => -v * 80);
+  const toolbarOpacity = useTransform(p, (v) => 1 - smooth(TOOLBAR_FADE_START, TOOLBAR_FADE_END, v));
+  const footerOpacity = useTransform(p, (v) => 1 - smooth(FOOTER_FADE_START, FOOTER_FADE_END, v));
+  const glowOpacity = useTransform(portalOpen, (v) => 1 - v);
+  const orbitTurn = useTransform(p, (v) => v * 140);
+  const canvasX = useTransform(
+    p,
+    (v) => (isMobile ? 0 : -smooth(CANVAS_SHIFT_START, CANVAS_SHIFT_END, v) * viewportW.current * CANVAS_SHIFT_AMOUNT),
+  );
+  const canvasScale = useTransform(
+    p,
+    (v) =>
+      1 +
+      smooth(CANVAS_GROW_START, CANVAS_GROW_END, v) * (isMobile ? CANVAS_GROW_MOBILE : CANVAS_GROW_DESKTOP),
+  );
+
+  const ground = dark ? 'bg-primary-950 text-primary-100' : 'bg-paper text-ink-800';
 
   return (
 		<section
+			ref={heroRef}
 			id="hero"
-			className={`group relative isolate flex min-h-[max(100svh,760px)] flex-col overflow-hidden font-sans ${
-				dark ? "bg-primary-950 text-primary-100" : "bg-paper text-ink-800"
-			}`}
+			className={`group relative font-sans ${ground}`}
+			style={reduce ? undefined : { height: `${HERO_RUNWAY_SVH}svh` }}
 		>
+			{/* The stage: pinned for the runway, then unpins onto Process. It —
+			 *  not the section — owns `overflow: hidden`, so sticky keeps working. */}
 			<div
+				data-hero-stage
+				className={`flex min-h-[max(100svh,680px)] flex-col overflow-hidden isolate ${
+					reduce ? 'relative' : 'sticky top-0 h-[100svh]'
+				} ${ground}`}
+			>
+			<motion.div
 				aria-hidden
 				className={`absolute inset-0 -z-30 ${
 					dark
 						? "bg-primary-950 bg-[radial-gradient(55%_70%_at_70%_48%,rgba(240,79,38,.16),transparent_70%),radial-gradient(45%_55%_at_8%_100%,rgba(79,75,99,.4),transparent_70%)]"
 						: "bg-paper bg-[radial-gradient(55%_70%_at_70%_48%,rgba(240,79,38,.11),transparent_70%),radial-gradient(45%_55%_at_8%_100%,rgba(79,75,99,.12),transparent_70%)]"
 				}`}
+				style={reduce ? undefined : { opacity: glowOpacity, rotate: orbitTurn }}
 			/>
 
-			{/* WebGL icon-gather scene — full-bleed background layer */}
-			<HeroGather />
+			{/* WebGL icon-gather scene — full-bleed layer that drifts + grows into the portal */}
+			<motion.div
+				aria-hidden
+				className="absolute inset-0"
+				style={reduce ? undefined : { x: canvasX, scale: canvasScale }}
+			>
+				<HeroGather progress={reduce ? undefined : p} />
+			</motion.div>
 
-			{/* Copy block — bottom on mobile, vertically centered on desktop */}
-			<div className="relative z-30 flex flex-1 items-end px-5 sm:px-[clamp(20px,6vw,96px)] md:items-center">
+			{/* Copy block — bottom on mobile, vertically centered on desktop.
+			    Rides out on `chapterOut`, then leaves the tab order once fully
+			    transparent so the portal owns the stage. */}
+			<motion.div
+				className="relative z-30 flex flex-1 items-end px-5 sm:px-[clamp(20px,6vw,96px)] md:items-center"
+				style={
+					reduce
+						? undefined
+						: { opacity: copyOpacity, y: copyY, visibility: parked ? 'hidden' : 'visible' }
+				}
+			>
 				<div className="mx-auto w-full max-w-7xl pb-[120px] md:pb-16">
 					<div className="w-full max-w-[760px]">
 						<a
@@ -605,9 +761,10 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
 						delay={0.1 + lines.length * 0.1}
 					/>
 
-						<div
+						<motion.div
 							data-rise
 							className="mt-[26px] flex flex-wrap items-center gap-4 sm:mt-[34px] sm:gap-[22px]"
+							style={reduce ? undefined : { opacity: toolbarOpacity }}
 						>
 							<a
 								href={ctaHref}
@@ -634,9 +791,12 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
 								{secondary}
 								<MdiIcon name="document" size={0.85} />
 							</a>
-						</div>
+						</motion.div>
 
-						<div className="mt-[30px] sm:mt-11">
+						<motion.div
+							className="mt-[30px] sm:mt-11"
+							style={reduce ? undefined : { opacity: toolbarOpacity }}
+						>
 							<div
 								aria-hidden
 								className="mb-[18px] h-px bg-accent-500 sm:mb-[22px]"
@@ -673,21 +833,32 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
 									);
 								})}
 							</div>
-						</div>
+						</motion.div>
 					</div>
 				</div>
-			</div>
+			</motion.div>
 
-			{/* Partner marquee — bottom of the hero */}
-			<div
+			{/* Partner marquee — bottom of the hero; rides out as the footer cue */}
+			<motion.div
 				className={`relative z-30 mx-auto w-full max-w-7xl overflow-hidden  py-5 px-5 sm:px-[clamp(20px,6vw,96px)] ${dark ? "border-primary-50/15" : "border-primary-900/15"}`}
 				aria-label="Partners"
-				style={{
-					maskImage:
-						"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
-					WebkitMaskImage:
-						"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
-				}}
+				style={
+					reduce
+						? {
+								maskImage:
+									"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+								WebkitMaskImage:
+									"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+							}
+						: {
+								maskImage:
+									"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+								WebkitMaskImage:
+									"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+								opacity: footerOpacity,
+								visibility: footGone ? 'hidden' : 'visible',
+							}
+				}
 			>
 				<div className="flex w-max animate-marquee motion-reduce:animate-none">
 					{[0, 1].map((copy) => (
@@ -719,6 +890,31 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
 						</div>
 					))}
 				</div>
+			</motion.div>
+
+			{/* The portal: Process ground flooding out of the mark. Above every
+			    hero layer, never interactive, never carrying layout — only a
+			    scroll-driven clip-path. At p = 1 the stage is one flat
+			    PROCESS_BG field, and Process continues in the same ground. */}
+			{reduce ? null : (
+				<motion.div
+					aria-hidden={portalLive ? undefined : true}
+					className="pointer-events-none absolute inset-0 z-[50] flex items-center justify-center"
+					style={{ background: PROCESS_BG, clipPath, willChange: 'clip-path' }}
+				>
+					{bridge?.headline ? (
+						<motion.div
+							className="flex flex-col items-center px-6 text-center"
+							style={{ opacity: portalText, y: portalTextY }}
+						>
+							{bridge.eyebrow ? <span className="label label--plate">{bridge.eyebrow}</span> : null}
+							<p className="title mt-4 max-w-[20ch] text-[clamp(1.8rem,3.6vw,2.8rem)] text-ink-950">
+								{bridge.headline}
+							</p>
+						</motion.div>
+					) : null}
+				</motion.div>
+			)}
 			</div>
 		</section>
   );

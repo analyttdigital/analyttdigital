@@ -1,5 +1,6 @@
 'use client';
 
+import type { MotionValue } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 
 import { runHeroGather } from './hero-gather-scene';
@@ -8,17 +9,26 @@ import { runHeroGather } from './hero-gather-scene';
  * Hero gather — the WebGL logo-gather from html.bak/analytt-hero-gather-tailwind.html.
  * Icons spiral into the Analytt mark, ambient ad bubbles drift past, the
  * pointer repels/lights them, and a click splashes them off the silhouette.
+ *
+ * `progress` is the hero's single scroll-progress source, read imperatively
+ * inside the render loop (never via React state): the mark spins up and the
+ * camera dollies in as the portal opens, and rendering pauses once the
+ * portal fully covers the stage.
  */
-export function HeroGather() {
+export function HeroGather({ progress }: { progress?: MotionValue<number> }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const section = canvas?.closest('section');
-    if (!canvas || !section) return;
-    const dispose = runHeroGather(section, canvas);
+    // Scope to the sticky stage (not the tall runway section) so layout
+    // math sees viewport-sized bounds and pointer events stay on the stage.
+    const scope = canvas?.closest('[data-hero-stage]') ?? canvas?.closest('section');
+    if (!canvas || !(scope instanceof HTMLElement)) return;
+    const dispose = runHeroGather(scope, canvas, {
+      getProgress: progress ? () => progress.get() : undefined,
+    });
     return () => dispose?.();
-  }, []);
+  }, [progress]);
 
   return (
     <>

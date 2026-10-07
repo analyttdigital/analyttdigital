@@ -3,8 +3,15 @@
 import * as THREE from 'three';
 import gsap from 'gsap';
 
-export function runHeroGather(heroEl: HTMLElement, canvasEl: HTMLCanvasElement): (() => void) | undefined {
+export function runHeroGather(heroEl: HTMLElement, canvasEl: HTMLCanvasElement, opts?: { getProgress?: () => number }): (() => void) | undefined {
   'use strict';
+
+  // Portal choreography helpers. `sstep` mirrors `smooth` in
+  // src/lib/motion/smooth.ts (kept local so this scene stays a single
+  // dependency-free module whose CONFIG remains live-editable from the
+  // console). `getP` is the hero's scroll progress, read imperatively.
+  function sstep(a, b, x){ var t = (x - a) / (b - a); t = t < 0 ? 0 : t > 1 ? 1 : t; return t * t * (3 - 2 * t); }
+  var getP = (opts && opts.getProgress) || function(){ return 0; };
 
   // tile = [x, y, rotationDeg, scale, iconType, paletteIndex, alpha] in the 360x360 SVG space
   var TILES = [[112.2,-11.0,-7.6,1.53,6,0,0.82],[127.3,-15.3,-2.8,1.7,9,0,0.95],[86.9,1.8,-5.2,1.36,12,0,1.0],[101.2,2.1,16.4,1.5,11,3,0.68],[124.9,7.6,-10.1,1.24,5,1,0.89],[136.6,5.0,12.3,1.67,5,3,0.7],[75.7,23.6,0.6,1.26,1,2,0.61],[90.9,25.3,13.6,1.13,0,0,0.85],[115.2,19.5,11.5,1.55,8,2,0.59],[133.4,22.6,-14.8,1.51,2,0,0.96],[52.1,41.0,11.2,1.54,12,1,0.98],[67.0,42.7,11.8,1.59,0,1,0.82],[82.1,38.9,12.1,1.03,10,0,0.93],[103.3,38.0,-1.5,1.16,8,0,0.95],[124.2,36.7,8.8,1.37,1,3,0.56],[38.4,58.5,-12.0,1.27,8,1,0.82],[61.2,58.0,14.6,1.13,8,3,0.59],[73.5,54.7,-14.7,1.22,12,1,0.87],[94.6,61.1,-3.1,1.55,3,3,0.66],[111.0,56.7,-8.0,1.0,8,2,0.53],[130.2,60.3,-14.7,1.63,10,1,0.88],[147.6,61.6,13.4,1.63,6,0,0.83],[167.7,61.2,3.1,1.33,8,0,0.81],[186.8,61.8,-14.1,1.15,10,1,0.83],[198.9,60.6,12.5,1.51,12,3,0.52],[216.3,60.3,15.1,1.14,10,2,0.71],[236.0,59.1,-14.0,1.51,9,0,0.86],[253.5,56.1,-18.0,1.58,4,2,0.72],[277.7,59.2,-0.9,1.66,0,1,0.91],[34.1,77.9,15.5,1.75,10,2,0.54],[52.5,78.0,5.9,0.98,5,3,0.68],[66.5,72.9,-15.1,1.01,1,3,0.71],[85.5,78.1,9.7,1.25,6,2,0.68],[99.7,77.6,1.5,1.11,5,3,0.54],[122.9,75.8,-9.1,1.46,0,3,0.51],[138.7,78.4,-11.0,1.0,5,0,0.98],[155.9,74.7,-16.4,1.71,4,2,0.7],[171.0,78.0,4.8,1.68,3,0,0.8],[189.9,77.7,9.9,1.32,7,2,0.7],[208.1,76.0,15.5,0.96,12,2,0.68],[226.2,73.9,-1.4,1.64,6,0,0.9],[249.0,74.0,-16.8,1.0,6,2,0.54],[268.1,79.9,-15.0,1.16,11,0,0.88],[286.8,73.4,-1.4,1.06,12,1,0.95],[302.3,73.0,-7.4,1.62,11,2,0.58],[18.3,95.9,11.3,1.68,5,2,0.59],[37.5,92.5,10.6,1.11,1,3,0.51],[60.4,95.3,1.2,1.07,4,1,0.88],[75.3,92.3,16.3,1.2,5,2,0.66],[93.3,90.1,10.9,1.56,6,1,0.88],[109.6,90.0,-2.7,1.67,5,0,0.88],[129.7,91.3,1.9,0.96,9,3,0.52],[151.4,95.9,-5.5,1.09,1,1,0.9],[162.9,93.9,16.8,1.59,0,1,0.86],[187.8,93.9,15.3,0.99,11,3,0.52],[203.0,96.6,10.3,1.08,9,1,0.92],[222.8,96.6,-10.1,1.1,2,3,0.71],[237.1,91.0,8.1,1.15,8,1,0.81],[258.7,95.4,-6.3,1.48,8,3,0.63],[276.8,96.2,-6.9,1.47,10,1,0.89],[290.9,94.0,-17.9,1.09,7,3,0.6],[312.1,96.2,-11.5,1.32,1,3,0.59],[-6.7,114.5,6.7,1.59,5,1,0.81],[13.9,110.0,4.1,1.21,8,3,0.53],[34.7,111.8,4.2,1.42,0,1,0.86],[46.6,111.2,-8.0,1.46,2,2,0.7],[69.3,110.1,-16.3,1.56,7,2,0.71],[85.4,112.6,-14.2,1.66,5,3,0.66],[101.1,115.9,-5.0,1.41,2,0,0.89],[121.9,115.7,0.6,1.19,9,2,0.64],[142.4,115.2,8.9,1.54,9,1,0.83],[158.0,111.3,-16.3,1.24,10,3,0.55],[171.4,108.4,-7.1,1.4,6,2,0.62],[193.7,112.7,4.5,1.11,0,3,0.53],[214.5,109.9,-14.6,1.07,12,1,0.97],[227.2,114.5,-16.0,1.72,9,2,0.63],[246.6,115.5,-9.1,1.54,8,0,0.81],[261.2,109.5,14.8,1.08,8,0,0.8],[284.3,109.6,0.7,1.28,2,3,0.68],[301.1,108.5,17.8,1.45,0,3,0.66],[318.0,111.5,-15.1,1.68,1,3,0.54],[-10.7,127.5,3.6,1.26,10,3,0.7],[7.4,133.9,1.3,1.62,11,3,0.68],[18.1,126.2,-9.6,1.71,6,2,0.67],[41.0,126.6,-12.8,1.68,9,0,0.82],[61.4,128.8,-17.0,1.06,10,0,0.83],[77.1,131.6,-15.6,1.54,8,2,0.54],[97.1,126.5,14.9,1.64,3,3,0.52],[109.6,126.3,14.8,1.71,10,0,0.97],[131.1,129.8,10.5,1.06,5,1,0.86],[147.4,126.2,-7.8,1.16,12,2,0.7],[169.7,130.0,4.3,1.63,0,0,0.96],[183.5,132.2,7.4,1.23,1,1,0.94],[202.6,128.3,0.8,1.3,0,2,0.67],[216.0,129.9,10.7,1.34,9,1,0.99],[236.8,132.7,16.0,1.16,11,2,0.68],[253.9,127.3,9.6,1.7,11,3,0.67],[274.5,126.8,-14.6,1.21,11,3,0.7],[288.7,133.1,-10.6,0.97,8,2,0.59],[310.0,129.0,-9.6,1.66,9,3,0.53],[330.0,132.0,-5.5,1.47,7,2,0.61],[-2.4,148.9,17.1,1.53,5,2,0.63],[10.3,146.6,17.1,1.1,10,0,0.83],[27.8,147.1,10.6,1.74,3,2,0.6],[45.9,151.3,13.9,1.17,6,3,0.51],[69.8,147.5,17.3,1.13,2,2,0.6],[83.1,149.9,-9.3,0.95,9,3,0.65],[105.0,147.4,8.0,1.13,10,1,0.94],[118.0,147.5,7.2,1.16,6,3,0.55],[140.7,149.0,-2.8,1.15,6,3,0.5],[157.1,149.3,14.2,1.65,6,2,0.67],[177.7,151.3,-9.0,1.04,12,1,0.83],[196.6,145.6,12.5,1.23,11,3,0.62],[210.8,144.1,-4.7,1.58,7,2,0.59],[226.7,149.5,9.5,1.26,9,0,0.95],[245.8,144.5,-3.6,1.17,6,0,0.82],[266.0,149.4,-14.1,1.41,8,2,0.66],[286.8,152.0,-1.4,1.72,12,1,0.83],[297.6,150.4,5.1,1.1,2,1,0.96],[317.8,149.1,11.4,1.6,12,3,0.72],[42.3,163.3,3.9,1.66,8,0,0.93],[60.3,168.7,6.9,1.11,7,0,0.95],[77.4,162.9,-2.9,1.04,8,1,0.89],[90.5,165.7,-0.3,1.07,9,3,0.54],[114.9,162.1,-1.2,1.62,7,3,0.65],[129.0,165.4,-15.3,1.72,0,2,0.64],[223.9,169.0,-10.7,1.23,5,3,0.67],[235.5,167.7,17.0,1.05,0,0,0.96],[255.2,166.4,2.7,1.27,0,3,0.57],[270.4,168.6,9.6,1.33,8,0,0.96],[292.9,166.9,7.1,1.45,10,0,0.84],[311.1,167.0,5.9,1.09,1,0,0.88],[331.3,167.2,11.6,1.25,4,2,0.62],[32.5,181.0,-14.8,1.72,0,0,0.83],[47.2,184.6,8.8,1.31,11,0,0.87],[68.7,186.8,-15.0,1.53,4,3,0.6],[88.3,180.4,-15.8,0.98,4,0,0.88],[104.8,181.3,-0.5,1.64,9,0,0.86],[122.8,183.8,16.8,1.08,10,0,0.87],[136.3,186.4,10.0,1.33,12,3,0.71],[231.5,186.9,-8.1,1.41,1,3,0.58],[247.3,183.9,10.4,1.26,0,1,0.86],[266.4,183.7,-8.8,1.12,7,0,0.96],[283.3,184.3,-15.7,1.23,4,3,0.63],[304.1,184.2,3.2,1.33,1,1,0.84],[316.4,185.6,2.3,1.24,2,3,0.67],[43.7,200.1,5.1,1.4,2,3,0.54],[57.0,199.9,-11.8,1.53,0,2,0.71],[79.2,205.2,-16.3,1.62,2,3,0.51],[92.5,198.0,8.9,1.11,1,3,0.67],[111.8,201.0,-4.5,1.26,3,3,0.54],[132.5,205.3,-1.2,1.66,2,1,0.96],[151.4,199.8,13.2,1.7,1,1,0.96],[241.2,198.9,-16.0,1.73,4,1,0.91],[253.0,204.0,-2.4,1.73,3,2,0.72],[270.8,200.3,-15.9,1.67,10,2,0.53],[288.1,204.5,-13.0,1.22,8,0,0.96],[308.3,200.9,-3.3,0.98,2,2,0.63],[330.7,202.2,-11.7,1.13,9,0,0.97],[46.0,221.7,13.2,1.6,6,2,0.67],[67.6,223.2,-14.1,1.18,0,3,0.6],[85.2,220.3,16.8,0.97,2,1,0.92],[99.8,218.0,-16.9,1.6,11,0,0.99],[118.6,216.1,2.8,1.43,1,1,0.94],[137.8,216.8,-8.2,1.09,8,3,0.61],[159.1,216.9,13.8,1.05,2,1,0.97],[176.4,219.7,16.1,1.27,6,0,0.99],[194.6,220.8,-16.7,1.43,5,0,0.96],[210.2,222.7,12.3,1.52,8,2,0.68],[225.4,220.1,15.6,1.72,10,1,0.97],[248.1,218.9,-15.5,1.37,10,3,0.54],[261.2,217.1,10.0,1.73,12,3,0.64],[286.8,223.8,13.2,0.98,9,2,0.7],[299.2,220.3,4.4,1.69,0,2,0.53],[318.5,223.6,-7.0,1.18,9,1,0.82],[340.7,223.4,-15.0,1.67,8,1,0.89],[352.1,218.3,-7.6,1.28,11,1,0.95],[373.4,222.7,2.5,1.44,11,3,0.54],[38.4,240.2,-15.6,1.08,0,2,0.6],[58.1,240.7,9.5,1.23,10,1,1.0],[77.9,235.2,-5.3,1.22,4,1,0.92],[96.6,238.1,8.8,1.54,10,3,0.56],[113.7,241.3,13.3,1.05,8,0,0.88],[130.7,238.0,2.6,1.72,4,3,0.69],[151.0,238.9,-1.7,1.25,5,3,0.56],[164.3,237.1,-4.2,1.39,11,2,0.5],[186.8,238.0,-11.4,1.31,6,2,0.68],[202.6,238.7,15.1,1.02,9,2,0.71],[222.7,241.7,-2.6,1.11,4,0,0.81],[238.5,238.0,9.8,1.69,8,3,0.61],[257.8,237.4,-16.5,1.32,0,2,0.6],[275.4,238.2,-4.5,1.03,9,3,0.64],[289.2,235.5,-3.5,1.29,11,2,0.65],[312.5,235.4,17.2,1.2,1,2,0.61],[329.2,236.4,15.7,1.22,8,3,0.64],[344.3,238.1,-11.2,1.35,9,1,0.81],[364.8,236.8,4.9,1.74,0,0,0.94],[49.1,252.2,16.1,1.01,9,3,0.68],[66.4,258.4,6.6,1.47,3,2,0.53],[83.8,253.4,-14.4,1.16,7,0,0.87],[104.0,252.2,-3.7,1.13,9,0,0.89],[118.9,253.8,3.1,1.08,7,1,0.86],[137.4,256.8,-0.2,1.72,6,0,0.85],[158.4,256.7,-3.7,1.28,3,3,0.5],[171.7,253.4,-17.7,1.25,5,2,0.59],[189.9,256.3,-3.5,1.26,6,0,0.99],[213.6,254.8,-11.1,1.15,6,2,0.58],[225.3,257.3,-12.4,1.22,4,1,0.82],[247.4,258.3,-1.2,1.39,5,1,0.83],[262.7,255.2,2.9,1.45,8,2,0.71],[280.6,258.9,15.9,1.49,7,2,0.63],[301.7,254.9,3.9,1.15,12,1,0.83],[316.0,256.1,-8.3,1.38,11,3,0.51],[337.5,254.5,-14.9,1.26,3,1,0.96],[353.6,257.3,2.2,1.04,12,2,0.68],[371.4,252.5,-9.8,1.2,6,1,0.96],[57.4,276.1,8.6,1.07,2,2,0.64],[76.5,271.8,0.7,1.35,9,3,0.65],[92.8,270.0,10.0,1.62,9,2,0.7],[112.9,270.4,-14.0,1.15,5,2,0.55],[132.0,270.7,-3.8,1.51,1,1,0.86],[146.8,277.6,-5.7,1.3,10,3,0.61],[167.6,273.4,15.4,1.36,3,1,0.9],[180.3,275.6,-8.6,1.59,10,1,0.99],[199.9,272.1,-12.0,1.72,3,2,0.59],[221.1,271.1,-0.5,1.5,3,3,0.55],[234.0,275.5,5.1,1.06,11,2,0.53],[253.1,274.5,11.4,1.22,2,3,0.67],[275.4,271.2,12.2,1.73,1,3,0.68],[293.5,270.1,-16.4,1.34,1,2,0.57],[311.6,273.6,-6.3,1.04,4,3,0.63],[325.3,270.6,17.7,0.96,11,3,0.52],[344.7,275.9,5.2,1.16,12,3,0.61],[364.3,270.1,5.2,1.69,1,2,0.64],[82.3,291.5,-14.8,1.73,7,0,0.97],[100.5,293.8,12.3,0.95,1,3,0.53],[122.3,292.1,-5.8,1.29,2,3,0.5],[142.2,289.3,-2.0,1.19,7,2,0.62],[153.7,290.6,17.0,1.32,9,1,0.99],[176.0,294.5,6.4,1.0,6,2,0.62],[196.6,291.8,-7.2,1.47,10,2,0.62],[207.2,289.5,-1.9,1.49,9,0,0.83],[228.0,292.6,1.1,1.28,1,3,0.59],[244.8,295.7,9.0,1.11,4,1,0.97],[266.2,289.5,7.5,1.49,3,1,0.91],[283.3,293.6,14.7,1.54,10,0,0.97],[297.6,291.5,1.8,1.64,11,0,0.93],[319.1,291.7,1.6,1.5,12,1,0.91],[333.7,291.0,-3.4,1.45,0,0,0.87],[234.8,312.3,-9.4,1.58,4,1,0.94],[259.7,308.7,12.7,1.24,8,1,0.87],[275.7,308.7,6.2,1.51,3,3,0.61],[294.5,314.0,-10.6,1.07,6,3,0.59],[310.5,308.4,-15.6,1.09,4,2,0.66],[229.0,328.4,15.8,1.1,2,2,0.66],[250.0,330.8,1.0,1.57,3,2,0.67],[264.5,330.9,14.8,1.12,5,3,0.6],[285.3,324.2,-17.4,1.48,5,3,0.65],[297.5,328.5,15.1,1.28,0,1,0.81],[221.5,347.8,11.7,1.74,9,0,0.82],[240.3,349.3,7.0,0.99,7,2,0.65],[256.4,344.5,-18.0,1.73,9,3,0.61],[274.4,345.0,10.5,1.61,1,3,0.58],[225.7,366.8,-17.4,1.41,12,3,0.52],[244.7,363.6,-10.8,1.61,0,2,0.61],[265.4,366.0,-13.0,1.62,10,3,0.68]];
@@ -329,19 +336,26 @@ export function runHeroGather(heroEl: HTMLElement, canvasEl: HTMLCanvasElement):
     group.scale.setScalar(gScale);
     group.position.set(cx - W / 2, H / 2 - cy, 0);
   }
+  // Pixel budget: never above min(dpr, 2), stepping down adaptively
+  // while the average frame stays over ~29ms.
+  var baseZ = 1, prStep = 0;
+  var PR_STEPS = [2, 1.5, 1.25, 1];
+  function currentPR(){ return Math.min(window.devicePixelRatio || 1, PR_STEPS[prStep]); }
   function resize(){
     var r = hero.getBoundingClientRect();
     W = Math.max(1, r.width); H = Math.max(1, r.height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(currentPR());
     renderer.setSize(W, H, false);
     camera.aspect = W / H;
     camera.position.z = (H / 2) / Math.tan(FOV * Math.PI / 360);
+    baseZ = camera.position.z;
     camera.far = camera.position.z * 3 + 3000;
     camera.updateProjectionMatrix();
     layout();
   }
   resize();
-  if (window.ResizeObserver) new ResizeObserver(resize).observe(hero);
+  var ro = null;
+  if (window.ResizeObserver){ ro = new ResizeObserver(resize); ro.observe(hero); }
   else window.addEventListener('resize', resize);
 
   // ------------------------------------------------------------------
@@ -360,6 +374,7 @@ export function runHeroGather(heroEl: HTMLElement, canvasEl: HTMLCanvasElement):
   }
   var clickT0 = -10, chipI = 0;
   function splash(e){
+    if (getP() > 0.79) return; // parked: the portal owns the stage now
     if (e.target.closest && e.target.closest('a,button')) return;
     onMove(e);
     var l = toLocal(ptr.px, ptr.py);
@@ -384,11 +399,13 @@ export function runHeroGather(heroEl: HTMLElement, canvasEl: HTMLCanvasElement):
     gsap.fromTo(chip, { xPercent: -50, yPercent: -50, y: 0, opacity: 0, scale: .8 }, { y: -26, opacity: 1, scale: 1, duration: .45, ease: 'back.out(2.2)' });
     gsap.to(chip, { y: -78, opacity: 0, duration: .7, delay: .85, ease: 'power2.in', onComplete: function(){ chip.remove(); } });
   }
+  function onLeave(){ ptr.target = 0; }
+  function onUp(e){ if (e.pointerType === 'touch') ptr.target = 0; }
   hero.addEventListener('pointermove', onMove);
   hero.addEventListener('pointerdown', splash);
-  hero.addEventListener('pointerleave', function(){ ptr.target = 0; });
-  hero.addEventListener('pointerup', function(e){ if (e.pointerType === 'touch') ptr.target = 0; });
-  hero.addEventListener('pointercancel', function(){ ptr.target = 0; });
+  hero.addEventListener('pointerleave', onLeave);
+  hero.addEventListener('pointerup', onUp);
+  hero.addEventListener('pointercancel', onLeave);
 
   // ------------------------------------------------------------------
   // Intro: icons pop into a scattered cloud, then gather into the logo silhouette
@@ -419,13 +436,30 @@ export function runHeroGather(heroEl: HTMLElement, canvasEl: HTMLCanvasElement):
   window.analyttHero = { config: CONFIG, replay: play };
 
   // ------------------------------------------------------------------
-  // Render loop
+  // Render loop — reads scroll progress imperatively, draws nothing once
+  // the portal covers the stage, and pauses entirely off-screen.
   // ------------------------------------------------------------------
   var clock = new THREE.Clock(), time = 0;
-  var tiltX = 0, tiltY = 0;
-  var rafId = 0;
+  var tiltX = 0, tiltY = 0, spinExtra = 0;
+  var rafId = 0, running = true, inView = true, disposed = false;
+  var emaMs = 16, drawn = 0;
+
+  var io = null;
+  if (window.IntersectionObserver){
+    io = new IntersectionObserver(function(entries){ inView = entries[0].isIntersecting; }, { rootMargin: '100px' });
+    io.observe(hero);
+  }
+  function onContextLost(e){ if (e) e.preventDefault(); hero.classList.add('no-gl'); running = false; if (rafId) cancelAnimationFrame(rafId); }
+  canvas.addEventListener('webglcontextlost', onContextLost);
+
   function tick(){
-    var dt = Math.min(clock.getDelta(), .05);
+    if (disposed) return;
+    rafId = requestAnimationFrame(tick);
+    var dt = Math.min(clock.getDelta(), .06);
+    if (!running || !inView) return;
+    var p = getP();
+    if (p > 0.99) return; // portal covers the stage: hold the frame, draw nothing
+    var cost0 = performance.now();
     time += dt;
     U.uTime.value = time;
     var m = reduce ? 0 : 1;
@@ -433,14 +467,29 @@ export function runHeroGather(heroEl: HTMLElement, canvasEl: HTMLCanvasElement):
     var G = CONFIG.gather;
     U.uStartMin.value = G.startMin; U.uStartSpr.value = G.startSpread; U.uStartZ.value = G.startDepth;
     U.uSwirl.value = G.swirl; U.uSpin.value = G.spin; U.uDrift.value = G.drift; U.uSpan.value = G.span;
-    U.uHotR.value = CONFIG.pointer.radius; U.uPush.value = CONFIG.pointer.push; U.uLift.value = CONFIG.pointer.lift;
-    U.uSplashR.value = CONFIG.splash.radius; U.uSplashP.value = CONFIG.splash.power;
+    U.uHotR.value = CONFIG.pointer.radius; U.uLift.value = CONFIG.pointer.lift;
+    U.uSplashR.value = CONFIG.splash.radius;
     U.uBubbles.value = CONFIG.bubbles.opacity;
     U.uFade.value = G.fadeIn;
 
+    // Frame-rate-independent damping for every eased target below.
+    var k = 1 - Math.exp(-dt / 0.11);
+
+    // Portal choreography, all pure functions of scroll progress:
+    // the mark spins up as the circle opens, the camera dollies in, and
+    // any open/exploded state (splash arcs, pointer push) eases shut first.
+    var spinT = sstep(0.56, 0.82, p) * 1.30;
+    spinExtra += (spinT - spinExtra) * k;
+    var closeT = sstep(0.64, 0.82, p);
+    U.uSplashP.value = CONFIG.splash.power * (1 - closeT);
+    U.uPush.value = CONFIG.pointer.push * (1 - closeT * 0.5);
+    camera.position.z = baseZ * (1 - sstep(0.60, 0.86, p) * 0.18);
+
+    // Parked past 0.79: the portal owns the stage, pointer influence dies.
+    var parked = p > 0.79;
     var l = toLocal(ptr.px, ptr.py);
     ptr.sx += (l[0] - ptr.sx) * .22; ptr.sy += (l[1] - ptr.sy) * .22;
-    ptr.on += (ptr.target - ptr.on) * .1;
+    ptr.on += ((parked ? 0 : ptr.target) - ptr.on) * .1;
     U.uMouse.value.set(ptr.sx, ptr.sy);
     U.uMouseOn.value = ptr.on;
 
@@ -452,15 +501,40 @@ export function runHeroGather(heroEl: HTMLElement, canvasEl: HTMLCanvasElement):
     U.uClick.value.z = click;
     if (click > 2.8) U.uClick.value.w = 0;
 
-    // gentle 3D parallax
-    var pm = m * CONFIG.parallax;
+    // gentle 3D parallax, damped toward its targets
+    var pm = m * CONFIG.parallax * (1 - closeT);
     var txT = (-ptr.ny * .16 + Math.sin(time * .35) * .03) * pm;
     var tyT = ( ptr.nx * .24 + Math.cos(time * .3) * .04) * pm;
-    tiltX += (txT - tiltX) * .05; tiltY += (tyT - tiltY) * .05;
-    group.rotation.x = tiltX; group.rotation.y = tiltY;
+    tiltX += (txT - tiltX) * k; tiltY += (tyT - tiltY) * k;
+    group.rotation.x = tiltX; group.rotation.y = tiltY + spinExtra;
 
     renderer.render(scene, camera);
-    rafId = requestAnimationFrame(tick);
+
+    // Adaptive pixel ratio: while the average frame stays over ~29ms,
+    // step down the ladder. Never steps back up mid-visit.
+    var cost = performance.now() - cost0;
+    emaMs += (cost - emaMs) * 0.05;
+    drawn += 1;
+    if (drawn % 120 === 0 && emaMs > 29 && prStep < PR_STEPS.length - 1){
+      prStep += 1;
+      renderer.setPixelRatio(currentPR());
+    }
   }
   tick();
+
+  return function(){
+    disposed = true;
+    if (rafId) cancelAnimationFrame(rafId);
+    if (tl) tl.kill();
+    if (io) io.disconnect();
+    if (ro) ro.disconnect(); else window.removeEventListener('resize', resize);
+    canvas.removeEventListener('webglcontextlost', onContextLost);
+    hero.removeEventListener('pointermove', onMove);
+    hero.removeEventListener('pointerdown', splash);
+    hero.removeEventListener('pointerleave', onLeave);
+    hero.removeEventListener('pointerup', onUp);
+    hero.removeEventListener('pointercancel', onLeave);
+    if (renderer) renderer.dispose();
+    if (window.analyttHero && window.analyttHero.replay === play) delete window.analyttHero;
+  };
 }
