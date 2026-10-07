@@ -59,8 +59,8 @@ next-env.d.ts
 /public/sitemap.xml
 
 # Backups and Experimental versions
-*.bak*
-*.experimental*
+**/*.bak*
+**/*.experimental*
 
 #AI
 AGENTS.md
