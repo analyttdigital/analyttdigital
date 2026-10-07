@@ -568,7 +568,7 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
 			{/* Copy block — bottom on mobile, vertically centered on desktop */}
 			<div className="relative z-30 flex flex-1 items-end px-5 sm:px-[clamp(20px,6vw,96px)] md:items-center">
 				<div className="mx-auto w-full max-w-7xl pb-[120px] md:pb-16">
-					<div className="w-full max-w-[640px]">
+					<div className="w-full max-w-[760px]">
 						<a
 							href={ctaHref}
 							className={`mb-5 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-md transition-all ${

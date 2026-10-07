@@ -1,45 +1,147 @@
-import { Band, BandHead } from '@/components/layout/band';
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+
+import { MdiIcon } from '@/lib/icons/resolve-icon';
 import { GlowButton } from '@/components/layout/glow-button';
-import { ProcessPlayer } from '@/components/graphics/process-player';
+import { InViewTitle } from '@/components/graphics/in-view-title';
 import { Reveal } from '@/lib/motion/reveal';
 import type { ProcessSection } from '@/lib/content/types';
 
 /**
- * Process — the engagement as a playable system.
+ * Process — the engagement as a scroll-driven story.
  *
- * The intro states the position on the field ground; the player card beneath
- * it is the light instrument that walks the five steps with one autoplayed
- * detail view and one visual each. The closing row hands to the audit action.
- * All copy, chips, visual specs and timings arrive from the content layer.
+ * Modelled on the Otto reference: the section is tall (one screen per step),
+ * the stage is sticky at 100vh, and scroll progress sweeps an index through
+ * the five steps. The left column carries the position and the step list;
+ * the right panel swaps detail (index, title, desc, chips) per step; a 2px
+ * ember meter along the foot reports how far through the process the reader
+ * is. Copy, steps and chips stay content-layer driven.
  */
 export function ProcessChapter({ process }: { process?: ProcessSection }) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [active, setActive] = useState(0);
+  const [progress, setProgress] = useState(0);
+
+  const steps = process?.steps ?? [];
+
+  useEffect(() => {
+    const onScroll = () => {
+      const el = sectionRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const span = el.offsetHeight - window.innerHeight;
+      const p = Math.min(1, Math.max(0, -rect.top / Math.max(1, span)));
+      setProgress(p);
+      setActive(Math.min(steps.length - 1, Math.floor(p * steps.length)));
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, [steps.length]);
+
+  const goTo = (i: number) => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const span = el.offsetHeight - window.innerHeight;
+    const top = window.scrollY + el.getBoundingClientRect().top + (span * i) / Math.max(1, steps.length - 1);
+    window.scrollTo({ top, behavior: 'smooth' });
+  };
+
+  const current = steps[active];
+
   return (
-    <Band id="process" ground="paper">
-      <BandHead>{process?.eyebrow}</BandHead>
+    <>
+    <section
+      id="process"
+      ref={sectionRef}
+      className="ground--paper relative text-ink-900"
+      style={{ height: `${Math.max(steps.length, 1) * 100}vh` }}
+    >
+      <div className="sticky top-0 flex h-screen min-h-[640px] flex-col overflow-hidden">
+        <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center gap-10 px-5 py-14 md:flex-row md:items-center md:gap-16">
+          {/* Position + step list */}
+          <div className="w-full md:w-[38%]">
+            <p className="label label--plate">{process?.eyebrow}</p>
+            <InViewTitle
+              text={`${process?.headline ?? ''} ${process?.headlineAccent ?? ''}`}
+              lines={[process?.headline ?? '', process?.headlineAccent ?? '']}
+              variant="line"
+              as="h2"
+              className="title mt-8 text-[clamp(2rem,4vw,3.4rem)] text-ink-950"
+            />
+            <p className="body body--paper mt-6 max-w-[42ch] text-sm md:text-base">{process?.lede}</p>
 
-      <div className="mt-10 max-w-2xl">
-        <Reveal>
-          <h2 className="text-3xl font-medium leading-[1.1] tracking-tight text-ink-950 md:text-5xl">
-            {process?.headline} <span className="text-accent-600">{process?.headlineAccent}</span>
-          </h2>
-        </Reveal>
-        <Reveal delay={0.1}>
-          <p className="body body--paper mt-5 text-sm md:text-base">{process?.lede}</p>
-        </Reveal>
+            <ol className="mt-10 border-t border-ink-950/15">
+              {steps.map((step, i) => (
+                <li key={step.n} className="border-b border-ink-950/15">
+                  <button
+                    type="button"
+                    onClick={() => goTo(i)}
+                    aria-pressed={i === active}
+                    className={`flex w-full items-center gap-4 py-4 text-left text-sm transition-colors duration-200 ${
+                      i === active ? 'font-medium text-ink-950' : 'text-ink-500 hover:text-ink-800'
+                    }`}
+                  >
+                    <span className="font-mono text-[10.5px] tracking-[0.14em] opacity-70">{step.n}</span>
+                    <span className="flex-1">{step.title}</span>
+                    <MdiIcon name="arrowTopRight" size={0.8} className={i === active ? 'text-accent-500' : 'opacity-0'} />
+                  </button>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          {/* Detail panel — swaps per active step */}
+          <div className="w-full flex-1 md:w-auto">
+            {current ? (
+              <div
+                key={current.n}
+                className="panel--paper p-8 md:p-12"
+                style={{ animation: 'fade .5s ease both, rise .6s var(--ease-enter) both' }}
+              >
+                <p className="num text-[clamp(2.6rem,6vw,4.6rem)] text-accent-500">{current.n}</p>
+                <h3 className="verb mt-4 text-[clamp(1.6rem,3vw,2.4rem)] text-ink-950">{current.title}</h3>
+                <p className="body body--paper mt-5 max-w-[56ch]">{current.desc}</p>
+                <ul className="mt-7 flex flex-wrap gap-2.5">
+                  {current.chips.map((chip) => (
+                    <li key={chip} className="chip chip--paper">{chip}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </div>
+        </div>
+
+        {/* Foot — meter + scroll cue */}
+        <div className="border-t border-ink-950/15 px-5 py-5 md:px-8">
+          <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-6">
+            <span className="label label--plate">{process?.cardTitle ?? 'Process'}</span>
+            <div className="relative h-[2px] w-40 bg-ink-950/15" aria-hidden>
+              <span className="absolute inset-y-0 left-0 bg-accent-500" style={{ width: `${progress * 100}%` }} />
+            </div>
+            <span className="label label--plate">Scroll to explore</span>
+          </div>
+        </div>
       </div>
 
-      <Reveal delay={0.15} className="mx-auto mt-10 w-full max-w-5xl md:mt-12">
-        {process && process.steps?.length ? <ProcessPlayer data={process} id="process-player" /> : null}
-      </Reveal>
+    </section>
 
-      <div className="mx-auto mt-10 flex w-full max-w-5xl flex-col justify-between gap-5 md:flex-row md:items-center">
-        <Reveal className="max-w-xl">
-          <p className="body body--paper text-sm leading-relaxed">{process?.closing}</p>
-        </Reveal>
-        <Reveal delay={0.1} className="shrink-0">
-          <GlowButton data={{ label: process?.cta ?? '', href: process?.ctaHref }} className="w-full sm:w-auto" />
-        </Reveal>
+      {/* Closing row after the story */}
+      <div className="ground--paper">
+        <div className="mx-auto flex w-full max-w-7xl flex-col justify-between gap-5 px-5 py-16 md:flex-row md:items-center">
+          <Reveal className="max-w-xl">
+            <p className="body body--paper text-sm leading-relaxed">{process?.closing}</p>
+          </Reveal>
+          <Reveal delay={0.1} className="shrink-0">
+            <GlowButton data={{ label: process?.cta ?? '', href: process?.ctaHref }} className="w-full sm:w-auto" />
+          </Reveal>
+        </div>
       </div>
-    </Band>
+    </>
   );
 }
