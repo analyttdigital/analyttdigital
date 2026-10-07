@@ -1,4 +1,5 @@
-import { Band, BandHead, BandTitle } from '@/components/layout/band';
+import { Band, BandHead } from '@/components/layout/band';
+import { InViewTitle } from '@/components/graphics/in-view-title';
 import { CountUp } from '@/lib/motion/counter';
 import { Reveal, TallyRise } from '@/lib/motion/reveal';
 import type { StatsSection } from '@/lib/content/types';
@@ -18,7 +19,7 @@ export function Stats({ stats }: { stats?: StatsSection }) {
       <BandHead>{stats?.eyebrow}</BandHead>
 
       <div className="mt-10 grid gap-x-14 gap-y-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)] lg:items-end">
-        <BandTitle lines={stats?.headline ?? ''} className="max-w-[16ch]" />
+        <InViewTitle text={(stats?.headline ?? '').replace(/\n/g, " ")} lines={(stats?.headline ?? '').split('\n')} variant="line" as="h2" className="title text-[clamp(2.05rem,4.4vw,3.4rem)] max-w-[16ch]" />
         <Reveal delay={0.18}>
           <p className="body body--paper max-w-[46ch] lg:justify-self-end">{stats?.body}</p>
         </Reveal>

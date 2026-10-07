@@ -1,4 +1,5 @@
-import { Band, BandHead, BandTitle, DEEP, FIELD } from '@/components/layout/band';
+import { Band, BandHead } from '@/components/layout/band';
+import { InViewTitle } from '@/components/graphics/in-view-title';
 import { PanelIn, Reveal } from '@/lib/motion/reveal';
 import { useChrome } from '@/lib/content/chrome';
 import type { ProblemSection } from '@/lib/content/types';
@@ -19,17 +20,10 @@ import type { ProblemSection } from '@/lib/content/types';
  */
 
 const STACK = 16;
-const FILL = ['bg-primary-200', 'bg-accent-500', 'bg-primary-50/25'];
+const FILL = ['bg-ink-300', 'bg-accent-500', 'bg-ink-950/10'];
 
 /** Argument on the left, instrument on the right, and the gutter between
  *  them where the routes cross over to the chart that proves the claim. */
-const NODES = [
-  { x: 0.0, y: 0.37 },
-  { x: 0.19, y: 0.48 },
-  { x: 0.0, y: 0.66 },
-  { x: 0.49, y: 0.37 },
-  { x: 0.49, y: 0.8 },
-];
 
 function shareOf(value: string | undefined, total: number, fallback: number) {
   const parsed = Number.parseFloat((value ?? '').replace(/[^\d.]/g, ''));
@@ -48,44 +42,42 @@ export function Problem({ problem }: { problem?: ProblemSection }) {
   return (
     <Band
       id="problem"
-      ground="deep"
-      resolve={{ from: FIELD, to: DEEP, height: 236, cell: 21 }}
-      mesh={{ seed: 12, count: 5, depth: 40, opacity: 0.58, anchors: NODES }}
+      ground="paper"
     >
       <div className="grid gap-x-14 gap-y-14 lg:grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)]">
         {/* ---- the argument ---------------------------------------- */}
         <div>
           <BandHead>{problem?.eyebrow}</BandHead>
-          <BandTitle lines={problem?.headline ?? ''} className="mt-9 max-w-[16ch]" />
+          <InViewTitle text={(problem?.headline ?? '').replace(/\n/g, " ")} lines={(problem?.headline ?? '').split('\n')} variant="line" as="h2" className="title text-[clamp(2.05rem,4.4vw,3.4rem)] mt-9 max-w-[16ch]" />
 
           <div className="mt-9 space-y-6">
             {problem?.paragraphs?.map((paragraph, i) => (
               <Reveal key={i} delay={0.14 + i * 0.08}>
-                <p className="body max-w-[60ch]">{paragraph}</p>
+                <p className="body body--paper max-w-[60ch]">{paragraph}</p>
               </Reveal>
             ))}
           </div>
 
           {problem?.closing ? (
             <Reveal delay={0.36}>
-              <p className="label label--bright mt-9">{problem.closing}</p>
+              <p className="label label--plate mt-9">{problem.closing}</p>
             </Reveal>
           ) : null}
         </div>
 
         {/* ---- the chart, in squares -------------------------------- */}
         <PanelIn from="bottom" distance={4} delay={0.16}>
-          <div className="panel--deep h-full p-7 md:p-9">
+          <div className="panel--paper h-full p-7 md:p-9">
             <div className="flex items-start justify-between gap-6">
               <p className="label">{problem?.panelTitle ?? 'Account snapshot'}</p>
               <p className="label">{chrome.everyHundred}</p>
             </div>
 
-            <p className="num mt-7 text-[clamp(2.4rem,5vw,3.8rem)] text-accent-500">
+            <p className="num mt-7 text-[clamp(2.4rem,5vw,3.8rem)] text-accent-700">
               {problem?.panelAlert ?? 'Wasting −38%'}
             </p>
 
-            <div className="mt-9 flex items-end gap-5 border-b border-primary-50/16 pb-5">
+            <div className="mt-9 flex items-end gap-5 border-b border-ink-950/12 pb-5">
               {chips.map((chip, i) => {
                 const share = shareOf(chip.value, total, 100 / chips.length);
                 const squares = Math.max(1, Math.round((share / 100) * STACK));
@@ -101,7 +93,7 @@ export function Problem({ problem }: { problem?: ProblemSection }) {
                         />
                       ))}
                     </div>
-                    <span className="num text-[17px] text-primary-50">{chip.value}</span>
+                    <span className="num text-[17px] text-ink-950">{chip.value}</span>
                   </div>
                 );
               })}
@@ -121,7 +113,7 @@ export function Problem({ problem }: { problem?: ProblemSection }) {
               ))}
             </ul>
 
-            <p className="mt-8 border-t border-primary-50/12 pt-4 text-[12px] leading-relaxed text-primary-400">
+            <p className="mt-8 border-t border-ink-950/10 pt-4 text-[12px] leading-relaxed text-ink-500">
               {chrome.illustration}
             </p>
           </div>

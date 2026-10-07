@@ -76,7 +76,11 @@ export function SiteNav({ nav }: { nav?: LayoutContent }) {
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    className="text-[13px] font-medium text-primary-300 transition-colors duration-200 hover:text-primary-50 hover:underline hover:decoration-accent-500 hover:decoration-2 hover:underline-offset-8"
+                    className={`text-[13px] font-medium transition-colors duration-200 hover:underline hover:decoration-accent-500 hover:decoration-2 hover:underline-offset-8 ${
+                      scrolled && !open
+                        ? 'text-primary-200 hover:text-primary-50'
+                        : 'text-ink-700 hover:text-ink-950'
+                    }`}
                   >
                     {link.label}
                   </a>
@@ -100,7 +104,11 @@ export function SiteNav({ nav }: { nav?: LayoutContent }) {
               aria-label={open ? chrome.close : chrome.menu}
               aria-expanded={open}
               aria-controls="site-menu"
-              className="grid h-11 w-11 place-items-center border border-primary-50/22 text-primary-100 transition-colors duration-200 hover:border-accent-500 hover:text-accent-500 lg:hidden"
+              className={`grid h-11 w-11 place-items-center border transition-colors duration-200 hover:border-accent-500 hover:text-accent-500 lg:hidden ${
+                scrolled && !open
+                  ? 'border-primary-50/22 text-primary-100'
+                  : 'border-ink-950/20 text-ink-800'
+              }`}
             >
               {open ? <CloseGlyph /> : <GridGlyph />}
             </button>

@@ -1,4 +1,5 @@
-import { Band, BandHead, BandTitle } from '@/components/layout/band';
+import { Band, BandHead } from '@/components/layout/band';
+import { InViewTitle } from '@/components/graphics/in-view-title';
 import { PathFlowSection } from '@/components/graphics/path-flow-section';
 import { MdiIcon, capabilityIcons } from '@/lib/icons/resolve-icon';
 import type { CapabilitiesSection } from '@/lib/content/types';
@@ -36,7 +37,7 @@ export function Capabilities({ capabilities }: { capabilities?: CapabilitiesSect
         header={
           <div>
             <BandHead>{capabilities?.eyebrow ?? 'Our services'}</BandHead>
-            <BandTitle lines={capabilities?.headline ?? ''} delay={0.06} size="lg" className="mt-6 text-ink-950" />
+            <InViewTitle text={(capabilities?.headline ?? '').replace(/\n/g, " ")} lines={(capabilities?.headline ?? '').split('\n')} variant="line" as="h2" className="title text-[clamp(2.05rem,4.4vw,3.4rem)] mt-6 text-ink-950" />
             <p className="body body--paper body--sm mt-6 max-w-[42ch]">
               Four things we are hired for, and the order they happen in.
             </p>

@@ -5,6 +5,7 @@ import { MdiIcon } from '@/lib/icons/resolve-icon';
 import { DynamicImage } from '@/components/media/dynamic-image';
 import type { HeroPartner, HeroPanel, HeroProof, HeroSection } from '@/lib/content/types';
 import { HeroGather } from '@/components/graphics/hero-gather';
+import { TextReveal } from '@/components/graphics/text-reveal';
 
 /**
  * Hero — full-screen audit route head (user-approved replica).
@@ -586,22 +587,23 @@ export function Hero({ hero, variant }: { hero?: HeroSection; variant?: HeroSect
 								dark ? "text-primary-50" : "text-primary-900"
 							}`}
 						>
-							{lines.map((line, i) => (
-								<span
-									key={`${line}-${i}`}
-									className={`block whitespace-nowrap ${i === lines.length - 1 ? (dark ? "text-accent-400" : "text-accent-600") : ""}`}
-								>
-									{line}
-								</span>
-							))}
-						</h1>
+						{lines.map((line, i) => (
+							<TextReveal
+								as="span"
+								key={`${line}-${i}`}
+								className={`block whitespace-nowrap ${i === lines.length - 1 ? (dark ? "text-accent-400" : "text-accent-600") : ""}`}
+								text={line || " "}
+								delay={0.1 + i * 0.1}
+							/>
+						))}
+					</h1>
 
-						<p
-							data-rise
-							className={`mt-[18px] max-w-[30em] text-[clamp(1rem,1.25vw,1.12rem)] leading-relaxed sm:mt-6 ${dark ? "text-primary-200" : "text-ink-500"}`}
-						>
-							{sub}
-						</p>
+					<TextReveal
+						as="p"
+						className={`mt-[18px] max-w-[30em] text-[clamp(1rem,1.25vw,1.12rem)] leading-relaxed sm:mt-6 ${dark ? "text-primary-200" : "text-ink-500"}`}
+						text={sub || " "}
+						delay={0.1 + lines.length * 0.1}
+					/>
 
 						<div
 							data-rise

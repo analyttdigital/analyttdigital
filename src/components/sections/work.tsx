@@ -1,4 +1,5 @@
-import { Band, BandHead, BandTitle } from '@/components/layout/band';
+import { Band, BandHead } from '@/components/layout/band';
+import { InViewTitle } from '@/components/graphics/in-view-title';
 import { PathFlowSection } from '@/components/graphics/path-flow-section';
 import { MediaSlot } from '@/components/media/dynamic-image';
 import { CountUp } from '@/lib/motion/counter';
@@ -41,7 +42,7 @@ export function Work({ work }: { work?: WorkSection }) {
         header={
           <div>
             <BandHead>{work?.eyebrow ?? 'Selected work'}</BandHead>
-            <BandTitle lines={work?.headline ?? ''} delay={0.06} size="lg" className="mt-6 text-ink-950" />
+            <InViewTitle text={(work?.headline ?? '').replace(/\n/g, " ")} lines={(work?.headline ?? '').split('\n')} variant="line" as="h2" className="title text-[clamp(2.05rem,4.4vw,3.4rem)] mt-6 text-ink-950" />
             <p className="body body--paper body--sm mt-6 max-w-[38ch]">{chrome.workNote}</p>
           </div>
         }
