@@ -23,17 +23,21 @@ export function Capabilities({ capabilities }: { capabilities?: CapabilitiesSect
 
   return (
 		<Band id="capabilities" ground="paper">
-			<PathFlowSection
-				layout="rail"
-				mode="scroll"
-				color="rgb(var(--color-ink-950))"
-				trailColor="rgb(var(--color-accent-500))"
-				trailLength={0.14}
-				strokeWidth={1.5}
-				glow={true}
-				head={true}
-				rails={true}
-				revealItems={true}
+		<PathFlowSection
+			layout="rail"
+			mode="scroll"
+			color="rgb(var(--color-ink-950))"
+			trailColor="rgb(var(--color-accent-500))"
+			trailLength={0.14}
+			strokeWidth={1.5}
+			glow={true}
+			head={true}
+			rails={true}
+			revealItems={true}
+			// Extra vertical runway: the rail spine is measured from the real
+			// card boxes and runs the full container height, so this padding
+			// lengthens the pathflow without touching the shared grid rhythm.
+			contentClassName="py-16 md:py-28"
 				header={
 					<div>
 						<BandHead>{capabilities?.eyebrow ?? "Our services"}</BandHead>

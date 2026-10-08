@@ -62,6 +62,13 @@ const enHome: PageDoc = {
 			ctaHref: "/contact",
 			scrollHint: "Request Digital Audit",
 			variant: "light",
+			bridge: {
+				tag: "ABOUT US",
+				title: "Data at the heart of every move.",
+				description:
+					"Analytt Digital is a performance marketing agency redefining the digital landscape by placing data at the heart of every move — turning data-driven strategy into measurable growth in a competitive online realm.",
+				image: { src: "/media/banner-2.png", alt: "Analytt Digital team at work" },
+			},
 			dashboardTitle: "Campaign / Live",
 			dashboardMetric: "ROAS 4.2×",
 			statA_label: "CPL this month",
@@ -620,6 +627,13 @@ const swHome: PageDoc = {
 			ctaHref: "/sw#contact",
 			scrollHint: "Omba Ukaguzi wa Kidijitali",
 			variant: "light",
+			bridge: {
+				tag: "KUHUSU SISI",
+				title: "Data kiini cha kila hatua.",
+				description:
+					"Analytt Digital ni shirika la uuzaji wa utendaji linalobadilisha mandhari ya kidijitali kwa kuweka data kiini cha kila hatua — kugeuza mikakati ya kidata kuwa ukuaji unaopimika katika soko lenye ushindani.",
+				image: { src: "/media/banner-2.png", alt: "Timu ya Analytt Digital kazini" },
+			},
 			dashboardTitle: "Kampeni / Moja kwa moja",
 			dashboardMetric: "ROAS 4.2×",
 			statA_label: "CPL mwezi huu",

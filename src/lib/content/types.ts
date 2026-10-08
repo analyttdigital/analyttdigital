@@ -106,6 +106,12 @@ export type HeroPanel = {
 
 export type HeroPartner = { label: string; logo: ContentImage; logoDark?: ContentImage };
 
+/** About-us bridge shown inside the hero portal flood. Owned by the hero
+ *  content layer (editable in Keystatic) — `tag` renders as the band label,
+ *  `title` as the portal headline, `description` as the lede, `image` as an
+ *  optional full-bleed cover behind the copy. */
+export type HeroBridge = { tag: string; title: string; description: string; image?: ContentImage };
+
 export type HeroSection = {
   eyebrow: string;
   headline: string;
@@ -127,6 +133,9 @@ export type HeroSection = {
   statA_delta?: string;
   statB_label?: string;
   statB_value?: string;
+  /** About-us bridge for the portal flood. Absent = portal floods flat
+   *  (legacy entries fall back to the Process section's words in the renderer). */
+  bridge?: HeroBridge;
 };
 
 export type ProblemSection = {

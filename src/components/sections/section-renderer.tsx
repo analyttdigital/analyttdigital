@@ -25,17 +25,25 @@ export function SectionRenderer({ sections }: { sections: Section[] }) {
 function SectionBlock({ section, sections }: { section: Section; sections: Section[] }) {
   switch (section.type) {
     case 'hero': {
-      // The portal flood carries the next ground's own words: bridge copy is
-      // read from the Process section's content layer, never hard-coded.
+      // The portal flood carries the hero's own about-us bridge copy. Legacy
+      // entries without one fall back to the Process section's words.
+      const own = section.bridge;
       const proc = sections.find((s) => s.type === 'process');
       const bridge =
-			proc && proc.type === "process"
-				? {
-						eyebrow: proc.eyebrow,
-						headline: `${proc.headline} ${proc.headlineAccent}`.trim(),
-						lede: proc.lede,
-					}
-				: undefined;
+        own && (own.tag || own.title || own.description || own.image?.src)
+          ? {
+              eyebrow: own.tag,
+              headline: own.title,
+              lede: own.description,
+              image: own.image,
+            }
+          : proc && proc.type === 'process'
+            ? {
+                eyebrow: proc.eyebrow,
+                headline: `${proc.headline} ${proc.headlineAccent}`.trim(),
+                lede: proc.lede,
+              }
+            : undefined;
       return <Hero hero={section} bridge={bridge} />;
     }
     case 'problem':

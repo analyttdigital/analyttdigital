@@ -78,7 +78,7 @@ export function SiteNav({ nav }: { nav?: LayoutContent }) {
                     href={link.href}
                     className={`text-[13px] font-medium transition-colors duration-200 hover:underline hover:decoration-accent-500 hover:decoration-2 hover:underline-offset-8 ${
                       scrolled && !open
-                        ? 'text-primary-200 hover:text-primary-50'
+                        ? 'text-accent-600 hover:text-primary-50'
                         : 'text-ink-700 hover:text-ink-950'
                     }`}
                   >

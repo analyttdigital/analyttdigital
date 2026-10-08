@@ -114,6 +114,23 @@ const heroFields = {
   statA_delta: fields.text({ label: 'Stat A delta', defaultValue: '-84%' }),
   statB_label: fields.text({ label: 'Stat B label', defaultValue: 'Leads / month' }),
   statB_value: fields.text({ label: 'Stat B value', defaultValue: '1,200+' }),
+  bridge: fields.object(
+    {
+      tag: fields.text({ label: 'Bridge tag (e.g. ABOUT US)', defaultValue: 'ABOUT US' }),
+      title: fields.text({
+        label: 'Bridge title (keep short)',
+        defaultValue: 'Data at the heart of every move.',
+      }),
+      description: fields.text({
+        label: 'Bridge description',
+        defaultValue:
+          'Analytt Digital is a performance marketing agency redefining the digital landscape by placing data at the heart of every move — turning data-driven strategy into measurable growth in a competitive online realm.',
+        multiline: true,
+      }),
+      image: imageField('Bridge cover (optional background)'),
+    },
+    { label: 'Portal bridge (about-us)' },
+  ),
   marquee: fields.array(
     fields.object({
       label: fields.text({ label: 'Label (e.g. Meta Business Partner)' }),

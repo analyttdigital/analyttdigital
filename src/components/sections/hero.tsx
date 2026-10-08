@@ -12,7 +12,7 @@ import {
 
 import { MdiIcon } from '@/lib/icons/resolve-icon';
 import { DynamicImage } from '@/components/media/dynamic-image';
-import type { HeroPartner, HeroPanel, HeroProof, HeroSection } from '@/lib/content/types';
+import type { ContentImage, HeroPartner, HeroPanel, HeroProof, HeroSection } from '@/lib/content/types';
 import { HeroGather } from '@/components/graphics/hero-gather';
 import { TextReveal } from '@/components/graphics/text-reveal';
 import { smooth } from '@/lib/motion/smooth';
@@ -545,9 +545,10 @@ const FALLBACK_PARTNERS: HeroPartner[] = [
 ];
 
 /** Bridge copy shown inside the portal flood. Supplied by the section
- *  renderer from the Process section's own content layer — never hard-coded
- *  here, per the content-layer rule. Absent = the portal floods flat. */
-export type HeroPortalBridge = { eyebrow?: string; headline?: string; lede?: string };
+ *  renderer from the hero's own `bridge` content (tag/title/description plus
+ *  an optional cover image, editable in Keystatic) — never hard-coded here,
+ *  per the content-layer rule. Absent = the portal floods flat. */
+export type HeroPortalBridge = { eyebrow?: string; headline?: string; lede?: string; image?: ContentImage };
 
 /* ------------------------------------------------------------------ */
 /* Portal transition — scroll-scrubbed circular reveal into Process     */
@@ -909,41 +910,64 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
 				{!reduce && (
 					<motion.div
 						aria-hidden={portalLive ? undefined : true}
-						className="pointer-events-none absolute inset-0 z-[50] flex items-center justify-center bg-primary-700"
+						className="pointer-events-none absolute inset-0 z-[50] bg-primary-700"
 						style={{ clipPath, willChange: "clip-path" }}
 					>
-						
-						{bridge && (
-							<motion.div
-								className="flex flex-col items-center px-6 text-center"
-								style={{ opacity: portalText, y: portalTextY }}
-							>
-								{bridge.eyebrow && (
-									<span className="label label--plate text-paper before:bg-accent">
-										{bridge.eyebrow}
-									</span>
-								)}
-								{bridge.headline && (
-									<InViewTitle
-										variant="wipe"
-										as="h2"
-										text={bridge.headline}
-										once={false}
-										className="title mt-4 max-w-[20ch] text-[clamp(1.8rem,3.6vw,3.8rem)] text-paper"
+						{/* Optional bridge cover — decorative only, resolved through the
+						 * shared media component so an empty `src` renders nothing and
+						 * the flat ground shows through. Docked right at half the
+						 * bridge height; the bottom fades into the portal ground. */}
+						{bridge?.image?.src?.trim() && (
+							<div aria-hidden className="absolute inset-y-0 right-0 flex w-full items-center justify-end">
+								<div
+									className="relative  h-1/2 w-[min(78vw,300px)] overflow-hidden  sm:w-[min(40vw,660px)]"
+									style={{
+										maskImage: "linear-gradient(to bottom, black 75%, transparent 100%)",
+										WebkitMaskImage: "linear-gradient(to bottom, black 75%, transparent 100%)",
+									}}
+								>
+									<DynamicImage
+										image={bridge.image}
+										sizes="(max-width: 640px) 78vw, 40vw"
+										className="h-full w-full object-cover"
 									/>
-								)}
-
-								{bridge.lede && (
-									<InViewTitle
-										variant="blur"
-										as="p"
-										text={bridge.lede}
-										once={false}
-										className="mt-12 max-w-[50dvw] text-paper"
-									/>
-								)}
-							</motion.div>
+									<div aria-hidden className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-primary-700" />
+								</div>
+							</div>
 						)}
+						<div className="relative flex h-full w-full items-center justify-center">
+							{bridge && (
+								<motion.div
+									className="flex flex-col items-center px-6 text-center"
+									style={{ opacity: portalText, y: portalTextY }}
+								>
+									{bridge.eyebrow && (
+										<span className="label label--plate text-paper before:bg-accent">
+											{bridge.eyebrow}
+										</span>
+									)}
+									{bridge.headline && (
+										<InViewTitle
+											variant="wipe"
+											as="h2"
+											text={bridge.headline}
+											once={false}
+											className="title mt-4 max-w-[20ch] text-[clamp(1.8rem,3.6vw,3.8rem)] text-paper"
+										/>
+									)}
+
+									{bridge.lede && (
+										<InViewTitle
+											variant="blur"
+											as="p"
+											text={bridge.lede}
+											once={false}
+											className="mt-12 max-w-[50dvw] text-paper"
+										/>
+									)}
+								</motion.div>
+							)}
+						</div>
 					</motion.div>
 				)}
 			</div>
