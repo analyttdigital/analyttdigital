@@ -6,10 +6,10 @@ import { useId, useLayoutEffect, useRef } from 'react';
  * LogoWireframe — the Analytt monogram as a traced signal path.
  *
  * Path data is traced from `public/img/logo-light.svg` (the two strokes of
- * the mark). The strokes sit faintly drawn in paper as the track; every
- * time `active` flips true a single accent comet sweeps each stroke in
- * turn, then parks fully off-path until the next entry. The comet is one
- * locked unit — wide glow, mid body, bright core and round head cap all
+ * the mark). The strokes sit faintly drawn in paper as the track; while
+ * `active` holds, a single accent comet sweeps each stroke in an endless
+ * loop (sweep, brief hold, sweep again), staggering the two strokes. The
+ * comet is one locked unit — wide glow, mid body, bright core and round head cap all
  * share the same tip position from the same dash offset, so the head is
  * literally part of the trail path and can never separate from it — and
  * its tail vanishes in steps: each layer is shorter than the last, so only
@@ -27,10 +27,11 @@ const LOGO_PATHS = [
   'm214.95 148.93h-30.04v-78.75h59.68q35.57 0 55.73 20.91 20.16 20.9 20.15 57.43v72.66h39.53v22.32l-106.32 116.5h-18.97v-70.62h-48.62v-68.19h45.85v-54.8q0-7.71-4.55-12.58-4.54-4.87-12.44-4.88z',
 ];
 
-/** Comet length as a fraction of the path, and sweep timing. */
+/** Comet length as a fraction of the path, sweep timing, and hold between loops. */
 const TRAIL = 0.16;
 const SWEEP_MS = 1400;
 const STAGGER_MS = 220;
+const LOOP_PAUSE_MS = 10000;
 
 /** One locked comet: longest/faindest tail first, shortest/brightest last,
  *  capped by a round head that is part of the trail path itself. Every
@@ -69,16 +70,16 @@ export function LogoWireframe({ active, className }: { active?: boolean; classNa
     };
 
     const tick = (now: number) => {
-      /* Done: park the comet fully off-path (nothing visible) and stop — it
-       * only reappears when the next entry restarts the sweep. */
-      if (paths.every((i) => now - start - i * STAGGER_MS >= SWEEP_MS)) {
-        park();
-        return;
-      }
       raf = requestAnimationFrame(tick);
+      /* Hidden tab holds its frame — the loop is time-based, so it resumes
+       * in phase instead of jumping. */
+      if (document.hidden) return;
       paths.forEach((i) => {
-        const t = Math.min(1, Math.max(0, (now - start - i * STAGGER_MS) / SWEEP_MS));
-        paint(i, t * (1 + TRAIL));
+        const elapsed = now - start - i * STAGGER_MS;
+        if (elapsed < 0) return;
+        const local = elapsed % (SWEEP_MS + LOOP_PAUSE_MS);
+        /* Sweeping, else parked: the hold between loops shows only the track. */
+        paint(i, local < SWEEP_MS ? (local / SWEEP_MS) * (1 + TRAIL) : 0);
       });
     };
     raf = requestAnimationFrame(tick);

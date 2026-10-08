@@ -43,9 +43,9 @@ export function runHeroGather(heroEl: HTMLElement, canvasEl: HTMLCanvasElement, 
       span: .45,           // share of the timeline each icon spends travelling (higher = less stagger)
       jitter: .3,          // 0 = strict spiral order, 1 = fully random order (per-icon stagger)
       fadeIn: .3,          // share of each icon's own travel spent fading from 0 to full opacity
-      introDuration: 1.2,  // seconds for the ambient side icons to fade in
-      delay: .3,           // seconds before the first icon starts
-      duration: 3.8,       // seconds for the whole gather, first icon to last
+      introDuration: 0.2,  // seconds for the ambient side icons to fade in
+      delay: 0,           // seconds before the first icon starts
+      duration: 1.8,       // seconds for the whole gather, first icon to last
       ease: 'power1.inOut'
     },
     pointer: { radius: 62, push: 36, lift: 46 },

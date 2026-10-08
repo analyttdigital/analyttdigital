@@ -1,22 +1,22 @@
-import { Band, BandHead } from '@/components/layout/band';
+import { Band } from '@/components/layout/band';
 import { InViewTitle } from '@/components/graphics/in-view-title';
 import { MediaSlot } from '@/components/media/dynamic-image';
-import { NodeIn, Reveal } from '@/lib/motion/reveal';
+import { NodeIn } from '@/lib/motion/reveal';
+import { MdiIcon } from '@/lib/icons/resolve-icon';
 import { useChrome } from '@/lib/content/chrome';
 import type { InsightsSection } from '@/lib/content/types';
 
 /**
- * Insights — the notice board.
+ * Insights — forthcoming entries as a ruled register, Otto feature-list
+ * style.
  *
- * Nothing here is published yet, and a link to nowhere is a lie the agency does
- * not need to tell. Three entries print as rows: plate, index, title, summary,
- * and an honest status stamp. When real articles exist the stamp is the only
- * thing that changes.
- *
- * The net runs across the three plates on one route, so the row reads as a
- * board with three entries rather than three separate cards.
+ * Section head with the statement on the left and the status as a bordered
+ * mono tag on the right; then one hairline row per entry — lot numeral,
+ * square media mount, title and summary, arrow at the margin. The row is
+ * the hover surface: the ground lifts to the plate tone, the row settles
+ * right, the arrow arrives. Nothing links anywhere until real articles
+ * exist. Paper band, ink type. Content shape unchanged.
  */
-/** The two gutters between the three plates, where the row's routes run. */
 
 export function Insights({ insights }: { insights?: InsightsSection }) {
   const articles = insights?.articles ?? [];
@@ -24,29 +24,49 @@ export function Insights({ insights }: { insights?: InsightsSection }) {
 
   return (
     <Band id="insights" ground="paper">
-      <div className="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-end">
-        <div>
-          <BandHead>{insights?.eyebrow}</BandHead>
-          <InViewTitle text={(insights?.headline ?? '').replace(/\n/g, " ")} lines={(insights?.headline ?? '').split('\n')} variant="line" as="h2" className="title text-[clamp(2.05rem,4.4vw,3.4rem)] mt-9" />
+      <div className="flex items-start justify-between gap-8">
+        <InViewTitle
+          text={(insights?.headline ?? '').replace(/\n/g, ' ')}
+          variant="blur"
+          as="h2"
+          className="title max-w-[14ch] text-[clamp(2rem,4vw,2.6rem)] text-ink-950"
+        />
+        <div className="flex flex-col items-end gap-4 pt-1">
+          <p className="label text-ink-500">{insights?.eyebrow}</p>
+          <span className="inline-flex items-center gap-2 rounded-full border border-accent-600/40 px-3.5 py-1.5 font-mono text-[9.5px] font-medium uppercase tracking-[0.14em] text-accent-600">
+            <span aria-hidden className="h-1.5 w-1.5 bg-accent-500" />
+            {chrome.inPreparation}
+          </span>
         </div>
-        <Reveal delay={0.16}>
-          <span className="chip chip--paper">{chrome.inPreparation}</span>
-        </Reveal>
       </div>
 
-      <ol className="mt-14 grid gap-5 md:grid-cols-3">
+      <ol className="mt-12 border-t border-ink-950/15">
         {articles.map((article, i) => (
-          <NodeIn as="li" key={article.title} delay={0.08 + i * 0.08}>
-            <article className="panel--paper flex h-full flex-col p-6 transition-colors duration-300 hover:bg-paper-200">
+          <NodeIn as="li" key={article.title} delay={0.06 + i * 0.07}>
+            <article className="group -mx-4 grid gap-x-8 gap-y-5 border-b border-ink-950/15 px-4 py-7 transition-all duration-300 hover:bg-paper-50 hover:pl-6 md:grid-cols-[2.5rem_10rem_minmax(0,1fr)_1.5rem] md:items-start lg:grid-cols-[2.5rem_13rem_minmax(0,1fr)_1.5rem]">
+              <span className="pt-1 font-mono text-[10.5px] tracking-[0.14em] text-ink-400">
+                {article.index} /
+              </span>
               <MediaSlot
                 icon="document"
                 label={chrome.mediaSlot}
-                className="aspect-[16/10] w-full"
+                tone="paper"
+                className="aspect-[4/3] w-full overflow-hidden transition-transform duration-500 ease-out group-hover:scale-[1.03]"
               />
-              <p className="num mt-6 text-[20px] text-ink-950/45">{article.index}</p>
-              <h3 className="verb mt-3 text-[19px] text-ink-950">{article.title}</h3>
-              <p className="body body--paper body--sm mt-3 flex-1">{article.description}</p>
-              <p className="label label--plate mt-6">{chrome.inPreparation}</p>
+              <div>
+                <h3 className="verb max-w-[34ch] text-[clamp(1.2rem,2vw,1.55rem)] text-ink-950 transition-colors duration-300 group-hover:text-accent-600">
+                  {article.title}
+                </h3>
+                <p className="mt-2.5 max-w-[58ch] text-[12.5px] leading-[1.8] text-ink-500">
+                  {article.description}
+                </p>
+                <p className="mt-4 font-mono text-[9px] uppercase tracking-[0.14em] text-ink-400">
+                  {chrome.inPreparation}
+                </p>
+              </div>
+              <span className="hidden pt-1 text-ink-400 opacity-0 transition-all duration-300 group-hover:translate-x-1 group-hover:text-accent-600 group-hover:opacity-100 md:block">
+                <MdiIcon name="arrowTopRight" size={0.95} />
+              </span>
             </article>
           </NodeIn>
         ))}

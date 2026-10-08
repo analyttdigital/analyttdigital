@@ -761,22 +761,23 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
 								}`}
 							>
 								{lines.map((line, i) => (
-									<TextReveal
-										as="span"
+									<span
 										key={`${line}-${i}`}
 										className={`block whitespace-nowrap ${i === lines.length - 1 ? (dark ? "text-accent-400" : "text-accent-600") : ""}`}
-										text={line || " "}
-										delay={0.1 + i * 0.1}
-									/>
+
+									>
+										{line || " "}
+									</span>
 								))}
 							</h1>
 
-							<TextReveal
-								as="p"
-								className={`mt-[18px] max-w-[30em] text-[clamp(1rem,1.25vw,1.12rem)] leading-relaxed sm:mt-6 ${dark ? "text-primary-200" : "text-ink-500"}`}
-								text={sub || " "}
-								delay={0.1 + lines.length * 0.1}
-							/>
+							<p
+								className={`mt-[18px] max-w-[30em]  leading-relaxed sm:mt-6 ${dark ? "text-primary-200" : "text-ink-500"}`}
+
+								// delay={0.1 + lines.length * 0.1}
+							>
+								{sub || " "}
+							</p>
 
 							<motion.div
 								data-rise

@@ -37,7 +37,7 @@ export function SiteNav({ nav }: { nav?: LayoutContent }) {
 
   /* The rail's scrolled identity switches on once the reader is half a
    * viewport into the page — past the hero's opening beat. */
-  useMotionValueEvent(scrollY, 'change', (y) => setScrolled(y > window.innerHeight / 2));
+  useMotionValueEvent(scrollY, 'change', (y) => setScrolled(y > window.innerHeight ));
 
   // The sheet owns the viewport while it is open.
   useEffect(() => {
