@@ -16,6 +16,8 @@ import type { HeroPartner, HeroPanel, HeroProof, HeroSection } from '@/lib/conte
 import { HeroGather } from '@/components/graphics/hero-gather';
 import { TextReveal } from '@/components/graphics/text-reveal';
 import { smooth } from '@/lib/motion/smooth';
+import InViewTitle from '../graphics/in-view-title';
+import { PathFlowSection } from '../graphics/path-flow-section';
 
 /**
  * Hero — full-screen audit route head (user-approved replica).
@@ -545,7 +547,7 @@ const FALLBACK_PARTNERS: HeroPartner[] = [
 /** Bridge copy shown inside the portal flood. Supplied by the section
  *  renderer from the Process section's own content layer — never hard-coded
  *  here, per the content-layer rule. Absent = the portal floods flat. */
-export type HeroPortalBridge = { eyebrow?: string; headline?: string };
+export type HeroPortalBridge = { eyebrow?: string; headline?: string; lede?: string };
 
 /* ------------------------------------------------------------------ */
 /* Portal transition — scroll-scrubbed circular reveal into Process     */
@@ -577,9 +579,6 @@ export const PORTAL_MAX_RADIUS = 125;
  *  Mobile: the mark sits top-centre (~50% / ~28%) and only grows. */
 export const ORIGIN_DESKTOP = '67% 51%';
 export const ORIGIN_MOBILE = '50% 26%';
-/** Must stay exactly the Process section's ground: the paper-100 token,
- *  not a similar value. */
-export const PROCESS_BG = 'rgb(var(--color-paper-100))';
 
 /** Supporting choreography windows (fractions of `p`). */
 const CHAPTER_OUT_START = 0.64;
@@ -690,231 +689,263 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
 			<div
 				data-hero-stage
 				className={`flex min-h-[max(100svh,680px)] flex-col overflow-hidden isolate ${
-					reduce ? 'relative' : 'sticky top-0 h-[100svh]'
+					reduce ? "relative" : "sticky top-0 h-[100svh]"
 				} ${ground}`}
 			>
-			<motion.div
-				aria-hidden
-				className={`absolute inset-0 -z-30 ${
-					dark
-						? "bg-primary-950 bg-[radial-gradient(55%_70%_at_70%_48%,rgba(240,79,38,.16),transparent_70%),radial-gradient(45%_55%_at_8%_100%,transparent_70%,transparent_70%)]"
-						: "bg-paper bg-[radial-gradient(55%_70%_at_70%_48%,rgba(240,79,38,.11),transparent_70%),radial-gradient(45%_55%_at_8%_100%,transparent_70%,transparent_70%)]"
-				}`}
-				style={reduce ? undefined : { opacity: glowOpacity, rotate: orbitTurn }}
-			/>
+				<motion.div
+					aria-hidden
+					className={`absolute inset-0 -z-30 ${
+						dark
+							? "bg-primary-950 bg-[radial-gradient(55%_70%_at_70%_48%,rgba(240,79,38,.16),transparent_70%),radial-gradient(45%_55%_at_8%_100%,transparent_70%,transparent_70%)]"
+							: "bg-paper bg-[radial-gradient(55%_70%_at_70%_48%,rgba(240,79,38,.11),transparent_70%),radial-gradient(45%_55%_at_8%_100%,transparent_70%,transparent_70%)]"
+					}`}
+					style={reduce ? undefined : { opacity: glowOpacity, rotate: orbitTurn }}
+				/>
 
-			{/* WebGL icon-gather scene — full-bleed layer that drifts + grows into the portal */}
-			<motion.div
-				aria-hidden
-				className="absolute inset-0"
-				style={reduce ? undefined : { x: canvasX, scale: canvasScale }}
-			>
-				<HeroGather progress={reduce ? undefined : p} />
-			</motion.div>
+				{/* WebGL icon-gather scene — full-bleed layer that drifts + grows into the portal */}
+				<motion.div
+					aria-hidden
+					className="absolute inset-0"
+					style={reduce ? undefined : { x: canvasX, scale: canvasScale }}
+				>
+					<HeroGather progress={reduce ? undefined : p} />
+				</motion.div>
 
-			{/* Copy block — bottom on mobile, vertically centered on desktop.
+				{/* Copy block — bottom on mobile, vertically centered on desktop.
 			    Rides out on `chapterOut`, then leaves the tab order once fully
 			    transparent so the portal owns the stage. */}
-			<motion.div
-				className="relative z-30 flex flex-1 items-end px-5 sm:px-[clamp(20px,6vw,96px)] md:items-center"
-				style={
-					reduce
-						? undefined
-						: { opacity: copyOpacity, y: copyY, visibility: parked ? 'hidden' : 'visible' }
-				}
-			>
-				<div className="mx-auto w-full max-w-7xl pb-[120px] md:pb-16">
-					<div className="w-full max-w-[760px]">
-						<a
-							href={ctaHref}
-							className={`mb-5 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-md transition-all ${
-								dark
-									? "border-primary-50/15 bg-primary-900/80 text-accent-400 hover:border-accent-500/40 hover:text-accent-300"
-									: "border-primary-900/15 bg-paper/80 text-accent hover:border-accent-500/40 hover:text-accent-600"
-							}`}
-							style={{ boxShadow: "0 2px 10px rgb(var(--color-primary-600) / 0.06)" }}
-						>
-							{eyebrow}
-							<MdiIcon name="arrowRight" className="text-accent-300" size={0.55} />
-						</a>
-
-						<h1
-							className={`font-display text-[clamp(1.6rem,4.2vw,3.6rem)] font-bold leading-[1.02] tracking-tightest ${
-								dark ? "text-primary-50" : "text-primary-900"
-							}`}
-						>
-						{lines.map((line, i) => (
-							<TextReveal
-								as="span"
-								key={`${line}-${i}`}
-								className={`block whitespace-nowrap ${i === lines.length - 1 ? (dark ? "text-accent-400" : "text-accent-600") : ""}`}
-								text={line || " "}
-								delay={0.1 + i * 0.1}
-							/>
-						))}
-					</h1>
-
-					<TextReveal
-						as="p"
-						className={`mt-[18px] max-w-[30em] text-[clamp(1rem,1.25vw,1.12rem)] leading-relaxed sm:mt-6 ${dark ? "text-primary-200" : "text-ink-500"}`}
-						text={sub || " "}
-						delay={0.1 + lines.length * 0.1}
-					/>
-
-						<motion.div
-							data-rise
-							className="mt-[26px] flex flex-wrap items-center gap-4 sm:mt-[34px] sm:gap-[22px]"
-							style={reduce ? undefined : { opacity: toolbarOpacity }}
-						>
+				<motion.div
+					className="relative z-30 flex flex-1 items-end px-5 sm:px-[clamp(20px,6vw,96px)] md:items-center"
+					style={
+						reduce
+							? undefined
+							: {
+									opacity: copyOpacity,
+									y: copyY,
+									visibility: parked ? "hidden" : "visible",
+								}
+					}
+				>
+					<div className="mx-auto w-full max-w-7xl pb-[120px] md:pb-16">
+						<div className="w-full max-w-[760px]">
 							<a
 								href={ctaHref}
-								className="group/btn inline-flex items-center gap-3 rounded-full bg-accent px-7 py-4 text-[.95rem] font-semibold text-white shadow-[0_10px_30px_-10px_rgba(240,79,38,.6)] transition hover:bg-accent-600"
-							>
-								{cta}
-								<svg
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									strokeWidth="2.2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									aria-hidden="true"
-									className="h-4 w-4 transition-transform group-hover/btn:translate-x-1"
-								>
-									<path d="M5 12h14M13 6l6 6-6 6" />
-								</svg>
-							</a>
-							<a
-								href={ctaHref}
-								className={`inline-flex items-center gap-3 rounded-full border px-7 py-4 text-[.95rem] font-semibold transition ${dark ? "border-primary-50/25 text-primary-100 hover:border-accent-500 hover:text-accent-300" : "border-ink-950/20 text-ink-800 hover:border-accent-500 hover:text-accent-600"}`}
-							>
-								{secondary}
-								<MdiIcon name="document" size={0.85} />
-							</a>
-						</motion.div>
-
-						<motion.div
-							className="mt-[30px] sm:mt-11"
-							style={reduce ? undefined : { opacity: toolbarOpacity }}
-						>
-							<div
-								aria-hidden
-								className="mb-[18px] h-px bg-accent-500 sm:mb-[22px]"
+								className={`mb-5 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-md transition-all ${
+									dark
+										? "border-primary-50/15 bg-primary-900/80 text-accent-400 hover:border-accent-500/40 hover:text-accent-300"
+										: "border-primary-900/15 bg-paper/80 text-accent hover:border-accent-500/40 hover:text-accent-600"
+								}`}
 								style={{
-									maskImage:
-										"linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
-									WebkitMaskImage:
-										"linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
+									boxShadow: "0 2px 10px rgb(var(--color-primary-600) / 0.06)",
 								}}
+							>
+								{eyebrow}
+								<MdiIcon
+									name="arrowRight"
+									className="text-accent-300"
+									size={0.55}
+								/>
+							</a>
+
+							<h1
+								className={`font-display text-[clamp(1.6rem,4.2vw,3.6rem)] font-bold leading-[1.02] tracking-tightest ${
+									dark ? "text-primary-50" : "text-primary-900"
+								}`}
+							>
+								{lines.map((line, i) => (
+									<TextReveal
+										as="span"
+										key={`${line}-${i}`}
+										className={`block whitespace-nowrap ${i === lines.length - 1 ? (dark ? "text-accent-400" : "text-accent-600") : ""}`}
+										text={line || " "}
+										delay={0.1 + i * 0.1}
+									/>
+								))}
+							</h1>
+
+							<TextReveal
+								as="p"
+								className={`mt-[18px] max-w-[30em] text-[clamp(1rem,1.25vw,1.12rem)] leading-relaxed sm:mt-6 ${dark ? "text-primary-200" : "text-ink-500"}`}
+								text={sub || " "}
+								delay={0.1 + lines.length * 0.1}
 							/>
-							<div className="grid grid-cols-3 gap-4 md:grid-cols-[repeat(3,auto)] md:justify-start md:gap-14">
-								{proof.map((item, i) => {
-									const m = /^(-?)(\d+)(.*)$/.exec(item.value);
+
+							<motion.div
+								data-rise
+								className="mt-[26px] flex flex-wrap items-center gap-4 sm:mt-[34px] sm:gap-[22px]"
+								style={reduce ? undefined : { opacity: toolbarOpacity }}
+							>
+								<a
+									href={ctaHref}
+									className="group/btn inline-flex items-center gap-3 rounded-full bg-accent px-7 py-4 text-[.95rem] font-semibold text-white shadow-[0_10px_30px_-10px_rgba(240,79,38,.6)] transition hover:bg-accent-600"
+								>
+									{cta}
+									<svg
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										strokeWidth="2.2"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										aria-hidden="true"
+										className="h-4 w-4 transition-transform group-hover/btn:translate-x-1"
+									>
+										<path d="M5 12h14M13 6l6 6-6 6" />
+									</svg>
+								</a>
+								<a
+									href={ctaHref}
+									className={`inline-flex items-center gap-3 rounded-full border px-7 py-4 text-[.95rem] font-semibold transition ${dark ? "border-primary-50/25 text-primary-100 hover:border-accent-500 hover:text-accent-300" : "border-ink-950/20 text-ink-800 hover:border-accent-500 hover:text-accent-600"}`}
+								>
+									{secondary}
+									<MdiIcon name="document" size={0.85} />
+								</a>
+							</motion.div>
+
+							<motion.div
+								className="mt-[30px] sm:mt-11"
+								style={reduce ? undefined : { opacity: toolbarOpacity }}
+							>
+								<div
+									aria-hidden
+									className="mb-[18px] h-px bg-accent-500 sm:mb-[22px]"
+									style={{
+										maskImage:
+											"linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
+										WebkitMaskImage:
+											"linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
+									}}
+								/>
+								<div className="grid grid-cols-3 gap-4 md:grid-cols-[repeat(3,auto)] md:justify-start md:gap-14">
+									{proof.map((item, i) => {
+										const m = /^(-?)(\d+)(.*)$/.exec(item.value);
+										return (
+											<div data-rise key={`${item.value}-${i}`}>
+												<b
+													{...(m
+														? {
+																"data-to": m[2],
+																"data-pre": m[1],
+																"data-suf": m[3],
+															}
+														: {})}
+													className={`block font-display text-[clamp(1.35rem,2.2vw,1.9rem)] font-bold tracking-tightest ${dark ? "text-primary-50" : ""}`}
+												>
+													{item.value}
+												</b>
+												<span
+													className={`mt-0.5 block max-w-[11em] text-[.78rem] leading-snug ${dark ? "text-primary-300" : "text-ink-400"}`}
+												>
+													{item.label}
+												</span>
+											</div>
+										);
+									})}
+								</div>
+							</motion.div>
+						</div>
+					</div>
+				</motion.div>
+
+				{/* Partner marquee — bottom of the hero; rides out as the footer cue */}
+				<motion.div
+					className={`relative z-30 mx-auto w-full max-w-7xl overflow-hidden  py-5 px-5 sm:px-[clamp(20px,6vw,96px)] ${dark ? "border-primary-50/15" : "border-primary-900/15"}`}
+					aria-label="Partners"
+					style={
+						reduce
+							? {
+									maskImage:
+										"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+									WebkitMaskImage:
+										"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+								}
+							: {
+									maskImage:
+										"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+									WebkitMaskImage:
+										"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+									opacity: footerOpacity,
+									visibility: footGone ? "hidden" : "visible",
+								}
+					}
+				>
+					<div className="flex w-max animate-marquee motion-reduce:animate-none">
+						{[0, 1].map((copy) => (
+							<div
+								key={copy}
+								aria-hidden={copy === 1}
+								className="flex items-center gap-16 pr-16"
+							>
+								{partners.map((p, i) => {
+									const logo =
+										dark && p.logoDark?.src?.trim() ? p.logoDark : p.logo;
 									return (
-										<div data-rise key={`${item.value}-${i}`}>
-											<b
-												{...(m
-													? {
-															"data-to": m[2],
-															"data-pre": m[1],
-															"data-suf": m[3],
-														}
-													: {})}
-												className={`block font-display text-[clamp(1.35rem,2.2vw,1.9rem)] font-bold tracking-tightest ${dark ? "text-primary-50" : ""}`}
-											>
-												{item.value}
-											</b>
+										<div
+											key={`${p.label}-${i}`}
+											className="flex items-center gap-3"
+										>
+											<img
+												src={logo.src}
+												alt={copy === 0 ? logo.alt : ""}
+												className="h-7 w-auto opacity-80 transition-opacity hover:opacity-100 md:h-8"
+											/>
 											<span
-												className={`mt-0.5 block max-w-[11em] text-[.78rem] leading-snug ${dark ? "text-primary-300" : "text-ink-400"}`}
+												className={`whitespace-nowrap text-sm font-medium tracking-tight ${dark ? "text-primary-200" : "text-primary-700"}`}
 											>
-												{item.label}
+												{p.label}
 											</span>
 										</div>
 									);
 								})}
 							</div>
-						</motion.div>
+						))}
 					</div>
-				</div>
-			</motion.div>
+				</motion.div>
 
-			{/* Partner marquee — bottom of the hero; rides out as the footer cue */}
-			<motion.div
-				className={`relative z-30 mx-auto w-full max-w-7xl overflow-hidden  py-5 px-5 sm:px-[clamp(20px,6vw,96px)] ${dark ? "border-primary-50/15" : "border-primary-900/15"}`}
-				aria-label="Partners"
-				style={
-					reduce
-						? {
-								maskImage:
-									"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
-								WebkitMaskImage:
-									"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
-							}
-						: {
-								maskImage:
-									"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
-								WebkitMaskImage:
-									"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
-								opacity: footerOpacity,
-								visibility: footGone ? 'hidden' : 'visible',
-							}
-				}
-			>
-				<div className="flex w-max animate-marquee motion-reduce:animate-none">
-					{[0, 1].map((copy) => (
-						<div
-							key={copy}
-							aria-hidden={copy === 1}
-							className="flex items-center gap-16 pr-16"
-						>
-							{partners.map((p, i) => {
-								const logo = dark && p.logoDark?.src?.trim() ? p.logoDark : p.logo;
-								return (
-									<div
-										key={`${p.label}-${i}`}
-										className="flex items-center gap-3"
-									>
-										<img
-											src={logo.src}
-											alt={copy === 0 ? logo.alt : ""}
-											className="h-7 w-auto opacity-80 transition-opacity hover:opacity-100 md:h-8"
-										/>
-										<span
-											className={`whitespace-nowrap text-sm font-medium tracking-tight ${dark ? "text-primary-200" : "text-primary-700"}`}
-										>
-											{p.label}
-										</span>
-									</div>
-								);
-							})}
-						</div>
-					))}
-				</div>
-			</motion.div>
-
-			{/* The portal: Process ground flooding out of the mark. Above every
+				{/* The portal: Process ground flooding out of the mark. Above every
 			    hero layer, never interactive, never carrying layout — only a
 			    scroll-driven clip-path. At p = 1 the stage is one flat
 			    PROCESS_BG field, and Process continues in the same ground. */}
-			{reduce ? null : (
-				<motion.div
-					aria-hidden={portalLive ? undefined : true}
-					className="pointer-events-none absolute inset-0 z-[50] flex items-center justify-center"
-					style={{ background: PROCESS_BG, clipPath, willChange: 'clip-path' }}
-				>
-					{bridge?.headline ? (
-						<motion.div
-							className="flex flex-col items-center px-6 text-center"
-							style={{ opacity: portalText, y: portalTextY }}
-						>
-							{bridge.eyebrow ? <span className="label label--plate">{bridge.eyebrow}</span> : null}
-							<p className="title mt-4 max-w-[20ch] text-[clamp(1.8rem,3.6vw,2.8rem)] text-ink-950">
-								{bridge.headline}
-							</p>
-						</motion.div>
-					) : null}
-				</motion.div>
-			)}
+				{!reduce && (
+					<motion.div
+						aria-hidden={portalLive ? undefined : true}
+						className="pointer-events-none absolute inset-0 z-[50] flex items-center justify-center bg-primary-700"
+						style={{ clipPath, willChange: "clip-path" }}
+					>
+						
+						{bridge && (
+							<motion.div
+								className="flex flex-col items-center px-6 text-center"
+								style={{ opacity: portalText, y: portalTextY }}
+							>
+								{bridge.eyebrow && (
+									<span className="label label--plate text-paper before:bg-accent">
+										{bridge.eyebrow}
+									</span>
+								)}
+								{bridge.headline && (
+									<InViewTitle
+										variant="wipe"
+										as="h2"
+										text={bridge.headline}
+										once={false}
+										className="title mt-4 max-w-[20ch] text-[clamp(1.8rem,3.6vw,3.8rem)] text-paper"
+									/>
+								)}
+
+								{bridge.lede && (
+									<InViewTitle
+										variant="blur"
+										as="p"
+										text={bridge.lede}
+										once={false}
+										className="mt-12 max-w-[50dvw] text-paper"
+									/>
+								)}
+							</motion.div>
+						)}
+					</motion.div>
+				)}
 			</div>
 		</section>
   );

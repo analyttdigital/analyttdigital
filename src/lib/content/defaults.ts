@@ -59,7 +59,7 @@ const enHome: PageDoc = {
 			headline: "Performance marketing &\ngrowth infrastructure.",
 			sub: "We are a specialist performance marketing partner in paid media, measurement infrastructure, and growth strategy. Trusted by SMEs, startups, and B2B/B2C companies scaling across Africa.",
 			cta: "Get Started",
-			ctaHref: "/#contact",
+			ctaHref: "/contact",
 			scrollHint: "Request Digital Audit",
 			variant: "light",
 			dashboardTitle: "Campaign / Live",

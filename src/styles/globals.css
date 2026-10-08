@@ -266,7 +266,6 @@ button {
   @apply font-mono text-[10.5px] font-medium uppercase;
   letter-spacing: 0.16em;
   color: inherit;
-  opacity: 0.62;
 }
 .label::before {
   content: '';
@@ -317,8 +316,7 @@ button {
 /* On a plate, a label needs to hold against white, so it takes the ink ramp
    rather than the field's light steps. */
 .label--plate {
-  color: rgb(var(--color-ink-800));
-  opacity: 0.66;
+  color: rgb(var(--color-paper-100));
 }
 
 /* Every figure in the page is tabular so columns of numbers line up. */

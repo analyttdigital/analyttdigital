@@ -52,7 +52,7 @@ export function GlowButton({ data, classes, className, id, tone = 'ember', type 
   const lead = data.leadIcon === false ? null : (data.leadIcon ?? 'sparkles');
   const trail = data.trailIcon === false ? null : (data.trailIcon ?? 'arrowRight');
 
-  const bodyClass = `relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-full border border-paper-50/10 bg-ink-950 px-8 py-3.5 leading-none text-paper-50 shadow-[inset_0_1px_0_0_rgb(var(--color-paper-50)/0.1)] transition-all duration-300 ease-out hover:border-paper-50/20 hover:bg-ink-800 hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 ${classes?.body ?? ''}`;
+  const bodyClass = `relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-full border border-paper-50/10 bg-accent-500 px-8 py-3.5 leading-none text-paper-50 shadow-[inset_0_1px_0_0_rgb(var(--color-paper-50)/0.1)] transition-all duration-300 ease-out hover:border-paper-50/20 hover:bg-accent-800 hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 ${classes?.body ?? ''}`;
 
   const inner = (
     <>

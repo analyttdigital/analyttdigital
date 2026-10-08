@@ -14,7 +14,42 @@ export type InViewTitleVariant = "word" | "line" | "blur" | "tracking" | "wipe";
 export interface InViewTitleProps {
 	text: string;
 	variant?: InViewTitleVariant;
-	as?: "h1" | "h2" | "h3";
+	as?:
+		| "h1"
+		| "h2"
+		| "h3"
+		| "h4"
+		| "h5"
+		| "h6"
+		| "p"
+		| "span"
+		| "strong"
+		| "em"
+		| "b"
+		| "i"
+		| "small"
+		| "mark"
+		| "del"
+		| "ins"
+		| "sub"
+		| "sup"
+		| "abbr"
+		| "cite"
+		| "q"
+		| "dfn"
+		| "time"
+		| "code"
+		| "var"
+		| "samp"
+		| "kbd"
+		| "s"
+		| "u"
+		| "bdi"
+		| "bdo"
+		| "ruby"
+		| "rt"
+		| "rp"
+		| "div";
 	lines?: string[];
 	className?: string;
 	id?: string;
