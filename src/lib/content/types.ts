@@ -108,9 +108,8 @@ export type HeroPartner = { label: string; logo: ContentImage; logoDark?: Conten
 
 /** About-us bridge shown inside the hero portal flood. Owned by the hero
  *  content layer (editable in Keystatic) — `tag` renders as the band label,
- *  `title` as the portal headline, `description` as the lede, `image` as an
- *  optional full-bleed cover behind the copy. */
-export type HeroBridge = { tag: string; title: string; description: string; image?: ContentImage };
+ *  `title` as the portal headline, `description` as the lede. */
+export type HeroBridge = { tag: string; title: string; description: string };
 
 export type HeroSection = {
   eyebrow: string;

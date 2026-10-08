@@ -12,8 +12,9 @@ import {
 
 import { MdiIcon } from '@/lib/icons/resolve-icon';
 import { DynamicImage } from '@/components/media/dynamic-image';
-import type { ContentImage, HeroPartner, HeroPanel, HeroProof, HeroSection } from '@/lib/content/types';
+import type { HeroPartner, HeroPanel, HeroProof, HeroSection } from '@/lib/content/types';
 import { HeroGather } from '@/components/graphics/hero-gather';
+import { LogoWireframe } from '@/components/graphics/logo-wireframe';
 import { TextReveal } from '@/components/graphics/text-reveal';
 import { smooth } from '@/lib/motion/smooth';
 import InViewTitle from '../graphics/in-view-title';
@@ -545,10 +546,10 @@ const FALLBACK_PARTNERS: HeroPartner[] = [
 ];
 
 /** Bridge copy shown inside the portal flood. Supplied by the section
- *  renderer from the hero's own `bridge` content (tag/title/description plus
- *  an optional cover image, editable in Keystatic) — never hard-coded here,
- *  per the content-layer rule. Absent = the portal floods flat. */
-export type HeroPortalBridge = { eyebrow?: string; headline?: string; lede?: string; image?: ContentImage };
+ *  renderer from the hero's own `bridge` content (tag/title/description,
+ *  editable in Keystatic) — never hard-coded here, per the content-layer
+ *  rule. Absent = the portal floods flat. */
+export type HeroPortalBridge = { eyebrow?: string; headline?: string; lede?: string };
 
 /* ------------------------------------------------------------------ */
 /* Portal transition — scroll-scrubbed circular reveal into Process     */
@@ -624,6 +625,10 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
   const [parked, setParked] = useState(false);
   const [footGone, setFootGone] = useState(false);
   const [portalLive, setPortalLive] = useState(false);
+  /* True while the flood circle is open at all — the wireframe's entry
+   * trigger. Unlike `portalLive` (the copy window) this stays true across
+   * the whole flat-flood hold, so the sweep replays on every entry. */
+  const [floodLive, setFloodLive] = useState(false);
   const viewportW = useRef(0);
 
   useEffect(() => {
@@ -649,6 +654,8 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
     setFootGone((prev) => (prev === nextFoot ? prev : nextFoot));
     const nextLive = smooth(PORTAL_TEXT_START, PORTAL_TEXT_END, v) >= 0.8;
     setPortalLive((prev) => (prev === nextLive ? prev : nextLive));
+    const nextFlood = v >= PORTAL_START;
+    setFloodLive((prev) => (prev === nextFlood ? prev : nextFlood));
   });
 
   /* ---- the whole timeline as pure functions of `p` ---- */
@@ -913,28 +920,9 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
 						className="pointer-events-none absolute inset-0 z-[50] bg-primary-700"
 						style={{ clipPath, willChange: "clip-path" }}
 					>
-						{/* Optional bridge cover — decorative only, resolved through the
-						 * shared media component so an empty `src` renders nothing and
-						 * the flat ground shows through. Docked right at half the
-						 * bridge height; the bottom fades into the portal ground. */}
-						{bridge?.image?.src?.trim() && (
-							<div aria-hidden className="absolute inset-y-0 right-0 flex w-full items-center justify-end">
-								<div
-									className="relative  h-1/2 w-[min(78vw,300px)] overflow-hidden  sm:w-[min(40vw,660px)]"
-									style={{
-										maskImage: "linear-gradient(to bottom, black 75%, transparent 100%)",
-										WebkitMaskImage: "linear-gradient(to bottom, black 75%, transparent 100%)",
-									}}
-								>
-									<DynamicImage
-										image={bridge.image}
-										sizes="(max-width: 640px) 78vw, 40vw"
-										className="h-full w-full object-cover"
-									/>
-									<div aria-hidden className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-primary-700" />
-								</div>
-							</div>
-						)}
+						{/* Logo wireframe — the Analytt monogram redrawn as a wireframe
+						 * on the flood's left half, sweeping on every entry. */}
+						<LogoWireframe active={floodLive} />
 						<div className="relative flex h-full w-full items-center justify-center">
 							{bridge && (
 								<motion.div

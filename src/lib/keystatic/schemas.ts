@@ -87,6 +87,91 @@ export const imageField = (label = 'Image') =>
 
 /* ------------------------- section field groups ---------------------- */
 
+/* Shared shape for one floating result panel (the bak tunnel cards). Used by
+ * both the hero `panels` list and the hero bridge `popups` list, so the two
+ * stay in lockstep — `kind` picks the layout, only its fields are read. */
+const heroPanelFields = {
+  kind: fields.select({
+    label: 'Panel layout',
+    options: [
+      { label: 'Cost per lead (bars)', value: 'cpl' },
+      { label: 'Leads (metric)', value: 'leads' },
+      { label: 'Revenue (metric)', value: 'revenue' },
+      { label: 'SEO rankings (progress)', value: 'seo' },
+      { label: '90-day plan (steps)', value: 'process' },
+      { label: 'Tracking code', value: 'code' },
+      { label: 'Budget leak (notice)', value: 'alert' },
+      { label: 'WhatsApp lead (notice)', value: 'whatsapp' },
+      { label: 'Simkar (dual metric)', value: 'simkar' },
+      { label: 'Blended ROAS (bars)', value: 'roas' },
+      { label: 'Attribution (metric)', value: 'attribution' },
+      { label: 'Audit score (progress)', value: 'audit' },
+      { label: 'Prospecting CTR (bars)', value: 'ctr' },
+      { label: 'Landing conversion (metric)', value: 'funnel' },
+      { label: 'Partner logo', value: 'partner' },
+    ],
+    defaultValue: 'cpl',
+  }),
+  title: fields.text({ label: 'Title' }),
+  subtitle: fields.text({ label: 'Subtitle', defaultValue: '' }),
+  value: fields.text({ label: 'Big value', defaultValue: '' }),
+  valueLabel: fields.text({ label: 'Value label', defaultValue: '' }),
+  footer: fields.text({ label: 'Footer line', defaultValue: '' }),
+  delta: fields.text({ label: 'Delta (e.g. -84% in 60 days)', defaultValue: '' }),
+  icon: iconField(),
+  iconTone: fields.select({
+    label: 'Icon colour',
+    options: [
+      { label: 'Layout default', value: 'default' },
+      { label: 'Ember', value: 'accent' },
+      { label: 'Field', value: 'primary' },
+      { label: 'Soft', value: 'muted' },
+    ],
+    defaultValue: 'default',
+  }),
+  logo: imageField('Partner logo (partner layout only)'),
+  logoDark: imageField('Partner logo on dark (partner layout only)'),
+  tone: fields.select({
+    label: 'Tone',
+    options: [
+      { label: 'Default', value: 'default' },
+      { label: 'Alert (ember border)', value: 'alert' },
+    ],
+    defaultValue: 'default',
+  }),
+  bars: fields.array(fields.integer({ label: 'Bar height (0–100)', defaultValue: 50 }), {
+    label: 'Bars (bars layout only)',
+    itemLabel: (props) => String(props.value ?? ''),
+  }),
+  progress: fields.integer({ label: 'Progress % (progress layout only)', defaultValue: 85 }),
+  metrics: fields.array(
+    fields.object({
+      value: fields.text({ label: 'Value' }),
+      label: fields.text({ label: 'Label' }),
+    }),
+    { label: 'Metrics (dual layout only)', itemLabel: (props) => props.fields.value.value || 'Metric' },
+  ),
+  steps: fields.array(
+    fields.object({
+      label: fields.text({ label: 'Step label' }),
+      state: fields.select({
+        label: 'State',
+        options: [
+          { label: 'Done', value: 'done' },
+          { label: 'Active', value: 'active' },
+          { label: 'Todo', value: 'todo' },
+        ],
+        defaultValue: 'todo',
+      }),
+    }),
+    { label: 'Steps (steps layout only)', itemLabel: (props) => props.fields.label.value || 'Step' },
+  ),
+  codeLines: fields.array(fields.text({ label: 'Line', multiline: true }), {
+    label: 'Code lines (code layout only)',
+    itemLabel: (props) => props.value?.slice(0, 32) || 'Line',
+  }),
+};
+
 const heroFields = {
   eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'NAIROBI — ACROSS EAST AFRICA' }),
   headline: fields.text({ label: 'Headline', defaultValue: 'Ad spend,\nturned into\nmeasurable growth.', multiline: true }),
@@ -127,7 +212,6 @@ const heroFields = {
           'Analytt Digital is a performance marketing agency redefining the digital landscape by placing data at the heart of every move — turning data-driven strategy into measurable growth in a competitive online realm.',
         multiline: true,
       }),
-      image: imageField('Bridge cover (optional background)'),
     },
     { label: 'Portal bridge (about-us)' },
   ),
@@ -139,93 +223,10 @@ const heroFields = {
     }),
     { label: 'Partner marquee', itemLabel: (props) => props.fields.label.value || 'Partner' },
   ),
-  panels: fields.array(
-    fields.object({
-      kind: fields.select({
-        label: 'Panel layout',
-        options: [
-          { label: 'Cost per lead (bars)', value: 'cpl' },
-          { label: 'Leads (metric)', value: 'leads' },
-          { label: 'Revenue (metric)', value: 'revenue' },
-          { label: 'SEO rankings (progress)', value: 'seo' },
-          { label: '90-day plan (steps)', value: 'process' },
-          { label: 'Tracking code', value: 'code' },
-          { label: 'Budget leak (notice)', value: 'alert' },
-          { label: 'WhatsApp lead (notice)', value: 'whatsapp' },
-          { label: 'Simkar (dual metric)', value: 'simkar' },
-          { label: 'Blended ROAS (bars)', value: 'roas' },
-          { label: 'Attribution (metric)', value: 'attribution' },
-          { label: 'Audit score (progress)', value: 'audit' },
-          { label: 'Prospecting CTR (bars)', value: 'ctr' },
-          { label: 'Landing conversion (metric)', value: 'funnel' },
-          { label: 'Partner logo', value: 'partner' },
-        ],
-        defaultValue: 'cpl',
-      }),
-      title: fields.text({ label: 'Title' }),
-      subtitle: fields.text({ label: 'Subtitle', defaultValue: '' }),
-      value: fields.text({ label: 'Big value', defaultValue: '' }),
-      valueLabel: fields.text({ label: 'Value label', defaultValue: '' }),
-      footer: fields.text({ label: 'Footer line', defaultValue: '' }),
-      delta: fields.text({ label: 'Delta (e.g. -84% in 60 days)', defaultValue: '' }),
-      icon: iconField(),
-      iconTone: fields.select({
-        label: 'Icon colour',
-        options: [
-          { label: 'Layout default', value: 'default' },
-          { label: 'Ember', value: 'accent' },
-          { label: 'Field', value: 'primary' },
-          { label: 'Soft', value: 'muted' },
-        ],
-        defaultValue: 'default',
-      }),
-      logo: imageField('Partner logo (partner layout only)'),
-      logoDark: imageField('Partner logo on dark (partner layout only)'),
-      tone: fields.select({
-        label: 'Tone',
-        options: [
-          { label: 'Default', value: 'default' },
-          { label: 'Alert (ember border)', value: 'alert' },
-        ],
-        defaultValue: 'default',
-      }),
-      bars: fields.array(fields.integer({ label: 'Bar height (0–100)', defaultValue: 50 }), {
-        label: 'Bars (bars layout only)',
-        itemLabel: (props) => String(props.value ?? ''),
-      }),
-      progress: fields.integer({ label: 'Progress % (progress layout only)', defaultValue: 85 }),
-      metrics: fields.array(
-        fields.object({
-          value: fields.text({ label: 'Value' }),
-          label: fields.text({ label: 'Label' }),
-        }),
-        { label: 'Metrics (dual layout only)', itemLabel: (props) => props.fields.value.value || 'Metric' },
-      ),
-      steps: fields.array(
-        fields.object({
-          label: fields.text({ label: 'Step label' }),
-          state: fields.select({
-            label: 'State',
-            options: [
-              { label: 'Done', value: 'done' },
-              { label: 'Active', value: 'active' },
-              { label: 'Todo', value: 'todo' },
-            ],
-            defaultValue: 'todo',
-          }),
-        }),
-        { label: 'Steps (steps layout only)', itemLabel: (props) => props.fields.label.value || 'Step' },
-      ),
-      codeLines: fields.array(fields.text({ label: 'Line', multiline: true }), {
-        label: 'Code lines (code layout only)',
-        itemLabel: (props) => props.value?.slice(0, 32) || 'Line',
-      }),
-    }),
-    {
-      label: 'Tunnel panels (empty = code defaults)',
-      itemLabel: (props) => props.fields.title.value || props.fields.kind.value || 'Panel',
-    },
-  ),
+  panels: fields.array(fields.object(heroPanelFields), {
+    label: 'Tunnel panels (empty = code defaults)',
+    itemLabel: (props) => props.fields.title.value || props.fields.kind.value || 'Panel',
+  }),
   proof: fields.array(
     fields.object({
       value: fields.text({ label: 'Value (e.g. 100%)' }),

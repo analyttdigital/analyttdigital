@@ -30,12 +30,11 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
       const own = section.bridge;
       const proc = sections.find((s) => s.type === 'process');
       const bridge =
-        own && (own.tag || own.title || own.description || own.image?.src)
+        own && (own.tag || own.title || own.description)
           ? {
               eyebrow: own.tag,
               headline: own.title,
               lede: own.description,
-              image: own.image,
             }
           : proc && proc.type === 'process'
             ? {

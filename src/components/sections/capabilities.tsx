@@ -5,34 +5,28 @@ import { MdiIcon, capabilityIcons } from '@/lib/icons/resolve-icon';
 import type { CapabilitiesSection } from '@/lib/content/types';
 
 /**
- * Capabilities — one horizontal pathflow per service.
+ * Capabilities — one horizontal pathflow per service, header always first.
  *
  * Each entry rides its own `PathFlowSection`, alternating through the
  * horizontal route shapes (`edges-converge` → `cross-flow` →
  * `staircase-ltr` → `staircase-rtl`) so no two consecutive traces run the
  * same way. The flow's title is the entry's own icon + tag + depth + title,
  * set as a ruled header above the trace; the lone body card docks at the
- * slot where that route's travel ends (`slotOffset`), so the trace field
- * reads between the header and the content. Flows are stacked with ample vertical spacing so each trace
- * gets its own scroll ride and the ember trail re-fires per entry. Trail
- * reuses the brand token rather than the component's blue default. Nodes
- * are flat plates — square, no shadows.
+ * route's start slot (top of the trace field) on a flat `panel--paper`
+ * plate, so it extends down into its own tall box instead of spilling onto
+ * the next flow's header — header precedes content on every viewport, and
+ * the plate keeps the copy legible over the trace lines. Flows are stacked
+ * with ample vertical spacing so each trace gets its own scroll ride and
+ * the ember trail re-fires per entry. Trail reuses the brand token rather
+ * than the component's blue default. Plates are square, no shadows.
  *
  * Content shape is unchanged: `tag / depth / title / body / icon` per item.
  * The lede sentence below is pre-existing copy carried over verbatim.
  */
 
-/** One distinct horizontal route per entry, in order. `offset` docks the lone
- *  body card at the slot where that route's travel ends — the traces converge
- *  onto the content — so the trace field reads between the header above and
- *  the card: edges-converge arrives bottom-centre (slot 2), cross-flow
- *  bottom-right (slot 4), both staircases bottom-corner (slot 3). */
-const FLOWS: { variant: FlowVariant; offset: number }[] = [
-  { variant: 'edges-converge', offset: 2 },
-  { variant: 'cross-flow', offset: 4 },
-  { variant: 'staircase-ltr', offset: 3 },
-  { variant: 'staircase-rtl', offset: 3 },
-];
+/** One distinct horizontal route per entry, in order. */
+const VARIANTS: FlowVariant[] = ['edges-converge', 'cross-flow', 'staircase-ltr', 'staircase-rtl'];
+
 export function Capabilities({ capabilities }: { capabilities?: CapabilitiesSection }) {
   const items = capabilities?.items ?? [];
 
@@ -53,13 +47,10 @@ export function Capabilities({ capabilities }: { capabilities?: CapabilitiesSect
 			</div>
 
 			<div className="flex flex-col gap-20 py-14 md:gap-28 md:py-20">
-				{items.map((item, i) => {
-					const flow = FLOWS[i % FLOWS.length];
-					return (
+				{items.map((item, i) => (
 					<PathFlowSection
 						key={item.title}
-						variant={flow.variant}
-						slotOffset={flow.offset}
+						variant={VARIANTS[i % VARIANTS.length]}
 						mode="scroll"
 						color="rgb(var(--color-ink-950))"
 						trailColor="rgb(var(--color-accent-500))"
@@ -98,13 +89,12 @@ export function Capabilities({ capabilities }: { capabilities?: CapabilitiesSect
 						<article
 							key={item.title}
 							aria-label={`${item.depth ?? String(i + 1).padStart(2, "0")} — ${item.title}`}
-							className="p-6 md:p-7"
+							className="panel--paper border border-ink-950/10 p-6 md:p-7"
 						>
 							<p className="body body--paper body--sm max-w-[58ch]">{item.body}</p>
 						</article>
 					</PathFlowSection>
-					);
-				})}
+				))}
 			</div>
 
 			<p className="mx-auto mt-2 w-full max-w-5xl px-6 font-mono text-[10.5px] font-medium uppercase tracking-[0.16em] text-ink-800">

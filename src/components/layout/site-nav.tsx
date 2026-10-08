@@ -35,7 +35,9 @@ export function SiteNav({ nav }: { nav?: LayoutContent }) {
   const cta = nav?.navCta ?? 'Get a free audit';
   const ctaHref = nav?.navCtaHref ?? '/#contact';
 
-  useMotionValueEvent(scrollY, 'change', (y) => setScrolled(y > 24));
+  /* The rail's scrolled identity switches on once the reader is half a
+   * viewport into the page — past the hero's opening beat. */
+  useMotionValueEvent(scrollY, 'change', (y) => setScrolled(y > window.innerHeight / 2));
 
   // The sheet owns the viewport while it is open.
   useEffect(() => {
@@ -67,7 +69,7 @@ export function SiteNav({ nav }: { nav?: LayoutContent }) {
         }`}
       >
         <div className="mx-auto flex h-[72px] w-full max-w-[1360px] items-center gap-6 px-5 md:px-8">
-          <Wordmark brand={brand} emphasis={emphasis} />
+          <Wordmark brand={brand} emphasis={emphasis} scrolled={scrolled && !open} />
 
           {/* The recessed link panel. */}
           <nav aria-label="Sections" className="ml-auto hidden lg:block">
@@ -177,11 +179,13 @@ export function SiteNav({ nav }: { nav?: LayoutContent }) {
   );
 }
 
-function Wordmark({ brand, emphasis }: { brand: string; emphasis: string }) {
+function Wordmark({ brand, emphasis, scrolled }: { brand: string; emphasis: string; scrolled: boolean }) {
+  /* Both marks ride stacked at identical size and crossfade, so the swap
+   * never shifts layout and the light mark is already loaded on arrival. */
   return (
     <Link
       href="/"
-      className="flex shrink-0 items-center"
+      className="relative flex shrink-0 items-center"
       aria-label={`${brand} ${emphasis}`}
     >
       <Image
@@ -190,7 +194,17 @@ function Wordmark({ brand, emphasis }: { brand: string; emphasis: string }) {
         width={160}
         height={40}
         priority={true}
-        className="h-7 w-auto"
+        className={`h-7 w-auto transition-opacity duration-300 ${scrolled ? 'opacity-0' : 'opacity-100'}`}
+        aria-hidden={scrolled}
+      />
+      <Image
+        src="/img/logo-alt-light.svg"
+        alt=""
+        width={160}
+        height={40}
+        priority={true}
+        className={`absolute inset-0 h-7 w-auto transition-opacity duration-300 ${scrolled ? 'opacity-100' : 'opacity-0'}`}
+        aria-hidden={!scrolled}
       />
     </Link>
   );
