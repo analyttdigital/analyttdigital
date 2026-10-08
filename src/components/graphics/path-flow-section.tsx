@@ -500,6 +500,13 @@ export interface PathFlowSectionProps {
   scrollOffset?: UseScrollOptions["offset"];
   /** min viewport width (px) for the path layout; below it, content stacks */
   breakpoint?: number;
+  /**
+   * Skip this many variant slots before placing children (path layout only).
+   * Lets a single card dock at a route's end — e.g. the bottom slot where
+   * converging traces arrive — so the trace field reads between whatever is
+   * above the flow and the card. Defaults to 0 (slots in variant order).
+   */
+  slotOffset?: number;
   className?: string;
   /** className for the path/stack area */
   contentClassName?: string;
@@ -526,6 +533,7 @@ export function PathFlowSection({
   loop = true,
   scrollOffset = ["start 75%", "end 35%"],
   breakpoint = 1024,
+  slotOffset = 0,
   className,
   contentClassName,
 }: PathFlowSectionProps) {
@@ -577,6 +585,14 @@ export function PathFlowSection({
   const rail = layout === "rail";
   const pathReverse = v.reverse !== reverse;
   const travelReverse = stack || rail ? reverse : pathReverse;
+  /* Slots in placement order: child N sits in variant slot N + offset, so a
+   * lone card can dock at a route's end instead of its start. */
+  const orderedSlots = useMemo(() => {
+    const n = v.slots.length;
+    if (!n) return v.slots;
+    const off = ((slotOffset % n) + n) % n;
+    return v.slots.map((_, k) => v.slots[(k + off) % n]);
+  }, [v, slotOffset]);
 
   /* ---- desktop: find where along the path each slot sits ---- */
   useLayoutEffect(() => {
@@ -584,7 +600,7 @@ export function PathFlowSection({
     const els = pathEls.current.filter(Boolean) as SVGPathElement[];
     if (!els.length) return;
     const N = 240;
-    const next = v.slots.map((slot) => {
+    const next = orderedSlots.map((slot) => {
       if (slot.at != null) return (pathReverse ? 1 - slot.at : slot.at) / (1 + trailLength);
       const px = v.flipX ? v.w - slot.x : slot.x;
       let best = Infinity;
@@ -603,7 +619,7 @@ export function PathFlowSection({
       return (pathReverse ? 1 - bt : bt) / (1 + trailLength);
     });
     setAts(next);
-  }, [stack, rail, v, pathReverse, trailLength]);
+  }, [stack, rail, v, orderedSlots, pathReverse, trailLength]);
 
   /* ---- mobile: measure stack height + item positions ---- */
   useLayoutEffect(() => {
@@ -766,8 +782,8 @@ export function PathFlowSection({
                 pathEls.current[i] = el;
               }}
             />
-            {items.slice(0, v.slots.length).map((child, i) => {
-              const slot = v.slots[i];
+            {items.slice(0, orderedSlots.length).map((child, i) => {
+              const slot = orderedSlots[i];
               const ax = slot.ax ?? 0;
               const ay = slot.ay ?? 0;
               return (
@@ -791,9 +807,9 @@ export function PathFlowSection({
           </div>
 
           {/* children beyond the variant's slot count flow normally underneath */}
-          {items.length > v.slots.length && (
+          {items.length > orderedSlots.length && (
             <div className="relative z-10 mx-auto grid max-w-5xl gap-8 px-6 py-10 sm:grid-cols-2">
-              {items.slice(v.slots.length).map((child, i) => (
+              {items.slice(orderedSlots.length).map((child, i) => (
                 <div key={i}>{child}</div>
               ))}
             </div>
