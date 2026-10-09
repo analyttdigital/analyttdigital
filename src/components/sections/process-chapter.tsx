@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-import { MdiIcon } from '@/lib/icons/resolve-icon';
+import { MdiIcon, processStepIcons } from '@/lib/icons/resolve-icon';
 import { GlowButton } from '@/components/layout/glow-button';
 import { InViewTitle } from '@/components/graphics/in-view-title';
 import { Reveal } from '@/lib/motion/reveal';
@@ -17,7 +17,12 @@ import { useReducedMotion } from 'framer-motion';
  * the five steps. The left column carries the position and the step list;
  * the right panel swaps detail (index, title, desc, chips) per step; a 2px
  * ember meter along the foot reports how far through the process the reader
- * is. Copy, steps and chips stay content-layer driven.
+ * is. Copy, steps and chips stay content-layer driven. Each step carries a
+ * positional watermark — one big faint MDI glyph bottom-right of the detail
+ * panel (`processStepIcons`, same convention as the capability/stat defaults).
+ * The hero holds its portal flood over this section while it aligns behind
+ * it (top edge to viewport top); the bridge exits only once the stage
+ * fills the viewport.
  */
 export function ProcessChapter({ process }: { process?: ProcessSection }) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -60,10 +65,10 @@ export function ProcessChapter({ process }: { process?: ProcessSection }) {
 			<section
 				id="process"
 				ref={sectionRef}
-				className={`bg-paper relative text-ink-800 `}
-				style={{ height: `${Math.max(steps.length, 1) * 100}vh` }}
-			>
-				<div className="sticky top-0 flex h-screen  py-14 pt-32 min-h-[640px] flex-col overflow-hidden">
+			className={`bg-paper relative text-ink-800 `}
+			style={{ height: `${Math.max(steps.length, 1) * 100}vh` }}
+		>
+			<div className="sticky top-0 flex h-screen  py-14 pt-32 min-h-[640px] flex-col overflow-hidden">
 					<div className="mx-auto  w-full max-w-7xl flex flex-col items-center justify-center ">
 					<p className="label text-ink-500">{process?.eyebrow}</p>
 
@@ -113,16 +118,22 @@ export function ProcessChapter({ process }: { process?: ProcessSection }) {
 
 						{/* Detail panel — swaps per active step */}
 						<div className="w-full flex-1 md:w-auto">
-							{current ? (
-								<div
-									key={current.n}
-									className="p-8 md:p-12"
-									style={{
-										animation:
-											"fade .5s ease both, rise .6s var(--ease-enter) both",
-									}}
-								>
-									<p className="num text-[clamp(2.6rem,6vw,4.6rem)] text-ink-300">
+						{current ? (
+							<div
+								key={current.n}
+								className="relative p-8 md:p-12"
+								style={{
+									animation:
+										"fade .5s ease both, rise .6s var(--ease-enter) both",
+								}}
+							>
+								{/* Step watermark — one faint glyph per position, bottom-right. */}
+								<MdiIcon
+									name={processStepIcons[active % processStepIcons.length]}
+									size={10}
+									className="pointer-events-none absolute -bottom-8 -right-4 select-none text-ink-950/[0.06]"
+								/>
+								<p className="num text-[clamp(2.6rem,6vw,4.6rem)] text-ink-300">
 										{current.n}
 									</p>
 								<h3 className="verb mt-4 text-[clamp(1.6rem,3vw,2.4rem)] text-accent-600">

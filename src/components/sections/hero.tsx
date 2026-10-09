@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
   motion,
   useMotionTemplate,
+  useMotionValue,
   useMotionValueEvent,
   useReducedMotion,
   useScroll,
@@ -571,6 +572,15 @@ export const PORTAL_END = 0.985;
 /** Bridge copy window inside the flood. */
 export const PORTAL_TEXT_START = 0.8;
 export const PORTAL_TEXT_END = 0.93;
+/** Fallback bridge exit window — used only when no Process section directly
+ *  follows the hero (the handoff below has nothing to hold). Otherwise the
+ *  bridge stays up while Process aligns behind the flood, and the exit is
+ *  driven by the handoff scroll instead. */
+export const PORTAL_EXIT_START = 0.93;
+export const PORTAL_EXIT_END = 0.995;
+/** Viewport fractions of scroll the handoff exit takes once Process top is
+ *  aligned to the viewport top. */
+export const HANDOFF_EXIT_SVH = 0.6;
 /** Percentage radius at full open. `circle()` resolves % against
  *  sqrt(w²+h²)/√2, so 100% can leave the far corner bare from an
  *  off-centre origin; 125% covers 16:9, ultrawide and portrait. */
@@ -629,6 +639,17 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
    * trigger. Unlike `portalLive` (the copy window) this stays true across
    * the whole flat-flood hold, so the sweep replays on every entry. */
   const [floodLive, setFloodLive] = useState(false);
+  /* Handoff state: at the end of the runway the flood detaches to `fixed`
+   * and holds the bridge up while the Process section aligns behind it
+   * (top edge to viewport top); further scroll drives `handoffExit`, which
+   * reveals the fully-arrived stage. Only engages when Process directly
+   * follows the hero — otherwise sections would scroll invisibly behind
+   * the held flood, so the fallback timeline exit takes over instead. */
+  const [detached, setDetached] = useState(false);
+  const [exited, setExited] = useState(false);
+  const [handsToProcess, setHandsToProcess] = useState(true);
+  const handoffExit = useMotionValue(0);
+  const exitAnchor = useRef<number | null>(null);
   const viewportW = useRef(0);
 
   useEffect(() => {
@@ -652,19 +673,101 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
     setParked((prev) => (prev === nextParked ? prev : nextParked));
     const nextFoot = v > FOOTER_FADE_END;
     setFootGone((prev) => (prev === nextFoot ? prev : nextFoot));
-    const nextLive = smooth(PORTAL_TEXT_START, PORTAL_TEXT_END, v) >= 0.8;
-    setPortalLive((prev) => (prev === nextLive ? prev : nextLive));
     const nextFlood = v >= PORTAL_START;
     setFloodLive((prev) => (prev === nextFlood ? prev : nextFlood));
   });
+
+  useEffect(() => {
+    // Adjacent Process section (the renderer wraps it in a plain div, so
+    // look inside the next sibling rather than at it).
+    setHandsToProcess(!!heroRef.current?.nextElementSibling?.querySelector('#process'));
+  }, []);
+
+  /* Handoff scroll driver — runs alongside the framer timeline above.
+   * Attached while the runway pins; detached once the hero bottom reaches
+   * the viewport bottom (the unpin), holding the flood fixed while Process
+   * rises behind it; exiting once Process top aligns to the viewport top.
+   * `portalLive` is computed here because it depends on both sources. */
+  useEffect(() => {
+    if (reduce) return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const hero = heroRef.current;
+      if (!hero) return;
+      const vh = window.innerHeight;
+      const heroBottom = hero.getBoundingClientRect().bottom;
+      const procTop = document.getElementById('process')?.getBoundingClientRect().top ?? vh;
+      if (heroBottom > vh + 1 || !handsToProcess) {
+        exitAnchor.current = null;
+        handoffExit.set(0);
+        setExited(false);
+        setDetached(false);
+      } else if (procTop > 0) {
+        exitAnchor.current = null;
+        handoffExit.set(0);
+        setExited(false);
+        setDetached(true);
+      } else {
+        setDetached(true);
+        if (exitAnchor.current == null) exitAnchor.current = window.scrollY;
+        const e = Math.min(
+          1,
+          Math.max(0, (window.scrollY - exitAnchor.current) / (vh * HANDOFF_EXIT_SVH)),
+        );
+        handoffExit.set(e);
+        setExited(e >= 1);
+      }
+      const enter = smooth(PORTAL_TEXT_START, PORTAL_TEXT_END, p.get());
+      const scroll = p.get();
+      const timelineExit = handsToProcess ? 0 : smooth(PORTAL_EXIT_START, PORTAL_EXIT_END, scroll);
+      const nextLive = enter * (1 - timelineExit) * (1 - handoffExit.get()) >= 0.5;
+      setPortalLive((prev) => (prev === nextLive ? prev : nextLive));
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [reduce, handsToProcess, handoffExit, p]);
 
   /* ---- the whole timeline as pure functions of `p` ---- */
   const portalOpen = useTransform(p, (v) => smooth(PORTAL_START, PORTAL_END, v));
   const portalRadius = useTransform(portalOpen, (v) => v * PORTAL_MAX_RADIUS);
   const origin = isMobile ? ORIGIN_MOBILE : ORIGIN_DESKTOP;
   const clipPath = useMotionTemplate`circle(${portalRadius}% at ${origin})`;
-  const portalText = useTransform(p, (v) => smooth(PORTAL_TEXT_START, PORTAL_TEXT_END, v));
-  const portalTextY = useTransform(portalText, (v) => (1 - v) * 45);
+  /* Bridge copy rides in, holds, then scrolls itself out: opacity is
+   * entrance × (1 − exit) with an upward drift and a de-blur in reverse.
+   * The exit is whichever is live — the fallback timeline exit when no
+   * Process section follows, or the handoff exit driven by the scroll
+   * behind the detached flood. All pure functions of scroll. */
+  const portalText = useTransform([p, handoffExit], (latest: number[]) => {
+    const v = latest[0] ?? 0;
+    const e = latest[1] ?? 0;
+    const enter = smooth(PORTAL_TEXT_START, PORTAL_TEXT_END, v);
+    const timelineExit = handsToProcess ? 0 : smooth(PORTAL_EXIT_START, PORTAL_EXIT_END, v);
+    return enter * (1 - timelineExit) * (1 - e);
+  });
+  const portalTextY = useTransform([p, handoffExit], (latest: number[]) => {
+    const v = latest[0] ?? 0;
+    const e = latest[1] ?? 0;
+    const enter = smooth(PORTAL_TEXT_START, PORTAL_TEXT_END, v);
+    const timelineExit = handsToProcess ? 0 : smooth(PORTAL_EXIT_START, PORTAL_EXIT_END, v);
+    return (1 - enter) * 45 - (timelineExit + e) * 70;
+  });
+  const portalTextBlur = useTransform([p, handoffExit], (latest: number[]) => {
+    const v = latest[0] ?? 0;
+    const e = latest[1] ?? 0;
+    const timelineExit = handsToProcess ? 0 : smooth(PORTAL_EXIT_START, PORTAL_EXIT_END, v);
+    return `blur(${(timelineExit + e) * 8}px)`;
+  });
+  const floodOpacity = useTransform(handoffExit, (v) => 1 - v);
   const chapterOut = useTransform(p, (v) => smooth(CHAPTER_OUT_START, CHAPTER_OUT_END, v));
   const copyOpacity = useTransform(chapterOut, (v) => 1 - v);
   const copyY = useTransform(chapterOut, (v) => -v * 80);
@@ -913,13 +1016,18 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
 
 				{/* The portal: paper ground flooding out of the mark. Above every
 			    hero layer, never interactive, never carrying layout — only a
-			    scroll-driven clip-path. At p = 1 the stage is one flat paper
-			    field, and Process continues in the same ground. */}
-				{!reduce && (
+			    scroll-driven clip-path. At the end of the runway the flood
+			    detaches to fixed and holds the bridge up while the Process
+			    section aligns behind it; once Process top meets the viewport
+			    top, further scroll exits the bridge and fades the flood to
+			    reveal the fully-arrived stage. */}
+				{!reduce && !exited && (
 					<motion.div
 						aria-hidden={portalLive ? undefined : true}
-						className="pointer-events-none absolute inset-0 z-[50] bg-paper data-[dark]:bg-primary-950"
-						style={{ clipPath, willChange: "clip-path" }}
+						className={`pointer-events-none bg-paper data-[dark]:bg-primary-950 ${
+							detached ? 'fixed inset-0 z-[60]' : 'absolute inset-0 z-[50]'
+						}`}
+						style={{ clipPath, willChange: 'clip-path', opacity: floodOpacity }}
 					>
 						{/* Logo wireframe — the Analytt monogram redrawn as a wireframe
 						 * on the flood's left half, sweeping on every entry. */}
@@ -928,7 +1036,7 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
 							{bridge && (
 								<motion.div
 									className="flex flex-col items-center px-6 text-center"
-									style={{ opacity: portalText, y: portalTextY }}
+									style={{ opacity: portalText, y: portalTextY, filter: portalTextBlur }}
 								>
 								{bridge.eyebrow && (
 									<span className="inline-flex items-center gap-2 rounded-full border border-primary-900/15 bg-paper-50 px-3 py-1.5 text-xs font-medium text-accent">

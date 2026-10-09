@@ -127,6 +127,9 @@ export const capabilityIcons: MdiName[] = ['bullhorn', 'database', 'compass', 'l
 /** Positional defaults (content convention: an empty `icon` keeps these). */
 export const statIcons: MdiName[] = ['crosshairs', 'waves', 'chart', 'rocket'];
 
+/** Watermark per process step, by position: scan, orient, launch, refine, grow. */
+export const processStepIcons: MdiName[] = ['radar', 'compass', 'rocket', 'refresh', 'chart'];
+
 /**
  * Consistent MDI wrapper: inherits text color, decorative by default.
  * Accepts any string — resolution + fallback happen inside, so content
