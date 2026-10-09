@@ -24,6 +24,10 @@ export type FooterColumn = { title: string; links: NavLink[] };
 export type LayoutContent = {
   brand: string;
   brandEmphasis: string;
+  /** Wordmark shown when the header is transparent (`data-scrolled` absent). */
+  logo: ContentImage;
+  /** Wordmark shown once the header turns solid (`data-scrolled` present). */
+  logoAlt: ContentImage;
   navLinks: NavLink[];
   navCta: string;
   navCtaHref: string;

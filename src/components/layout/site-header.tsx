@@ -25,6 +25,7 @@ import type { Transition, Variants } from "framer-motion";
 import { MdiIcon } from "@/lib/icons/resolve-icon";
 import { motionTokens } from "@/lib/motion/motion-tokens";
 import { useScrolled } from "@/lib/hooks";
+import type { ContentImage, LayoutContent } from "@/lib/content/types";
 import { s } from "framer-motion/client";
 
 export type SiteHeaderVariant = "simple" | "centered" | "mega";
@@ -96,6 +97,10 @@ export interface SiteHeaderProps {
 	/** `simple` puts links beside the brand, `centered` centers them in a quiet capsule, `mega` opens panels for items with links. */
 	variant?: SiteHeaderVariant;
 	brand?: { name: string; href?: string; mark?: ReactNode };
+	/** Wordmark shown when the header is transparent (`data-scrolled` absent). */
+	logo?: ContentImage;
+	/** Wordmark shown once the header turns solid (`data-scrolled` present). */
+	logoAlt?: ContentImage;
 	items?: SiteHeaderItem[];
 	/** Value of the item that holds the current page (controlled). */
 	current?: string;
@@ -258,6 +263,68 @@ export const siteHeaderExampleItems: SiteHeaderItem[] = [
 	{ value: "customers", label: "Customers" },
 ];
 
+/** Fallback wordmarks, matching the layout content defaults. */
+export const siteHeaderDefaultLogo: ContentImage = { src: "/img/logo-alt.svg", alt: "Analytt Digital" };
+export const siteHeaderDefaultLogoAlt: ContentImage = { src: "/img/logo-alt-light.svg", alt: "Analytt Digital" };
+
+function pickImage(
+	layoutImage: ContentImage | undefined,
+	overrideImage: ContentImage | undefined,
+	fallback: ContentImage
+): ContentImage {
+	if (layoutImage?.src?.trim()) return layoutImage;
+	if (overrideImage?.src?.trim()) return overrideImage;
+	return fallback;
+}
+
+/**
+ * Derive `SiteHeader` props from the shared layout content (Keystatic
+ * `layout-<locale>` singleton merged over code defaults by the reader).
+ *
+ * Layout values take priority over `overrides`: pass through props (tests,
+ * previews, one-off pages) only win where the layout has nothing to say
+ * (empty nav list, missing brand href). The nav links become plain header
+ * items (`value` is the href, falling back to the label) and the nav CTA
+ * becomes the primary action; an empty CMS CTA hides it (`null`).
+ */
+export function siteHeaderPropsFromLayout(
+	layout?: LayoutContent,
+	overrides: Partial<SiteHeaderProps> = {}
+): SiteHeaderProps {
+	const brandName =
+		layout != null
+			? `${layout.brand ?? ""} ${layout.brandEmphasis ?? ""}`.trim()
+			: (overrides.brand?.name ?? "Brand");
+	const items =
+		layout?.navLinks?.length
+			? layout.navLinks.map((link) => ({
+					value: link.href || link.label,
+					label: link.label,
+					href: link.href || undefined,
+				}))
+			: (overrides.items ?? siteHeaderExampleItems);
+	const primaryAction = layout
+		? layout.navCta
+			? { label: layout.navCta, href: layout.navCtaHref || undefined }
+			: null
+		: (overrides.primaryAction ?? { label: "Get Quote" });
+	return {
+		variant: overrides.variant ?? "centered",
+		brand: { ...overrides.brand, name: brandName, href: overrides.brand?.href ?? "/" },
+		logo: pickImage(layout?.logo, overrides.logo, siteHeaderDefaultLogo),
+		logoAlt: pickImage(layout?.logoAlt, overrides.logoAlt, siteHeaderDefaultLogoAlt),
+		items,
+		secondaryAction: overrides.secondaryAction ?? null,
+		primaryAction,
+		sticky: overrides.sticky,
+		scrollContainer: overrides.scrollContainer,
+		scrollThreshold: overrides.scrollThreshold,
+		label: overrides.label,
+		className: overrides.className,
+		classes: overrides.classes,
+	};
+}
+
 
 
 /** A panel face reports its natural height while current; a leaving face floats out of flow and turns inert. */
@@ -338,6 +405,8 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
     {
         variant = "centered",
         brand = { name: "Brand" },
+        logo = siteHeaderDefaultLogo,
+        logoAlt = siteHeaderDefaultLogoAlt,
         items = siteHeaderExampleItems,
         current: currentProp,
         defaultCurrent,
@@ -347,7 +416,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
         primaryAction = { label: "Get Quote" },
         sticky = true,
         scrollContainer,
-        scrollThreshold = 8,
+        scrollThreshold = 256,
         label = "Main",
         className,
         classes,
@@ -356,7 +425,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 ) {
 	const id = useId();
 	const reduced = !!useReducedMotion();
-	const scrolled = useScrolled(scrollThreshold, scrollContainer);
+	const scrolled = useScrolled(256, scrollContainer);
 	const [innerCurrent, setInnerCurrent] = useState(defaultCurrent);
 	const current = currentProp ?? innerCurrent;
 	const [hovered, setHovered] = useState<string | null>(null);
@@ -597,15 +666,43 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 	const brandNode = (
 		<Destination
 			link={{ label: brand.name, href: brand.href }}
-			className={`inline-flex cursor-pointer items-center gap-2 border-0 bg-transparent py-2 pr-2 text-base font-medium text-primary no-underline ${scrolled || menuOpen || !!open ? "hover:text-primary-300" : "hover:text-primary-500"} ${classes?.navItem ?? ""}`}
+			className={`relative inline-flex cursor-pointer items-center gap-2 border-0 bg-transparent py-2 pr-2 text-base font-medium text-primary no-underline ${scrolled || menuOpen || !!open ? "hover:text-primary-300" : "hover:text-primary-500"} ${classes?.navItem ?? ""}`}
+			aria-label={brand.name}
 			onChoose={() => {
 				onNavigate?.({ label: brand.name, href: brand.href });
 				close();
 				closeMenu();
 			}}
 		>
-			{brand.mark ?? <ArcMark className="h-[22px] w-[22px] shrink-0" />}
-			{brand.name && <span>{brand.name}</span> }
+			{logo?.src?.trim() ? (
+				/* Both marks ride stacked at identical size and crossfade with
+				 * `data-scrolled`, so the swap never shifts layout. */
+				<span className="relative flex shrink-0 items-center">
+					<Image
+						src={logo.src}
+						alt={logo.alt || brand.name}
+						width={160}
+						height={40}
+						priority={true}
+						className={`h-7 w-auto transition-opacity duration-300 ${scrolled || menuOpen || !!open ? "opacity-0" : "opacity-100"}`}
+						aria-hidden={scrolled || menuOpen || !!open}
+					/>
+					<Image
+						src={logoAlt?.src?.trim() ? logoAlt.src : logo.src}
+						alt=""
+						width={160}
+						height={40}
+						priority={true}
+						className={`absolute inset-0 h-7 w-auto transition-opacity duration-300 ${scrolled || menuOpen || !!open ? "opacity-100" : "opacity-0"}`}
+						aria-hidden={!(scrolled || menuOpen || !!open)}
+					/>
+				</span>
+			) : (
+				<>
+					{brand.mark ?? <ArcMark className="h-[22px] w-[22px] shrink-0" />}
+					{brand.name && <span>{brand.name}</span>}
+				</>
+			)}
 		</Destination>
 	);
 
@@ -613,7 +710,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 		<header
 			ref={setRefs}
 			className={[
-				"relative z-20 [container-type:inline-size] [container-name:site-header] border-b border-transparent bg-transparent font-sans text-primary-100 transition-colors duration-200 data-[scrolled]:border-primary-700 data-[scrolled]:bg-primary-700 motion-reduce:transition-none",
+				"relative z-20 [container-type:inline-size] [container-name:site-header] bg-transparent font-sans text-primary-100 transition-colors duration-200 data-[scrolled]:backdrop-blur-lg data-[scrolled]:bg-primary/10 motion-reduce:transition-none",
 				sticky ? "sticky top-0" : "",
 				className,
 				classes?.root,
@@ -695,7 +792,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 											{withPanel ? (
 												<button
 													{...common}
-														className={`${common.className} ${classes?.navItemButton ?? ""}`}
+													className={`${common.className} ${classes?.navItemButton ?? ""}`}
 													ref={(node: HTMLButtonElement | null) => {
 														if (node)
 															triggerRefs.current.set(
@@ -727,7 +824,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 												<Destination
 													link={item}
 													{...common}
-														className={`${common.className} ${classes?.navItemLink ?? ""}`}
+													className={`${common.className} ${classes?.navItemLink ?? ""}`}
 													aria-current={isCurrent ? "page" : undefined}
 													onChoose={() =>
 														choose(
@@ -900,16 +997,22 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 															}
 														>
 															{link.icon && (
-																<span className={`mt-0.5 flex shrink-0 text-primary-300 ${classes?.panelLinkIcon ?? ""}`}>
+																<span
+																	className={`mt-0.5 flex shrink-0 text-primary-300 ${classes?.panelLinkIcon ?? ""}`}
+																>
 																	{link.icon}
 																</span>
 															)}
 															<span className="grid min-w-0 gap-0.5">
-																<span className={`text-sm font-medium ${classes?.panelLinkLabel ?? ""}`}>
+																<span
+																	className={`text-sm font-medium ${classes?.panelLinkLabel ?? ""}`}
+																>
 																	{link.label}
 																</span>
 																{link.description && (
-																	<span className={`text-sm text-primary-400 ${classes?.panelLinkDescription ?? ""}`}>
+																	<span
+																		className={`text-sm text-primary-400 ${classes?.panelLinkDescription ?? ""}`}
+																	>
 																		{link.description}
 																	</span>
 																)}
@@ -919,45 +1022,56 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 												))}
 											</ul>
 											{openItem.feature && (
-												<div className={`grid gap-1.5 bg-primary-800 p-2 ${classes?.panelFeature ?? ""}`}>
-												<Destination
-													link={{
-														label: openItem.feature.title,
-														href: openItem.feature.href,
-													}}
-													className={`group grid w-full cursor-pointer content-start gap-1.5 border-0 bg-transparent p-0 text-left text-primary-100 no-underline ${classes?.panelFeatureLink ?? ""}`}
-													data-panel-link=""
-													onChoose={() =>
-														choose(
-															{
-																label: openItem.feature!.title,
-																href: openItem.feature!.href,
-																section: openItem.value,
-															},
-															openItem.value
-														)
-													}
+												<div
+													className={`grid gap-1.5 bg-primary-800 p-2 ${classes?.panelFeature ?? ""}`}
 												>
-													{openItem.feature.image && (
-														<span className={`relative mb-1 block aspect-[16/10] overflow-hidden bg-primary-700 [&_img]:object-cover [&_img]:transition-transform [&_img]:duration-500 group-hover:[&_img]:scale-[1.03] motion-reduce:[&_img]:transition-none ${classes?.panelFeatureImage ?? ""}`}>
-															<Image
-																src={openItem.feature.image.src}
-																alt={openItem.feature.image.alt}
-																fill
-																sizes="260px"
+													<Destination
+														link={{
+															label: openItem.feature.title,
+															href: openItem.feature.href,
+														}}
+														className={`group grid w-full cursor-pointer content-start gap-1.5 border-0 bg-transparent p-0 text-left text-primary-100 no-underline ${classes?.panelFeatureLink ?? ""}`}
+														data-panel-link=""
+														onChoose={() =>
+															choose(
+																{
+																	label: openItem.feature!.title,
+																	href: openItem.feature!.href,
+																	section: openItem.value,
+																},
+																openItem.value
+															)
+														}
+													>
+														{openItem.feature.image && (
+															<span
+																className={`relative mb-1 block aspect-[16/10] overflow-hidden bg-primary-700 [&_img]:object-cover [&_img]:transition-transform [&_img]:duration-500 group-hover:[&_img]:scale-[1.03] motion-reduce:[&_img]:transition-none ${classes?.panelFeatureImage ?? ""}`}
+															>
+																<Image
+																	src={openItem.feature.image.src}
+																	alt={openItem.feature.image.alt}
+																	fill
+																	sizes="260px"
+																/>
+															</span>
+														)}
+														<span
+															className={`inline-flex items-center gap-1.5 px-1 text-sm font-medium [&_svg]:text-primary-400 [&_svg]:transition-transform [&_svg]:duration-150 group-hover:[&_svg]:translate-x-0.5 motion-reduce:[&_svg]:transition-none ${classes?.panelFeatureTitle ?? ""}`}
+														>
+															{openItem.feature.title}
+															<MdiIcon
+																name="arrowRight"
+																size={14 / 24}
 															/>
 														</span>
-													)}
-													<span className={`inline-flex items-center gap-1.5 px-1 text-sm font-medium [&_svg]:text-primary-400 [&_svg]:transition-transform [&_svg]:duration-150 group-hover:[&_svg]:translate-x-0.5 motion-reduce:[&_svg]:transition-none ${classes?.panelFeatureTitle ?? ""}`}>
-														{openItem.feature.title}
-														<MdiIcon name="arrowRight" size={14 / 24} />
-													</span>
-													{openItem.feature.description && (
-														<span className={`px-1 text-sm text-primary-300 ${classes?.panelFeatureDescription ?? ""}`}>
-															{openItem.feature.description}
-														</span>
-													)}
-												</Destination>
+														{openItem.feature.description && (
+															<span
+																className={`px-1 text-sm text-primary-300 ${classes?.panelFeatureDescription ?? ""}`}
+															>
+																{openItem.feature.description}
+															</span>
+														)}
+													</Destination>
 												</div>
 											)}
 										</div>

@@ -9,7 +9,7 @@ function useScrolled(threshold: number, container?: RefObject<HTMLElement | null
 		// Turns solid past the threshold and clear again only near the top, so it never flickers at the edge.
 		const update = () => {
 			const y = read();
-			setScrolled((previous) => (previous ? y > threshold / 2 : y > threshold));
+			setScrolled((previous) => (previous ? y > threshold : y > threshold));
 		};
 		update();
 		target.addEventListener("scroll", update, { passive: true });

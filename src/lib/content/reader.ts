@@ -25,13 +25,33 @@ import {
 
 type AnyReader = ReturnType<typeof createReader>;
 
-/** Merge helper: CMS values win, empty arrays defer to defaults. */
+/** Merge helpers: CMS values win; empty arrays and empty `{ src }` image
+ *  refs defer to defaults. */
+function isEmptyImage(value: unknown): boolean {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'src' in value &&
+    typeof (value as { src: unknown }).src === 'string' &&
+    (value as { src: string }).src.trim() === ''
+  );
+}
+
+/** One CMS value merged over its default: empty lists and empty `{ src }`
+ *  image refs defer to the code default, so a half-filled Keystatic form
+ *  still renders complete content. */
+function mergeValue(defaultValue: unknown, cmsValue: unknown): unknown {
+  if (Array.isArray(cmsValue) && cmsValue.length === 0) return defaultValue;
+  if (isEmptyImage(cmsValue)) return defaultValue;
+  return cmsValue;
+}
+
 function mergeSection(defaultsSection: Section | undefined, cmsSection: Section): Section {
   if (!defaultsSection || defaultsSection.type !== cmsSection.type) return cmsSection;
   const merged: Record<string, unknown> = { ...(defaultsSection as object) };
   for (const [k, v] of Object.entries(cmsSection as Record<string, unknown>)) {
     if (k === 'type') continue;
-    merged[k] = Array.isArray(v) && v.length === 0 ? merged[k] : v;
+    merged[k] = mergeValue(merged[k], v);
   }
   return merged as Section;
 }
@@ -45,7 +65,7 @@ export async function readLayout(reader: AnyReader | null, locale: Locale): Prom
     if (!entry) return defaults[locale].layout;
     const merged: Record<string, unknown> = { ...(defaults[locale].layout as object) };
     for (const [k, v] of Object.entries(entry as Record<string, unknown>)) {
-      merged[k] = Array.isArray(v) && v.length === 0 ? merged[k] : v;
+      merged[k] = mergeValue(merged[k], v);
     }
     return merged as LayoutContent;
   } catch {

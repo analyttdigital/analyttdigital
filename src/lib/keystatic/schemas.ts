@@ -22,6 +22,20 @@ import { fields } from '@keystatic/core';
 export const layoutFields = {
   brand: fields.text({ label: 'Brand', defaultValue: 'analytt' }),
   brandEmphasis: fields.text({ label: 'Brand emphasis (colored)', defaultValue: 'digital' }),
+  logo: fields.object(
+    {
+      src: fields.text({ label: 'Logo URL (header, top)', defaultValue: '/img/logo-alt.svg' }),
+      alt: fields.text({ label: 'Logo alt text', defaultValue: 'Analytt Digital' }),
+    },
+    { label: 'Logo (header, unscrolled)' },
+  ),
+  logoAlt: fields.object(
+    {
+      src: fields.text({ label: 'Logo URL (header, scrolled)', defaultValue: '/img/logo-alt-light.svg' }),
+      alt: fields.text({ label: 'Logo alt text', defaultValue: 'Analytt Digital' }),
+    },
+    { label: 'Logo (header, scrolled)' },
+  ),
   navLinks: fields.array(
     fields.object({
       label: fields.text({ label: 'Label' }),

@@ -11,7 +11,8 @@ import type { LayoutContent, Locale, PageDoc } from '@/lib/content/types';
 const enLayout: LayoutContent = {
 	brand: "analytt",
 	brandEmphasis: "digital",
-
+	logo: { src: "/img/logo-alt.svg", alt: "Analytt Digital" },
+	logoAlt: { src: "/img/logo-alt-dark.svg", alt: "Analytt Digital" },
 	navLinks: [
 		{ label: "Services", href: "/services" },
 		{ label: "Digital Audit", href: "/digital-audit" },
@@ -19,10 +20,10 @@ const enLayout: LayoutContent = {
 		{ label: "Contact", href: "/contact" },
 	],
 	navCta: "Get a free audit",
-	navCtaHref: "/#contact",
+	navCtaHref: "/contact",
 	footerHeadline: "Ready to see exactly where your growth is hiding?",
 	footerCta: "Start with a free audit",
-	footerCtaHref: "/#contact",
+	footerCtaHref: "/contact",
 	tagline: "Performance marketing & growth infrastructure, from Nairobi.",
 	footnote: "A measurement-first agency, by design.",
 	footerColumns: [
@@ -574,42 +575,44 @@ const enHome: PageDoc = {
 };
 
 const swLayout: LayoutContent = {
-  brand: 'analytt',
-  brandEmphasis: 'digital',
-  navLinks: [
-    { label: 'Huduma', href: '/sw#capabilities' },
-    { label: 'Mchakato', href: '/sw#process' },
-    { label: 'Kazi', href: '/sw#work' },
-    { label: 'Maarifa', href: '/sw#insights' },
-  ],
-  navCta: 'Pata ukaguzi wa bure',
-  navCtaHref: '/sw#contact',
-  footerHeadline: 'Uko tayari kuona wako uko wapi ukuaji unafichwa?',
-  footerCta: 'Anza na ukaguzi wa bure',
-  footerCtaHref: '/sw#contact',
-  tagline: 'Uuzaji wa utendaji na miundombinu ya ukuaji, kutoka Nairobi.',
-  footnote: 'Shirika linalopima kwanza, kwa makusudi.',
-  footerColumns: [
-    {
-      title: 'Vinjari',
-      links: [
-        { label: 'Huduma', href: '/sw#capabilities' },
-        { label: 'Mchakato', href: '/sw#process' },
-        { label: 'Kazi', href: '/sw#work' },
-        { label: 'Maarifa', href: '/sw#insights' },
-      ],
-    },
-    {
-      title: 'Mawasiliano',
-      links: [
-        { label: 'hello@analyttdigital.com', href: 'mailto:hello@analyttdigital.com' },
-        { label: 'Omba ukaguzi', href: '/sw#contact' },
-      ],
-    },
-  ],
-  contactEmail: 'hello@analyttdigital.com',
-  contactNote: 'Nairobi · Afrika Mashariki',
-  legal: '© 2026 Analytt Digital. Haki zote zimehifadhiwa.',
+	brand: "analytt",
+	brandEmphasis: "digital",
+	logo: { src: "/img/logo-alt.svg", alt: "Analytt Digital" },
+	logoAlt: { src: "/img/logo-alt-dark.svg", alt: "Analytt Digital" },
+	navLinks: [
+		{ label: "Huduma", href: "/sw#capabilities" },
+		{ label: "Mchakato", href: "/sw#process" },
+		{ label: "Kazi", href: "/sw#work" },
+		{ label: "Maarifa", href: "/sw#insights" },
+	],
+	navCta: "Pata ukaguzi wa bure",
+	navCtaHref: "/sw#contact",
+	footerHeadline: "Uko tayari kuona wako uko wapi ukuaji unafichwa?",
+	footerCta: "Anza na ukaguzi wa bure",
+	footerCtaHref: "/sw#contact",
+	tagline: "Uuzaji wa utendaji na miundombinu ya ukuaji, kutoka Nairobi.",
+	footnote: "Shirika linalopima kwanza, kwa makusudi.",
+	footerColumns: [
+		{
+			title: "Vinjari",
+			links: [
+				{ label: "Huduma", href: "/sw#capabilities" },
+				{ label: "Mchakato", href: "/sw#process" },
+				{ label: "Kazi", href: "/sw#work" },
+				{ label: "Maarifa", href: "/sw#insights" },
+			],
+		},
+		{
+			title: "Mawasiliano",
+			links: [
+				{ label: "hello@analyttdigital.com", href: "mailto:hello@analyttdigital.com" },
+				{ label: "Omba ukaguzi", href: "/sw#contact" },
+			],
+		},
+	],
+	contactEmail: "hello@analyttdigital.com",
+	contactNote: "Nairobi · Afrika Mashariki",
+	legal: "© 2026 Analytt Digital. Haki zote zimehifadhiwa.",
 };
 
 const swHome: PageDoc = {
