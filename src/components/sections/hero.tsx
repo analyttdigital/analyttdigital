@@ -911,14 +911,14 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
 					</div>
 				</motion.div>
 
-				{/* The portal: Process ground flooding out of the mark. Above every
+				{/* The portal: paper ground flooding out of the mark. Above every
 			    hero layer, never interactive, never carrying layout — only a
-			    scroll-driven clip-path. At p = 1 the stage is one flat
-			    PROCESS_BG field, and Process continues in the same ground. */}
+			    scroll-driven clip-path. At p = 1 the stage is one flat paper
+			    field, and Process continues in the same ground. */}
 				{!reduce && (
 					<motion.div
 						aria-hidden={portalLive ? undefined : true}
-						className="pointer-events-none absolute inset-0 z-[50] bg-primary-700"
+						className="pointer-events-none absolute inset-0 z-[50] bg-paper data-[dark]:bg-primary-950"
 						style={{ clipPath, willChange: "clip-path" }}
 					>
 						{/* Logo wireframe — the Analytt monogram redrawn as a wireframe
@@ -930,30 +930,30 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
 									className="flex flex-col items-center px-6 text-center"
 									style={{ opacity: portalText, y: portalTextY }}
 								>
-									{bridge.eyebrow && (
-										<span className="label label--plate text-paper before:bg-accent">
-											{bridge.eyebrow}
-										</span>
-									)}
-									{bridge.headline && (
-										<InViewTitle
-											variant="wipe"
-											as="h2"
-											text={bridge.headline}
-											once={false}
-											className="title mt-4 max-w-[20ch] text-[clamp(1.8rem,3.6vw,3.8rem)] text-paper"
-										/>
-									)}
+								{bridge.eyebrow && (
+									<span className="inline-flex items-center gap-2 rounded-full border border-primary-900/15 bg-paper-50 px-3 py-1.5 text-xs font-medium text-accent">
+										{bridge.eyebrow}
+									</span>
+								)}
+								{bridge.headline && (
+									<InViewTitle
+										variant="wipe"
+										as="h2"
+										text={bridge.headline}
+										once={false}
+										className="title mt-4 max-w-[20ch] text-[clamp(1.8rem,3.6vw,3.8rem)] text-primary-900"
+									/>
+								)}
 
-									{bridge.lede && (
-										<InViewTitle
-											variant="blur"
-											as="p"
-											text={bridge.lede}
-											once={false}
-											className="mt-12 max-w-[50dvw] text-paper"
-										/>
-									)}
+								{bridge.lede && (
+									<InViewTitle
+										variant="blur"
+										as="p"
+										text={bridge.lede}
+										once={false}
+										className="mt-12 max-w-[50dvw] text-ink-500"
+									/>
+								)}
 								</motion.div>
 							)}
 						</div>

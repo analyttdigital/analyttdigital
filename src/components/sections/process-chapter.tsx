@@ -60,39 +60,39 @@ export function ProcessChapter({ process }: { process?: ProcessSection }) {
 			<section
 				id="process"
 				ref={sectionRef}
-				className={`bg-primary-700 relative text-paper `}
+				className={`bg-paper relative text-ink-800 `}
 				style={{ height: `${Math.max(steps.length, 1) * 100}vh` }}
 			>
 				<div className="sticky top-0 flex h-screen  py-14 pt-32 min-h-[640px] flex-col overflow-hidden">
 					<div className="mx-auto  w-full max-w-7xl flex flex-col items-center justify-center ">
-						<p className="label  text-paper before:bg-accent">{process?.eyebrow}</p>
+					<p className="label text-ink-500">{process?.eyebrow}</p>
 
-						<InViewTitle
-							text={`${process?.headline ?? ""} ${process?.headlineAccent ?? ""}`}
-							variant="blur"
-							as="h2"
-							className="title mt-8 text-[clamp(2rem,4vw,2.4rem)] max-w-[70%] text-paper text-center"
-						/>
+					<InViewTitle
+						text={`${process?.headline ?? ""} ${process?.headlineAccent ?? ""}`}
+						variant="blur"
+						as="h2"
+						className="title mt-8 text-[clamp(2rem,4vw,2.4rem)] max-w-[70%] text-primary-900 text-center"
+					/>
 
-						<p className="text-paper mt-12 max-w-[70%] text-center text-sm md:text-base">
-							{process?.lede}
-						</p>
+					<p className="text-ink-500 mt-12 max-w-[70%] text-center text-sm md:text-base">
+						{process?.lede}
+					</p>
 					</div>
 					<div className="mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center gap-10 px-5 md:flex-row md:items-center md:gap-16">
 						{/* Position + step list */}
 						<div className="w-full md:w-[38%]">
 							<ol className="mt-10 border-t border-ink-950/15">
 								{steps.map((step, i) => (
-									<li key={step.n} className="border-b border-accent/15">
-										<button
-											type="button"
-											onClick={() => goTo(i)}
-											aria-pressed={i === active}
-											className={`flex w-full items-center gap-4 py-4 text-left text-sm transition-colors duration-200 ${
-												i === active
-													? "font-medium text-accent"
-													: "text-paper hover:text-accent"
-											}`}
+							<li key={step.n} className="border-b border-ink-950/10">
+									<button
+										type="button"
+										onClick={() => goTo(i)}
+										aria-pressed={i === active}
+										className={`flex w-full items-center gap-4 py-4 text-left text-sm transition-colors duration-200 ${
+											i === active
+												? "font-medium text-accent-600"
+												: "text-ink-500 hover:text-accent-600"
+										}`}
 										>
 											<span className="font-mono text-[10.5px] tracking-[0.14em] opacity-70">
 												{step.n}
@@ -125,51 +125,51 @@ export function ProcessChapter({ process }: { process?: ProcessSection }) {
 									<p className="num text-[clamp(2.6rem,6vw,4.6rem)] text-ink-300">
 										{current.n}
 									</p>
-									<h3 className="verb mt-4 text-[clamp(1.6rem,3vw,2.4rem)] text-accent">
-										{current.title}
-									</h3>
-									<p className="text-paper mt-5 max-w-[56ch]">{current.desc}</p>
-									<ul className="mt-7 flex flex-wrap gap-2.5">
-										{current.chips.map((chip) => (
-											<li
-												key={chip}
-												className="border border-accent/10 py-1 px-4 text-xs text-accent-200 rounded-full"
-											>
-												{chip}
-											</li>
-										))}
-									</ul>
+								<h3 className="verb mt-4 text-[clamp(1.6rem,3vw,2.4rem)] text-accent-600">
+									{current.title}
+								</h3>
+								<p className="text-ink-500 mt-5 max-w-[56ch]">{current.desc}</p>
+								<ul className="mt-7 flex flex-wrap gap-2.5">
+									{current.chips.map((chip) => (
+										<li
+											key={chip}
+											className="border border-ink-950/15 py-1 px-4 text-xs text-ink-700 rounded-full"
+										>
+											{chip}
+										</li>
+									))}
+								</ul>
 								</div>
 							) : null}
 						</div>
 					</div>
 
-					{/* Foot — meter + scroll cue */}
-					<div className="border-t border-accent/15 px-5 py-5 md:px-8">
-						<div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-6">
-							<span className="label label--plate">
-								{process?.cardTitle ?? "Process"}
-							</span>
-							<div className="relative h-[2px] w-40 bg-accent/25" aria-hidden>
-								<span
-									className="absolute inset-y-0 left-0 bg-accent-500"
-									style={{ width: `${progress * 100}%` }}
-								/>
-							</div>
-							<span className="label label--plate">Scroll to explore</span>
+				{/* Foot — meter + scroll cue */}
+				<div className="border-t border-ink-950/10 px-5 py-5 md:px-8">
+					<div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-6">
+						<span className="label text-ink-500">
+							{process?.cardTitle ?? "Process"}
+						</span>
+						<div className="relative h-[2px] w-40 bg-ink-950/10" aria-hidden>
+							<span
+								className="absolute inset-y-0 left-0 bg-accent-500"
+								style={{ width: `${progress * 100}%` }}
+							/>
 						</div>
+						<span className="label text-ink-500">Scroll to explore</span>
 					</div>
+				</div>
 				</div>
 			</section>
 
-			{/* Closing row after the story */}
-			<div className="bg-primary-800">
-				<div className="mx-auto flex w-full max-w-7xl flex-col justify-between gap-5 px-5 py-16 md:flex-row md:items-center">
-					<Reveal className="max-w-xl">
-						<p className="body text-paper text-sm leading-relaxed">
-							{process?.closing}
-						</p>
-					</Reveal>
+		{/* Closing row after the story */}
+		<div className="bg-paper-50">
+			<div className="mx-auto flex w-full max-w-7xl flex-col justify-between gap-5 px-5 py-16 md:flex-row md:items-center">
+				<Reveal className="max-w-xl">
+					<p className="body body--paper text-sm leading-relaxed">
+						{process?.closing}
+					</p>
+				</Reveal>
 					<Reveal delay={0.1} className="shrink-0">
 						<GlowButton
 							data={{ label: process?.cta ?? "", href: process?.ctaHref }}

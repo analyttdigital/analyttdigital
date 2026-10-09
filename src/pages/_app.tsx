@@ -2,6 +2,8 @@ import type { AppProps } from 'next/app';
 
 import { SiteLayout } from '@/components/layout/site-layout';
 import { LocaleProvider } from '@/lib/content/chrome';
+import { defaults } from '@/lib/content/defaults';
+import { defaultLocale, type Locale } from '@/lib/content/types';
 // Imported here as well as in `_document` on purpose: Next extracts a
 // `next/font` family's `@font-face` and variable class through the `_app`
 // module graph, so a family imported only by `_document` never has its
@@ -39,15 +41,21 @@ export default function App({ Component, pageProps, router }: Props) {
     return <div className={fontsClass} />;
   }
 
-  return (
+  // Typed once: `AppProps` types pageProps as `any`, which cannot index `defaults`.
+  const locale: Locale = (pageProps as PageProps).locale ?? defaultLocale;
+
+	return (
 		<div className={fontsClass}>
 			<ReactLenis root options={{ autoRaf: false }} ref={lenisRef} >
-			<LocaleProvider locale={pageProps.locale}>
-				<SiteLayout layout={pageProps.bundle?.layout}>
+			{/* Error pages (404/500) carry no bundle, so they render from code
+			 * defaults instead of the header's demo fallback. The cast recovers
+			 * the `PageProps` type `AppProps`'s `any` pageProps swallows. */}
+			<LocaleProvider locale={(pageProps as PageProps).locale ?? defaultLocale}>
+				<SiteLayout layout={(pageProps as PageProps).bundle?.layout ?? defaults[locale].layout}>
 					<Component {...pageProps} />
 				</SiteLayout>
               </LocaleProvider>
             </ReactLenis>
 		</div>
-  );
+	);
 }
