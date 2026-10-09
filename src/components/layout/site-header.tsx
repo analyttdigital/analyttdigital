@@ -25,6 +25,7 @@ import type { Transition, Variants } from "framer-motion";
 import { MdiIcon } from "@/lib/icons/resolve-icon";
 import { motionTokens } from "@/lib/motion/motion-tokens";
 import { useScrolled } from "@/lib/hooks";
+import { s } from "framer-motion/client";
 
 export type SiteHeaderVariant = "simple" | "centered" | "mega";
 
@@ -264,11 +265,13 @@ function Face({
 	direction,
 	reduced,
 	onHeight,
+	className,
 	children,
 }: {
 	direction: number;
 	reduced: boolean;
 	onHeight: (height: number) => void;
+	className?: string;
 	children: ReactNode;
 }) {
 	const ref = useRef<HTMLDivElement>(null);
@@ -285,7 +288,7 @@ function Face({
 	return (
 		<motion.div
 			ref={ref}
-			className="relative p-3"
+			className={`relative p-3 ${className ?? ""}`}
 			data-face=""
 			data-leaving={present ? undefined : ""}
 			inert={!present}
@@ -581,11 +584,11 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 			closeMenu();
 		};
 		return action.href ? (
-			<a className={`inline-flex h-9 cursor-pointer items-center justify-center whitespace-nowrap border border-transparent px-3.5 text-sm font-medium no-underline transition-[transform,background-color,opacity] duration-150 active:scale-[0.97] motion-reduce:transform-none motion-reduce:transition-none ${kind === "secondary" ? "bg-transparent text-primary-300 hover:bg-primary-800 hover:text-primary-50" : "bg-primary-100 text-primary-950 hover:opacity-90"} ${extra}`} href={action.href} onClick={onClick}>
+			<a className={`inline-flex h-9 cursor-pointer items-center justify-center whitespace-nowrap border border-transparent px-3.5 text-sm font-medium rounded-full no-underline transition-[transform,background-color,opacity] duration-150 active:scale-[0.97] motion-reduce:transform-none motion-reduce:transition-none ${kind === "secondary" ? "bg-transparent text-primary-500 hover:bg-primary-800 hover:text-paper" : "bg-accent text-paper hover:opacity-90"} ${extra}`} href={action.href} onClick={onClick}>
 				{action.label}
 			</a>
 		) : (
-			<button type="button" className={`inline-flex h-9 cursor-pointer items-center justify-center whitespace-nowrap border border-transparent px-3.5 text-sm font-medium no-underline transition-[transform,background-color,opacity] duration-150 active:scale-[0.97] motion-reduce:transform-none motion-reduce:transition-none ${kind === "secondary" ? "bg-transparent text-primary-300 hover:bg-primary-800 hover:text-primary-50" : "bg-primary-100 text-primary-950 hover:opacity-90"} ${extra}`} onClick={onClick}>
+			<button type="button" className={`inline-flex h-9 cursor-pointer items-center justify-center whitespace-nowrap border border-transparent px-3.5 text-sm font-medium rounded-full no-underline transition-[transform,background-color,opacity] duration-150 active:scale-[0.97] motion-reduce:transform-none motion-reduce:transition-none ${kind === "secondary" ? "bg-transparent text-primary-500 hover:bg-primary-800 hover:text-paper" : "bg-accent text-paper hover:opacity-90"} ${extra}`} onClick={onClick}>
 				{action.label}
 			</button>
 		);
@@ -594,7 +597,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 	const brandNode = (
 		<Destination
 			link={{ label: brand.name, href: brand.href }}
-			className="inline-flex cursor-pointer items-center gap-2 border-0 bg-transparent py-2 pr-2 text-base font-medium text-primary-100 no-underline"
+			className={`inline-flex cursor-pointer items-center gap-2 border-0 bg-transparent py-2 pr-2 text-base font-medium text-primary no-underline ${scrolled || menuOpen || !!open ? "hover:text-primary-300" : "hover:text-primary-500"} ${classes?.navItem ?? ""}`}
 			onChoose={() => {
 				onNavigate?.({ label: brand.name, href: brand.href });
 				close();
@@ -610,9 +613,10 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 		<header
 			ref={setRefs}
 			className={[
-				"relative z-20 [container-type:inline-size] [container-name:site-header] border-b border-transparent bg-transparent font-sans text-primary-100 transition-colors duration-200 data-[scrolled]:border-primary-700 data-[scrolled]:bg-primary-950 motion-reduce:transition-none",
+				"relative z-20 [container-type:inline-size] [container-name:site-header] border-b border-transparent bg-transparent font-sans text-primary-100 transition-colors duration-200 data-[scrolled]:border-primary-700 data-[scrolled]:bg-primary-700 motion-reduce:transition-none",
 				sticky ? "sticky top-0" : "",
 				className,
+				classes?.root,
 			]
 				.filter(Boolean)
 				.join(" ")}
@@ -630,13 +634,13 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 					<div className="flex min-w-0">{brandNode}</div>
 					<LayoutGroup id={id}>
 						<nav
-							className={`min-w-0 [@container_site-header_(max-width:759px)]:hidden ${variant === "centered" ? "mx-auto" : "ml-4 "}`}
+							className={`min-w-0 [@container_site-header_(max-width:759px)]:hidden ${variant === "centered" ? "mx-auto" : "ml-4 "} ${classes?.nav ?? ""}`}
 							aria-label={label}
 							onKeyDown={onNavKeyDown}
 							onPointerLeave={() => setHovered(null)}
 						>
 							<ul
-								className={`m-0 flex flex-1 list-none items-center gap-0.5 p-0 ${variant === "centered" ? "rounded-full border border-primary-500/10 bg-primary-200/20 p-[3px]" : ""}`}
+								className={`m-0 flex flex-1 list-none items-center gap-0.5 p-0 ${variant === "centered" ? "" : ""} ${classes?.navList ?? ""}`}
 							>
 								{items.map((item) => {
 									const isCurrent = current === item.value;
@@ -644,7 +648,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 									const isOpen = open?.value === item.value;
 									const panelId = `${id}-panel`;
 									const common = {
-										className: `group relative isolate inline-flex h-9 cursor-pointer select-none items-center gap-1 whitespace-nowrap border-0 bg-transparent px-3 text-sm font-medium text-primary-300 no-underline transition-colors duration-150 hover:text-primary-50 data-[current]:text-primary-50 data-[open]:text-primary-50 motion-reduce:transition-none ${variant === "centered" ? "h-8 rounded-full px-3.5" : ""}`,
+										className: `group relative isolate inline-flex h-9 cursor-pointer select-none items-center gap-1 whitespace-nowrap border-0 bg-transparent px-3 text-sm font-medium text-ink no-underline transition-colors duration-150 hover:text-primary-500 data-[current]:text-primary data-[open]:text-accent motion-reduce:transition-none ${variant === "centered" ? "h-8 rounded-full px-3.5" : ""} ${classes?.navItem ?? ""}`,
 										"data-nav-item": "",
 										"data-current": isCurrent ? "" : undefined,
 										"data-open": isOpen ? "" : undefined,
@@ -666,7 +670,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 												<motion.span
 													key={`hover-${variant}`}
 													layoutId={`hover-${variant}`}
-													className="absolute inset-0 -z-10 bg-primary-800"
+													className={`absolute inset-0 -z-10 bg-primary-800 ${classes?.navItemHover ?? ""}`}
 													transition={reduced ? { duration: 0 } : GLIDE}
 													aria-hidden="true"
 												/>
@@ -675,7 +679,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 												<motion.span
 													key={`current-${variant}`}
 													layoutId={`current-${variant}`}
-													className={`absolute inset-x-3 bottom-1 h-0.5 bg-accent-500 ${variant === "centered" ? "inset-0 z-[-1] h-auto rounded-full border border-primary-700 bg-primary-800" : withPanel ? "right-[calc(0.75rem+18px)]" : ""}`}
+													className={`absolute inset-x-3 bottom-1 h-0.5 bg-accent-500 ${variant === "centered" ? "inset-0 z-[-1] h-auto rounded-full border border-primary-700 bg-primary-800" : withPanel ? "right-[calc(0.75rem+18px)]" : ""} ${classes?.navItemIndicator ?? ""}`}
 													transition={
 														reduced
 															? { duration: 0 }
@@ -691,6 +695,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 											{withPanel ? (
 												<button
 													{...common}
+														className={`${common.className} ${classes?.navItemButton ?? ""}`}
 													ref={(node: HTMLButtonElement | null) => {
 														if (node)
 															triggerRefs.current.set(
@@ -722,6 +727,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 												<Destination
 													link={item}
 													{...common}
+														className={`${common.className} ${classes?.navItemLink ?? ""}`}
 													aria-current={isCurrent ? "page" : undefined}
 													onChoose={() =>
 														choose(
@@ -818,7 +824,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 								key="panel"
 								id={`${id}-panel`}
 								ref={panelRef}
-								className="absolute left-6 right-6 top-[calc(100%-4px)] origin-top overflow-hidden border border-primary-700 bg-primary-900 [@container_site-header_(max-width:759px)]:hidden"
+								className={`absolute left-6 right-6 top-[calc(100%-4px)] origin-top overflow-hidden border border-primary-700 bg-primary-900 [@container_site-header_(max-width:759px)]:hidden ${classes?.panel ?? ""}`}
 								role="region"
 								aria-label={openItem.label}
 								onKeyDown={onPanelKeyDown}
@@ -869,6 +875,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 										direction={open?.direction ?? 0}
 										reduced={reduced}
 										onHeight={onHeight}
+										className={classes?.panelFace}
 									>
 										<div
 											className={`grid gap-2 ${openItem.feature ? "grid-cols-[minmax(0,1fr)_minmax(200px,260px)]" : ""}`}
@@ -879,7 +886,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 													<li key={link.label}>
 														<Destination
 															link={link}
-															className="flex h-full w-full cursor-pointer items-start gap-3 border-0 bg-transparent p-3 text-left text-primary-100 no-underline transition-colors duration-150 hover:bg-primary-800 focus-visible:bg-primary-800 motion-reduce:transition-none"
+															className={`flex h-full w-full cursor-pointer items-start gap-3 border-0 bg-transparent p-3 text-left text-primary-100 no-underline transition-colors duration-150 hover:bg-primary-800 focus-visible:bg-primary-800 motion-reduce:transition-none ${classes?.panelLink ?? ""}`}
 															data-panel-link=""
 															onChoose={() =>
 																choose(
@@ -893,14 +900,16 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 															}
 														>
 															{link.icon && (
-																<span className="mt-0.5 flex shrink-0 text-primary-300">
+																<span className={`mt-0.5 flex shrink-0 text-primary-300 ${classes?.panelLinkIcon ?? ""}`}>
 																	{link.icon}
 																</span>
 															)}
-															<span className="grid min-w-0 gap-0.5 text-sm font-medium [&>span:last-child]:font-normal [&>span:last-child]:text-primary-400">
-																<span>{link.label}</span>
+															<span className="grid min-w-0 gap-0.5">
+																<span className={`text-sm font-medium ${classes?.panelLinkLabel ?? ""}`}>
+																	{link.label}
+																</span>
 																{link.description && (
-																	<span className="text-sm text-primary-400">
+																	<span className={`text-sm text-primary-400 ${classes?.panelLinkDescription ?? ""}`}>
 																		{link.description}
 																	</span>
 																)}
@@ -910,12 +919,13 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 												))}
 											</ul>
 											{openItem.feature && (
+												<div className={`grid gap-1.5 bg-primary-800 p-2 ${classes?.panelFeature ?? ""}`}>
 												<Destination
 													link={{
 														label: openItem.feature.title,
 														href: openItem.feature.href,
 													}}
-													className="group grid cursor-pointer content-start gap-1.5 border-0 bg-primary-800 p-2 text-left text-primary-100 no-underline"
+													className={`group grid w-full cursor-pointer content-start gap-1.5 border-0 bg-transparent p-0 text-left text-primary-100 no-underline ${classes?.panelFeatureLink ?? ""}`}
 													data-panel-link=""
 													onChoose={() =>
 														choose(
@@ -929,7 +939,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 													}
 												>
 													{openItem.feature.image && (
-														<span className="relative mb-1 block aspect-[16/10] overflow-hidden bg-primary-700 [&_img]:object-cover [&_img]:transition-transform [&_img]:duration-500 group-hover:[&_img]:scale-[1.03] motion-reduce:[&_img]:transition-none">
+														<span className={`relative mb-1 block aspect-[16/10] overflow-hidden bg-primary-700 [&_img]:object-cover [&_img]:transition-transform [&_img]:duration-500 group-hover:[&_img]:scale-[1.03] motion-reduce:[&_img]:transition-none ${classes?.panelFeatureImage ?? ""}`}>
 															<Image
 																src={openItem.feature.image.src}
 																alt={openItem.feature.image.alt}
@@ -938,16 +948,17 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 															/>
 														</span>
 													)}
-													<span className="inline-flex items-center gap-1.5 px-1 text-sm font-medium [&_svg]:text-primary-400 [&_svg]:transition-transform [&_svg]:duration-150 group-hover:[&_svg]:translate-x-0.5 motion-reduce:[&_svg]:transition-none">
+													<span className={`inline-flex items-center gap-1.5 px-1 text-sm font-medium [&_svg]:text-primary-400 [&_svg]:transition-transform [&_svg]:duration-150 group-hover:[&_svg]:translate-x-0.5 motion-reduce:[&_svg]:transition-none ${classes?.panelFeatureTitle ?? ""}`}>
 														{openItem.feature.title}
 														<MdiIcon name="arrowRight" size={14 / 24} />
 													</span>
 													{openItem.feature.description && (
-														<span className="px-1 text-sm text-primary-300">
+														<span className={`px-1 text-sm text-primary-300 ${classes?.panelFeatureDescription ?? ""}`}>
 															{openItem.feature.description}
 														</span>
 													)}
 												</Destination>
+												</div>
 											)}
 										</div>
 									</Face>
