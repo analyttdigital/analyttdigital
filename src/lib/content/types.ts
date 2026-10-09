@@ -110,10 +110,29 @@ export type HeroPanel = {
 
 export type HeroPartner = { label: string; logo: ContentImage; logoDark?: ContentImage };
 
+/** One selectable point on the bridge plot: where it sits on the line
+ *  (`x` 0–1), the decision it marks, and the measured result. */
+export type HeroBridgeMove = { x: number; move: string; result: string };
+
 /** About-us bridge shown inside the hero portal flood. Owned by the hero
  *  content layer (editable in Keystatic) — `tag` renders as the band label,
- *  `title` as the portal headline, `description` as the lede. */
-export type HeroBridge = { tag: string; title: string; description: string };
+ *  `title` as the portal headline, `introLead` (bold) + `description` as the
+ *  intro, then the interactive signal plot: `baseLabel` on the dashed
+ *  starting line, `axisLeft`/`axisRight` under it, `moveLabel`/`resultLabel`
+ *  over the readout, `hint` beneath, and one `moves` entry per point. */
+export type HeroBridge = {
+  tag: string;
+  title: string;
+  introLead: string;
+  description: string;
+  baseLabel: string;
+  axisLeft: string;
+  axisRight: string;
+  moveLabel: string;
+  resultLabel: string;
+  hint: string;
+  moves: HeroBridgeMove[];
+};
 
 export type HeroSection = {
   eyebrow: string;

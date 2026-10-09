@@ -220,12 +220,33 @@ const heroFields = {
         label: 'Bridge title (keep short)',
         defaultValue: 'Data at the heart of every move.',
       }),
+      introLead: fields.text({
+        label: 'Intro lead (bold)',
+        defaultValue: 'Analytt Digital is a performance marketing agency.',
+      }),
       description: fields.text({
-        label: 'Bridge description',
+        label: 'Intro rest',
         defaultValue:
-          'Analytt Digital is a performance marketing agency redefining the digital landscape by placing data at the heart of every move — turning data-driven strategy into measurable growth in a competitive online realm.',
+          'We put data at the heart of every move, turning data-driven strategy into measurable growth in a competitive online realm.',
         multiline: true,
       }),
+      baseLabel: fields.text({ label: 'Starting-line label', defaultValue: 'Where we started' }),
+      axisLeft: fields.text({ label: 'Axis label (left)', defaultValue: 'Raw signals' }),
+      axisRight: fields.text({ label: 'Axis label (right)', defaultValue: 'Measured growth' }),
+      moveLabel: fields.text({ label: 'Readout label (move)', defaultValue: 'The move' }),
+      resultLabel: fields.text({ label: 'Readout label (result)', defaultValue: 'What we measured' }),
+      hint: fields.text({
+        label: 'Plot hint',
+        defaultValue: 'Select a point on the line to see the decision behind it.',
+      }),
+      moves: fields.array(
+        fields.object({
+          x: fields.number({ label: 'Position on the line (0–1)', defaultValue: 0.5 }),
+          move: fields.text({ label: 'The move', multiline: true }),
+          result: fields.text({ label: 'What we measured', multiline: true }),
+        }),
+        { label: 'Plot points', itemLabel: (props) => props.fields.move.value?.slice(0, 40) || 'Point' },
+      ),
     },
     { label: 'Portal bridge (about-us)' },
   ),

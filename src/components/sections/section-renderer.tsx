@@ -8,7 +8,7 @@ import { Problem } from '@/components/sections/problem';
 import { ProcessChapter } from '@/components/sections/process-chapter';
 import { Stats } from '@/components/sections/stats';
 import { Work } from '@/components/sections/work';
-import type { Section } from '@/lib/content/types';
+import type { HeroBridge, Section } from '@/lib/content/types';
 import PathFlowSection from '../graphics/path-flow-section';
 
 /** Render a page document's ordered section list. */
@@ -25,22 +25,34 @@ export function SectionRenderer({ sections }: { sections: Section[] }) {
 function SectionBlock({ section, sections }: { section: Section; sections: Section[] }) {
   switch (section.type) {
     case 'hero': {
-      // The portal flood carries the hero's own about-us bridge copy. Legacy
-      // entries without one fall back to the Process section's words.
+      // The portal flood carries the hero's own about-us bridge content
+      // (headline, intro, signal plot — all Keystatic-editable). Legacy
+      // entries without one fall back to the Process section's words, with
+      // the plot extras left empty so only the head renders.
       const own = section.bridge;
       const proc = sections.find((s) => s.type === 'process');
-      const bridge =
+      const emptyPlot: HeroBridge = {
+        tag: '',
+        title: '',
+        introLead: '',
+        description: '',
+        baseLabel: '',
+        axisLeft: '',
+        axisRight: '',
+        moveLabel: '',
+        resultLabel: '',
+        hint: '',
+        moves: [],
+      };
+      const bridge: HeroBridge | undefined =
         own && (own.tag || own.title || own.description)
-          ? {
-              eyebrow: own.tag,
-              headline: own.title,
-              lede: own.description,
-            }
+          ? own
           : proc && proc.type === 'process'
             ? {
-                eyebrow: proc.eyebrow,
-                headline: `${proc.headline} ${proc.headlineAccent}`.trim(),
-                lede: proc.lede,
+                ...emptyPlot,
+                tag: proc.eyebrow,
+                title: `${proc.headline} ${proc.headlineAccent}`.trim(),
+                description: proc.lede,
               }
             : undefined;
       return <Hero hero={section} bridge={bridge} />;

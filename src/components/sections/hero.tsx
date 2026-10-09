@@ -13,12 +13,12 @@ import {
 
 import { MdiIcon } from '@/lib/icons/resolve-icon';
 import { DynamicImage } from '@/components/media/dynamic-image';
-import type { HeroPartner, HeroPanel, HeroProof, HeroSection } from '@/lib/content/types';
+import type { HeroBridge, HeroPartner, HeroPanel, HeroProof, HeroSection } from '@/lib/content/types';
+import { BridgeAbout } from '@/components/graphics/bridge-about';
 import { HeroGather } from '@/components/graphics/hero-gather';
 import { LogoWireframe } from '@/components/graphics/logo-wireframe';
 import { TextReveal } from '@/components/graphics/text-reveal';
 import { smooth } from '@/lib/motion/smooth';
-import InViewTitle from '../graphics/in-view-title';
 import { PathFlowSection } from '../graphics/path-flow-section';
 
 /**
@@ -546,12 +546,6 @@ const FALLBACK_PARTNERS: HeroPartner[] = [
   { label: 'HubSpot Solutions Partner', logo: { src: '/img/partners/hubspot.svg', alt: 'HubSpot' }, logoDark: { src: '/img/partners/hubspot-light.svg', alt: 'HubSpot' } },
 ];
 
-/** Bridge copy shown inside the portal flood. Supplied by the section
- *  renderer from the hero's own `bridge` content (tag/title/description,
- *  editable in Keystatic) — never hard-coded here, per the content-layer
- *  rule. Absent = the portal floods flat. */
-export type HeroPortalBridge = { eyebrow?: string; headline?: string; lede?: string };
-
 /* ------------------------------------------------------------------ */
 /* Portal transition — scroll-scrubbed circular reveal into Process     */
 /*                                                                    */
@@ -612,7 +606,7 @@ const CANVAS_GROW_END = 0.88;
 const CANVAS_GROW_DESKTOP = 0.28;
 const CANVAS_GROW_MOBILE = 0.16;
 
-export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: HeroSection['variant']; bridge?: HeroPortalBridge }) {
+export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: HeroSection['variant']; bridge?: HeroBridge }) {
   const eyebrow = hero?.eyebrow || FALLBACK.eyebrow;
   const lines = (hero?.headline || FALLBACK.headline).split('\n');
   const sub = hero?.sub || FALLBACK.sub;
@@ -1031,37 +1025,14 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
 					>
 						{/* Logo wireframe — the Analytt monogram redrawn as a wireframe
 						 * on the flood's left half, sweeping on every entry. */}
-						<LogoWireframe active={floodLive} />
+						{/* <LogoWireframe active={floodLive} /> */}
 						<div className="relative flex h-full w-full items-center justify-center">
 							{bridge && (
 								<motion.div
-									className="flex flex-col items-center px-6 text-center"
+									className="flex w-full flex-col items-center px-5 sm:px-[clamp(20px,6vw,96px)]"
 									style={{ opacity: portalText, y: portalTextY, filter: portalTextBlur }}
 								>
-								{bridge.eyebrow && (
-									<span className="inline-flex items-center gap-2 rounded-full border border-primary-50/15 bg-primary-900/80 px-3 py-1.5 text-xs font-medium text-accent-400">
-										{bridge.eyebrow}
-									</span>
-								)}
-								{bridge.headline && (
-									<InViewTitle
-										variant="wipe"
-										as="h2"
-										text={bridge.headline}
-										once={false}
-										className="title mt-4 max-w-[20ch] text-[clamp(1.8rem,3.6vw,3.8rem)] text-primary-50"
-									/>
-								)}
-
-								{bridge.lede && (
-									<InViewTitle
-										variant="blur"
-										as="p"
-										text={bridge.lede}
-										once={false}
-										className="mt-12 max-w-[50dvw] text-primary-200"
-									/>
-								)}
+									<BridgeAbout data={bridge} live={portalLive} />
 								</motion.div>
 							)}
 						</div>
