@@ -85,10 +85,10 @@ export function ProcessChapter({ process }: { process?: ProcessSection }) {
 					</div>
 					<div className="mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center gap-10 px-5 md:flex-row md:items-center md:gap-16">
 						{/* Position + step list */}
-						<div className="w-full md:w-[38%]">
-							<ol className="mt-10 border-t border-ink-950/15">
+						<div className="w-full md:w-[38%] hidden md:block">
+							<ol className="mt-10">
 								{steps.map((step, i) => (
-							<li key={step.n} className="border-b border-ink-950/10">
+							<li key={step.n}>
 									<button
 										type="button"
 										onClick={() => goTo(i)}
@@ -104,7 +104,7 @@ export function ProcessChapter({ process }: { process?: ProcessSection }) {
 											</span>
 											<span className="flex-1">{step.title}</span>
 											<MdiIcon
-												name="arrowTopRight"
+												name="arrowRight"
 												size={0.8}
 												className={
 													i === active ? "text-accent-500" : "opacity-0"
@@ -130,7 +130,7 @@ export function ProcessChapter({ process }: { process?: ProcessSection }) {
 								{/* Step watermark — one faint glyph per position, bottom-right. */}
 								<MdiIcon
 									name={processStepIcons[active % processStepIcons.length]}
-									size={10}
+									size={12}
 									className="pointer-events-none absolute -bottom-8 -right-4 select-none text-ink-950/[0.06]"
 								/>
 								<p className="num text-[clamp(2.6rem,6vw,4.6rem)] text-ink-300">
@@ -156,7 +156,7 @@ export function ProcessChapter({ process }: { process?: ProcessSection }) {
 					</div>
 
 				{/* Foot — meter + scroll cue */}
-				<div className="border-t border-ink-950/10 px-5 py-5 md:px-8">
+				<div className="border-t border-accent/10 px-5 py-5 md:px-8">
 					<div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-6">
 						<span className="label text-ink-500">
 							{process?.cardTitle ?? "Process"}
@@ -167,7 +167,9 @@ export function ProcessChapter({ process }: { process?: ProcessSection }) {
 								style={{ width: `${progress * 100}%` }}
 							/>
 						</div>
-						<span className="label text-ink-500">Scroll to explore</span>
+                          <span className="label text-ink-500">
+                              {/* Scroll to explore */}
+                          </span>
 					</div>
 				</div>
 				</div>

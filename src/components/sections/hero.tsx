@@ -1014,7 +1014,7 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
 					</div>
 				</motion.div>
 
-				{/* The portal: paper ground flooding out of the mark. Above every
+				{/* The portal: deep-field ground flooding out of the mark. Above every
 			    hero layer, never interactive, never carrying layout — only a
 			    scroll-driven clip-path. At the end of the runway the flood
 			    detaches to fixed and holds the bridge up while the Process
@@ -1024,7 +1024,7 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
 				{!reduce && !exited && (
 					<motion.div
 						aria-hidden={portalLive ? undefined : true}
-						className={`pointer-events-none bg-paper data-[dark]:bg-primary-950 ${
+						className={`pointer-events-none bg-primary ${
 							detached ? 'fixed inset-0 z-[60]' : 'absolute inset-0 z-[50]'
 						}`}
 						style={{ clipPath, willChange: 'clip-path', opacity: floodOpacity }}
@@ -1039,7 +1039,7 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
 									style={{ opacity: portalText, y: portalTextY, filter: portalTextBlur }}
 								>
 								{bridge.eyebrow && (
-									<span className="inline-flex items-center gap-2 rounded-full border border-primary-900/15 bg-paper-50 px-3 py-1.5 text-xs font-medium text-accent">
+									<span className="inline-flex items-center gap-2 rounded-full border border-primary-50/15 bg-primary-900/80 px-3 py-1.5 text-xs font-medium text-accent-400">
 										{bridge.eyebrow}
 									</span>
 								)}
@@ -1049,7 +1049,7 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
 										as="h2"
 										text={bridge.headline}
 										once={false}
-										className="title mt-4 max-w-[20ch] text-[clamp(1.8rem,3.6vw,3.8rem)] text-primary-900"
+										className="title mt-4 max-w-[20ch] text-[clamp(1.8rem,3.6vw,3.8rem)] text-primary-50"
 									/>
 								)}
 
@@ -1059,7 +1059,7 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
 										as="p"
 										text={bridge.lede}
 										once={false}
-										className="mt-12 max-w-[50dvw] text-ink-500"
+										className="mt-12 max-w-[50dvw] text-primary-200"
 									/>
 								)}
 								</motion.div>
