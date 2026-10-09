@@ -1,6 +1,6 @@
 'use client';
 
-import { useId, useLayoutEffect, useRef } from 'react';
+import { useEffect, useId, useRef } from 'react';
 
 /**
  * LogoWireframe — the Analytt monogram as a traced signal path.
@@ -47,7 +47,10 @@ export function LogoWireframe({ active, className }: { active?: boolean; classNa
   const layers = useRef<(SVGPathElement | null)[][]>([]);
   const filterId = useId().replace(/:/g, '');
 
-  useLayoutEffect(() => {
+  /* useEffect, not useLayoutEffect: this runs only to park dash offsets
+   * (already the server-rendered state) and start the rAF loop — no layout
+   * measurement — and useLayoutEffect warns on server renders. */
+  useEffect(() => {
     /* Parked state: every layer held before the path start (nothing drawn).
      * The server renders this same state, so entry is the only motion. */
     const park = () => {

@@ -124,7 +124,7 @@ html.lenis body {
 }
 
 body {
-  @apply bg-primary-950 font-sans text-primary-100;
+  @apply font-sans text-ink-500;
   overflow-x: hidden;
 }
 

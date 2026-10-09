@@ -1,23 +1,24 @@
+'use client';
+
+import { useState } from 'react';
+
 import { Band } from '@/components/layout/band';
 import { InViewTitle } from '@/components/graphics/in-view-title';
-import { NodeIn, Reveal } from '@/lib/motion/reveal';
+import { GsapReveal } from '@/lib/motion/gsap-reveal';
 import { useChrome } from '@/lib/content/chrome';
 import type { ProblemSection } from '@/lib/content/types';
 
 /**
- * Problem — where the money actually went, as Otto's "trust" split.
+ * Problem — where the money actually went, as a soft leak meter.
  *
- * The descent into the argument takes the deep band: the charge on the left
- * (mono eyebrow, blurred display statement, paragraphs, and the losing
- * figure in ember), the evidence on the right as a ruled list — one hairline
- * row per spend split with its marker, label, countable debit squares and
- * share, the way Otto's trust rows carry one proof each. Rows tint on hover
- * and their figure warms to ember. Sitting on primary-950, this is the
- * ground the belief's resolve dissolves out of. Content shape untouched.
+ * The argument is argued on the light band now: a pill-shaped stacked bar
+ * where every segment is one spend split sized by its share, and rounded
+ * ledger lines beneath it. Touching a segment lights its ledger line and
+ * vice-versa; the losing split carries ember and a soft ember glow.
+ * Entrances are GSAP rise + de-blur. Content shape untouched.
  */
 
-const STACK = 16;
-const FILL = ['bg-primary-50/25', 'bg-accent-500', 'bg-primary-50/10'];
+const FILL = ['bg-ink-300', 'bg-accent-500', 'bg-ink-950/10'];
 
 function shareOf(value: string | undefined, total: number, fallback: number) {
   const parsed = Number.parseFloat((value ?? '').replace(/[^\d.]/g, ''));
@@ -32,93 +33,122 @@ export function Problem({ problem }: { problem?: ProblemSection }) {
     const parsed = Number.parseFloat(chip.value.replace(/[^\d.]/g, ''));
     return sum + (Number.isNaN(parsed) ? 0 : parsed);
   }, 0);
+  const [active, setActive] = useState<number | null>(null);
 
   return (
-    <Band id="problem" ground="deep">
-      <div className="grid gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
-        {/* ---- the charge ---------------------------------------- */}
-        <div>
-          <p className="label text-paper/60">{problem?.eyebrow}</p>
-          <InViewTitle
-            text={(problem?.headline ?? '').replace(/\n/g, ' ')}
-            variant="blur"
-            as="h2"
-            className="title mt-6 max-w-[14ch] text-[clamp(2.1rem,4.4vw,3rem)] text-paper"
-          />
-          <div className="mt-7 space-y-5">
-            {problem?.paragraphs?.map((paragraph, i) => (
-              <Reveal key={i} delay={0.12 + i * 0.08}>
-                <p className="max-w-[52ch] text-[13px] leading-[1.85] text-paper/60">{paragraph}</p>
-              </Reveal>
-            ))}
+    <Band id="problem" ground="paper">
+      <GsapReveal>
+        <div className="grid gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
+          {/* ---- the charge -------------------------------------- */}
+          <div>
+            <p data-rise className="label text-ink-500">{problem?.eyebrow}</p>
+            <InViewTitle
+              text={(problem?.headline ?? '').replace(/\n/g, ' ')}
+              variant="blur"
+              as="h2"
+              className="title mt-6 max-w-[14ch] text-[clamp(2.1rem,4.4vw,3rem)] text-ink-950"
+            />
+            <div className="mt-7 space-y-5">
+              {problem?.paragraphs?.map((paragraph, i) => (
+                <p key={i} data-rise={i + 1} className="max-w-[52ch] text-[13px] leading-[1.85] text-ink-500">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+            {problem?.closing ? (
+              <p data-rise="4" className="label mt-9 text-accent-600">{problem.closing}</p>
+            ) : null}
           </div>
-          <Reveal delay={0.3}>
-            <div className="mt-10 border-t border-paper-50/15 pt-7">
-              <p className="num text-[clamp(2.6rem,5.4vw,4.2rem)] leading-none text-accent-400">
-                {problem?.panelAlert ?? 'Wasting −38%'}
+
+          {/* ---- the leak meter ----------------------------------- */}
+          <div
+            data-rise="2"
+            className="rounded-[2rem] border border-ink-950/[0.07] bg-paper-50 p-7 shadow-[0_30px_80px_-36px_rgb(var(--color-primary-600)/0.35)] md:p-9"
+          >
+            <div className="flex items-start justify-between gap-6">
+              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-500">
+                {problem?.panelTitle ?? 'Account snapshot'}
               </p>
-              <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[10px] uppercase tracking-[0.16em] text-paper/40">
-                <span>{problem?.panelTitle ?? 'Account snapshot'}</span>
-                <span aria-hidden className="h-1 w-1 bg-accent-500" />
-                <span>{chrome.everyHundred}</span>
+              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-400">
+                {chrome.everyHundred}
               </p>
             </div>
-          </Reveal>
-          {problem?.closing ? (
-            <Reveal delay={0.4}>
-              <p className="label mt-8 text-accent-300">{problem.closing}</p>
-            </Reveal>
-          ) : null}
-        </div>
 
-        {/* ---- the evidence — one ruled row per spend split -------- */}
-        <ol className="border-t border-paper-50/15">
-          {chips.map((chip, i) => {
-            const share = shareOf(chip.value, total, 100 / Math.max(chips.length, 1));
-            const squares = Math.max(1, Math.round((share / 100) * STACK));
-            return (
-              <NodeIn as="li" key={`${chip.label}-${i}`} delay={0.08 + i * 0.07}>
-                <div className="group grid grid-cols-[2.2rem_minmax(0,1fr)_auto] items-start gap-x-5 border-b border-paper-50/15 px-2 py-6 transition-colors duration-300 hover:bg-paper-50/5">
-                  <span className="pt-1 font-mono text-[10px] tracking-[0.14em] text-paper/40">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <span>
-                    <span className="block text-[15px] font-medium tracking-tight text-paper">{chip.label}</span>
-                    <span aria-hidden className="mt-3 flex flex-wrap gap-[3px]">
-                      {Array.from({ length: squares }).map((_, s) => (
-                        <span
-                          key={s}
-                          className={`block h-[11px] w-[11px] transition-transform duration-300 group-hover:scale-110 ${FILL[i % FILL.length]}`}
-                        />
-                      ))}
-                    </span>
-                  </span>
-                  <span className="text-right">
-                    <span className="block font-display text-[19px] font-medium tracking-tight text-paper transition-colors duration-300 group-hover:text-accent-400">
-                      {chip.value}
-                    </span>
-                    <span className="mt-1 block font-mono text-[10px] tracking-[0.16em] text-paper/40">
+            <p
+              className="num mt-6 text-[clamp(2.6rem,5.4vw,4.2rem)] leading-none text-accent-600"
+              style={{ textShadow: '0 0 44px rgb(var(--color-accent-500) / 0.3)' }}
+            >
+              {problem?.panelAlert ?? 'Wasting −38%'}
+            </p>
+
+            {/* every hundred shillings, one pill bar */}
+            <div className="mt-8 flex h-16 w-full gap-1 rounded-full border border-ink-950/10 bg-paper-200/60 p-1.5" role="list" aria-label={problem?.panelTitle}>
+              {chips.map((chip, i) => {
+                const share = shareOf(chip.value, total, 100 / Math.max(chips.length, 1));
+                const live = active === i;
+                return (
+                  <button
+                    key={`${chip.label}-${i}`}
+                    type="button"
+                    role="listitem"
+                    aria-label={`${chip.label} — ${chip.value}, ${Math.round(share)}%`}
+                    onMouseEnter={() => setActive(i)}
+                    onFocus={() => setActive(i)}
+                    onMouseLeave={() => setActive(null)}
+                    onBlur={() => setActive(null)}
+                    className={`relative h-full rounded-full transition-all duration-300 ${FILL[i % FILL.length]} ${
+                      active === null || live ? 'opacity-100' : 'opacity-30'
+                    } ${live ? 'shadow-[0_0_24px_rgb(var(--color-accent-500)/0.35)]' : ''}`}
+                    style={{ width: `${share}%` }}
+                  >
+                    <span
+                      className={`absolute inset-x-0 -bottom-6 mx-auto w-max font-mono text-[9px] tracking-[0.1em] text-ink-500 transition-opacity duration-300 ${
+                        live ? 'opacity-100' : 'opacity-0'
+                      }`}
+                    >
                       {Math.round(share)}%
                     </span>
-                  </span>
-                </div>
-              </NodeIn>
-            );
-          })}
-          <li className="flex flex-wrap gap-2.5 pt-6">
-            {chips.map((chip, i) => (
-              <span
-                key={`${chip.label}-${i}`}
-                className="inline-flex items-center gap-2 rounded-full border border-paper-50/15 px-3.5 py-1.5 font-mono text-[9.5px] uppercase tracking-[0.14em] text-paper/60"
-              >
-                <span aria-hidden className={`h-1.5 w-1.5 ${FILL[i % FILL.length]}`} />
-                {chip.label}
-              </span>
-            ))}
-          </li>
-          <li className="pt-5 text-[11px] leading-relaxed text-paper/35">{chrome.illustration}</li>
-        </ol>
-      </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* the ledger — rounded lines keyed to the segments */}
+            <ol className="mt-12 space-y-2">
+              {chips.map((chip, i) => {
+                const share = shareOf(chip.value, total, 100 / Math.max(chips.length, 1));
+                const live = active === i;
+                return (
+                  <li key={`${chip.label}-${i}`}>
+                    <button
+                      type="button"
+                      onMouseEnter={() => setActive(i)}
+                      onFocus={() => setActive(i)}
+                      onMouseLeave={() => setActive(null)}
+                      onBlur={() => setActive(null)}
+                      className={`grid w-full grid-cols-[0.9rem_minmax(0,1fr)_auto_auto] items-center gap-x-4 rounded-2xl px-4 py-3.5 text-left transition-all duration-200 ${
+                        live ? 'bg-ink-950/[0.05]' : 'hover:bg-ink-950/[0.03]'
+                      }`}
+                    >
+                      <span aria-hidden className={`h-2.5 w-2.5 rounded-full ${FILL[i % FILL.length]}`} />
+                      <span className={`text-[13.5px] font-medium tracking-tight transition-colors duration-200 ${live ? 'text-ink-950' : 'text-ink-500'}`}>
+                        {chip.label}
+                      </span>
+                      <span className={`font-display text-[16px] font-medium tracking-tight transition-colors duration-200 ${live ? 'text-accent-600' : 'text-ink-900'}`}>
+                        {chip.value}
+                      </span>
+                      <span className="w-10 text-right font-mono text-[10px] tracking-[0.14em] text-ink-400">
+                        {Math.round(share)}%
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ol>
+            <p className="mt-6 text-[11px] leading-relaxed text-ink-400">{chrome.illustration}</p>
+          </div>
+        </div>
+      </GsapReveal>
     </Band>
   );
 }
