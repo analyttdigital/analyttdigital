@@ -8,21 +8,21 @@ import { GsapReveal } from '@/lib/motion/gsap-reveal';
 import type { DataProps, WorkCase, WorkSection } from '@/lib/content/types';
 
 /**
- * Work — selected cases as an index panel on the dark stage.
+ * Work — selected cases as an index panel on the light stage.
  *
- * A near-black ground carrying an abstract flow-line backdrop, holding one
- * large paper panel: the intro (heading, paragraph, pill CTA) beside a
- * staggered three-column card index. Cards alternate a dark flowing-graphic
- * ground with the solid brand ground, positionally — the sequence is the
+ * A paper ground carrying a faint flow-line backdrop, holding one deep
+ * violet panel: the intro (heading, paragraph, ember pill CTA) beside a
+ * staggered two-column card index. Cards alternate a paper ground with a
+ * deep violet flowing-graphic ground, positionally — the sequence is the
  * design, so no per-card styling lives in content. Each card keeps its
- * proof figure (the recovering number counts up); a case `image`, when
- * present, covers the card under a dark gradient via the shared media
- * resolver, otherwise the generated flow lines carry it.
+ * proof figure (the recovering number counts up, ember on paper); a case
+ * `image`, when present, covers the card under a dark gradient via the
+ * shared media resolver, otherwise the generated flow lines carry it.
  */
 
-/** Solid brand ground, except every third card which takes the dark
- *  flowing-graphic ground — a positional default, content stays clean. */
-const isDark = (i: number) => i % 3 === 2;
+/** Deep violet flowing-graphic ground on every third card, paper otherwise —
+ *  a positional default, content stays clean. */
+const isDeep = (i: number) => i % 3 === 2;
 
 /** Short cards ride lower, giving the index its stagger. */
 const isLow = (i: number) => i % 2 === 1;
@@ -58,16 +58,18 @@ function Waves({ stroke, className }: { stroke: string; className?: string }) {
 }
 
 function CaseCard({ kase, index }: { kase: WorkCase; index: number }) {
-  const dark = isDark(index);
+  const deep = isDeep(index);
   const photo = kase.image?.src?.trim() ? kase.image : null;
+  /** Light text on the deep, photo, or any dark-carrying ground. */
+  const light = deep || !!photo;
   return (
     <article
       aria-label={`${kase.depth || kase.client} — ${kase.headline}`}
       className={[
         'group relative flex min-h-[340px] flex-col overflow-hidden rounded-3xl p-7',
         isLow(index) ? 'md:mt-12 md:min-h-[320px]' : 'md:min-h-[400px]',
-        !photo && dark ? 'bg-ink-950' : '',
-        !photo && !dark ? 'bg-primary-600' : '',
+        !photo && deep ? 'bg-primary-800' : '',
+        !photo && !deep ? 'bg-paper-50 shadow-[0_24px_60px_-30px_rgb(var(--color-primary-950)/0.45)] ring-1 ring-ink-950/[0.06]' : '',
       ]
         .filter(Boolean)
         .join(' ')}
@@ -79,34 +81,34 @@ function CaseCard({ kase, index }: { kase: WorkCase; index: number }) {
         </>
       ) : (
         <Waves
-          stroke={dark ? 'rgb(var(--color-primary-300))' : 'rgb(255 255 255)'}
+          stroke={deep ? 'rgb(var(--color-primary-300))' : 'rgb(var(--color-primary-400))'}
           className="absolute inset-0 h-full w-full"
         />
       )}
 
       <div className="relative flex items-start justify-between gap-3">
-        <span className="font-mono text-xs tracking-[0.14em] text-paper-50/70">#{index + 1}</span>
+        <span className={`font-mono text-xs tracking-[0.14em] ${light ? 'text-paper-50/60' : 'text-primary-400'}`}>#{index + 1}</span>
         {kase.tag ? (
-          <span className="rounded-full bg-paper-50/15 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-paper-50">
+          <span className={`rounded-full px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] ${light ? 'bg-paper-50/15 text-paper-50' : 'bg-accent-500/15 text-accent-700'}`}>
             {kase.tag}
           </span>
         ) : null}
       </div>
 
       <div className="relative mt-auto pt-10">
-        <p className={`font-mono text-[10.5px] uppercase tracking-[0.16em] ${dark || photo ? 'text-primary-300' : 'text-primary-100'}`}>
+        <p className={`font-mono text-[10.5px] uppercase tracking-[0.16em] ${light ? 'text-primary-200' : 'text-primary-500'}`}>
           {kase.industry}
         </p>
-        <h3 className="verb mt-2 text-[clamp(1.25rem,1.8vw,1.5rem)] leading-snug text-paper-50">
+        <h3 className={`verb mt-2 text-[clamp(1.25rem,1.8vw,1.5rem)] leading-snug ${light ? 'text-paper-50' : 'text-ink-950'}`}>
           {kase.client}
         </h3>
-        <p className="mt-2 line-clamp-4 text-[13px] leading-relaxed text-paper-50/75">{kase.body}</p>
-        <div className="mt-5 border-t border-paper-50/15 pt-4">
+        <p className={`mt-2 line-clamp-4 text-[13px] leading-relaxed ${light ? 'text-paper-50/75' : 'text-ink-500'}`}>{kase.body}</p>
+        <div className={`mt-5 border-t pt-4 ${light ? 'border-paper-50/15' : 'border-ink-950/10'}`}>
           <CountUp
             value={kase.metric}
-            className="num block text-[clamp(1.5rem,2.4vw,2rem)] leading-none text-paper-50"
+            className={`num block text-[clamp(1.5rem,2.4vw,2rem)] leading-none ${light ? 'text-paper-50' : 'text-accent-600'}`}
           />
-          <span className="mt-1.5 block font-mono text-[9.5px] uppercase leading-relaxed tracking-[0.14em] text-paper-50/60">
+          <span className={`mt-1.5 block font-mono text-[9.5px] uppercase leading-relaxed tracking-[0.14em] ${light ? 'text-paper-50/60' : 'text-ink-400'}`}>
             {kase.metricLabel}
           </span>
         </div>
@@ -118,23 +120,23 @@ function CaseCard({ kase, index }: { kase: WorkCase; index: number }) {
 export function Work({ data, classes, className, id }: DataProps<WorkSection, 'panel' | 'intro' | 'grid' | 'card'>) {
   const cases = data?.cases ?? [];
   return (
-    <section id={id ?? 'work'} className="relative overflow-hidden bg-ink-950 py-24 md:py-32">
-      {/* Stage backdrop — abstract flow, never information. */}
+    <section id={id ?? 'work'} className="relative overflow-hidden bg-paper py-24 md:py-32">
+      {/* Stage backdrop — faint flow, never information. */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute -right-48 -top-32 h-[760px] w-[760px] opacity-60">
+        <div className="absolute -right-48 -top-32 h-[760px] w-[760px] opacity-70">
+          <Waves stroke="rgb(var(--color-primary-300))" className="h-full w-full" />
+        </div>
+        <div className="absolute -bottom-56 -left-40 h-[640px] w-[640px] opacity-50">
           <Waves stroke="rgb(var(--color-primary-400))" className="h-full w-full" />
         </div>
-        <div className="absolute -bottom-56 -left-40 h-[640px] w-[640px] opacity-40">
-          <Waves stroke="rgb(var(--color-primary-500))" className="h-full w-full" />
-        </div>
-        <div className="absolute left-1/2 top-1/3 h-[480px] w-[720px] -translate-x-1/2 rounded-full bg-primary-600/20 blur-3xl" />
+        <div className="absolute left-1/2 top-1/3 h-[480px] w-[720px] -translate-x-1/2 rounded-full bg-primary-200/50 blur-3xl" />
       </div>
 
       <div className="relative mx-auto w-full max-w-7xl px-5 md:px-8">
         <GsapReveal>
           <div
             className={[
-              'rounded-[2rem] bg-paper px-6 py-12 shadow-[0_40px_120px_-40px_rgb(var(--color-primary-950)/0.55)] md:p-14',
+              'rounded-[2rem] bg-primary-900 px-6 py-12 shadow-[0_40px_120px_-40px_rgb(var(--color-primary-950)/0.5)] md:p-14',
               classes?.panel,
               className,
             ]
@@ -148,11 +150,11 @@ export function Work({ data, classes, className, id }: DataProps<WorkSection, 'p
                     text={(data?.headline ?? '').replace(/\n/g, ' ')}
                     variant="blur"
                     as="h2"
-                    className="title max-w-[16ch] text-[clamp(2rem,3.6vw,2.9rem)] text-ink-950"
+                    className="title max-w-[16ch] text-[clamp(2rem,3.6vw,2.9rem)] text-paper-50"
                   />
                 </div>
                 {data?.body ? (
-                  <p data-rise="1" className="mt-5 max-w-[38ch] text-sm leading-relaxed text-ink-500">
+                  <p data-rise="1" className="mt-5 max-w-[38ch] text-sm leading-relaxed text-primary-200">
                     {data.body}
                   </p>
                 ) : null}
@@ -160,7 +162,7 @@ export function Work({ data, classes, className, id }: DataProps<WorkSection, 'p
                   <p data-rise="2" className="mt-8">
                     <a
                       href={data.ctaHref || '#'}
-                      className="inline-flex items-center gap-2.5 rounded-full bg-ink-950 px-6 py-3.5 text-sm font-medium text-paper-50 transition-colors duration-200 hover:bg-primary-700"
+                      className="inline-flex items-center gap-2.5 rounded-full bg-accent-500 px-6 py-3.5 text-sm font-medium text-paper-50 transition-colors duration-200 hover:bg-accent-600"
                     >
                       {data.cta}
                       <MdiIcon name="arrowRight" size={0.8} />

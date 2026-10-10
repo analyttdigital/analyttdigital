@@ -110,7 +110,7 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
       );
     case 'work':
       return (
-        <ScrollSection variant="slide-right">
+        <ScrollSection variant="window-open">
           <Work data={section} />
         </ScrollSection>
       );
