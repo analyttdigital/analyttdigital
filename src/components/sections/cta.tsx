@@ -74,10 +74,10 @@ export function Cta({ cta }: { cta?: CtaSection }) {
           </div>
 
           <div data-rise={lines.length + 3} className="mt-20 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 text-left">
-            <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-400">
+            <p className="font-mono text-[10px] capitalize tracking-[0.16em] text-ink-400">
               {cta?.note ?? 'No deck. No obligation. Just the findings.'}
             </p>
-            <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-300">
+            <p className="font-mono text-[10px] capitalize tracking-[0.16em] text-ink-300">
               {cta?.eyebrow}
             </p>
           </div>

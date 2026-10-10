@@ -30,7 +30,7 @@ export function Industries({ data, classes, className, id }: DataProps<Industrie
             <div data-rise="1" className="max-w-[42ch]">
               <p className="text-sm leading-[1.85] text-ink-500">{data?.body}</p>
               {data?.hint ? (
-                <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.16em] text-ink-400">
+                <p className="mt-4 font-mono text-[10px] capitalize tracking-[0.16em] text-ink-400">
                   {data.hint} — {String(items.length).padStart(2, '0')}
                 </p>
               ) : null}

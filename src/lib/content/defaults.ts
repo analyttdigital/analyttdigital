@@ -240,7 +240,7 @@ const enHome: PageDoc = {
 		},
 		{
 			type: "about",
-			tag: "ABOUT US",
+			tag: "About Us",
 			title: "Data at the heart of every move.",
 			introLead: "Analytt Digital is a performance marketing agency.",
 			description:
@@ -276,7 +276,7 @@ const enHome: PageDoc = {
 		},
 		{
 			type: "process",
-			eyebrow: "OUR PROCESS",
+			eyebrow: "Our Process",
 			headline: "A rigorous, data-driven process,",
 			headlineAccent: "from day one to compounding growth.",
 			lede: "Applied to every client engagement across East African markets: five steps that take you from a deep audit to growth that is predictable, not accidental.",
@@ -284,7 +284,7 @@ const enHome: PageDoc = {
 			cardSub: "Pick a step, or let it play through.",
 			playLabel: "Play",
 			pauseLabel: "Pause",
-			stepOfTemplate: "STEP {n} OF {total}",
+			stepOfTemplate: "Step {n} of {total}",
 			illustrativeNote: "Illustrative",
 			dwellMs: 7000,
 			steps: [
@@ -311,14 +311,14 @@ const enHome: PageDoc = {
 					chips: ["KPIs", "Channel mix", "Budget allocation", "90-day targets"],
 					visual: {
 						kind: "channels",
-						mixTitle: "CHANNEL MIX",
+						mixTitle: "Channel Mix",
 						channels: [
 							{ label: "Google", pct: 45, tone: "field" },
 							{ label: "Meta", pct: 30, tone: "deep" },
 							{ label: "TikTok", pct: 15, tone: "mid" },
 							{ label: "LinkedIn", pct: 10, tone: "soft" },
 						],
-						targetsTitle: "90-DAY TARGETS",
+						targetsTitle: "90-Day Targets",
 						targets: ["KPIs defined", "Channels chosen", "Budget allocated", "Targets set"],
 					},
 				},
@@ -346,7 +346,7 @@ const enHome: PageDoc = {
 					chips: ["Weekly reviews", "Relentless testing", "Winning formula"],
 					visual: {
 						kind: "weekly",
-						title: "WEEKLY REVIEWS",
+						title: "Weekly Reviews",
 						values: [58, 76, 68, 102, 126, 156],
 						winnerNote: "Winning formula",
 					},
@@ -358,7 +358,7 @@ const enHome: PageDoc = {
 					chips: ["More budget", "New channels", "New African markets"],
 					visual: {
 						kind: "scale",
-						title: "PROVEN, THEN SCALED",
+						title: "Proven, Then Scaled",
 						values: [34, 58, 88, 124, 160],
 						tags: ["Nairobi", "Kampala", "Dar es Salaam"],
 					},
@@ -371,7 +371,7 @@ const enHome: PageDoc = {
 		},
 		{
 			type: "capabilities",
-			eyebrow: "OUR SERVICES",
+			eyebrow: "Our Services",
 			headline: "Performance-led services,\nmeasured to the shilling.",
 			lede: "Four things we are hired for, and the order they happen in.",
 			orderLabel: "Reading order",
@@ -380,7 +380,7 @@ const enHome: PageDoc = {
 			illustrativeNote: "Figures are illustrative samples of a measured account, not client results.",
 			items: [
 				{
-					tag: "PAID MEDIA",
+					tag: "Paid Media",
 					depth: "03",
 					title: "Paid Media & Performance Advertising",
 					body: "Google, YouTube, Meta, TikTok and LinkedIn campaigns engineered for acquisition — every shilling tracked to revenue.",
@@ -388,7 +388,7 @@ const enHome: PageDoc = {
 					readout: {
 						kind: "channels",
 						caption: "SPEND vs ATTRIBUTED RETURN",
-						tag: "LIVE TRACKING",
+						tag: "Live Tracking",
 						value: "1.6×",
 						valueLabel: "Return on measured spend · 30 days",
 						labels: ["Meta", "Google", "TikTok", "YouTube", "LinkedIn"],
@@ -397,15 +397,15 @@ const enHome: PageDoc = {
 					},
 				},
 				{
-					tag: "MEASUREMENT",
+					tag: "Measurement",
 					depth: "01",
 					title: "Data, Analytics & Attribution",
 					body: "GA4, Tag Manager, server-side tracking and multi-touch attribution, set up and audited by hand.",
 					icon: "radar",
 					readout: {
 						kind: "attribution",
-						caption: "SHARE OF SPEND ATTRIBUTED",
-						tag: "SET UP FIRST",
+						caption: "Share of Spend Attributed",
+						tag: "Set Up First",
 						value: "78%",
 						valueLabel: "of spend attributed once tracking is set up",
 						labels: ["Attributed", "Modelled", "Unknown"],
@@ -414,32 +414,32 @@ const enHome: PageDoc = {
 					},
 				},
 				{
-					tag: "STRATEGY",
+					tag: "Strategy",
 					depth: "02",
 					title: "Growth & Demand Strategy",
 					body: "Market sizing, channel-mix modelling and clear 90-day plans that fix funnels and lower cost-per-lead.",
 					icon: "compass",
 					readout: {
 						kind: "descent",
-						caption: "COST PER LEAD BY WEEK",
-						tag: "ON TARGET",
+						caption: "Cost per Lead by Week",
+						tag: "On Target",
 						value: "KES 280",
 						valueLabel: "Cost per lead · eight-week descent",
 						values: [980, 840, 700, 560, 470, 390, 330, 280],
-						targetLabel: "TARGET KES 300",
+						targetLabel: "Target KES 300",
 						target: 300,
 					},
 				},
 				{
-					tag: "CONTENT",
+					tag: "Content",
 					depth: "04",
 					title: "Content, SEO & Reporting",
 					body: "Content, posting calendars, organic growth and monthly reports your whole team can act on.",
 					icon: "radio",
 					readout: {
 						kind: "organic",
-						caption: "ORGANIC SESSIONS BY MONTH",
-						tag: "COMPOUNDING",
+						caption: "Organic Sessions by Month",
+						tag: "Compounding",
 						value: "6.2×",
 						valueLabel: "Organic sessions against the prior year",
 						values: [22, 30, 27, 44, 58, 74, 96, 124],
@@ -451,7 +451,7 @@ const enHome: PageDoc = {
 
 		{
 			type: "work",
-			eyebrow: "SELECTED WORK",
+			eyebrow: "Selected Work",
 			headline: "Proof, not promises.",
 			body: "Engagements measured to the shilling — the proof behind the promises.",
 			cta: "View cases",
@@ -497,7 +497,7 @@ const enHome: PageDoc = {
 		},
 		{
 			type: "problem",
-			eyebrow: "THE PROBLEM",
+			eyebrow: "The Problem",
 			headline: "The spend was never the problem.",
 			paragraphs: [
 				"Kenyan businesses already know they should be on Google, Meta and TikTok — the budgets are there. What is scarce is the read: which channels deserve money, which funnels leak, and what each shilling actually returns.",
@@ -514,7 +514,7 @@ const enHome: PageDoc = {
 		},
 		{
 			type: "belief",
-			eyebrow: "OUR PHILOSOPHY",
+			eyebrow: "Our Philosophy",
 			headline: "Data is not a dashboard, it's your",
 			headlineAccent: "competitive edge.",
 			lede: "We harness the power of data to inform and optimise every aspect of our clients' marketing across Kenya and East Africa. In a market where most agencies still report reach and impressions, we treat data as a strategic asset, the thing that separates agencies who guess from agencies who know.",
@@ -578,7 +578,7 @@ const enHome: PageDoc = {
 		},
 		{
 			type: "stats",
-			eyebrow: "BY THE NUMBERS",
+			eyebrow: "By the Numbers",
 			headline: "How we work,\nin four numbers.",
 			body: "No vanity metrics. Every engagement is tracked to conversion, reviewed weekly, and reported in plain language.",
 			stats: [
@@ -590,7 +590,7 @@ const enHome: PageDoc = {
 		},
 		{
 			type: "industries",
-			eyebrow: "INDUSTRIES",
+			eyebrow: "Industries",
 			headline: "Sectors we know.",
 			body: "From e-commerce in Nairobi to logistics across the region — a short index of where we have done the work.",
 			hint: "Selected sectors",
@@ -612,7 +612,7 @@ const enHome: PageDoc = {
 		},
 		{
 			type: "insights",
-			eyebrow: "INSIGHTS",
+			eyebrow: "Insights",
 			headline: "Notes from the work.",
 			articles: [
 				{
@@ -640,7 +640,7 @@ const enHome: PageDoc = {
 		},
 		{
 			type: "cta",
-			eyebrow: "START",
+			eyebrow: "Start",
 			headline: "Most audits surface KES 50K–200K in recoverable spend.",
 			body: "A free audit of your current setup — where budget is wasted and where the opportunity is. No obligation.",
 			cta: "Request a free audit",
@@ -887,7 +887,7 @@ const swHome: PageDoc = {
 		},
 		{
 			type: "about",
-			tag: "KUHUSU SISI",
+			tag: "Kuhusu Sisi",
 			title: "Data kiini cha kila hatua.",
 			introLead: "Analytt Digital ni shirika la uuzaji wa utendaji.",
 			description:
@@ -923,7 +923,7 @@ const swHome: PageDoc = {
 		},
 		{
 			type: "problem",
-			eyebrow: "TATIZO",
+			eyebrow: "Tatizo",
 			headline: "Matumizi hayakuwa tatizo.",
 			paragraphs: [
 				"Biashara za Kenya zinajua zinapaswa kuwa Google, Meta na TikTok — bajeti zipo. Kinachokosekana ni majibu: ni chaneli zipi zinastahili pesa, ni wapi wateja wanapotea, na kila shilingi inarudisha nini.",
@@ -940,7 +940,7 @@ const swHome: PageDoc = {
 		},
 		{
 			type: "belief",
-			eyebrow: "FALSAFA YETU",
+			eyebrow: "Falsafa Yetu",
 			headline: "Data si dashibodi, ni",
 			headlineAccent: "makali yako ya ushindani.",
 			lede: "Tunatumia nguvu ya data kufahamisha na kuboresha kila kipengele cha uuzaji wa wateja wetu kote Kenya na Afrika Mashariki. Katika soko ambapo mashirika mengi bado huripoti waliofikiwa na walioona, sisi tunachukulia data kama rasilimali ya kimkakati, kitu kinachotenganisha wanaobahatisha na wanaojua.",
@@ -1004,7 +1004,7 @@ const swHome: PageDoc = {
 		},
 		{
 			type: "process",
-			eyebrow: "MCHAKATO WETU",
+			eyebrow: "Mchakato Wetu",
 			headline: "Mchakato madhubuti unaoongozwa na data,",
 			headlineAccent: "kuanzia siku moja hadi ukuaji unaojirudia.",
 			lede: "Unatumika kwa kila mteja katika masoko ya Afrika Mashariki: hatua tano kutoka ukaguzi wa kina hadi ukuaji unaotabirika, si wa bahati.",
@@ -1012,7 +1012,7 @@ const swHome: PageDoc = {
 			cardSub: "Chagua hatua, au uache icheze.",
 			playLabel: "Cheza",
 			pauseLabel: "Sitisha",
-			stepOfTemplate: "HATUA {n} KATI YA {total}",
+			stepOfTemplate: "Hatua {n} kati ya {total}",
 			illustrativeNote: "Mfano",
 			dwellMs: 7000,
 			steps: [
@@ -1039,14 +1039,14 @@ const swHome: PageDoc = {
 					chips: ["KPI", "Chaneli", "Bajeti", "Malengo ya siku 90"],
 					visual: {
 						kind: "channels",
-						mixTitle: "MCHANGANYIKO",
+						mixTitle: "Mchanganyiko",
 						channels: [
 							{ label: "Google", pct: 45, tone: "field" },
 							{ label: "Meta", pct: 30, tone: "deep" },
 							{ label: "TikTok", pct: 15, tone: "mid" },
 							{ label: "LinkedIn", pct: 10, tone: "soft" },
 						],
-						targetsTitle: "MALENGO YA SIKU 90",
+						targetsTitle: "Malengo ya Siku 90",
 						targets: ["KPI zimewekwa", "Chaneli zimechaguliwa", "Bajeti imegawanywa", "Malengo yamewekwa"],
 					},
 				},
@@ -1074,7 +1074,7 @@ const swHome: PageDoc = {
 					chips: ["Mapitio ya wiki", "Majaribio", "Formula bora"],
 					visual: {
 						kind: "weekly",
-						title: "MAPITIO YA WIKI",
+						title: "Mapitio ya Wiki",
 						values: [58, 76, 68, 102, 126, 156],
 						winnerNote: "Formula bora",
 					},
@@ -1086,7 +1086,7 @@ const swHome: PageDoc = {
 					chips: ["Bajeti zaidi", "Chaneli mpya", "Masoko mapya"],
 					visual: {
 						kind: "scale",
-						title: "IMETHIBITIKA, TUNAPANUA",
+						title: "Imethibitika, Tunapanua",
 						values: [34, 58, 88, 124, 160],
 						tags: ["Nairobi", "Kampala", "Dar es Salaam"],
 					},
@@ -1099,7 +1099,7 @@ const swHome: PageDoc = {
 		},
 		{
 			type: "capabilities",
-			eyebrow: "HUDUMA ZETU",
+			eyebrow: "Huduma Zetu",
 			headline: "Huduma za utendaji,\nzinazopimwa kwa shilingi.",
 			lede: "Mambo manne tunakodishwa kwayo, na mpangilio wanavyotokea.",
 			orderLabel: "Mpangilio wa kusoma",
@@ -1108,7 +1108,7 @@ const swHome: PageDoc = {
 			illustrativeNote: "Vielelezo ni mifano ya akaunti iliyopimwa, si matokeo ya wateja.",
 			items: [
 				{
-					tag: "MATANGAZO",
+					tag: "Matangazo",
 					depth: "03",
 					title: "Matangazo ya Kulipwa",
 					body: "Kampeni za Google, YouTube, Meta, TikTok na LinkedIn — kila shilingi inafuatiliwa hadi mapato.",
@@ -1116,7 +1116,7 @@ const swHome: PageDoc = {
 					readout: {
 						kind: "channels",
 						caption: "MATUMIZI vs MAPATO YALIYOPIMWA",
-						tag: "INAFUATILIWA MOJA KWA MOJA",
+						tag: "Inafuatiliwa Moja kwa Moja",
 						value: "1.6×",
 						valueLabel: "Mapato kwa matumizi yaliyopimwa · siku 30",
 						labels: ["Meta", "Google", "TikTok", "YouTube", "LinkedIn"],
@@ -1125,15 +1125,15 @@ const swHome: PageDoc = {
 					},
 				},
 				{
-					tag: "VIPIMO",
+					tag: "Vipimo",
 					depth: "01",
 					title: "Data, Uchambuzi na Ufuatiliaji",
 					body: "GA4, Tag Manager, ufuatiliaji wa kisasa na uchambuzi wa mikutano — vimewekwa na kukaguliwa kwa mkono.",
 					icon: "radar",
 					readout: {
 						kind: "attribution",
-						caption: "SEHEMU YA MATUMIZI YALIYOPIMWA",
-						tag: "INAWEKWA KWANZA",
+						caption: "Sehemu ya Matumizi Yaliyopimwa",
+						tag: "Inawekwa Kwanza",
 						value: "78%",
 						valueLabel: "ya matumizi yamepigwa chapa baada ya uwekaji",
 						labels: ["Yaliyopigwa chapa", "Yaliyokadiriwa", "Haijulikani"],
@@ -1142,32 +1142,32 @@ const swHome: PageDoc = {
 					},
 				},
 				{
-					tag: "MKAKATI",
+					tag: "Mkakati",
 					depth: "02",
 					title: "Mkakati wa Ukuaji",
 					body: "Upimaji wa soko, mifano ya mchanganyiko wa njia na mipango ya siku 90 inayorekebisha wateja wanaopotea.",
 					icon: "compass",
 					readout: {
 						kind: "descent",
-						caption: "GHARAMA KWA MTEJA KWA WIKI",
-						tag: "KATI LENGO",
+						caption: "Gharama kwa Mteja kwa Wiki",
+						tag: "Kati Lengo",
 						value: "KES 280",
 						valueLabel: "Gharama kwa mteja · mteremko wa wiki nane",
 						values: [980, 840, 700, 560, 470, 390, 330, 280],
-						targetLabel: "LENGO KES 300",
+						targetLabel: "Lengo KES 300",
 						target: 300,
 					},
 				},
 				{
-					tag: "MAUDHUI",
+					tag: "Maudhui",
 					depth: "04",
 					title: "Maudhui, SEO na Ripoti",
 					body: "Maudhui, kalenda za machapisho na ripoti za kila mwezi ambazo timu yako inaweza kutumia.",
 					icon: "radio",
 					readout: {
 						kind: "organic",
-						caption: "VITINDO VYA ASILI KWA MWEZI",
-						tag: "INAONGEZEKA",
+						caption: "Vitindo vya Asili kwa Mwezi",
+						tag: "Inaongezeka",
 						value: "6.2×",
 						valueLabel: "Vitindo vya asili dhidi ya mwaka jana",
 						values: [22, 30, 27, 44, 58, 74, 96, 124],
@@ -1178,7 +1178,7 @@ const swHome: PageDoc = {
 		},
 		{
 			type: "work",
-			eyebrow: "KAZI TULIZOFANYA",
+			eyebrow: "Kazi Tulizofanya",
 			headline: "Ushahidi, si ahadi.",
 			body: "Kazi zilizopimwa kwa shilingi — ushahidi ulio nyuma ya ahadi.",
 			cta: "Tazama kesi",
@@ -1224,7 +1224,7 @@ const swHome: PageDoc = {
 		},
 		{
 			type: "stats",
-			eyebrow: "TAKWIMU",
+			eyebrow: "Takwimu",
 			headline: "Jinsi tunavyofanya kazi,\nkwa namba nne.",
 			body: "Hakuna vipimo vya kujisifia. Kila kazi inafuatiliwa, inapitiwa kila wiki, na kuripotiwa kwa lugha rahisi.",
 			stats: [
@@ -1236,7 +1236,7 @@ const swHome: PageDoc = {
 		},
 		{
 			type: "industries",
-			eyebrow: "SEKTA",
+			eyebrow: "Sekta",
 			headline: "Sekta tunazozijua.",
 			body: "Kutoka maduka mtandaoni Nairobi hadi usafirishaji wa kikanda — orodha fupi ya kazi tulizofanya.",
 			hint: "Sekta tulizofanyia kazi",
@@ -1258,7 +1258,7 @@ const swHome: PageDoc = {
 		},
 		{
 			type: "insights",
-			eyebrow: "MAARIFA",
+			eyebrow: "Maarifa",
 			headline: "Maelezo kutoka kazini.",
 			articles: [
 				{
@@ -1286,7 +1286,7 @@ const swHome: PageDoc = {
 		},
 		{
 			type: "cta",
-			eyebrow: "ANZA",
+			eyebrow: "Anza",
 			headline: "Ukaguzi mwingi hupata KES 50K–200K zinazoweza kurejeshwa.",
 			body: "Ukaguzi wa bure wa mipangilio yako — wapi pesa inapotea na wapi fursa ilipo. Bila wajibu.",
 			cta: "Omba ukaguzi wa bure",

@@ -258,12 +258,12 @@ button {
   letter-spacing: -0.018em;
 }
 
-/* Label: the mono micro-caps that open every head, figure and chip. The
+/* Label: the mono micro-labels that open every head, figure and chip. The
    square bullet is drawn here so no section has to remember it, and the
    colour is inherited from the ground it sits on so one class works on all
    three of them. */
 .label {
-  @apply font-mono text-[10.5px] font-medium uppercase;
+  @apply font-mono text-[10.5px] font-medium capitalize;
   letter-spacing: 0.16em;
   color: inherit;
 }
@@ -456,7 +456,7 @@ button {
 
 /* Chip — a bordered mono tag, square, the way this world marks state. */
 .chip {
-  @apply inline-flex items-center font-mono text-[10.5px] font-medium uppercase;
+  @apply inline-flex items-center font-mono text-[10.5px] font-medium capitalize;
   letter-spacing: 0.14em;
   padding: 0.34rem 0.6rem;
   color: rgb(var(--color-primary-100));
@@ -1008,7 +1008,7 @@ button {
   font-size: 10.5px;
   font-weight: 500;
   letter-spacing: 0.16em;
-  text-transform: uppercase;
+  text-transform: capitalize;
   color: rgb(var(--color-ink-500));
   background-color: transparent;
   transition:

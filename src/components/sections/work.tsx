@@ -89,14 +89,14 @@ function CaseCard({ kase, index }: { kase: WorkCase; index: number }) {
       <div className="relative flex items-start justify-between gap-3">
         <span className={`font-mono text-xs tracking-[0.14em] ${light ? 'text-paper-50/60' : 'text-primary-400'}`}>#{index + 1}</span>
         {kase.tag ? (
-          <span className={`rounded-full px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] ${light ? 'bg-paper-50/15 text-paper-50' : 'bg-accent-500/15 text-accent-700'}`}>
+          <span className={`rounded-full px-2.5 py-1 font-mono text-[10px] capitalize tracking-[0.14em] ${light ? 'bg-paper-50/15 text-paper-50' : 'bg-accent-500/15 text-accent-700'}`}>
             {kase.tag}
           </span>
         ) : null}
       </div>
 
       <div className="relative mt-auto pt-10">
-        <p className={`font-mono text-[10.5px] uppercase tracking-[0.16em] ${light ? 'text-primary-200' : 'text-primary-500'}`}>
+        <p className={`font-mono text-[10.5px] capitalize tracking-[0.16em] ${light ? 'text-primary-200' : 'text-primary-500'}`}>
           {kase.industry}
         </p>
         <h3 className={`verb mt-2 text-[clamp(1.25rem,1.8vw,1.5rem)] leading-snug ${light ? 'text-paper-50' : 'text-ink-950'}`}>
@@ -108,7 +108,7 @@ function CaseCard({ kase, index }: { kase: WorkCase; index: number }) {
             value={kase.metric}
             className={`num block text-[clamp(1.5rem,2.4vw,2rem)] leading-none ${light ? 'text-paper-50' : 'text-accent-600'}`}
           />
-          <span className={`mt-1.5 block font-mono text-[9.5px] uppercase leading-relaxed tracking-[0.14em] ${light ? 'text-paper-50/60' : 'text-ink-400'}`}>
+          <span className={`mt-1.5 block font-mono text-[9.5px] capitalize leading-relaxed tracking-[0.14em] ${light ? 'text-paper-50/60' : 'text-ink-400'}`}>
             {kase.metricLabel}
           </span>
         </div>

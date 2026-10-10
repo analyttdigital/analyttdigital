@@ -83,14 +83,14 @@ function ChannelsFigure({ readout }: { readout: Readout }) {
             height={Math.max(scale(ret[i] ?? 0) * PLOT, 1.5)}
           />
           <text
-            className="font-mono fill-primary-300"
+            className="font-mono capitalize fill-primary-300"
             x={left(i) + barW + 2}
             y={BASE + 12}
             textAnchor="middle"
             fontSize="10"
             letterSpacing="0.1em"
           >
-            {(labels[i] ?? '').toUpperCase()}
+            {(labels[i] ?? '')}
           </text>
         </g>
       ))}
@@ -181,13 +181,13 @@ function AttributionFigure({ readout }: { readout: Readout }) {
             opacity={i === 0 ? 0.72 : i === 1 ? 0.3 : 1}
           />
           <text
-            className="font-mono fill-primary-300"
+            className="font-mono capitalize fill-primary-300"
             x={i * 112 + 12}
             y={BASE + 11}
             fontSize="9.5"
             letterSpacing="0.12em"
           >
-            {name.toUpperCase()}
+            {name}
           </text>
         </g>
       ))}
@@ -227,14 +227,14 @@ function DescentFigure({ readout }: { readout: Readout }) {
           />
           {readout.targetLabel ? (
             <text
-              className="font-mono fill-accent-700 cap-pop"
+              className="font-mono capitalize fill-accent-700 cap-pop"
               x={x1}
               y={py(target) - 6}
               textAnchor="end"
               fontSize="9.5"
               letterSpacing="0.14em"
             >
-              {readout.targetLabel.toUpperCase()}
+              {readout.targetLabel}
             </text>
           ) : null}
         </g>
@@ -261,7 +261,7 @@ function DescentFigure({ readout }: { readout: Readout }) {
           />
           {i % 2 === 0 || i === values.length - 1 ? (
             <text
-              className="font-mono fill-primary-300"
+              className="font-mono capitalize fill-primary-300"
               x={px(i)}
               y={BASE + 12}
               textAnchor="middle"
@@ -382,11 +382,11 @@ export function CapabilityReadout({ readout }: { readout?: Readout }) {
       }`}
     >
       <figcaption className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b border-primary-50/15 pb-2.5">
-        <span className="font-mono text-[9.5px] font-medium uppercase tracking-[0.16em] text-primary-300">
+        <span className="font-mono text-[9.5px] font-medium capitalize tracking-[0.16em] text-primary-300">
           {readout.caption}
         </span>
         {readout.tag ? (
-          <span className="inline-flex items-center gap-2 font-mono text-[9px] font-medium uppercase tracking-[0.16em] text-accent-300">
+          <span className="inline-flex items-center gap-2 font-mono text-[9px] font-medium capitalize tracking-[0.16em] text-accent-300">
             <span aria-hidden className="h-2 w-2 bg-accent-500" />
             {readout.tag}
           </span>
@@ -399,7 +399,7 @@ export function CapabilityReadout({ readout }: { readout?: Readout }) {
         <span className="num block text-[clamp(1.9rem,3vw,2.6rem)] leading-none text-primary-50">
           <CountUp value={readout.value} />
         </span>
-        <span className="max-w-[30ch] font-mono text-[9.5px] uppercase tracking-[0.13em] leading-[1.7] text-primary-300">
+        <span className="max-w-[30ch] font-mono text-[9.5px] capitalize tracking-[0.13em] leading-[1.7] text-primary-300">
           {readout.valueLabel}
         </span>
       </div>

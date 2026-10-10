@@ -159,7 +159,7 @@ export function ProcessPlayer({
 
   if (!total) return null;
   const step = steps[index] ?? steps[0];
-  const counter = (data.stepOfTemplate || 'STEP {n} OF {total}')
+  const counter = (data.stepOfTemplate || 'Step {n} of {total}')
     .replace('{n}', step.n || String(index + 1).padStart(2, '0'))
     .replace('{total}', String(total).padStart(2, '0'));
 

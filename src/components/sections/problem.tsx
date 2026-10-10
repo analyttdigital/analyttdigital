@@ -90,10 +90,10 @@ export function Problem({ data, classes, className, id }: DataProps<ProblemSecti
             ) : null}
 
             <div className="relative flex items-start justify-between gap-6">
-              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-primary-200">
+              <p className="font-mono text-[10px] capitalize tracking-[0.16em] text-primary-200">
                 {data?.panelTitle ?? 'Account snapshot'}
               </p>
-              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-paper-50/40">
+              <p className="font-mono text-[10px] capitalize tracking-[0.16em] text-paper-50/40">
                 {chrome.everyHundred}
               </p>
             </div>

@@ -56,7 +56,7 @@ export function Stats({ data, classes, className, id }: DataProps<StatsSection, 
                 className="border-b border-paper-50/15 px-2 py-8 sm:px-6 md:py-10 lg:border-b-0 lg:border-l lg:first:border-l-0 lg:first:pl-0 lg:last:pr-0"
               >
                 <dt className="flex items-center justify-between gap-3">
-                  <span className="font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-primary-200">
+                  <span className="font-mono text-[10px] font-medium capitalize tracking-[0.14em] text-primary-200">
                     {stat.label}
                   </span>
                   {stat.icon ? (
@@ -73,7 +73,7 @@ export function Stats({ data, classes, className, id }: DataProps<StatsSection, 
                 </dd>
                 <dd className="mt-5 flex items-center gap-2">
                   <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent-500" />
-                  <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-paper-50/50">
+                  <span className="font-mono text-[9px] capitalize tracking-[0.16em] text-paper-50/50">
                     {String(i + 1).padStart(2, '0')} / {String(stats.length).padStart(2, '0')}
                   </span>
                 </dd>

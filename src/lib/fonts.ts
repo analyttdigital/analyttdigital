@@ -1,4 +1,4 @@
-import { Fragment_Mono } from 'next/font/google';
+import { IBM_Plex_Mono } from 'next/font/google';
 import localFont from 'next/font/local';
 
 /**
@@ -7,7 +7,7 @@ import localFont from 'next/font/local';
  * rules through the `_app` module graph).
  *
  * Three jobs. Mont-Black fronts Brother 1816 for every display size; Google
- * Sans Flex is the default face for all reading text; Fragment Mono keeps the
+ * Sans Flex is the default face for all reading text; IBM Plex Mono keeps the
  * label/unit voice. Kiswahili uses no diacritics, so `latin` covers both
  * locales.
  */
@@ -42,9 +42,9 @@ export const sans = localFont({
   display: 'swap',
 });
 
-export const mono = Fragment_Mono({
+export const mono = IBM_Plex_Mono({
   subsets: ['latin'],
-  weight: '400',
+  weight: ['400', '500'],
   variable: '--font-mono',
   display: 'swap',
 });

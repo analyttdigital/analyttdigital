@@ -119,7 +119,7 @@ export function Capabilities({ capabilities }: { capabilities?: CapabilitiesSect
                 />
 
                 <div data-rise={row + 1}>
-                  <p className="flex items-center gap-3 font-mono text-[9.5px] font-medium uppercase tracking-[0.16em] text-primary-300">
+                  <p className="flex items-center gap-3 font-mono text-[9.5px] font-medium capitalize tracking-[0.16em] text-primary-300">
                     <span className="num text-accent-300">
                       {(order === 'sequence' ? item.depth : '') || String(i + 1).padStart(2, '0')}
                     </span>

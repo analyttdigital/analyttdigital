@@ -238,7 +238,7 @@ const heroFields = {
 };
 
 const aboutFields = {
-  tag: fields.text({ label: 'Tag (e.g. ABOUT US)', defaultValue: 'ABOUT US' }),
+  tag: fields.text({ label: 'Tag (e.g. ABOUT US)', defaultValue: 'About Us' }),
   title: fields.text({
     label: 'Headline (keep short — also echoed as the hero-portal bridge copy)',
     defaultValue: 'Data at the heart of every move.',
@@ -273,7 +273,7 @@ const aboutFields = {
 };
 
 const problemFields = {
-  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'THE PROBLEM' }),
+  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'The Problem' }),
   headline: fields.text({ label: 'Headline', defaultValue: 'The spend was never the problem.' }),
   paragraphs: fields.array(fields.text({ label: 'Paragraph', multiline: true }), {
     label: 'Paragraphs',
@@ -292,7 +292,7 @@ const problemFields = {
 };
 
 const beliefFields = {
-  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'OUR PHILOSOPHY' }),
+  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'Our Philosophy' }),
   headline: fields.text({ label: 'Headline', defaultValue: "Data is not a dashboard, it's your" }),
   headlineAccent: fields.text({ label: 'Headline accent (ember)', defaultValue: 'competitive edge.' }),
   lede: fields.text({
@@ -368,7 +368,7 @@ const barToneField = (label = 'Bar tone') =>
   });
 
 const processFields = {
-  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'OUR PROCESS' }),
+  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'Our Process' }),
   headline: fields.text({ label: 'Headline', defaultValue: 'A rigorous, data-driven process,' }),
   headlineAccent: fields.text({ label: 'Headline accent (ember)', defaultValue: 'from day one to compounding growth.' }),
   lede: fields.text({ label: 'Intro paragraph', defaultValue: '', multiline: true }),
@@ -377,7 +377,7 @@ const processFields = {
   cardSub: fields.text({ label: 'Card subtitle', defaultValue: 'Pick a step, or let it play through.' }),
   playLabel: fields.text({ label: 'Play label', defaultValue: 'Play' }),
   pauseLabel: fields.text({ label: 'Pause label', defaultValue: 'Pause' }),
-  stepOfTemplate: fields.text({ label: 'Step counter (use {n} and {total})', defaultValue: 'STEP {n} OF {total}' }),
+  stepOfTemplate: fields.text({ label: 'Step counter (use {n} and {total})', defaultValue: 'Step {n} of {total}' }),
   illustrativeNote: fields.text({ label: 'Visual note', defaultValue: 'Illustrative' }),
   dwellMs: fields.integer({ label: 'Autoplay hold per step (ms)', defaultValue: 7000 }),
   steps: fields.array(
@@ -484,7 +484,7 @@ const capabilityReadoutFields = {
 };
 
 const capabilitiesFields = {
-  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'OUR SERVICES' }),
+  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'Our Services' }),
   headline: fields.text({ label: 'Headline', defaultValue: 'Performance-led services,\nmeasured to the shilling.', multiline: true }),
   lede: fields.text({
     label: 'Lede',
@@ -515,7 +515,7 @@ const capabilitiesFields = {
 };
 
 const workFields = {
-  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'SELECTED WORK' }),
+  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'Selected Work' }),
   headline: fields.text({ label: 'Headline', defaultValue: 'Proof, not promises.', multiline: true }),
   body: fields.text({
     label: 'Intro paragraph',
@@ -541,7 +541,7 @@ const workFields = {
 };
 
 const statsFields = {
-  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'BY THE NUMBERS' }),
+  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'By the Numbers' }),
   headline: fields.text({ label: 'Headline', defaultValue: 'How we work,\nin four numbers.', multiline: true }),
   body: fields.text({
     label: 'Body',
@@ -560,7 +560,7 @@ const statsFields = {
 };
 
 const industriesFields = {
-  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'INDUSTRIES' }),
+  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'Industries' }),
   headline: fields.text({ label: 'Headline', defaultValue: 'Sectors we know.' }),
   body: fields.text({
     label: 'Body',
@@ -576,7 +576,7 @@ const industriesFields = {
 };
 
 const insightsFields = {
-  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'INSIGHTS' }),
+  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'Insights' }),
   headline: fields.text({ label: 'Headline', defaultValue: 'Notes from the work.' }),
   articles: fields.array(
     fields.object({
@@ -590,7 +590,7 @@ const insightsFields = {
 };
 
 const ctaFields = {
-  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'START' }),
+  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'Start' }),
   headline: fields.text({
     label: 'Headline',
     defaultValue: 'Most audits surface KES 50K–200K in recoverable spend.',

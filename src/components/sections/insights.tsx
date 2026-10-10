@@ -32,7 +32,7 @@ export function Insights({ insights }: { insights?: InsightsSection }) {
               className="title mt-6 max-w-[16ch] text-[clamp(2rem,4vw,2.6rem)] text-ink-950"
             />
           </div>
-          <span data-rise="1" className="inline-flex items-center gap-2 rounded-full border border-accent-600/40 bg-accent-500/[0.07] px-3.5 py-1.5 font-mono text-[9.5px] font-medium uppercase tracking-[0.14em] text-accent-600">
+          <span data-rise="1" className="inline-flex items-center gap-2 rounded-full border border-accent-600/40 bg-accent-500/[0.07] px-3.5 py-1.5 font-mono text-[9.5px] font-medium capitalize tracking-[0.14em] text-accent-600">
             <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent-500" />
             {chrome.inPreparation}
           </span>
@@ -53,7 +53,7 @@ export function Insights({ insights }: { insights?: InsightsSection }) {
                     className="aspect-[16/10] w-full overflow-hidden"
                   />
                   <div className="flex flex-1 flex-col p-6">
-                    <p className="flex items-center justify-between font-mono text-[9.5px] uppercase tracking-[0.16em] text-ink-400">
+                    <p className="flex items-center justify-between font-mono text-[9.5px] capitalize tracking-[0.16em] text-ink-400">
                       <span>{article.index} /</span>
                       <span>{chrome.inPreparation}</span>
                     </p>
@@ -63,7 +63,7 @@ export function Insights({ insights }: { insights?: InsightsSection }) {
                     <p className="mt-3 max-w-[52ch] text-[12.5px] leading-[1.8] text-ink-500">
                       {article.description}
                     </p>
-                    <p className="mt-auto flex items-center gap-3 pt-6 font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-400 transition-colors duration-300 group-hover:text-accent-600">
+                    <p className="mt-auto flex items-center gap-3 pt-6 font-mono text-[9.5px] capitalize tracking-[0.14em] text-ink-400 transition-colors duration-300 group-hover:text-accent-600">
                       Read the note
                       <span className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-0.5">
                         <MdiIcon name="arrowTopRight" size={0.75} />
