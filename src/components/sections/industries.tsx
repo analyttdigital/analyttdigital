@@ -1,15 +1,14 @@
 import { InViewTitle } from '@/components/graphics/in-view-title';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
-import { MdiIcon } from '@/lib/icons/resolve-icon';
 import type { DataProps, IndustriesSection } from '@/lib/content/types';
 
 /**
- * Industries — the sector work as a ghost-numeral ledger.
+ * Industries — the sector work as a flowing typographic index.
  *
- * Thirteen sectors set as a two-column ruled ledger on paper: oversized
- * ghost numerals, display names, hairline rules. A row hover warms its
- * numeral to ember and draws the name forward with its arrow. Content
- * shape unchanged: the same list of sector names.
+ * No rows, no globe, no plates: the sectors run as one large wrapping
+ * line of display type on paper, parted by ember points, each warming to
+ * ember on hover. The hint counts the set. Content shape unchanged: the
+ * same list of sector names.
  */
 export function Industries({ data, classes, className, id }: DataProps<IndustriesSection, 'index'>) {
   const items = data?.items ?? [];
@@ -38,37 +37,27 @@ export function Industries({ data, classes, className, id }: DataProps<Industrie
             </div>
           </div>
 
-          {/* ---- the ledger ---------------------------------------- */}
+          {/* ---- the flowing index --------------------------------- */}
           <ol
-            className={[
-              'mt-14 grid border-b border-ink-950/10 md:grid-cols-2 md:gap-x-16',
-              classes?.index,
-              className,
-            ]
+            data-rise="2"
+            className={['mt-14 border-t border-ink-950/10 pt-10', classes?.index, className]
               .filter(Boolean)
               .join(' ')}
           >
-            {items.map((item, i) => (
-              <li
-                key={item}
-                data-rise={Math.min(i + 1, 3)}
-                className="border-t border-ink-950/10"
-              >
-                <span className="group grid cursor-default grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-5 py-5 md:gap-7 md:py-6">
-                  <span className="num text-[clamp(2rem,3.4vw,2.9rem)] font-medium leading-none text-ink-200 transition-colors duration-200 group-hover:text-accent-500">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <span className="font-display text-[clamp(1.2rem,2.2vw,1.6rem)] font-medium tracking-tight text-ink-950 transition-transform duration-200 group-hover:translate-x-1.5">
+            <li className="font-display text-[clamp(1.7rem,3.8vw,2.9rem)] font-medium leading-[1.35] tracking-tight text-ink-950">
+              {items.map((item, i) => (
+                <span key={item}>
+                  <span className="transition-colors duration-200 hover:text-accent-600">
                     {item}
                   </span>
-                  <MdiIcon
-                    name="arrowTopRight"
-                    size={0.95}
-                    className="-translate-x-1.5 text-ink-300 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:text-accent-600 group-hover:opacity-100"
-                  />
+                  {i < items.length - 1 ? (
+                    <span aria-hidden className="mx-3 inline-block h-[0.35em] w-[0.35em] rounded-full bg-accent-500 align-middle sm:mx-4" />
+                  ) : (
+                    <span aria-hidden className="text-accent-500">.</span>
+                  )}
                 </span>
-              </li>
-            ))}
+              ))}
+            </li>
           </ol>
         </GsapReveal>
       </div>
