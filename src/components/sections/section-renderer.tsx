@@ -66,7 +66,7 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
     case 'problem':
       return (
         <ScrollSection variant="mask-up">
-          <Problem problem={section} />
+          <Problem data={section} />
         </ScrollSection>
       );
     case 'belief':
@@ -117,13 +117,13 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
     case 'stats':
       return (
         <ScrollSection variant="scale-in">
-          <Stats stats={section} />
+          <Stats data={section} />
         </ScrollSection>
       );
     case 'industries':
       return (
         <ScrollSection variant="fade-up">
-          <Industries industries={section} />
+          <Industries data={section} />
         </ScrollSection>
       );
     case 'insights':
