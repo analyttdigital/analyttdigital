@@ -983,6 +983,17 @@ button {
   transform: scaleX(1);
 }
 
+/* Positional alternate ground: near-black ink instead of the field violet,
+ * applied to odd plates so the register alternates. The light type, ember
+ * edge and readout all ride unchanged — both grounds are dark. */
+.cap-plate--ink {
+  background-color: rgb(var(--color-ink-950));
+}
+.cap-row:hover .cap-plate--ink,
+.cap-row:focus-within .cap-plate--ink {
+  background-color: rgb(var(--color-ink-800));
+}
+
 /* The order control — two flat keys, the pressed one filled ember. It
    re-reads the same plates as the engagement order. */
 .cap-order {

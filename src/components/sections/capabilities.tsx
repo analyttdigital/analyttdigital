@@ -13,8 +13,8 @@ import type { CapabilitiesSection } from '@/lib/content/types';
  * Capabilities — the engagement register.
  *
  * The four services are not four cards. Each is a deep-field plate on
- * the warm paper ground, and the figure that proves what the service
- * produces is read out *on* the plate, in light, with one ember series:
+ * the warm paper ground (odd plates take the near-black alternate ground),
+ * and the figure that proves what the service produces is read out *on* the plate, in light, with one ember series:
  * spend against attributed return, the unknown share of spend collapsing,
  * cost per lead on a target, organic sessions building. A hairline rail
  * routes down the paper gutter with a square node per plate; the hovered
@@ -105,7 +105,11 @@ export function Capabilities({ capabilities }: { capabilities?: CapabilitiesSect
               <span aria-hidden className="cap-node hidden lg:block" />
               <span aria-hidden className="cap-seg hidden lg:block" />
 
-              <div className="cap-plate flex h-full flex-col gap-9 p-7 md:p-8 lg:p-9">
+              <div
+                className={`cap-plate flex h-full flex-col gap-9 p-7 md:p-8 lg:p-9 ${
+                  i % 2 === 1 ? 'cap-plate--ink' : ''
+                }`}
+              >
                 {/* Positional watermark — one faint glyph per plate, the way
                     the process chapter marks its positions. */}
                 <MdiIcon
