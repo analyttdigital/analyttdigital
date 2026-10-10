@@ -30,15 +30,7 @@ export function Cta({ cta }: { cta?: CtaSection }) {
     <section id="audit" className="ground--paper relative scroll-mt-24 overflow-hidden text-ink-900">
       <div aria-hidden className="seam" />
 
-      {/* the orb — ambient, pointer-leaning, never carrying information */}
-      {reduce ? (
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-[radial-gradient(50%_55%_at_50%_45%,rgb(var(--color-accent-500)/0.1),transparent_70%)]"
-        />
-      ) : (
-        <SignalOrb className="pointer-events-none absolute inset-0 opacity-60" />
-      )}
+    
       <div
         aria-hidden
         className="absolute inset-0 bg-[radial-gradient(65%_60%_at_50%_50%,transparent_40%,rgb(var(--color-paper-100)/0.9))]"

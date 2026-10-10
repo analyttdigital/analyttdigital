@@ -67,10 +67,8 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
       return null;
     case 'problem':
       return (
-        <ScrollSection variant="mask-up">
-          <Problem data={section} />
-        </ScrollSection>
-      );
+				<Problem data={section} />
+		);
     case 'belief':
       return (
         <ScrollSection variant="fade-up">
@@ -136,22 +134,20 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
       );
     case 'cta':
       return (
-        <ScrollSection variant="zoom-settle">
           <Cta cta={section} />
-        </ScrollSection>
       );
     case 'cta-banner':
       return (
-        <ScrollSection variant="wipe-right">
-          <CtaBanner data={section} />
-        </ScrollSection>
-      );
+			<ScrollSection variant="zoom-settle">
+				<CtaBanner data={section} />
+			</ScrollSection>
+		);
     case 'cta-split':
       return (
-        <ScrollSection variant="scale-in">
-          <CtaSplit data={section} />
-        </ScrollSection>
-      );
+			<ScrollSection variant="zoom-settle">
+				<CtaSplit data={section} />
+			</ScrollSection>
+		);
     default:
       return null;
   }

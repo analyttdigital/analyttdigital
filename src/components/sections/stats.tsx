@@ -42,7 +42,7 @@ export function Stats({ data, classes, className, id }: DataProps<StatsSection, 
 
           <dl
             className={[
-              'mt-12 grid border-t border-ink-950/10 sm:grid-cols-2 lg:grid-cols-4',
+              'mt-12 grid sm:grid-cols-2 lg:grid-cols-4',
               classes?.strip,
               className,
             ]
@@ -53,7 +53,7 @@ export function Stats({ data, classes, className, id }: DataProps<StatsSection, 
               <div
                 key={stat.label}
                 data-rise={Math.min(i + 1, 3)}
-                className="border-b border-ink-950/10 px-2 py-8 sm:px-6 md:py-10 lg:border-b-0 lg:border-l lg:first:border-l-0 lg:first:pl-0 lg:last:pr-0"
+                className="px-2 py-8 sm:px-6 md:py-10 lg:first:pl-0 lg:last:pr-0"
               >
                 <dt className="flex items-center justify-between gap-3">
                   <span className="font-mono text-[10px] font-medium capitalize tracking-[0.14em] text-ink-500">
