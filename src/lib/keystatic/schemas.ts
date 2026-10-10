@@ -101,9 +101,8 @@ export const imageField = (label = 'Image') =>
 
 /* ------------------------- section field groups ---------------------- */
 
-/* Shared shape for one floating result panel (the bak tunnel cards). Used by
- * both the hero `panels` list and the hero bridge `popups` list, so the two
- * stay in lockstep — `kind` picks the layout, only its fields are read. */
+/* Shared shape for one floating result panel (the bak tunnel cards). `kind`
+ *  picks the layout, only its fields are read. */
 const heroPanelFields = {
   kind: fields.select({
     label: 'Panel layout',
@@ -213,43 +212,6 @@ const heroFields = {
   statA_delta: fields.text({ label: 'Stat A delta', defaultValue: '-84%' }),
   statB_label: fields.text({ label: 'Stat B label', defaultValue: 'Leads / month' }),
   statB_value: fields.text({ label: 'Stat B value', defaultValue: '1,200+' }),
-  bridge: fields.object(
-    {
-      tag: fields.text({ label: 'Bridge tag (e.g. ABOUT US)', defaultValue: 'ABOUT US' }),
-      title: fields.text({
-        label: 'Bridge title (keep short)',
-        defaultValue: 'Data at the heart of every move.',
-      }),
-      introLead: fields.text({
-        label: 'Intro lead (bold)',
-        defaultValue: 'Analytt Digital is a performance marketing agency.',
-      }),
-      description: fields.text({
-        label: 'Intro rest',
-        defaultValue:
-          'We put data at the heart of every move, turning data-driven strategy into measurable growth in a competitive online realm.',
-        multiline: true,
-      }),
-      baseLabel: fields.text({ label: 'Starting-line label', defaultValue: 'Where we started' }),
-      axisLeft: fields.text({ label: 'Axis label (left)', defaultValue: 'Raw signals' }),
-      axisRight: fields.text({ label: 'Axis label (right)', defaultValue: 'Measured growth' }),
-      moveLabel: fields.text({ label: 'Readout label (move)', defaultValue: 'The move' }),
-      resultLabel: fields.text({ label: 'Readout label (result)', defaultValue: 'What we measured' }),
-      hint: fields.text({
-        label: 'Plot hint',
-        defaultValue: 'Select a point on the line to see the decision behind it.',
-      }),
-      moves: fields.array(
-        fields.object({
-          x: fields.number({ label: 'Position on the line (0–1)', defaultValue: 0.5 }),
-          move: fields.text({ label: 'The move', multiline: true }),
-          result: fields.text({ label: 'What we measured', multiline: true }),
-        }),
-        { label: 'Plot points', itemLabel: (props) => props.fields.move.value?.slice(0, 40) || 'Point' },
-      ),
-    },
-    { label: 'Portal bridge (about-us)' },
-  ),
   marquee: fields.array(
     fields.object({
       label: fields.text({ label: 'Label (e.g. Meta Business Partner)' }),
@@ -272,6 +234,41 @@ const heroFields = {
       label: 'Proof strip (empty = code defaults)',
       itemLabel: (props) => `${props.fields.value.value || ''} ${props.fields.label.value || ''}`.trim() || 'Item',
     },
+  ),
+};
+
+const aboutFields = {
+  tag: fields.text({ label: 'Tag (e.g. ABOUT US)', defaultValue: 'ABOUT US' }),
+  title: fields.text({
+    label: 'Headline (keep short — also echoed as the hero-portal bridge copy)',
+    defaultValue: 'Data at the heart of every move.',
+  }),
+  introLead: fields.text({
+    label: 'Intro lead (bold)',
+    defaultValue: 'Analytt Digital is a performance marketing agency.',
+  }),
+  description: fields.text({
+    label: 'Intro rest',
+    defaultValue:
+      'We put data at the heart of every move, turning data-driven strategy into measurable growth in a competitive online realm.',
+    multiline: true,
+  }),
+  baseLabel: fields.text({ label: 'Starting-line label', defaultValue: 'Where we started' }),
+  axisLeft: fields.text({ label: 'Axis label (left)', defaultValue: 'Raw signals' }),
+  axisRight: fields.text({ label: 'Axis label (right)', defaultValue: 'Measured growth' }),
+  moveLabel: fields.text({ label: 'Readout label (move)', defaultValue: 'The move' }),
+  resultLabel: fields.text({ label: 'Readout label (result)', defaultValue: 'What we measured' }),
+  hint: fields.text({
+    label: 'Plot hint',
+    defaultValue: 'Select a point on the line to see the decision behind it.',
+  }),
+  moves: fields.array(
+    fields.object({
+      x: fields.number({ label: 'Position on the line (0–1)', defaultValue: 0.5 }),
+      move: fields.text({ label: 'The move', multiline: true }),
+      result: fields.text({ label: 'What we measured', multiline: true }),
+    }),
+    { label: 'Plot points', itemLabel: (props) => props.fields.move.value?.slice(0, 40) || 'Point' },
   ),
 };
 
@@ -617,6 +614,7 @@ export const pageFields = {
       label: 'Section type',
       options: [
         { label: 'Hero', value: 'hero' },
+        { label: 'About', value: 'about' },
         { label: 'Problem', value: 'problem' },
         { label: 'Belief', value: 'belief' },
         { label: 'Process', value: 'process' },
@@ -630,6 +628,7 @@ export const pageFields = {
       defaultValue: 'hero',
     }), {
       hero: fields.object(heroFields, { label: 'Hero content' }),
+      about: fields.object(aboutFields, { label: 'About content' }),
       problem: fields.object(problemFields, { label: 'Problem content' }),
       belief: fields.object(beliefFields, { label: 'Belief content' }),
       process: fields.object(processFields, { label: 'Process content' }),

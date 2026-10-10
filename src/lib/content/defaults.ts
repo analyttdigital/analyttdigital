@@ -12,7 +12,7 @@ const enLayout: LayoutContent = {
 	brand: "analytt",
 	brandEmphasis: "digital",
 	logo: { src: "/img/logo-alt.svg", alt: "Analytt Digital" },
-	logoAlt: { src: "/img/logo-alt-dark.svg", alt: "Analytt Digital" },
+	logoAlt: { src: "/img/logo-alt-light.svg", alt: "Analytt Digital" },
 	navLinks: [
 		{ label: "Services", href: "/services" },
 		{ label: "Digital Audit", href: "/digital-audit" },
@@ -63,41 +63,6 @@ const enHome: PageDoc = {
 			ctaHref: "/contact",
 			scrollHint: "Request Digital Audit",
 			variant: "light",
-			bridge: {
-				tag: "ABOUT US",
-				title: "Data at the heart of every move.",
-				introLead: "Analytt Digital is a performance marketing agency.",
-				description:
-					"We put data at the heart of every move, turning data-driven strategy into measurable growth in a competitive online realm.",
-				baseLabel: "Where we started",
-				axisLeft: "Raw signals",
-				axisRight: "Measured growth",
-				moveLabel: "The move",
-				resultLabel: "What we measured",
-				hint: "Select a point on the line to see the decision behind it.",
-				moves: [
-					{
-						x: 0.2,
-						move: "Split one broad campaign into four intent-based ad groups.",
-						result: "Cost per lead fell 14% in two weeks.",
-					},
-					{
-						x: 0.45,
-						move: "Paused three audiences that clicked but never converted.",
-						result: "Wasted spend cut by a fifth while conversions held.",
-					},
-					{
-						x: 0.68,
-						move: "Moved budget from awareness to high-intent search.",
-						result: "Return on ad spend passed 3× for the first time.",
-					},
-					{
-						x: 0.92,
-						move: "Rebuilt landing pages around the questions buyers asked.",
-						result: "Conversion rate up 31% on the same traffic.",
-					},
-				],
-			},
 			dashboardTitle: "Campaign / Live",
 			dashboardMetric: "ROAS 4.2×",
 			statA_label: "CPL this month",
@@ -271,6 +236,42 @@ const enHome: PageDoc = {
 				{ value: "100%", label: "campaigns tracked to conversion" },
 				{ value: "7-day", label: "optimization cycle" },
 				{ value: "Zero", label: "vanity metrics reported", ember: true },
+			],
+		},
+		{
+			type: "about",
+			tag: "ABOUT US",
+			title: "Data at the heart of every move.",
+			introLead: "Analytt Digital is a performance marketing agency.",
+			description:
+				"We put data at the heart of every move, turning data-driven strategy into measurable growth in a competitive online realm.",
+			baseLabel: "Where we started",
+			axisLeft: "Raw signals",
+			axisRight: "Measured growth",
+			moveLabel: "The move",
+			resultLabel: "What we measured",
+			hint: "Select a point on the line to see the decision behind it.",
+			moves: [
+				{
+					x: 0.2,
+					move: "Split one broad campaign into four intent-based ad groups.",
+					result: "Cost per lead fell 14% in two weeks.",
+				},
+				{
+					x: 0.45,
+					move: "Paused three audiences that clicked but never converted.",
+					result: "Wasted spend cut by a fifth while conversions held.",
+				},
+				{
+					x: 0.68,
+					move: "Moved budget from awareness to high-intent search.",
+					result: "Return on ad spend passed 3× for the first time.",
+				},
+				{
+					x: 0.92,
+					move: "Rebuilt landing pages around the questions buyers asked.",
+					result: "Conversion rate up 31% on the same traffic.",
+				},
 			],
 		},
 		{
@@ -651,7 +652,7 @@ const swLayout: LayoutContent = {
 	brand: "analytt",
 	brandEmphasis: "digital",
 	logo: { src: "/img/logo-alt.svg", alt: "Analytt Digital" },
-	logoAlt: { src: "/img/logo-alt-dark.svg", alt: "Analytt Digital" },
+	logoAlt: { src: "/img/logo-alt-light.svg", alt: "Analytt Digital" },
 	navLinks: [
 		{ label: "Huduma", href: "/sw#capabilities" },
 		{ label: "Mchakato", href: "/sw#process" },
@@ -702,41 +703,6 @@ const swHome: PageDoc = {
 			ctaHref: "/sw#contact",
 			scrollHint: "Omba Ukaguzi wa Kidijitali",
 			variant: "light",
-			bridge: {
-				tag: "KUHUSU SISI",
-				title: "Data kiini cha kila hatua.",
-				introLead: "Analytt Digital ni shirika la uuzaji wa utendaji.",
-				description:
-					"Tunaweka data kiini cha kila hatua — kugeuza mikakati ya kidata kuwa ukuaji unaopimika katika soko lenye ushindani.",
-				baseLabel: "Tulipoanzia",
-				axisLeft: "Ishara ghafi",
-				axisRight: "Ukuaji uliopimwa",
-				moveLabel: "Hatua",
-				resultLabel: "Tulivyopima",
-				hint: "Chagua nukta kwenye mstari kuona uamuzi ulioifanya.",
-				moves: [
-					{
-						x: 0.2,
-						move: "Tuligawa kampeni moja pana katika makundi manne ya matangazo.",
-						result: "Gharama kwa mteja ilishuka 14% ndani ya wiki mbili.",
-					},
-					{
-						x: 0.45,
-						move: "Tulisitisha hadhira tatu zilizobofya lakini hazikununua.",
-						result: "Matumizi yaliyopotea yalikata kwa sehemu huku mauzo yakidumu.",
-					},
-					{
-						x: 0.68,
-						move: "Tulihamisha bajeti kutoka uhamasishaji hadi utafutaji.",
-						result: "Mapato kwa matangazo yalizidi 3× kwa mara ya kwanza.",
-					},
-					{
-						x: 0.92,
-						move: "Tulijenga upya kurasa kulingana na maswali ya wanunuzi.",
-						result: "Wateja waliongezeka 31% kwa trafiki ile ile.",
-					},
-				],
-			},
 			dashboardTitle: "Kampeni / Moja kwa moja",
 			dashboardMetric: "ROAS 4.2×",
 			statA_label: "CPL mwezi huu",
@@ -914,6 +880,42 @@ const swHome: PageDoc = {
 				{ value: "100%", label: "kampeni zinafuatiliwa" },
 				{ value: "Siku 7", label: "mzunguko wa mapitio" },
 				{ value: "Sifuri", label: "vipimo vya kujisifia", ember: true },
+			],
+		},
+		{
+			type: "about",
+			tag: "KUHUSU SISI",
+			title: "Data kiini cha kila hatua.",
+			introLead: "Analytt Digital ni shirika la uuzaji wa utendaji.",
+			description:
+				"Tunaweka data kiini cha kila hatua — kugeuza mikakati ya kidata kuwa ukuaji unaopimika katika soko lenye ushindani.",
+			baseLabel: "Tulipoanzia",
+			axisLeft: "Ishara ghafi",
+			axisRight: "Ukuaji uliopimwa",
+			moveLabel: "Hatua",
+			resultLabel: "Tulivyopima",
+			hint: "Chagua nukta kwenye mstari kuona uamuzi ulioifanya.",
+			moves: [
+				{
+					x: 0.2,
+					move: "Tuligawa kampeni moja pana katika makundi manne ya matangazo.",
+					result: "Gharama kwa mteja ilishuka 14% ndani ya wiki mbili.",
+				},
+				{
+					x: 0.45,
+					move: "Tulisitisha hadhira tatu zilizobofya lakini hazikununua.",
+					result: "Matumizi yaliyopotea yalikata kwa sehemu huku mauzo yakidumu.",
+				},
+				{
+					x: 0.68,
+					move: "Tulihamisha bajeti kutoka uhamasishaji hadi utafutaji.",
+					result: "Mapato kwa matangazo yalizidi 3× kwa mara ya kwanza.",
+				},
+				{
+					x: 0.92,
+					move: "Tulijenga upya kurasa kulingana na maswali ya wanunuzi.",
+					result: "Wateja waliongezeka 31% kwa trafiki ile ile.",
+				},
 			],
 		},
 		{

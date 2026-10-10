@@ -17,7 +17,7 @@ import { runHeroGather } from './hero-gather-scene';
  */
 export function HeroGather({ progress }: { progress?: MotionValue<number> }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
+    
   useEffect(() => {
     const canvas = canvasRef.current;
     // Scope to the sticky stage (not the tall runway section) so layout

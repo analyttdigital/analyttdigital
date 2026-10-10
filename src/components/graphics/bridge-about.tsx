@@ -3,10 +3,10 @@
 import { useId, useMemo, useState } from 'react';
 
 import { InViewTitle } from '@/components/graphics/in-view-title';
-import type { HeroBridge } from '@/lib/content/types';
+import type { AboutSection } from '@/lib/content/types';
 
 /**
- * BridgeAbout — the about-us bridge inside the hero portal flood.
+ * BridgeAbout — the about-us figure: headline + intro + signal plot.
  *
  * Headline left, intro right (bottoms aligned), then the signal plot: raw
  * noise resolving left-to-right into measured growth. The line is generated
@@ -42,7 +42,7 @@ const sstep = (a: number, b: number, t: number) => {
   return t * t * (3 - 2 * t);
 };
 
-export function BridgeAbout({ data, live }: { data: HeroBridge; live: boolean }) {
+export function BridgeAbout({ data, live }: { data: AboutSection; live: boolean }) {
   const uid = useId().replace(/:/g, '');
   const moves = data.moves ?? [];
   const [selected, setSelected] = useState(moves.length ? moves.length - 1 : null);

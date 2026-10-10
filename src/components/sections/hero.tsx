@@ -3,23 +3,17 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   motion,
-  useMotionTemplate,
   useMotionValue,
-  useMotionValueEvent,
   useReducedMotion,
-  useScroll,
   useTransform,
+  type MotionValue,
 } from 'framer-motion';
 
 import { MdiIcon } from '@/lib/icons/resolve-icon';
 import { DynamicImage } from '@/components/media/dynamic-image';
-import type { HeroBridge, HeroPartner, HeroPanel, HeroProof, HeroSection } from '@/lib/content/types';
-import { BridgeAbout } from '@/components/graphics/bridge-about';
+import type { HeroPartner, HeroPanel, HeroProof, HeroSection } from '@/lib/content/types';
 import { HeroGather } from '@/components/graphics/hero-gather';
-import { LogoWireframe } from '@/components/graphics/logo-wireframe';
-import { TextReveal } from '@/components/graphics/text-reveal';
 import { smooth } from '@/lib/motion/smooth';
-import { PathFlowSection } from '../graphics/path-flow-section';
 
 /**
  * Hero — full-screen audit route head (user-approved replica).
@@ -547,66 +541,48 @@ const FALLBACK_PARTNERS: HeroPartner[] = [
 ];
 
 /* ------------------------------------------------------------------ */
-/* Portal transition — scroll-scrubbed circular reveal into Process     */
+/* HeroStage — the hero's chapters (copy, WebGL gather, proof, marquee). */
 /*                                                                    */
-/* The hero is a tall runway section with a sticky 100svh stage. As    */
-/* scroll progress `p` (one framer-motion source, zero re-renders)     */
-/* approaches the end, a Process-ground circle floods out of the 3D    */
-/* mark and fills the viewport; the sticky stage then unpins onto the  */
-/* Process section, which continues in the same ground with no seam.   */
-/* Every window below is a pure function of `p`: fully reversible.     */
+/* The pin + portal flood live in the reusable `ScrollSection` wrapper  */
+/* (see `section-renderer.tsx`): this stage renders inside its sticky  */
+/* 100svh viewport and reads the wrapper's scroll progress `p` — one    */
+/* framer-motion source, zero re-renders — for its choreography. Every  */
+/* window below is a pure function of `p`: fully reversible.           */
 /* ------------------------------------------------------------------ */
 
-/** Total runway: 100svh of stage + 150svh of portal beat. */
-export const HERO_RUNWAY_SVH = 250;
-/** Portal circle window — ends at 0.985 so a hold of flat ground sits
- *  between full coverage and the unpin. */
-export const PORTAL_START = 0.78;
-export const PORTAL_END = 0.985;
-/** Bridge copy window inside the flood. */
-export const PORTAL_TEXT_START = 0.8;
-export const PORTAL_TEXT_END = 0.93;
-/** Fallback bridge exit window — used only when no Process section directly
- *  follows the hero (the handoff below has nothing to hold). Otherwise the
- *  bridge stays up while Process aligns behind the flood, and the exit is
- *  driven by the handoff scroll instead. */
-export const PORTAL_EXIT_START = 0.93;
-export const PORTAL_EXIT_END = 0.995;
-/** Viewport fractions of scroll the handoff exit takes once Process top is
- *  aligned to the viewport top. */
-export const HANDOFF_EXIT_SVH = 0.6;
-/** Percentage radius at full open. `circle()` resolves % against
- *  sqrt(w²+h²)/√2, so 100% can leave the far corner bare from an
- *  off-centre origin; 125% covers 16:9, ultrawide and portrait. */
-export const PORTAL_MAX_RADIUS = 125;
-/** Clip origin = the mark's final on-screen position. Desktop: the gather
- *  lays the mark at ~72.5% X; the portal-beat drift (-12vw) and 1.28×
- *  growth about the viewport centre carry it to ~67% X / ~51% Y.
- *  Mobile: the mark sits top-centre (~50% / ~28%) and only grows. */
-export const ORIGIN_DESKTOP = '67% 51%';
-export const ORIGIN_MOBILE = '50% 26%';
-
-/** Supporting choreography windows (fractions of `p`). */
-const CHAPTER_OUT_START = 0.64;
-const CHAPTER_OUT_END = 0.78;
-const TOOLBAR_FADE_START = 0.66;
-const TOOLBAR_FADE_END = 0.79;
+/** Supporting choreography windows (fractions of `p`). Keyed to
+ *  `PORTAL_RANGE` ([0.35, 0.6] in `lib/motion/portal`): the copy rides out
+ *  and parks as the flood starts opening, so nothing readable — or
+ *  tappable — lingers under the covering circle. */
+const CHAPTER_OUT_START = 0.22;
+const CHAPTER_OUT_END = 0.35;
+const TOOLBAR_FADE_START = 0.24;
+const TOOLBAR_FADE_END = 0.36;
 /** Past this point the copy is fully transparent, so it leaves the tab
  *  order and the pointer gives up the stage to the portal. The WebGL
  *  canvas itself stays visible — the model must be seen turning as the
  *  circle opens — and only parks its pointer interaction. */
-const CONTROLS_PARK_AT = 0.79;
-const FOOTER_FADE_START = 0.78;
-const FOOTER_FADE_END = 0.87;
-const CANVAS_SHIFT_START = 0.62;
-const CANVAS_SHIFT_END = 0.82;
+const CONTROLS_PARK_AT = 0.36;
+const FOOTER_FADE_START = 0.26;
+const FOOTER_FADE_END = 0.38;
+const CANVAS_SHIFT_START = 0.15;
+const CANVAS_SHIFT_END = 0.33;
 const CANVAS_SHIFT_AMOUNT = 0.12;
-const CANVAS_GROW_START = 0.57;
-const CANVAS_GROW_END = 0.88;
+const CANVAS_GROW_START = 0.15;
+const CANVAS_GROW_END = 0.45;
 const CANVAS_GROW_DESKTOP = 0.28;
 const CANVAS_GROW_MOBILE = 0.16;
 
-export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: HeroSection['variant']; bridge?: HeroBridge }) {
+export function HeroStage({
+  hero,
+  variant,
+  progress,
+}: {
+  hero?: HeroSection;
+  variant?: HeroSection['variant'];
+  /** Scroll progress from the wrapping `ScrollSection` (portal runway). */
+  progress?: MotionValue<number>;
+}) {
   const eyebrow = hero?.eyebrow || FALLBACK.eyebrow;
   const lines = (hero?.headline || FALLBACK.headline).split('\n');
   const sub = hero?.sub || FALLBACK.sub;
@@ -619,31 +595,17 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
    *  flip with the variant through `panelTones` + the icon tone helpers. */
   const dark = (variant ?? hero?.variant ?? 'light') === 'dark';
   const reduce = useReducedMotion();
+  /* Static when the wrapper parks motion (or no progress is passed) —
+   * every animated style below keys off `live`. */
+  const live = !reduce && progress;
+  const p = progress;
 
-  /* ---- the single scroll-progress source for the portal timeline ---- */
-  const heroRef = useRef<HTMLElement>(null);
-  const { scrollYProgress: p } = useScroll({ target: heroRef, offset: ['start start', 'end end'] });
+  /* ---- viewport size for the canvas drift ---- */
   const [isMobile, setIsMobile] = useState(false);
   /* Threshold-crossing flags only: the one acceptable state change on
    * scroll. Everything else rides MotionValues with zero re-renders. */
   const [parked, setParked] = useState(false);
   const [footGone, setFootGone] = useState(false);
-  const [portalLive, setPortalLive] = useState(false);
-  /* True while the flood circle is open at all — the wireframe's entry
-   * trigger. Unlike `portalLive` (the copy window) this stays true across
-   * the whole flat-flood hold, so the sweep replays on every entry. */
-  const [floodLive, setFloodLive] = useState(false);
-  /* Handoff state: at the end of the runway the flood detaches to `fixed`
-   * and holds the bridge up while the Process section aligns behind it
-   * (top edge to viewport top); further scroll drives `handoffExit`, which
-   * reveals the fully-arrived stage. Only engages when Process directly
-   * follows the hero — otherwise sections would scroll invisibly behind
-   * the held flood, so the fallback timeline exit takes over instead. */
-  const [detached, setDetached] = useState(false);
-  const [exited, setExited] = useState(false);
-  const [handsToProcess, setHandsToProcess] = useState(true);
-  const handoffExit = useMotionValue(0);
-  const exitAnchor = useRef<number | null>(null);
   const viewportW = useRef(0);
 
   useEffect(() => {
@@ -662,119 +624,32 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
     };
   }, []);
 
-  useMotionValueEvent(p, 'change', (v) => {
-    const nextParked = v > CONTROLS_PARK_AT;
-    setParked((prev) => (prev === nextParked ? prev : nextParked));
-    const nextFoot = v > FOOTER_FADE_END;
-    setFootGone((prev) => (prev === nextFoot ? prev : nextFoot));
-    const nextFlood = v >= PORTAL_START;
-    setFloodLive((prev) => (prev === nextFlood ? prev : nextFlood));
-  });
-
   useEffect(() => {
-    // Adjacent Process section (the renderer wraps it in a plain div, so
-    // look inside the next sibling rather than at it).
-    setHandsToProcess(!!heroRef.current?.nextElementSibling?.querySelector('#process'));
-  }, []);
-
-  /* Handoff scroll driver — runs alongside the framer timeline above.
-   * Attached while the runway pins; detached once the hero bottom reaches
-   * the viewport bottom (the unpin), holding the flood fixed while Process
-   * rises behind it; exiting once Process top aligns to the viewport top.
-   * `portalLive` is computed here because it depends on both sources. */
-  useEffect(() => {
-    if (reduce) return;
-    let raf = 0;
-    const update = () => {
-      raf = 0;
-      const hero = heroRef.current;
-      if (!hero) return;
-      const vh = window.innerHeight;
-      const heroBottom = hero.getBoundingClientRect().bottom;
-      const procTop = document.getElementById('process')?.getBoundingClientRect().top ?? vh;
-      if (heroBottom > vh + 1 || !handsToProcess) {
-        exitAnchor.current = null;
-        handoffExit.set(0);
-        setExited(false);
-        setDetached(false);
-      } else if (procTop > 0) {
-        exitAnchor.current = null;
-        handoffExit.set(0);
-        setExited(false);
-        setDetached(true);
-      } else {
-        setDetached(true);
-        if (exitAnchor.current == null) exitAnchor.current = window.scrollY;
-        const e = Math.min(
-          1,
-          Math.max(0, (window.scrollY - exitAnchor.current) / (vh * HANDOFF_EXIT_SVH)),
-        );
-        handoffExit.set(e);
-        setExited(e >= 1);
-      }
-      const enter = smooth(PORTAL_TEXT_START, PORTAL_TEXT_END, p.get());
-      const scroll = p.get();
-      const timelineExit = handsToProcess ? 0 : smooth(PORTAL_EXIT_START, PORTAL_EXIT_END, scroll);
-      const nextLive = enter * (1 - timelineExit) * (1 - handoffExit.get()) >= 0.5;
-      setPortalLive((prev) => (prev === nextLive ? prev : nextLive));
-    };
-    const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, [reduce, handsToProcess, handoffExit, p]);
+    if (!p) return;
+    return p.on('change', (v) => {
+      const nextParked = v > CONTROLS_PARK_AT;
+      setParked((prev) => (prev === nextParked ? prev : nextParked));
+      const nextFoot = v > FOOTER_FADE_END;
+      setFootGone((prev) => (prev === nextFoot ? prev : nextFoot));
+    });
+  }, [p]);
 
   /* ---- the whole timeline as pure functions of `p` ---- */
-  const portalOpen = useTransform(p, (v) => smooth(PORTAL_START, PORTAL_END, v));
-  const portalRadius = useTransform(portalOpen, (v) => v * PORTAL_MAX_RADIUS);
-  const origin = isMobile ? ORIGIN_MOBILE : ORIGIN_DESKTOP;
-  const clipPath = useMotionTemplate`circle(${portalRadius}% at ${origin})`;
-  /* Bridge copy rides in, holds, then scrolls itself out: opacity is
-   * entrance × (1 − exit) with an upward drift and a de-blur in reverse.
-   * The exit is whichever is live — the fallback timeline exit when no
-   * Process section follows, or the handoff exit driven by the scroll
-   * behind the detached flood. All pure functions of scroll. */
-  const portalText = useTransform([p, handoffExit], (latest: number[]) => {
-    const v = latest[0] ?? 0;
-    const e = latest[1] ?? 0;
-    const enter = smooth(PORTAL_TEXT_START, PORTAL_TEXT_END, v);
-    const timelineExit = handsToProcess ? 0 : smooth(PORTAL_EXIT_START, PORTAL_EXIT_END, v);
-    return enter * (1 - timelineExit) * (1 - e);
-  });
-  const portalTextY = useTransform([p, handoffExit], (latest: number[]) => {
-    const v = latest[0] ?? 0;
-    const e = latest[1] ?? 0;
-    const enter = smooth(PORTAL_TEXT_START, PORTAL_TEXT_END, v);
-    const timelineExit = handsToProcess ? 0 : smooth(PORTAL_EXIT_START, PORTAL_EXIT_END, v);
-    return (1 - enter) * 45 - (timelineExit + e) * 70;
-  });
-  const portalTextBlur = useTransform([p, handoffExit], (latest: number[]) => {
-    const v = latest[0] ?? 0;
-    const e = latest[1] ?? 0;
-    const timelineExit = handsToProcess ? 0 : smooth(PORTAL_EXIT_START, PORTAL_EXIT_END, v);
-    return `blur(${(timelineExit + e) * 8}px)`;
-  });
-  const floodOpacity = useTransform(handoffExit, (v) => 1 - v);
-  const chapterOut = useTransform(p, (v) => smooth(CHAPTER_OUT_START, CHAPTER_OUT_END, v));
+  const fallback = useMotionValue(0);
+  const src = p ?? fallback;
+  const chapterOut = useTransform(src, (v) => smooth(CHAPTER_OUT_START, CHAPTER_OUT_END, v));
   const copyOpacity = useTransform(chapterOut, (v) => 1 - v);
   const copyY = useTransform(chapterOut, (v) => -v * 80);
-  const toolbarOpacity = useTransform(p, (v) => 1 - smooth(TOOLBAR_FADE_START, TOOLBAR_FADE_END, v));
-  const footerOpacity = useTransform(p, (v) => 1 - smooth(FOOTER_FADE_START, FOOTER_FADE_END, v));
-  const glowOpacity = useTransform(portalOpen, (v) => 1 - v);
-  const orbitTurn = useTransform(p, (v) => v * 140);
+  const toolbarOpacity = useTransform(src, (v) => 1 - smooth(TOOLBAR_FADE_START, TOOLBAR_FADE_END, v));
+  const footerOpacity = useTransform(src, (v) => 1 - smooth(FOOTER_FADE_START, FOOTER_FADE_END, v));
+  const glowOpacity = useTransform(src, (v) => 1 - smooth(CHAPTER_OUT_START, CHAPTER_OUT_END, v));
+  const orbitTurn = useTransform(src, (v) => v * 140);
   const canvasX = useTransform(
-    p,
+    src,
     (v) => (isMobile ? 0 : -smooth(CANVAS_SHIFT_START, CANVAS_SHIFT_END, v) * viewportW.current * CANVAS_SHIFT_AMOUNT),
   );
   const canvasScale = useTransform(
-    p,
+    src,
     (v) =>
       1 +
       smooth(CANVAS_GROW_START, CANVAS_GROW_END, v) * (isMobile ? CANVAS_GROW_MOBILE : CANVAS_GROW_DESKTOP),
@@ -783,20 +658,13 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
   const ground = dark ? 'bg-primary-950 text-primary-100' : 'bg-paper text-ink-800';
 
   return (
-		<section
-			ref={heroRef}
-			id="hero"
-			className={`group relative font-sans ${ground}`}
-			style={reduce ? undefined : { height: `${HERO_RUNWAY_SVH}svh` }}
+		/* The stage fills the wrapper's sticky viewport (the pin, the flood
+		 * and the ground come from `ScrollSection`). It owns
+		 * `overflow: hidden` so the full-bleed canvas never leaks. */
+		<div
+			data-hero-stage
+			className={`group relative flex h-full min-h-[max(100svh,680px)] w-full flex-col overflow-hidden isolate font-sans ${ground}`}
 		>
-			{/* The stage: pinned for the runway, then unpins onto Process. It —
-			 *  not the section — owns `overflow: hidden`, so sticky keeps working. */}
-			<div
-				data-hero-stage
-				className={`flex min-h-[max(100svh,680px)] flex-col overflow-hidden isolate ${
-					reduce ? "relative" : "sticky top-0 h-[100svh]"
-				} ${ground}`}
-			>
 				<motion.div
 					aria-hidden
 					className={`absolute inset-0 -z-30 ${
@@ -804,33 +672,33 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
 							? "bg-primary-950 bg-[radial-gradient(55%_70%_at_70%_48%,rgba(240,79,38,.16),transparent_70%),radial-gradient(45%_55%_at_8%_100%,transparent_70%,transparent_70%)]"
 							: "bg-paper bg-[radial-gradient(55%_70%_at_70%_48%,rgba(240,79,38,.11),transparent_70%),radial-gradient(45%_55%_at_8%_100%,transparent_70%,transparent_70%)]"
 					}`}
-					style={reduce ? undefined : { opacity: glowOpacity, rotate: orbitTurn }}
+					style={live ? { opacity: glowOpacity, rotate: orbitTurn } : undefined}
 				/>
 
-				{/* WebGL icon-gather scene — full-bleed layer that drifts + grows into the portal */}
-				<motion.div
-					aria-hidden
-					className="absolute inset-0"
-					style={reduce ? undefined : { x: canvasX, scale: canvasScale }}
-				>
-					<HeroGather progress={reduce ? undefined : p} />
-				</motion.div>
+			{/* WebGL icon-gather scene — full-bleed layer that drifts + grows into the portal */}
+			<motion.div
+				aria-hidden
+				className="absolute inset-0"
+				style={live ? { x: canvasX, scale: canvasScale } : undefined}
+			>
+				<HeroGather progress={live ? p : undefined} />
+			</motion.div>
 
 				{/* Copy block — bottom on mobile, vertically centered on desktop.
 			    Rides out on `chapterOut`, then leaves the tab order once fully
 			    transparent so the portal owns the stage. */}
-				<motion.div
-					className="relative z-30 flex flex-1 items-end px-5 sm:px-[clamp(20px,6vw,96px)] md:items-center"
-					style={
-						reduce
-							? undefined
-							: {
-									opacity: copyOpacity,
-									y: copyY,
-									visibility: parked ? "hidden" : "visible",
-								}
-					}
-				>
+			<motion.div
+				className="relative z-30 flex flex-1 items-end px-5 sm:px-[clamp(20px,6vw,96px)] md:items-center"
+				style={
+					live
+						? {
+								opacity: copyOpacity,
+								y: copyY,
+								visibility: parked ? "hidden" : "visible",
+							}
+						: undefined
+				}
+			>
 					<div className="mx-auto w-full max-w-7xl pb-[120px] md:pb-16">
 						<div className="w-full max-w-[760px]">
 							<a
@@ -876,11 +744,11 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
 								{sub || " "}
 							</p>
 
-							<motion.div
-								data-rise
-								className="mt-[26px] flex flex-wrap items-center gap-4 sm:mt-[34px] sm:gap-[22px]"
-								style={reduce ? undefined : { opacity: toolbarOpacity }}
-							>
+						<motion.div
+							data-rise
+							className="mt-[26px] flex flex-wrap items-center gap-4 sm:mt-[34px] sm:gap-[22px]"
+							style={live ? { opacity: toolbarOpacity } : undefined}
+						>
 								<a
 									href={ctaHref}
 									className="group/btn inline-flex items-center gap-3 rounded-full bg-accent px-7 py-4 text-[.95rem] font-semibold text-white shadow-[0_10px_30px_-10px_rgba(240,79,38,.6)] transition hover:bg-accent-600"
@@ -908,10 +776,10 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
 								</a>
 							</motion.div>
 
-							<motion.div
-								className="mt-[30px] sm:mt-11"
-								style={reduce ? undefined : { opacity: toolbarOpacity }}
-							>
+						<motion.div
+							className="mt-[30px] sm:mt-11"
+							style={live ? { opacity: toolbarOpacity } : undefined}
+						>
 								<div
 									aria-hidden
 									className="mb-[18px] h-px bg-accent-500 sm:mb-[22px]"
@@ -954,27 +822,27 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
 				</motion.div>
 
 				{/* Partner marquee — bottom of the hero; rides out as the footer cue */}
-				<motion.div
-					className={`relative z-30 mx-auto w-full max-w-7xl overflow-hidden  py-5 px-5 sm:px-[clamp(20px,6vw,96px)] ${dark ? "border-primary-50/15" : "border-primary-900/15"}`}
-					aria-label="Partners"
-					style={
-						reduce
-							? {
-									maskImage:
-										"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
-									WebkitMaskImage:
-										"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
-								}
-							: {
-									maskImage:
-										"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
-									WebkitMaskImage:
-										"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
-									opacity: footerOpacity,
-									visibility: footGone ? "hidden" : "visible",
-								}
-					}
-				>
+			<motion.div
+				className={`relative z-30 mx-auto w-full max-w-7xl overflow-hidden  py-5 px-5 sm:px-[clamp(20px,6vw,96px)] ${dark ? "border-primary-50/15" : "border-primary-900/15"}`}
+				aria-label="Partners"
+				style={
+					live
+						? {
+								maskImage:
+									"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+								WebkitMaskImage:
+									"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+								opacity: footerOpacity,
+								visibility: footGone ? "hidden" : "visible",
+							}
+						: {
+								maskImage:
+									"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+								WebkitMaskImage:
+									"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+							}
+				}
+			>
 					<div className="flex w-max animate-marquee motion-reduce:animate-none">
 						{[0, 1].map((copy) => (
 							<div
@@ -1008,37 +876,6 @@ export function Hero({ hero, variant, bridge }: { hero?: HeroSection; variant?: 
 					</div>
 				</motion.div>
 
-				{/* The portal: deep-field ground flooding out of the mark. Above every
-			    hero layer, never interactive, never carrying layout — only a
-			    scroll-driven clip-path. At the end of the runway the flood
-			    detaches to fixed and holds the bridge up while the Process
-			    section aligns behind it; once Process top meets the viewport
-			    top, further scroll exits the bridge and fades the flood to
-			    reveal the fully-arrived stage. */}
-				{!reduce && !exited && (
-					<motion.div
-						aria-hidden={portalLive ? undefined : true}
-						className={`pointer-events-none bg-primary ${
-							detached ? 'fixed inset-0 z-[60]' : 'absolute inset-0 z-[50]'
-						}`}
-						style={{ clipPath, willChange: 'clip-path', opacity: floodOpacity }}
-					>
-						{/* Logo wireframe — the Analytt monogram redrawn as a wireframe
-						 * on the flood's left half, sweeping on every entry. */}
-						{/* <LogoWireframe active={floodLive} /> */}
-						<div className="relative flex h-full w-full items-center justify-center">
-							{bridge && (
-								<motion.div
-									className="flex w-full flex-col items-center px-5 sm:px-[clamp(20px,6vw,96px)]"
-									style={{ opacity: portalText, y: portalTextY, filter: portalTextBlur }}
-								>
-									<BridgeAbout data={bridge} live={portalLive} />
-								</motion.div>
-							)}
-						</div>
-					</motion.div>
-				)}
-			</div>
-		</section>
+		</div>
   );
 }

@@ -7,68 +7,68 @@ import { GlowButton } from '@/components/layout/glow-button';
 import { InViewTitle } from '@/components/graphics/in-view-title';
 import { Reveal } from '@/lib/motion/reveal';
 import type { ProcessSection } from '@/lib/content/types';
-import { useReducedMotion } from 'framer-motion';
+import type { MotionValue } from 'framer-motion';
 
 /**
  * Process — the engagement as a scroll-driven story.
  *
- * Modelled on the Otto reference: the section is tall (one screen per step),
- * the stage is sticky at 100vh, and scroll progress sweeps an index through
- * the five steps. The left column carries the position and the step list;
- * the right panel swaps detail (index, title, desc, chips) per step; a 2px
+ * The pin lives in the reusable `ScrollSection` wrapper (see
+ * `section-renderer.tsx`, shrink + cover trick): this stage renders inside
+ * its sticky 100svh viewport and reads the wrapper's scroll progress —
+ * one framer-motion source, zero re-renders — sweeping an index through
+ * the steps. The left column carries the position and the step list; the
+ * right panel swaps detail (index, title, desc, chips) per step; a 2px
  * ember meter along the foot reports how far through the process the reader
  * is. Copy, steps and chips stay content-layer driven. Each step carries a
  * positional watermark — one big faint MDI glyph bottom-right of the detail
  * panel (`processStepIcons`, same convention as the capability/stat defaults).
- * The hero holds its portal flood over this section while it aligns behind
- * it (top edge to viewport top); the bridge exits only once the stage
- * fills the viewport.
+ * The closing row lives in `ProcessClosing` below so it can scroll on after
+ * the pin, instead of squeezing into the 100svh stage.
  */
-export function ProcessChapter({ process }: { process?: ProcessSection }) {
-  const sectionRef = useRef<HTMLElement>(null);
+export function ProcessChapter({
+  process,
+  progress,
+}: {
+  process?: ProcessSection;
+  /** Scroll progress from the wrapping `ScrollSection` (cover runway). */
+  progress?: MotionValue<number>;
+}) {
+  const stageRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
-  const [progress, setProgress] = useState(0);
-  const reduce = useReducedMotion();
+  const [meter, setMeter] = useState(0);
   const steps = process?.steps ?? [];
 
   useEffect(() => {
-    const onScroll = () => {
-      const el = sectionRef.current;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      const span = el.offsetHeight - window.innerHeight;
-      const p = Math.min(1, Math.max(0, -rect.top / Math.max(1, span)));
-      setProgress(p);
-      setActive(Math.min(steps.length - 1, Math.floor(p * steps.length)));
+    if (!progress) return;
+    const update = (v: number) => {
+      const p = Math.min(1, Math.max(0, v));
+      setMeter(p);
+      setActive(steps.length ? Math.min(steps.length - 1, Math.floor(p * steps.length)) : 0);
     };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-    };
-  }, [steps.length]);
+    update(progress.get());
+    return progress.on('change', update);
+  }, [progress, steps.length]);
 
   const goTo = (i: number) => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const span = el.offsetHeight - window.innerHeight;
-    const top = window.scrollY + el.getBoundingClientRect().top + (span * i) / Math.max(1, steps.length - 1);
+    // Step buttons jump along the wrapping runway (the pinned section the
+    // renderer provides), so they keep working with no runway of our own.
+    const runway = stageRef.current?.closest('section');
+    if (!runway || !steps.length) return;
+    const span = runway.offsetHeight - window.innerHeight;
+    if (span <= 0) return;
+    const top = window.scrollY + runway.getBoundingClientRect().top + (span * (i + 0.5)) / steps.length;
     window.scrollTo({ top, behavior: 'smooth' });
   };
 
   const current = steps[active];
 
   return (
-		<>
-			<section
-				id="process"
-				ref={sectionRef}
-			className={`bg-paper relative text-ink-800 `}
-			style={{ height: `${Math.max(steps.length, 1) * 100}vh` }}
+		<div
+			ref={stageRef}
+			data-process-stage
+			className="bg-paper relative flex h-full min-h-[max(100svh,640px)] w-full flex-col overflow-hidden text-ink-800"
 		>
-			<div className="sticky top-0 flex h-screen  py-14 pt-32 min-h-[640px] flex-col overflow-hidden">
+			<div className="flex min-h-0 flex-1 flex-col justify-center overflow-hidden py-14 pt-32">
 					<div className="mx-auto  w-full max-w-7xl flex flex-col items-center justify-center ">
 					<p className="label text-ink-500">{process?.eyebrow}</p>
 
@@ -154,8 +154,10 @@ export function ProcessChapter({ process }: { process?: ProcessSection }) {
 							) : null}
 						</div>
 					</div>
+				</div>
 
-				{/* Foot — meter + scroll cue */}
+				{/* Foot — meter + scroll cue. A direct stage child so it stays
+				    bottom-anchored while the story above flexes. */}
 				<div className="border-t border-accent/10 px-5 py-5 md:px-8">
 					<div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-6">
 						<span className="label text-ink-500">
@@ -164,7 +166,7 @@ export function ProcessChapter({ process }: { process?: ProcessSection }) {
 						<div className="relative h-[2px] w-40 bg-ink-950/10" aria-hidden>
 							<span
 								className="absolute inset-y-0 left-0 bg-accent-500"
-								style={{ width: `${progress * 100}%` }}
+								style={{ width: `${meter * 100}%` }}
 							/>
 						</div>
                           <span className="label text-ink-500">
@@ -172,10 +174,15 @@ export function ProcessChapter({ process }: { process?: ProcessSection }) {
                           </span>
 					</div>
 				</div>
-				</div>
-			</section>
+			</div>
+  );
+}
 
-		{/* Closing row after the story */}
+/** Process closing row — the audit ask after the story. Rendered after the
+ *  pinned cover (see `section-renderer.tsx`) so it scrolls on once the
+ *  steps stage unpins, instead of squeezing into the 100svh pin. */
+export function ProcessClosing({ process }: { process?: ProcessSection }) {
+	return (
 		<div className="bg-paper-50">
 			<div className="mx-auto flex w-full max-w-7xl flex-col justify-between gap-5 px-5 py-16 md:flex-row md:items-center">
 				<Reveal className="max-w-xl">
@@ -192,6 +199,5 @@ export function ProcessChapter({ process }: { process?: ProcessSection }) {
 					</Reveal>
 				</div>
 			</div>
-		</>
-  );
+	);
 }

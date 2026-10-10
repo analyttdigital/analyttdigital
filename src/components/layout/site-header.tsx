@@ -24,6 +24,7 @@ import { AnimatePresence, LayoutGroup, motion, useIsPresent, useReducedMotion } 
 import type { Transition, Variants } from "framer-motion";
 import { MdiIcon } from "@/lib/icons/resolve-icon";
 import { motionTokens } from "@/lib/motion/motion-tokens";
+import { aboutRevealDistance } from "@/lib/motion/portal";
 import { useScrolled } from "@/lib/hooks";
 import type { ContentImage, LayoutContent } from "@/lib/content/types";
 import { s } from "framer-motion/client";
@@ -118,7 +119,10 @@ export interface SiteHeaderProps {
 	sticky?: boolean;
 	/** The element that scrolls, when it is not the window. The header turns solid once it scrolls. */
 	scrollContainer?: RefObject<HTMLElement | null>;
-	/** Pixels of scroll before the background turns solid. Defaults to 8. */
+	/** Pixels of scroll before the background turns solid. Defaults to the
+	 *  About-bridge reveal distance when the hero portal is on the page
+	 *  (the header turns solid as the flood starts carrying the bridge),
+	 *  else 256. */
 	scrollThreshold?: number;
 	/** Accessible name of the navigation landmark. */
 	label?: string;
@@ -416,7 +420,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
         primaryAction = { label: "Get Quote" },
         sticky = true,
         scrollContainer,
-        scrollThreshold = 256,
+        scrollThreshold,
         label = "Main",
         className,
         classes,
@@ -425,7 +429,22 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 ) {
 	const id = useId();
 	const reduced = !!useReducedMotion();
-	const scrolled = useScrolled(256, scrollContainer);
+	/* Without an explicit threshold, the header turns solid once the About
+	 * bridge starts revealing inside the hero portal flood (measured from
+	 * the portal runway, so it tracks viewport height and layout). Falls
+	 * back to 256px when no hero portal is on the page. */
+	const [bridgeAt, setBridgeAt] = useState<number | null>(null);
+	useEffect(() => {
+		if (scrollThreshold != null) return;
+        const measure = () => {
+            const distance = aboutRevealDistance();
+            setBridgeAt(distance || 0 + 25);
+        };
+		measure();
+		window.addEventListener("resize", measure);
+		return () => window.removeEventListener("resize", measure);
+	}, [scrollThreshold]);
+	const scrolled = useScrolled(scrollThreshold ?? bridgeAt ?? 256, scrollContainer);
 	const [innerCurrent, setInnerCurrent] = useState(defaultCurrent);
 	const current = currentProp ?? innerCurrent;
 	const [hovered, setHovered] = useState<string | null>(null);
@@ -710,7 +729,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 		<header
 			ref={setRefs}
 			className={[
-				"relative z-20 [container-type:inline-size] [container-name:site-header] bg-transparent font-sans text-primary-100 transition-colors duration-200 data-[scrolled]:backdrop-blur-lg data-[scrolled]:bg-primary/10 motion-reduce:transition-none",
+				"relative z-20 [container-type:inline-size] [container-name:site-header] bg-transparent font-sans text-ink transition-colors duration-200 data-[scrolled]:backdrop-blur-lg data-[scrolled]:bg-primary-800 data-[scrolled]:text-paper motion-reduce:transition-none",
 				sticky ? "sticky top-0" : "",
 				className,
 				classes?.root,
@@ -745,10 +764,11 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 									const isOpen = open?.value === item.value;
 									const panelId = `${id}-panel`;
 									const common = {
-										className: `group relative isolate inline-flex h-9 cursor-pointer select-none items-center gap-1 whitespace-nowrap border-0 bg-transparent px-3 text-sm font-medium text-ink no-underline transition-colors duration-150 hover:text-primary-500 data-[current]:text-primary data-[open]:text-accent motion-reduce:transition-none ${variant === "centered" ? "h-8 rounded-full px-3.5" : ""} ${classes?.navItem ?? ""}`,
+										className: `group relative isolate inline-flex h-9 cursor-pointer select-none items-center gap-1 whitespace-nowrap border-0 bg-transparent px-3 text-sm font-medium no-underline transition-colors duration-150 hover:text-paper-500 data-[current]:text-accent data-[open]:text-accent motion-reduce:transition-none ${variant === "centered" ? "h-8 rounded-full px-3.5" : ""} ${classes?.navItem ?? ""}`,
 										"data-nav-item": "",
 										"data-current": isCurrent ? "" : undefined,
 										"data-open": isOpen ? "" : undefined,
+										"data-scrolled": scrolled,
 										onPointerEnter: (event: ReactPointerEvent) => {
 											if (event.pointerType === "mouse")
 												setHovered(item.value);

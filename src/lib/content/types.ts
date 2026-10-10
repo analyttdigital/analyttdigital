@@ -110,17 +110,18 @@ export type HeroPanel = {
 
 export type HeroPartner = { label: string; logo: ContentImage; logoDark?: ContentImage };
 
-/** One selectable point on the bridge plot: where it sits on the line
+/** One selectable point on the about plot: where it sits on the line
  *  (`x` 0–1), the decision it marks, and the measured result. */
-export type HeroBridgeMove = { x: number; move: string; result: string };
+export type AboutMove = { x: number; move: string; result: string };
 
-/** About-us bridge shown inside the hero portal flood. Owned by the hero
- *  content layer (editable in Keystatic) — `tag` renders as the band label,
- *  `title` as the portal headline, `introLead` (bold) + `description` as the
- *  intro, then the interactive signal plot: `baseLabel` on the dashed
- *  starting line, `axisLeft`/`axisRight` under it, `moveLabel`/`resultLabel`
+/** About-us section: headline + intro + the interactive signal plot.
+ *  Owned by the about content layer (editable in Keystatic) — `tag`
+ *  renders as the band label, `title` as the headline (also echoed as the
+ *  hero-portal bridge copy), `introLead` (bold) + `description` as the
+ *  intro, then the plot: `baseLabel` on the dashed starting line,
+ *  `axisLeft`/`axisRight` under it, `moveLabel`/`resultLabel`
  *  over the readout, `hint` beneath, and one `moves` entry per point. */
-export type HeroBridge = {
+export type AboutSection = {
   tag: string;
   title: string;
   introLead: string;
@@ -131,7 +132,7 @@ export type HeroBridge = {
   moveLabel: string;
   resultLabel: string;
   hint: string;
-  moves: HeroBridgeMove[];
+  moves: AboutMove[];
 };
 
 export type HeroSection = {
@@ -155,9 +156,6 @@ export type HeroSection = {
   statA_delta?: string;
   statB_label?: string;
   statB_value?: string;
-  /** About-us bridge for the portal flood. Absent = portal floods flat
-   *  (legacy entries fall back to the Process section's words in the renderer). */
-  bridge?: HeroBridge;
 };
 
 export type ProblemSection = {
@@ -370,6 +368,7 @@ export type CtaSection = {
 
 export type Section =
   | ({ type: 'hero' } & HeroSection)
+  | ({ type: 'about' } & AboutSection)
   | ({ type: 'problem' } & ProblemSection)
   | ({ type: 'belief' } & BeliefSection)
   | ({ type: 'process' } & ProcessSection)

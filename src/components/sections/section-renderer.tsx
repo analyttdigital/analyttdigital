@@ -1,15 +1,24 @@
+import { ScrollSection } from '@/components/blocks/scroll-section';
+import { AboutSection } from '@/components/sections/about';
 import { Belief } from '@/components/sections/belief';
 import { Capabilities } from '@/components/sections/capabilities';
 import { Cta } from '@/components/sections/cta';
-import { Hero } from '@/components/sections/hero';
+import { HeroStage } from '@/components/sections/hero';
 import { Industries } from '@/components/sections/industries';
 import { Insights } from '@/components/sections/insights';
 import { Problem } from '@/components/sections/problem';
-import { ProcessChapter } from '@/components/sections/process-chapter';
+import { ProcessChapter, ProcessClosing } from '@/components/sections/process-chapter';
 import { Stats } from '@/components/sections/stats';
 import { Work } from '@/components/sections/work';
-import type { HeroBridge, Section } from '@/lib/content/types';
-import PathFlowSection from '../graphics/path-flow-section';
+import type { Section } from '@/lib/content/types';
+import type { AboutSection as AboutContent, } from "@/lib/content/types";
+import {
+  PORTAL_BRIDGE_RANGE,
+  PORTAL_ORIGIN,
+  PORTAL_ORIGIN_MOBILE,
+  PORTAL_RANGE,
+  PORTAL_RUNWAY_SVH,
+} from '@/lib/motion/portal';
 
 /** Render a page document's ordered section list. */
 export function SectionRenderer({ sections }: { sections: Section[] }) {
@@ -25,62 +34,56 @@ export function SectionRenderer({ sections }: { sections: Section[] }) {
 function SectionBlock({ section, sections }: { section: Section; sections: Section[] }) {
   switch (section.type) {
     case 'hero': {
-      // The portal flood carries the hero's own about-us bridge content
-      // (headline, intro, signal plot — all Keystatic-editable). Legacy
-      // entries without one fall back to the Process section's words, with
-      // the plot extras left empty so only the head renders.
-      const own = section.bridge;
-      const proc = sections.find((s) => s.type === 'process');
-      const emptyPlot: HeroBridge = {
-        tag: '',
-        title: '',
-        introLead: '',
-        description: '',
-        baseLabel: '',
-        axisLeft: '',
-        axisRight: '',
-        moveLabel: '',
-        resultLabel: '',
-        hint: '',
-        moves: [],
-      };
-      const bridge: HeroBridge | undefined =
-        own && (own.tag || own.title || own.description)
-          ? own
-          : proc && proc.type === 'process'
-            ? {
-                ...emptyPlot,
-                tag: proc.eyebrow,
-                title: `${proc.headline} ${proc.headlineAccent}`.trim(),
-                description: proc.lede,
-              }
-            : undefined;
-      return <Hero hero={section} bridge={bridge} />;
+      // The portal flood carries the full About section as bridge copy;
+      // the circle finishes before the process cover starts. Absent =
+      // the hero renders as a plain static stage and the portal is skipped.
+      const about: ({ type: "about" } & AboutContent) | undefined = sections.find(
+			(s) => s.type === "about"
+		);
+      return about ? (
+			<ScrollSection
+				variant="portal"
+				runway={PORTAL_RUNWAY_SVH}
+				range={PORTAL_RANGE} // circle finishes before the cover starts
+				bridgeRange={PORTAL_BRIDGE_RANGE}
+				origin={PORTAL_ORIGIN}
+				originMobile={PORTAL_ORIGIN_MOBILE}
+				floodClassName="bg-primary"
+				bridge={<AboutSection data={about} compact />}
+				id="hero"
+			>
+				{(p) => <HeroStage hero={section} progress={p} />}
+			</ScrollSection>
+		) : (
+			<section id="hero">
+				<HeroStage hero={section} />
+			</section>
+		);
     }
+    // Consumed as the hero portal's bridge copy above — never rendered standalone.
+    case 'about':
+      return null;
     case 'problem':
       return <Problem problem={section} />;
     case 'belief':
       return <Belief belief={section} />;
     case 'process':
-          return (
-				<div className="relative w-full flex flex-col">
-					{/* <div className="h-screen z-0 pointer-events-none">
-						<PathFlowSection
-							// variant="staircase-ltr" // "staircase-ltr" | "staircase-rtl" | "edges-converge" | "cross-flow"
-							variant="staircase-ltr"
-							mode="scroll" // or "auto"
-							trailColor="#2563eb"
-							
-                            header={<h2>…</h2>}
-                            contentClassName="h-screen"
-						>
-							<div className="bg-accent p-4 h-full rounded-lg" />
-							<div className="bg-accent p-4 h-full rounded-lg" />
-						</PathFlowSection>
-					</div> */}
-
-					<ProcessChapter process={section} />
-				</div>
+        return (
+				<>
+					<ScrollSection
+						id="process"
+						variant="shrink" // see "Hold" below; use 'fade-up' etc. if no pin
+						runway={350}
+						// The cover trick: pulled up over the hero's held flood on an
+						// opaque ground (`bg-background` is not a theme token, so the
+						// process ground `bg-paper` stands in).
+						className="relative z-10 -mt-[100svh] bg-paper"
+						snap="magnetic"
+					>
+						{(p) => <ProcessChapter process={section} progress={p} />}
+					</ScrollSection>
+					<ProcessClosing process={section} />
+				</>
 			);
     case 'capabilities':
       return <Capabilities capabilities={section} />;
