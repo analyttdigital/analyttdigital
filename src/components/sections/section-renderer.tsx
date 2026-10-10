@@ -67,13 +67,19 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
       return <Problem problem={section} />;
     case 'belief':
       return <Belief belief={section} />;
-    case 'process':
+    case 'process': {
+        // The shrink exit starts after the last step has had dwell: steps
+        // sweep the runway uniformly, so the last of `n` steps goes active
+        // at (n-1)/n — the exit opens half a step-window later.
+        const n = Math.max(section.steps?.length ?? 1, 1);
+        const exitStart = 1 - 0.5 / n;
         return (
 				<>
 					<ScrollSection
 						id="process"
-						variant="shrink" // see "Hold" below; use 'fade-up' etc. if no pin
-						runway={350}
+						variant="shrink"
+						runway={200}
+						range={[exitStart, 1]}
 						// The cover trick: pulled up over the hero's held flood on an
 						// opaque ground (`bg-background` is not a theme token, so the
 						// process ground `bg-paper` stands in).
@@ -85,6 +91,7 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
 					<ProcessClosing process={section} />
 				</>
 			);
+    }
     case 'capabilities':
       return <Capabilities capabilities={section} />;
     case 'work':
