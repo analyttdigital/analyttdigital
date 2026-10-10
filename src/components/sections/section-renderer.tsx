@@ -64,9 +64,17 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
     case 'about':
       return null;
     case 'problem':
-      return <Problem problem={section} />;
+      return (
+        <ScrollSection variant="mask-up">
+          <Problem problem={section} />
+        </ScrollSection>
+      );
     case 'belief':
-      return <Belief belief={section} />;
+      return (
+        <ScrollSection variant="fade-up">
+          <Belief belief={section} />
+        </ScrollSection>
+      );
     case 'process': {
         // The shrink exit starts after the last step has had dwell: steps
         // sweep the runway uniformly, so the last of `n` steps goes active
@@ -88,22 +96,48 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
 					>
 						{(p) => <ProcessChapter process={section} progress={p} />}
 					</ScrollSection>
-					<ProcessClosing process={section} />
+					<ScrollSection variant="fade-up">
+						<ProcessClosing process={section} />
+					</ScrollSection>
 				</>
 			);
     }
     case 'capabilities':
-      return <Capabilities capabilities={section} />;
+      return (
+        <ScrollSection variant="slide-left">
+          <Capabilities capabilities={section} />
+        </ScrollSection>
+      );
     case 'work':
-      return <Work work={section} />;
+      return (
+        <ScrollSection variant="slide-right">
+          <Work work={section} />
+        </ScrollSection>
+      );
     case 'stats':
-      return <Stats stats={section} />;
+      return (
+        <ScrollSection variant="scale-in">
+          <Stats stats={section} />
+        </ScrollSection>
+      );
     case 'industries':
-      return <Industries industries={section} />;
+      return (
+        <ScrollSection variant="fade-up">
+          <Industries industries={section} />
+        </ScrollSection>
+      );
     case 'insights':
-      return <Insights insights={section} />;
+      return (
+        <ScrollSection variant="mask-up">
+          <Insights insights={section} />
+        </ScrollSection>
+      );
     case 'cta':
-      return <Cta cta={section} />;
+      return (
+        <ScrollSection variant="zoom-settle">
+          <Cta cta={section} />
+        </ScrollSection>
+      );
     default:
       return null;
   }
