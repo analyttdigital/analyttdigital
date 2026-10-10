@@ -50,7 +50,7 @@ export function Capabilities({ capabilities }: { capabilities?: CapabilitiesSect
     <Band
       id="capabilities"
       ground="paper"
-      resolve={{ from: '--color-paper-DEFAULT', to: '--color-paper-100', height: 236, cell: 21 }}
+      // resolve={{ from: '--color-paper-DEFAULT', to: '--color-paper-100', height: 236, cell: 21 }}
     >
       <GsapReveal>
         <div className="flex flex-wrap items-end justify-between gap-x-16 gap-y-10">
@@ -94,7 +94,7 @@ export function Capabilities({ capabilities }: { capabilities?: CapabilitiesSect
         </div>
 
         <ol className="relative mt-14 grid grid-cols-1 gap-6 md:mt-20 md:grid-cols-2 lg:pl-[4.5rem]">
-          <span aria-hidden className="cap-rail hidden lg:block" />
+          
 
           {rows.map(({ item, i }, row) => (
             <li
@@ -102,8 +102,7 @@ export function Capabilities({ capabilities }: { capabilities?: CapabilitiesSect
               style={moved ? { animationDelay: `${row * 45}ms` } : undefined}
               className={`cap-row group relative ${moved ? 'cap-swap' : ''}`}
             >
-              <span aria-hidden className="cap-node hidden lg:block" />
-              <span aria-hidden className="cap-seg hidden lg:block" />
+              
 
               <div
                 className={`cap-plate flex h-full flex-col gap-9 p-7 md:p-8 lg:p-9 ${
