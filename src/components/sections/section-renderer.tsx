@@ -111,7 +111,7 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
     case 'work':
       return (
         <ScrollSection variant="slide-right">
-          <Work work={section} />
+          <Work data={section} />
         </ScrollSection>
       );
     case 'stats':

@@ -453,6 +453,9 @@ const enHome: PageDoc = {
 			type: "work",
 			eyebrow: "SELECTED WORK",
 			headline: "Proof, not promises.",
+			body: "Engagements measured to the shilling — the proof behind the promises.",
+			cta: "View cases",
+			ctaHref: "#",
 			cases: [
 				{
 					client: "Mandevu BeardCare",
@@ -1177,6 +1180,9 @@ const swHome: PageDoc = {
 			type: "work",
 			eyebrow: "KAZI TULIZOFANYA",
 			headline: "Ushahidi, si ahadi.",
+			body: "Kazi zilizopimwa kwa shilingi — ushahidi ulio nyuma ya ahadi.",
+			cta: "Tazama kesi",
+			ctaHref: "#",
 			cases: [
 				{
 					client: "Mandevu BeardCare",

@@ -320,12 +320,19 @@ export type WorkCase = {
   metric: string;
   metricLabel: string;
   depth?: string;
+  /** Card badge (e.g. NEW) — empty hides it. */
+  tag?: string;
   image?: ContentImage;
 };
 
 export type WorkSection = {
   eyebrow: string;
   headline: string;
+  /** Intro paragraph beside the heading. */
+  body?: string;
+  /** Pill CTA under the intro (e.g. View cases) — empty hides it. */
+  cta?: string;
+  ctaHref?: string;
   cases: WorkCase[];
 };
 

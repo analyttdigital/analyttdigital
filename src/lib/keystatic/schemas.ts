@@ -517,11 +517,19 @@ const capabilitiesFields = {
 const workFields = {
   eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'SELECTED WORK' }),
   headline: fields.text({ label: 'Headline', defaultValue: 'Proof, not promises.', multiline: true }),
+  body: fields.text({
+    label: 'Intro paragraph',
+    defaultValue: 'Engagements measured to the shilling — the proof behind the promises.',
+    multiline: true,
+  }),
+  cta: fields.text({ label: 'CTA label (empty hides it)', defaultValue: 'View cases' }),
+  ctaHref: fields.text({ label: 'CTA href', defaultValue: '#' }),
   cases: fields.array(
     fields.object({
       client: fields.text({ label: 'Client' }),
       industry: fields.text({ label: 'Industry' }),
       depth: fields.text({ label: 'Index (e.g. Case 01)', defaultValue: '' }),
+      tag: fields.text({ label: 'Badge (e.g. NEW — empty hides it)', defaultValue: '' }),
       headline: fields.text({ label: 'Result headline', multiline: true }),
       body: fields.text({ label: 'Body', multiline: true }),
       metric: fields.text({ label: 'Big metric' }),
