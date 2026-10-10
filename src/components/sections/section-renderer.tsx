@@ -72,7 +72,7 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
     case 'belief':
       return (
         <ScrollSection variant="fade-up">
-          <Belief belief={section} />
+          <Belief data={section} />
         </ScrollSection>
       );
     case 'process': {
