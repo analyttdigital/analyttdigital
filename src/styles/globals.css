@@ -884,6 +884,235 @@ button {
 }
 
 /* ------------------------------------------------------------------ */
+/* Capability register — instrument plates on a trace rail             */
+/*                                                                    */
+/* The four services are not four cards. Each is a deep-field plate   */
+/* — one tone of the page's own violet, squared, sitting on the warm   */
+/* paper ground with real depth — and the figure that proves what it  */
+/* produces is read out *on* the plate in light with a single ember   */
+/* series. A hairline rail routes down the paper gutter with a square  */
+/* node per plate; the hovered plate wakes a step lighter and lights   */
+/* its own segment of the rail.                                       */
+/* ------------------------------------------------------------------ */
+
+/* The rail the plates hang off. Desktop only: below it the register
+   keeps its plates and their rules, so the mobile row never loses its
+   structure. */
+.cap-rail {
+  position: absolute;
+  left: 27px;
+  top: 1.5rem;
+  height: calc(100% - 3rem);
+  width: 1px;
+  background-color: rgb(var(--color-ink-950) / 0.18);
+}
+/* A node on the rail, and the segment routing down to the next node.
+   Both hang off the row itself, so the segment holds however tall the
+   plate runs; the offsets pair with the register's `gap-6`. The hovered
+   row lights its own segment, so the signal crosses the gutter instead
+   of switching on. */
+.cap-node {
+  position: absolute;
+  left: 22.5px;
+  top: 1.5rem;
+  height: 9px;
+  width: 9px;
+  background-color: rgb(var(--color-paper-100));
+  box-shadow: inset 0 0 0 1px rgb(var(--color-ink-950) / 0.5);
+  transition:
+    background-color 0.2s var(--ease-standard),
+    box-shadow 0.2s var(--ease-standard);
+}
+.cap-seg {
+  position: absolute;
+  left: 26.5px;
+  top: calc(1.5rem + 9px);
+  bottom: -1.5rem;
+  width: 1px;
+  background-color: rgb(var(--color-accent-500));
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.45s var(--ease-enter);
+}
+.cap-row:hover .cap-node,
+.cap-row:focus-within .cap-node {
+  background-color: rgb(var(--color-accent-500));
+  box-shadow:
+    inset 0 0 0 1px rgb(var(--color-accent-300)),
+    0 0 0 4px rgb(var(--color-accent-500) / 0.16);
+}
+.cap-row:hover .cap-seg,
+.cap-row:focus-within .cap-seg {
+  transform: scaleY(1);
+}
+.cap-row:last-child .cap-seg {
+  display: none;
+}
+
+/* The plate itself: the field's own tone, rounded, with depth. On
+   hover — or when a key inside it holds focus — it wakes one step
+   lighter and the ember edge arrives along its top. */
+.cap-plate {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  background-color: rgb(var(--color-primary-800));
+  color: rgb(var(--color-primary-100));
+  box-shadow: 0 26px 60px -30px rgb(var(--color-primary-950) / 0.55);
+  transition:
+    background-color 0.3s var(--ease-standard),
+    box-shadow 0.3s var(--ease-standard);
+}
+.cap-plate::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  background-color: rgb(var(--color-accent-500));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s var(--ease-enter);
+}
+.cap-row:hover .cap-plate,
+.cap-row:focus-within .cap-plate {
+  background-color: rgb(var(--color-primary-700));
+  box-shadow: 0 32px 70px -28px rgb(var(--color-primary-950) / 0.62);
+}
+.cap-row:hover .cap-plate::after,
+.cap-row:focus-within .cap-plate::after {
+  transform: scaleX(1);
+}
+
+/* The order control — two flat keys, the pressed one filled ember. It
+   re-reads the same plates as the engagement order. */
+.cap-order {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  background-color: rgb(var(--color-paper-200));
+}
+.cap-order__btn {
+  padding: 0.6rem 1.05rem;
+  font-family: theme('fontFamily.mono');
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgb(var(--color-ink-500));
+  background-color: transparent;
+  transition:
+    color 0.18s ease,
+    background-color 0.18s ease;
+}
+.cap-order__btn:hover {
+  color: rgb(var(--color-ink-900));
+}
+.cap-order__btn[aria-pressed='true'] {
+  background-color: rgb(var(--color-accent-500));
+  color: rgb(var(--color-paper-50));
+}
+.cap-order__btn:focus-visible {
+  outline: 2px solid rgb(var(--color-accent-700));
+  outline-offset: 2px;
+}
+
+/* The row's swap when the order changes: the same plates, re-read. */
+.cap-swap {
+  animation:
+    fade 0.35s ease both,
+    rise 0.5s var(--ease-enter) both;
+}
+
+/* Instrument figures — hairline SVG, one ember series per figure, and
+   each part held back until its row is in view. The hold state only
+   applies once the figure has mounted (`.fig-anim`, set by the
+   component's first effect), so server-rendered markup and any
+   no-JS reader get the finished figure immediately. Under reduced
+   motion the global rule collapses every duration to nothing, and the
+   parts land on their final state. */
+.cap-bar {
+  transform-box: fill-box;
+  transform-origin: bottom;
+}
+.cap-draw {
+  stroke-dasharray: var(--cap-len, 480);
+}
+.cap-seg-fill {
+  transform-box: fill-box;
+  transform-origin: left;
+}
+.fig-anim .cap-bar {
+  transform: scaleY(0);
+}
+.fig-anim .cap-draw {
+  stroke-dashoffset: var(--cap-len, 480);
+}
+.fig-anim .cap-pop,
+.fig-anim .cap-area {
+  opacity: 0;
+}
+.fig-anim .cap-seg-fill {
+  transform: scaleX(0);
+}
+/* Every keyframe states its end explicitly: the hold state above is the
+   part's default, so an animation carrying only a `from` would settle
+   straight back into the hold and the part would never arrive. */
+.fig-anim.fig-lit .cap-bar {
+  animation: cap-grow 0.7s var(--ease-enter) both;
+}
+@keyframes cap-grow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+.fig-anim.fig-lit .cap-draw {
+  animation: cap-draw 1.2s var(--ease-standard) both;
+}
+@keyframes cap-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.fig-anim.fig-lit .cap-area {
+  animation: cap-fade 0.9s 0.3s var(--ease-standard) both;
+}
+@keyframes cap-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.fig-anim.fig-lit .cap-pop {
+  animation: cap-pop 0.45s 0.85s var(--ease-enter) both;
+}
+@keyframes cap-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.fig-anim.fig-lit .cap-seg-fill {
+  animation: cap-wide 0.8s 0.15s var(--ease-enter) both;
+}
+@keyframes cap-wide {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /* Resolve band — where one ground becomes another                     */
 /* ------------------------------------------------------------------ */
 

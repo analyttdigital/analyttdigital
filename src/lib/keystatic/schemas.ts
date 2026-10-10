@@ -455,16 +455,63 @@ const processFields = {
   ctaHref: fields.text({ label: 'CTA href', defaultValue: '/#contact' }),
 };
 
+const capabilityReadoutFields = {
+  kind: fields.select({
+    label: 'Figure',
+    options: [
+      { label: 'Channels — spend vs attributed return', value: 'channels' },
+      { label: 'Attribution — unknown share before/after', value: 'attribution' },
+      { label: 'Descent — CPL against a target', value: 'descent' },
+      { label: 'Organic — sessions building over time', value: 'organic' },
+    ],
+    defaultValue: 'channels',
+  }),
+  caption: fields.text({ label: 'Caption above the figure', defaultValue: '' }),
+  value: fields.text({ label: 'Measurement (e.g. 4.2x)', defaultValue: '' }),
+  valueLabel: fields.text({ label: 'Measurement label', defaultValue: '' }),
+  tag: fields.text({ label: 'Live tag (empty = no live state)', defaultValue: '' }),
+  values: fields.array(fields.number({ label: 'Value', defaultValue: 0 }), {
+    label: 'Series',
+    itemLabel: (props) => String(props.value ?? ''),
+  }),
+  prior: fields.array(fields.number({ label: 'Value', defaultValue: 0 }), {
+    label: 'Comparison series (attribution before, prior organic period)',
+    itemLabel: (props) => String(props.value ?? ''),
+  }),
+  labels: fields.array(fields.text({ label: 'Label' }), {
+    label: 'Series labels (channel names, share names)',
+    itemLabel: (props) => props.value || '',
+  }),
+  targetLabel: fields.text({ label: 'Target line label (descent only)', defaultValue: '' }),
+  target: fields.number({ label: 'Target value in the series (descent only)', defaultValue: 0 }),
+};
+
 const capabilitiesFields = {
   eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'OUR SERVICES' }),
   headline: fields.text({ label: 'Headline', defaultValue: 'Performance-led services,\nmeasured to the shilling.', multiline: true }),
+  lede: fields.text({
+    label: 'Lede',
+    defaultValue: 'Four things we are hired for, and the order they happen in.',
+    multiline: true,
+  }),
+  orderLabel: fields.text({ label: 'Order control label', defaultValue: 'Reading order' }),
+  orderServices: fields.text({ label: 'Order — by service', defaultValue: 'By service' }),
+  orderSequence: fields.text({ label: 'Order — by engagement', defaultValue: 'By engagement' }),
+  illustrativeNote: fields.text({
+    label: 'Figure note',
+    defaultValue: 'Figures are illustrative samples of a measured account, not client results.',
+    multiline: true,
+  }),
   items: fields.array(
     fields.object({
       tag: fields.text({ label: 'Tag' }),
-      depth: fields.text({ label: 'Index (e.g. 01)', defaultValue: '' }),
+      depth: fields.text({ label: 'Index in the engagement order (e.g. 01)', defaultValue: '' }),
       title: fields.text({ label: 'Title' }),
       body: fields.text({ label: 'Body', multiline: true }),
       icon: iconField(),
+      readout: fields.object(capabilityReadoutFields, {
+        label: 'Readout figure (optional — empty renders the row without one)',
+      }),
     }),
     { label: 'Capabilities', itemLabel: (props) => props.fields.title.value || 'Capability' },
   ),

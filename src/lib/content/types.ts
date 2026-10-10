@@ -272,11 +272,45 @@ export type ProcessSection = {
   ctaHref: string;
 };
 
-export type Capability = { tag: string; title: string; body: string; depth?: string; icon?: string };
+/**
+ * The instrument row each capability drags along with it — the readout the service
+ * leaves behind. `kind` picks the figure; the series fields are read by that kind
+ * alone, so an editor only fills what their figure draws.
+ */
+export type CapabilityReadout = {
+  kind: 'channels' | 'attribution' | 'descent' | 'organic';
+  caption: string;
+  value: string;
+  valueLabel: string;
+  /** Live tag on the row; empty means the row is not reporting. */
+  tag?: string;
+  values: number[];
+  /** Comparison series: attribution before setup, the prior organic period. */
+  prior?: number[];
+  labels?: string[];
+  targetLabel?: string;
+  /** The descent figure's target value, in the series' own units. */
+  target?: number;
+};
+
+export type Capability = {
+  tag: string;
+  title: string;
+  body: string;
+  /** Position in the engagement order — measurement runs first. */
+  depth?: string;
+  icon?: string;
+  readout?: CapabilityReadout;
+};
 
 export type CapabilitiesSection = {
   eyebrow: string;
   headline: string;
+  lede: string;
+  orderLabel: string;
+  orderServices: string;
+  orderSequence: string;
+  illustrativeNote: string;
   items: Capability[];
 };
 

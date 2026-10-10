@@ -1,108 +1,152 @@
+'use client';
+
+import { useMemo, useState } from 'react';
+
 import { Band } from '@/components/layout/band';
 import { InViewTitle } from '@/components/graphics/in-view-title';
-import { GsapReveal, TiltCard } from '@/lib/motion/gsap-reveal';
+import { CapabilityReadout } from '@/components/sections/capability-readout';
+import { GsapReveal } from '@/lib/motion/gsap-reveal';
 import { MdiIcon, capabilityIcons } from '@/lib/icons/resolve-icon';
 import type { CapabilitiesSection } from '@/lib/content/types';
 
 /**
- * Capabilities — four services as soft tilt plates on the light band.
+ * Capabilities — the engagement register.
  *
- * The sharp-corner system is retired here: each service is a rounded paper
- * plate with a soft shadow and an ember spotlight that follows the pointer,
- * the plate itself leaning into the cursor (TiltCard, GSAP). Entrances are
- * GSAP rise + de-blur on scroll (GsapReveal). Ember stays semantic — the
- * icon tile and the live tag. Content shape unchanged: tag / depth / title
- * / body / icon per item.
+ * The four services are not four cards. Each is a deep-field plate on
+ * the warm paper ground, and the figure that proves what the service
+ * produces is read out *on* the plate, in light, with one ember series:
+ * spend against attributed return, the unknown share of spend collapsing,
+ * cost per lead on a target, organic sessions building. A hairline rail
+ * routes down the paper gutter with a square node per plate; the hovered
+ * plate wakes a step lighter and lights its own segment of the rail.
+ *
+ * The order control re-reads the same plates as the engagement, where
+ * measurement comes first — the positioning stated as structure: if it
+ * cannot be measured, it is not launched. Content, figures and labels
+ * arrive from the content layer; only geometry lives here.
  */
 
-const SHADOW = 'shadow-[0_24px_60px_-28px_rgb(var(--color-primary-600)/0.3)]';
+type Row = { item: CapabilitiesSection['items'][number]; i: number };
 
 export function Capabilities({ capabilities }: { capabilities?: CapabilitiesSection }) {
+  const [order, setOrder] = useState<'services' | 'sequence'>('services');
+  const [moved, setMoved] = useState(false);
   const items = capabilities?.items ?? [];
 
-  return (
-		<Band
-			id="capabilities"
-			ground="paper"
-			resolve={{
-				from: "--color-paper-100",
-				to: "--color-paper-DEFAULT",
-				height: 236,
-				cell: 21,
-			}}
-		>
-			<GsapReveal>
-				<div className="flex flex-wrap items-end justify-between gap-8">
-					<div data-rise>
-						<p className="label text-ink-500">
-							{capabilities?.eyebrow ?? "Our services"}
-						</p>
-						<InViewTitle
-							text={(capabilities?.headline ?? "").replace(/\n/g, " ")}
-							variant="blur"
-							as="h2"
-							className="title mt-6 max-w-[18ch] text-[clamp(2rem,4vw,2.6rem)] text-ink-950"
-						/>
-					</div>
-					<p data-rise="1" className="max-w-[38ch] text-sm leading-relaxed text-ink-500">
-						Four things we are hired for, and the order they happen in.
-					</p>
-				</div>
+  const rows: Row[] = useMemo(() => {
+    const list = items.map((item, i) => ({ item, i }));
+    if (order !== 'sequence') return list;
+    return [...list].sort(
+      (a, b) => (a.item.depth ?? '').localeCompare(b.item.depth ?? '') || a.i - b.i,
+    );
+  }, [items, order]);
 
-				<ol className="mt-12 grid gap-6 md:grid-cols-2">
-					{items.map((item, i) => (
-						<li key={item.title} data-rise={i + 1}>
-							<TiltCard
-								className={`h-full rounded-3xl bg-paper-50 ${SHADOW}`}
-								max={5}
-							>
-								<article
-									aria-label={`${item.depth ?? String(i + 1).padStart(2, "0")} — ${item.title}`}
-									className="flex h-full flex-col rounded-3xl border border-ink-950/[0.07] p-7 md:p-8"
-								>
-									<div className="flex items-center gap-3">
-										<span className="grid h-11 w-11 place-items-center rounded-2xl bg-accent-500/10 text-accent-600">
-											<MdiIcon
-												name={
-													item.icon ||
-													capabilityIcons[i % capabilityIcons.length]
-												}
-												size={0.95}
-											/>
-										</span>
-										<span className="font-mono text-[10.5px] font-medium uppercase tracking-[0.16em] text-ink-400">
-											{String(i + 1).padStart(2, "0")}
-										</span>
-										<span className="ml-auto inline-flex items-center gap-2 rounded-full border border-accent-600/30 bg-accent-500/[0.07] px-3.5 py-1.5 font-mono text-[9.5px] font-medium uppercase tracking-[0.14em] text-accent-600">
-											<span
-												aria-hidden
-												className="h-1.5 w-1.5 rounded-full bg-accent-500"
-											/>
-											{item.tag}
-										</span>
-									</div>
-									<h3 className="verb mt-6 max-w-[24ch] text-[clamp(1.35rem,2.3vw,1.8rem)] text-ink-950">
-										{item.title}
-									</h3>
-									<p className="mt-3 max-w-[56ch] text-[13.5px] leading-[1.75] text-ink-500">
-										{item.body}
-									</p>
-									<p className="mt-auto flex items-center gap-2 pt-6 font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-ink-400">
-										<MdiIcon
-											name={
-												item.icon ||
-												capabilityIcons[i % capabilityIcons.length]
-											}
-											size={0.7}
-										/>
-										{item.depth ?? `Grade ${String(i + 1).padStart(2, "0")}`}
-									</p>
-								</article>
-							</TiltCard>
-						</li>
-					))}
-				</ol>
-			</GsapReveal>
-		</Band>
+  const switchOrder = (next: 'services' | 'sequence') => {
+    setOrder(next);
+    setMoved(true);
+  };
+
+  return (
+    <Band
+      id="capabilities"
+      ground="paper"
+      resolve={{ from: '--color-paper-DEFAULT', to: '--color-paper-100', height: 236, cell: 21 }}
+    >
+      <GsapReveal>
+        <div className="flex flex-wrap items-end justify-between gap-x-16 gap-y-10">
+          <div data-rise>
+            <p className="label text-ink-500">{capabilities?.eyebrow ?? 'Our services'}</p>
+            <InViewTitle
+              text={(capabilities?.headline ?? '').replace(/\n/g, ' ')}
+              variant="blur"
+              as="h2"
+              className="title mt-7 max-w-[17ch] text-[clamp(2.4rem,5.4vw,3.7rem)] text-ink-950"
+            />
+          </div>
+
+          <div data-rise="1" className="w-full max-w-[44ch]">
+            <p className="text-[13.5px] leading-[1.85] text-ink-500">{capabilities?.lede}</p>
+
+            {items.length > 1 ? (
+              <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3">
+                <span className="label label--plain text-ink-500">{capabilities?.orderLabel}</span>
+                <div role="group" aria-label={capabilities?.orderLabel} className="cap-order">
+                  <button
+                    type="button"
+                    className="cap-order__btn"
+                    aria-pressed={order === 'services'}
+                    onClick={() => switchOrder('services')}
+                  >
+                    {capabilities?.orderServices}
+                  </button>
+                  <button
+                    type="button"
+                    className="cap-order__btn"
+                    aria-pressed={order === 'sequence'}
+                    onClick={() => switchOrder('sequence')}
+                  >
+                    {capabilities?.orderSequence}
+                  </button>
+                </div>
+              </div>
+            ) : null}
+          </div>
+        </div>
+
+        <ol className="relative mt-14 grid grid-cols-1 gap-6 md:mt-20 md:grid-cols-2 lg:pl-[4.5rem]">
+          <span aria-hidden className="cap-rail hidden lg:block" />
+
+          {rows.map(({ item, i }, row) => (
+            <li
+              key={`${order}-${item.title}`}
+              style={moved ? { animationDelay: `${row * 45}ms` } : undefined}
+              className={`cap-row group relative ${moved ? 'cap-swap' : ''}`}
+            >
+              <span aria-hidden className="cap-node hidden lg:block" />
+              <span aria-hidden className="cap-seg hidden lg:block" />
+
+              <div className="cap-plate flex h-full flex-col gap-9 p-7 md:p-8 lg:p-9">
+                {/* Positional watermark — one faint glyph per plate, the way
+                    the process chapter marks its positions. */}
+                <MdiIcon
+                  name={item.icon || capabilityIcons[i % capabilityIcons.length]}
+                  size={10}
+                  className="pointer-events-none absolute -bottom-5 -right-3 select-none text-primary-50/[0.05]"
+                />
+
+                <div data-rise={row + 1}>
+                  <p className="flex items-center gap-3 font-mono text-[9.5px] font-medium uppercase tracking-[0.16em] text-primary-300">
+                    <span className="num text-accent-300">
+                      {(order === 'sequence' ? item.depth : '') || String(i + 1).padStart(2, '0')}
+                    </span>
+                    <span aria-hidden className="h-1 w-1 bg-primary-50/30" />
+                    {item.tag}
+                  </p>
+                  <h3 className="verb mt-6 max-w-[20ch] text-[clamp(1.5rem,2.6vw,2.15rem)] text-primary-50">
+                    {item.title}
+                  </h3>
+                  <p className="mt-5 max-w-[54ch] text-[13.5px] leading-[1.8] text-primary-200">
+                    {item.body}
+                  </p>
+                </div>
+
+                <div data-rise={row + 1} className="mt-auto max-w-[28rem]">
+                  <CapabilityReadout readout={item.readout} />
+                </div>
+              </div>
+            </li>
+          ))}
+        </ol>
+
+        {capabilities?.illustrativeNote ? (
+          <p
+            data-rise="1"
+            className="label label--plain mt-10 max-w-[70ch] leading-[1.9] text-ink-500"
+          >
+            {capabilities.illustrativeNote}
+          </p>
+        ) : null}
+      </GsapReveal>
+    </Band>
   );
 }
