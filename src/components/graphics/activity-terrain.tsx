@@ -14,9 +14,11 @@ import type { TerrainData, TerrainMetricKey } from '@/lib/content/types';
  * camera presets are segmented controls; a legend, stat readout and an
  * sr-only data table keep the same information available to everyone.
  *
- * Reuse: `<ActivityTerrain data={terrain} id="unique-prefix" />` — every
- * aria id is prefixed, so several instances can share a page. All copy comes
- * from `data` (Keystatic-editable); the hourly grids are generated
+ * The instrument is dark: a violet-black stage with light type and a violet
+ * slab, the value ramp running violet into ember. Reuse:
+ * `<ActivityTerrain data={terrain} id="unique-prefix" />` — every aria id is
+ * prefixed, so several instances can share a page. All copy comes from
+ * `data` (Keystatic-editable); the hourly grids are generated
  * deterministically in code and labelled illustrative, exactly as the caption
  * says. Palette steps are read from the `globals.css` token channels, so the
  * ramp follows the theme instead of forking it.
@@ -36,13 +38,13 @@ const RAMP_VARS = [
   '--color-primary-600',
   '--color-accent-500',
 ];
-/** Floor-slab faces: top, front, left, right, back. */
+/** Floor-slab faces: top, front, left, right, back — dark violet platform. */
 const SLAB_VARS = [
-  '--color-primary-50',
-  '--color-primary-100',
-  '--color-primary-200',
-  '--color-primary-100',
-  '--color-primary-200',
+  '--color-primary-700',
+  '--color-primary-900',
+  '--color-primary-900',
+  '--color-ink-900',
+  '--color-ink-900',
 ];
 const FALLBACK_DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const FALLBACK_DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -263,11 +265,11 @@ export function ActivityTerrain({
     );
     const ink = tokenChannels('--color-ink-800', [42, 40, 56]);
     const slabBase = SLAB_VARS.map((v, i) =>
-      tokenChannels(v, [[246, 245, 250], [233, 230, 243], [214, 209, 231], [233, 230, 243], [214, 209, 231]][i] as [number, number, number]),
+      tokenChannels(v, [[57, 49, 84], [27, 22, 41], [27, 22, 41], [28, 27, 38], [28, 27, 38]][i] as [number, number, number]),
     );
-    const axisInk = rgb(tokenChannels('--color-primary-500', [108, 97, 140]));
+    const axisInk = rgb(tokenChannels('--color-primary-300', [181, 173, 207]));
     const edgeInk = rgb(tokenChannels('--color-primary-900', [27, 22, 41]));
-    const slabShadow = `rgba(${tokenChannels('--color-primary-600', [79, 75, 99]).join(',')},0.20)`;
+    const slabShadow = `rgba(${tokenChannels('--color-primary-950', [16, 13, 26]).join(',')},0.45)`;
     const PAL = ramp.map((b) => FACE_SHADE.map((f) => rgb(mixRGB(b, ink, f))));
     const PAL_HOVER = ramp.map((b) =>
       FACE_SHADE.map((f) => rgb(mixRGB(mixRGB([255, 255, 255], b, 0.28), ink, f))),
@@ -910,8 +912,8 @@ export function ActivityTerrain({
   return (
     <div className={className}>
       <div>
-        <h3 className="text-[15px] font-medium text-ink-950">{data.title}</h3>
-        <p className="mt-1 text-[13px] text-ink-500">{data.caption}</p>
+        <h3 className="text-[15px] font-medium text-paper-50">{data.title}</h3>
+        <p className="mt-1 text-[13px] text-primary-300">{data.caption}</p>
       </div>
 
       <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
@@ -950,7 +952,7 @@ export function ActivityTerrain({
 
       <div
         ref={plotRef}
-        className="relative mt-4 h-[300px] overflow-hidden rounded-xl bg-gradient-to-b from-paper-50 to-primary-50 min-[560px]:h-[440px]"
+        className="relative mt-4 h-[300px] overflow-hidden rounded-xl bg-gradient-to-b from-primary-900 to-ink-950 min-[560px]:h-[440px]"
       >
         <canvas
           ref={canvasRef}
@@ -978,11 +980,11 @@ export function ActivityTerrain({
         <div
           ref={tipRef}
           role="status"
-          className="pointer-events-none absolute z-10 hidden whitespace-nowrap rounded-lg bg-primary-900 px-2.5 py-1.5 text-xs text-paper-50 shadow-lg"
+          className="pointer-events-none absolute z-10 hidden whitespace-nowrap rounded-lg bg-paper-50 px-2.5 py-1.5 text-xs text-ink-900 shadow-lg"
         />
       </div>
 
-      <div className="mt-4 flex flex-col justify-between gap-3 text-xs text-ink-500 sm:flex-row sm:items-center">
+      <div className="mt-4 flex flex-col justify-between gap-3 text-xs text-primary-300 sm:flex-row sm:items-center">
         <div className="flex items-center gap-2">
           <span>{cfg?.lessLabel}</span>
           <span className="flex gap-1" aria-hidden="true">
@@ -1000,40 +1002,40 @@ export function ActivityTerrain({
       </div>
 
       {summary && cfg ? (
-        <div className="mt-6 grid grid-cols-1 gap-6 border-t border-ink-950/10 pt-6 md:grid-cols-3 md:gap-10">
+        <div className="mt-6 grid grid-cols-1 gap-6 border-t border-paper-50/10 pt-6 md:grid-cols-3 md:gap-10">
           <div>
-            <div className="text-[13px] text-ink-500">{cfg.title}</div>
-            <div className="mt-1 text-3xl font-medium tracking-tight text-ink-950 tabular-nums md:text-4xl">
+            <div className="text-[13px] text-primary-300">{cfg.title}</div>
+            <div className="mt-1 text-3xl font-medium tracking-tight text-paper-50 tabular-nums md:text-4xl">
               {summary.totalLabel}
             </div>
             <div className="mt-1 flex items-center gap-1 text-xs">
               <MdiIcon
                 name={summary.up ? 'arrowTopRight' : 'arrowBottomRight'}
                 size={0.7}
-                className={summary.good ? 'text-primary-700' : 'text-accent-600'}
+                className={summary.good ? 'text-primary-200' : 'text-accent-300'}
               />
-              <span className={`font-medium ${summary.good ? 'text-primary-700' : 'text-accent-600'}`}>
+              <span className={`font-medium ${summary.good ? 'text-primary-200' : 'text-accent-300'}`}>
                 {summary.up ? '+' : ''}
                 {cfg.delta}%
               </span>
-              <span className="text-ink-500">{data.statsNote}</span>
+              <span className="text-primary-300">{data.statsNote}</span>
             </div>
           </div>
           <div>
-            <div className="text-[13px] text-ink-500">{cfg.peakLabel}</div>
+            <div className="text-[13px] text-primary-300">{cfg.peakLabel}</div>
             <div className="mt-2 flex flex-col gap-2.5 text-[13px]">
               {summary.peaks.map((p) => (
                 <div key={p.key} className="flex items-center justify-between">
-                  <span className="font-medium text-ink-950">{p.when}</span>
-                  <span className="tabular-nums text-ink-500">{p.value}</span>
+                  <span className="font-medium text-paper-50">{p.when}</span>
+                  <span className="tabular-nums text-primary-300">{p.value}</span>
                 </div>
               ))}
             </div>
           </div>
           <div>
-            <div className="text-[13px] text-ink-500">{cfg.dayLabel}</div>
-            <div className="mt-1 text-lg font-medium text-ink-950">{summary.bestDay}</div>
-            <div className="mt-1 text-xs leading-relaxed text-ink-500">{summary.daySub}</div>
+            <div className="text-[13px] text-primary-300">{cfg.dayLabel}</div>
+            <div className="mt-1 text-lg font-medium text-paper-50">{summary.bestDay}</div>
+            <div className="mt-1 text-xs leading-relaxed text-primary-300">{summary.daySub}</div>
           </div>
         </div>
       ) : null}

@@ -44,7 +44,7 @@ export function Belief({ data, classes, className, id }: DataProps<BeliefSection
             <div
               className="rounded-[2rem] bg-ink-950 p-2 shadow-[0_40px_100px_-40px_rgb(var(--color-primary-600)/0.45)] md:p-3"
             >
-              <div className="rounded-[1.6rem] bg-paper-50 p-5 md:p-7">
+              <div className="px-4 pb-4 pt-5 md:px-6 md:pb-5 md:pt-6">
                 <ActivityTerrain data={data.terrain} id="belief-terrain" />
               </div>
             </div>
