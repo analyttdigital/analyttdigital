@@ -634,6 +634,8 @@ export const pageFields = {
         { label: 'Industries', value: 'industries' },
         { label: 'Insights', value: 'insights' },
         { label: 'CTA', value: 'cta' },
+        { label: 'CTA banner', value: 'cta-banner' },
+        { label: 'CTA split', value: 'cta-split' },
       ],
       defaultValue: 'hero',
     }), {
@@ -648,6 +650,10 @@ export const pageFields = {
       industries: fields.object(industriesFields, { label: 'Industries content' }),
       insights: fields.object(insightsFields, { label: 'Insights content' }),
       cta: fields.object(ctaFields, { label: 'CTA content' }),
+      // Both CTA variants share the CTA content shape — same fields,
+      // different presentation.
+      'cta-banner': fields.object(ctaFields, { label: 'CTA banner content' }),
+      'cta-split': fields.object(ctaFields, { label: 'CTA split content' }),
     }),
     {
       label: 'Sections',

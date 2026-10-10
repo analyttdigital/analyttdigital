@@ -3,6 +3,8 @@ import { AboutSection } from '@/components/sections/about';
 import { Belief } from '@/components/sections/belief';
 import { Capabilities } from '@/components/sections/capabilities';
 import { Cta } from '@/components/sections/cta';
+import { CtaBanner } from '@/components/sections/cta-banner';
+import { CtaSplit } from '@/components/sections/cta-split';
 import { HeroStage } from '@/components/sections/hero';
 import { Industries } from '@/components/sections/industries';
 import { Insights } from '@/components/sections/insights';
@@ -136,6 +138,18 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
       return (
         <ScrollSection variant="zoom-settle">
           <Cta cta={section} />
+        </ScrollSection>
+      );
+    case 'cta-banner':
+      return (
+        <ScrollSection variant="wipe-right">
+          <CtaBanner data={section} />
+        </ScrollSection>
+      );
+    case 'cta-split':
+      return (
+        <ScrollSection variant="scale-in">
+          <CtaSplit data={section} />
         </ScrollSection>
       );
     default:

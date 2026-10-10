@@ -387,7 +387,9 @@ export type Section =
   | ({ type: 'stats' } & StatsSection)
   | ({ type: 'industries' } & IndustriesSection)
   | ({ type: 'insights' } & InsightsSection)
-  | ({ type: 'cta' } & CtaSection);
+  | ({ type: 'cta' } & CtaSection)
+  | ({ type: 'cta-banner' } & CtaSection)
+  | ({ type: 'cta-split' } & CtaSection);
 
 export type SectionType = Section['type'];
 
