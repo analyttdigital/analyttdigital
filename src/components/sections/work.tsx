@@ -20,9 +20,9 @@ import type { DataProps, WorkCase, WorkSection } from '@/lib/content/types';
  * resolver, otherwise the generated flow lines carry it.
  */
 
-/** Dark flowing-graphic ground, except every third card which takes the
- *  solid brand ground — a positional default, content stays clean. */
-const isDark = (i: number) => i % 3 !== 2;
+/** Solid brand ground, except every third card which takes the dark
+ *  flowing-graphic ground — a positional default, content stays clean. */
+const isDark = (i: number) => i % 3 === 2;
 
 /** Short cards ride lower, giving the index its stagger. */
 const isLow = (i: number) => i % 2 === 1;
@@ -65,7 +65,7 @@ function CaseCard({ kase, index }: { kase: WorkCase; index: number }) {
       aria-label={`${kase.depth || kase.client} — ${kase.headline}`}
       className={[
         'group relative flex min-h-[340px] flex-col overflow-hidden rounded-3xl p-7',
-        isLow(index) ? 'lg:mt-12 lg:min-h-[320px]' : 'lg:min-h-[400px]',
+        isLow(index) ? 'md:mt-12 md:min-h-[320px]' : 'md:min-h-[400px]',
         !photo && dark ? 'bg-ink-950' : '',
         !photo && !dark ? 'bg-primary-600' : '',
       ]
@@ -94,7 +94,7 @@ function CaseCard({ kase, index }: { kase: WorkCase; index: number }) {
       </div>
 
       <div className="relative mt-auto pt-10">
-        <p className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-primary-300">
+        <p className={`font-mono text-[10.5px] uppercase tracking-[0.16em] ${dark || photo ? 'text-primary-300' : 'text-primary-100'}`}>
           {kase.industry}
         </p>
         <h3 className="verb mt-2 text-[clamp(1.25rem,1.8vw,1.5rem)] leading-snug text-paper-50">
@@ -169,7 +169,7 @@ export function Work({ data, classes, className, id }: DataProps<WorkSection, 'p
                 ) : null}
               </div>
 
-              <ol className={['grid gap-6 sm:grid-cols-2 xl:grid-cols-3', classes?.grid].filter(Boolean).join(' ')}>
+              <ol className={['grid gap-6 md:grid-cols-2', classes?.grid].filter(Boolean).join(' ')}>
                 {cases.map((kase, i) => (
                   <li key={kase.client} data-rise={Math.min(i + 1, 3)} className={classes?.card}>
                     <CaseCard kase={kase} index={i} />
