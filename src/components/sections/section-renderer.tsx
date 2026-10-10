@@ -104,7 +104,7 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
     }
     case 'capabilities':
       return (
-        <ScrollSection variant="slide-left">
+        <ScrollSection variant="tilt-up">
           <Capabilities capabilities={section} />
         </ScrollSection>
       );
