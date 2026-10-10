@@ -5,44 +5,61 @@ import { GsapReveal } from '@/lib/motion/gsap-reveal';
 import type { CtaSection, DataProps } from '@/lib/content/types';
 
 /**
- * CtaBanner — the mid-page ask as a full-bleed ember band.
+ * CtaBanner — the mid-page ask as a centered ember panel.
  *
- * One line of proof-adjacent ask: headline and body in paper white on the
- * brand ember, the action as a paper pill, the small print beneath it.
- * No eyebrow, no ornament — the colour is the event. Shares the CTA
- * content shape, so editors reuse the same fields in Keystatic.
+ * A rounded ember panel inset on the paper stage: giant centered statement,
+ * one large paper pill, the small print beneath it. A ghost ring and a
+ * held shade give it depth without ornament. Shares the CTA content shape,
+ * so editors reuse the same fields in Keystatic.
  */
 export function CtaBanner({ data, classes, className, id }: DataProps<CtaSection, 'band'>) {
   return (
-    <section id={id} className="relative overflow-hidden bg-accent-500">
-      {/* Heat across the band, never information. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_120%_at_50%_120%,rgb(0_0_0/0.22),transparent_70%)]"
-      />
-      <div className="relative mx-auto w-full max-w-7xl px-5 py-14 md:px-8 md:py-16">
+    <section id={id} className="relative overflow-hidden bg-paper py-20 md:py-24">
+      <div className="relative mx-auto w-full max-w-7xl px-5 md:px-8">
         <GsapReveal>
           <div
-            className={['flex flex-wrap items-center justify-between gap-x-12 gap-y-8', classes?.band, className]
+            className={[
+              'relative overflow-hidden rounded-[2.5rem] bg-accent-500 px-6 py-16 text-center shadow-[0_40px_100px_-40px_rgb(var(--color-accent-600)/0.6)] md:py-20',
+              classes?.band,
+              className,
+            ]
               .filter(Boolean)
               .join(' ')}
           >
-            <div data-rise className="max-w-[34ch]">
-              <h2 className="font-display text-[clamp(1.7rem,3.2vw,2.5rem)] font-bold leading-[1.08] tracking-tight text-paper-50">
+            {/* Depth, never information. */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(55%_100%_at_50%_115%,rgb(0_0_0/0.25),transparent_70%)]"
+            />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full ring-[28px] ring-paper-50/15"
+            />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -bottom-28 -left-20 h-80 w-80 rounded-full ring-[36px] ring-ink-950/10"
+            />
+
+            <div data-rise className="relative mx-auto max-w-[28ch]">
+              <h2 className="font-display text-[clamp(2.2rem,4.6vw,3.4rem)] font-bold leading-[1.05] tracking-tight text-paper-50">
                 {data?.headline}
               </h2>
-              <p className="mt-3 text-sm leading-relaxed text-paper-50/85">{data?.body}</p>
             </div>
-            <div data-rise="1" className="shrink-0">
+            {data?.body ? (
+              <p data-rise="1" className="relative mx-auto mt-5 max-w-[52ch] text-sm leading-relaxed text-paper-50/85 md:text-base">
+                {data.body}
+              </p>
+            ) : null}
+            <div data-rise="2" className="relative mt-9 flex flex-col items-center gap-4">
               <a
                 href={data?.ctaHref || '#'}
-                className="inline-flex items-center gap-2.5 rounded-full bg-paper-50 px-7 py-4 text-[0.95rem] font-semibold text-ink-950 shadow-[0_14px_36px_-14px_rgb(0_0_0/0.5)] transition hover:scale-[1.02] hover:bg-paper-100 active:scale-[0.98]"
+                className="inline-flex items-center gap-2.5 rounded-full bg-paper-50 px-8 py-4 text-base font-semibold text-ink-950 shadow-[0_14px_36px_-14px_rgb(0_0_0/0.5)] transition hover:scale-[1.02] hover:bg-paper-100 active:scale-[0.98]"
               >
                 {data?.cta}
                 <MdiIcon name="arrowRight" size={0.85} />
               </a>
               {data?.note ? (
-                <p className="mt-3 font-mono text-[10px] capitalize tracking-[0.14em] text-paper-50/70">
+                <p className="font-mono text-[10px] capitalize tracking-[0.14em] text-paper-50/70">
                   {data.note}
                 </p>
               ) : null}
