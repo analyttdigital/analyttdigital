@@ -9,10 +9,10 @@ import type { LayoutContent } from '@/lib/content/types';
 /**
  * The footer — where the path terminates.
  *
- * The closing statement and the audit action sit on the deep band, then the
- * rail: wordmark, tagline, the two link columns, and an imprint line that
- * carries the operating facts rather than a slogan. Nothing here glows and
- * nothing is boxed. The net runs one last time, wired from the closing
+ * The closing statement and the audit action sit on the paper ground, then
+ * the rail: wordmark, tagline, the two link columns, and an imprint line
+ * that carries the operating facts rather than a slogan. Nothing here glows
+ * and nothing is boxed. The net runs one last time, wired from the closing
  * statement through the columns, so the mesh closes with the page.
  */
 /** Closing statement and its action on the top row, then the brand block
@@ -33,10 +33,10 @@ export function SiteFooter({ footer }: { footer?: LayoutContent }) {
 
   return (
     <footer id="contact" className="relative">
-      <Band ground="deep" mesh={{ seed: 71, count: 5, depth: 26, opacity: 0.46, anchors: NODES }}>
+      <Band ground="paper" mesh={{ seed: 71, count: 5, depth: 26, opacity: 0.46, tone: 'plate', anchors: NODES }}>
         <div className="flex flex-col items-start gap-10 lg:flex-row lg:items-end lg:justify-between">
           <Reveal>
-            <h2 className="display max-w-[20ch] text-[clamp(2.1rem,5vw,3.7rem)] text-primary-50">
+            <h2 className="display max-w-[20ch] text-[clamp(2.1rem,5vw,3.7rem)] text-ink-950">
               {footer?.footerHeadline ?? 'Ready to see exactly where your growth is hiding?'}
             </h2>
           </Reveal>
@@ -55,7 +55,7 @@ export function SiteFooter({ footer }: { footer?: LayoutContent }) {
           <div>
             <p className="flex items-center">
               <Image
-                src="/img/logo-alt.svg"
+                src="/img/logo-alt-dark.svg"
                 alt={`${brand} ${emphasis}`}
                 width={176}
                 height={44}
@@ -72,7 +72,7 @@ export function SiteFooter({ footer }: { footer?: LayoutContent }) {
               <ul className="mt-5 space-y-3">
                 {column.links.map((link) => (
                   <li key={link.label}>
-                    <a href={link.href} className="link text-[14.5px] text-primary-100">
+                    <a href={link.href} className="link link--paper text-[14.5px] text-ink-700">
                       {link.label}
                     </a>
                   </li>
@@ -83,7 +83,7 @@ export function SiteFooter({ footer }: { footer?: LayoutContent }) {
         </div>
 
         {/* the imprint */}
-        <div className="mt-14 flex flex-col gap-2 border-t border-primary-50/12 pt-5 md:flex-row md:items-center md:justify-between">
+        <div className="mt-14 flex flex-col gap-2 border-t border-ink-950/10 pt-5 md:flex-row md:items-center md:justify-between">
           <p className="label">{footer?.legal}</p>
           <p className="label">
             {footer?.contactNote} · {chrome.imprint}
