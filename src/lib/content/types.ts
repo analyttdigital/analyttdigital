@@ -254,14 +254,15 @@ export type ProcessSection = {
   eyebrow: string;
   headline: string;
   headlineAccent: string;
-  lede: string;
-  chapterTitle?: string;
+  lede: string;  chapterTitle?: string;
   cardTitle: string;
   cardSub: string;
   playLabel: string;
   pauseLabel: string;
   stepOfTemplate: string;
   illustrativeNote: string;
+  /** Filled stage backdrop — empty `src` hides it. */
+  image?: ContentImage;
   /** Ms each step holds while autoplaying. */
   dwellMs: number;
   steps: ProcessStep[];

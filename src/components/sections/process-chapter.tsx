@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { MdiIcon, processStepIcons } from '@/lib/icons/resolve-icon';
+import { DynamicImage } from '@/components/media/dynamic-image';
 import { GlowButton } from '@/components/layout/glow-button';
 import { InViewTitle } from '@/components/graphics/in-view-title';
 import { Reveal } from '@/lib/motion/reveal';
@@ -68,7 +69,13 @@ export function ProcessChapter({
 			data-process-stage
 			className="bg-paper relative flex h-full min-h-[max(100svh,640px)] w-full flex-col overflow-hidden text-ink-800"
 		>
-			<div className="flex min-h-0 flex-1 flex-col justify-center overflow-hidden py-14 pt-32">
+			{process?.image?.src?.trim() ? (
+				<div aria-hidden className="pointer-events-none absolute inset-0">
+					<DynamicImage image={process.image} className="absolute inset-0 h-full w-full object-cover" sizes="100vw" />
+					<div className="absolute inset-0 bg-gradient-to-b from-paper via-paper-50/70 to-paper" />
+				</div>
+			) : null}
+			<div className="relative flex min-h-0 flex-1 flex-col justify-center overflow-hidden py-14 pt-32">
 					<div className="mx-auto  w-full max-w-7xl flex flex-col items-center justify-center ">
 					<p className="label text-ink-500">{process?.eyebrow}</p>
 
@@ -158,7 +165,7 @@ export function ProcessChapter({
 
 				{/* Foot — meter + scroll cue. A direct stage child so it stays
 				    bottom-anchored while the story above flexes. */}
-				<div className="border-t border-accent/10 px-5 py-5 md:px-8">
+				<div className="relative border-t border-accent/10 px-5 py-5 md:px-8">
 					<div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-6">
 						<span className="label text-ink-500">
 							{process?.cardTitle ?? "Process"}

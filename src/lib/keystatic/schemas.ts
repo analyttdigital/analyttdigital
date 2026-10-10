@@ -379,6 +379,7 @@ const processFields = {
   pauseLabel: fields.text({ label: 'Pause label', defaultValue: 'Pause' }),
   stepOfTemplate: fields.text({ label: 'Step counter (use {n} and {total})', defaultValue: 'Step {n} of {total}' }),
   illustrativeNote: fields.text({ label: 'Visual note', defaultValue: 'Illustrative' }),
+  image: imageField('Stage backdrop (filled — empty hides it)'),
   dwellMs: fields.integer({ label: 'Autoplay hold per step (ms)', defaultValue: 7000 }),
   steps: fields.array(
     fields.object({
