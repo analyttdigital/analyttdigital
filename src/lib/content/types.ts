@@ -351,6 +351,8 @@ export type IndustriesSection = {
   body: string;
   items: string[];
   hint?: string;
+  /** Filled section backdrop — empty `src` hides it. */
+  image?: ContentImage;
 };
 
 export type InsightArticle = { index: string; title: string; description: string; href: string };

@@ -1,3 +1,4 @@
+import { DynamicImage } from '@/components/media/dynamic-image';
 import { InViewTitle } from '@/components/graphics/in-view-title';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
 import type { DataProps, IndustriesSection } from '@/lib/content/types';
@@ -27,6 +28,12 @@ export function Industries({ data, classes, className, id }: DataProps<Industrie
 
   return (
     <section id={id ?? 'industries'} className="relative overflow-hidden bg-paper py-24 md:py-32">
+      {data?.image?.src?.trim() ? (
+        <div aria-hidden className="pointer-events-none absolute inset-0">
+          <DynamicImage image={data.image} className="absolute inset-0 h-full w-full object-cover" sizes="100vw" />
+          <div className="absolute inset-0 bg-gradient-to-b from-paper-50/95 via-paper-50/60 to-paper-50/95" />
+        </div>
+      ) : null}
       <div className="relative mx-auto w-full max-w-7xl px-5 md:px-8">
         <GsapReveal>
           {/* ---- the head ------------------------------------------ */}

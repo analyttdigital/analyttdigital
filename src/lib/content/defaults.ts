@@ -594,6 +594,7 @@ const enHome: PageDoc = {
 			headline: "Sectors we know.",
 			body: "From e-commerce in Nairobi to logistics across the region — a short index of where we have done the work.",
 			hint: "Selected sectors",
+			image: { src: "/media/banner-1.png", alt: "" },
 			items: [
 				"Real Estate",
 				"E-commerce",
@@ -1240,6 +1241,7 @@ const swHome: PageDoc = {
 			headline: "Sekta tunazozijua.",
 			body: "Kutoka maduka mtandaoni Nairobi hadi usafirishaji wa kikanda — orodha fupi ya kazi tulizofanya.",
 			hint: "Sekta tulizofanyia kazi",
+			image: { src: "/media/banner-1.png", alt: "" },
 			items: [
 				"Ardhi na Nyumba",
 				"Duka la Mtandaoni",

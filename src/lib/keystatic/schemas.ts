@@ -569,6 +569,7 @@ const industriesFields = {
     multiline: true,
   }),
   hint: fields.text({ label: 'Hint line', defaultValue: 'Selected sectors' }),
+  image: imageField('Backdrop image (filled — empty hides it)'),
   items: fields.array(fields.text({ label: 'Industry' }), {
     label: 'Industries',
     itemLabel: (props) => props.value,
