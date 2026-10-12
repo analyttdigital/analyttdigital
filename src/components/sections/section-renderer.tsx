@@ -115,10 +115,11 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
         </ScrollSection>
       );
     case 'work':
-      // The pin lives inside Work itself (the runway needs the panel width),
-      // so the renderer leaves it unwrapped — no enter effect to fight the
-      // sticky stage.
-      return <Work data={section} />;
+      return (
+        <ScrollSection variant="window-open">
+          <Work data={section} />
+        </ScrollSection>
+      );
     case 'stats':
       return (
         <ScrollSection variant="scale-in">
