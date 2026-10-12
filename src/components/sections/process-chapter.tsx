@@ -208,3 +208,21 @@ export function ProcessClosing({ process }: { process?: ProcessSection }) {
 			</div>
 	);
 }
+
+/** The ask that holds the pin's tail.
+ *
+ *  The shrink runway ends with the stage empty, so the renderer passes this
+ *  as the `ScrollSection` bridge: it rises as the step card dissolves — the
+ *  runway resolves onto the ask instead of onto blank paper. Same content
+ *  fields as the closing row, no new shape. */
+export function ProcessBridge({ process }: { process?: ProcessSection }) {
+	return (
+		<div className="flex flex-col items-center gap-7 text-center">
+			<span className="label label--live text-ink-500">{process?.cardTitle ?? "Process"}</span>
+			<GlowButton
+				data={{ label: process?.cta ?? "", href: process?.ctaHref }}
+				tone="ember"
+			/>
+		</div>
+	);
+}

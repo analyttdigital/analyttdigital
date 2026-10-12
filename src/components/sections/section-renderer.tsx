@@ -9,7 +9,7 @@ import { HeroStage } from '@/components/sections/hero';
 import { Industries } from '@/components/sections/industries';
 import { Insights } from '@/components/sections/insights';
 import { Problem } from '@/components/sections/problem';
-import { ProcessChapter, ProcessClosing } from '@/components/sections/process-chapter';
+import { ProcessChapter, ProcessClosing, ProcessBridge } from '@/components/sections/process-chapter';
 import { Stats } from '@/components/sections/stats';
 import { Work } from '@/components/sections/work';
 import type { Section } from '@/lib/content/types';
@@ -88,6 +88,11 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
 						variant="shrink"
 						runway={200}
 						range={[exitStart, 1]}
+						// The bridge shares the stage's exit window, so the ask
+						// crossfades up as the step card dissolves — the runway
+						// resolves onto the CTA, not onto bare paper.
+						bridgeRange={[exitStart, 1]}
+						bridge={<ProcessBridge process={section} />}
 						// The cover trick: pulled up over the hero's held flood on an
 						// opaque ground (`bg-background` is not a theme token, so the
 						// process ground `bg-paper` stands in).

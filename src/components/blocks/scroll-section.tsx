@@ -27,6 +27,11 @@
  *   100svh stage; the effect plays at the END of the runway as the stage
  *   leaves. `portal` is your hero's circular zoom, generalised.
  *
+ * BRIDGE — a pinned stage can hold copy that arrives as the effect window
+ * opens: the hero's portal carries it inside the flood, every other pinned
+ * variant holds it on the stage itself. One mount gate, one fade — a
+ * shrink runway resolves onto its bridge instead of onto bare ground.
+ *
  * SNAP
  * - 'proximity': native CSS scroll-snap (best on touch).
  * - 'magnetic': after scrolling settles near the section's top, smooth-scroll
@@ -98,11 +103,11 @@ export interface ScrollSectionProps {
 	originMobile?: string;
 	/** `portal`: Tailwind classes painting the flood (match the NEXT section's ground). Default 'bg-primary'. */
 	floodClassName?: string;
-	/** `portal`: copy shown inside the flood. */
+	/** `portal`: copy shown inside the flood. Other pinned variants: copy held on the stage as the effect window opens — the ask that fills a shrink runway's tail. */
 	bridge?: ReactNode;
 	/** `portal`: max circle radius in %. 125 covers 16:9, ultrawide and portrait. */
 	portalMaxRadius?: number;
-	/** `portal`: progress window for the bridge copy. */
+	/** Progress window for the bridge copy. */
 	bridgeRange?: [number, number];
 
 	/** Snap behaviour for the section top. Default 'none'. */
@@ -410,6 +415,11 @@ export function ScrollSection({
 	const floodClip = useMotionTemplate`circle(${radius}% at ${pos})`;
 	const bridgeIn = useTransform(p, (v) => smooth(bridgeRange[0], bridgeRange[1], v));
 	const bridgeY = useTransform(bridgeIn, (v) => (1 - v) * 45);
+	/* The bridge mounts as its window opens and unmounts before it, so an
+	   invisible bridge never covers the stage or reaches the tab order. */
+	const [bridgeOn, setBridgeOn] = useState(false);
+	useMotionValueEvent(p, "change", (v) => setBridgeOn(v >= bridgeRange[0]));
+	useEffect(() => setBridgeOn(p.get() >= bridgeRange[0]), [p, bridgeRange[0]]);
 
 	/* will-change only while mid-flight (threshold crossings only). */
 	const [live, setLive] = useState(false);
@@ -438,7 +448,7 @@ export function ScrollSection({
 		return (
 			<section ref={ref} id={id} className={`relative ${className}`}>
 				<div className={innerClassName}>{content}</div>
-				{variant === "portal" && bridge ? <div className="relative">{bridge}</div> : null}
+				{pinned && bridge ? <div className="relative">{bridge}</div> : null}
 			</section>
 		);
 	}
@@ -493,6 +503,19 @@ export function ScrollSection({
 							</div>
 						</motion.div>
 					)}
+
+					{/* The bridge on every other pinned variant: held on the
+					    stage, above the effect, arriving with its window. */}
+					{variant !== "portal" && bridge && bridgeOn ? (
+						<div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center px-5">
+							<motion.div
+								className="pointer-events-auto w-full"
+								style={{ opacity: bridgeIn, y: bridgeY }}
+							>
+								{bridge}
+							</motion.div>
+						</div>
+					) : null}
 				</div>
 			</section>
 		);
