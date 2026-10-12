@@ -48,11 +48,11 @@ export function CtaBanner({
             />
             <div
               aria-hidden
-              className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full ring-[28px] ring-paper-50/15"
+              className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full ring-[28px] ring-paper-50/15"
             />
             <div
               aria-hidden
-              className="pointer-events-none absolute -bottom-28 -left-20 h-80 w-80 rounded-full ring-[36px] ring-ink-950/10"
+              className="pointer-events-none absolute -bottom-28 -right-20 h-80 w-80 rounded-full ring-[36px] ring-ink-950/10"
             />
 
             <div data-rise className="relative mx-auto max-w-[28ch]">
