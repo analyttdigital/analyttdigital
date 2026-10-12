@@ -14,10 +14,9 @@ import type { DataProps, WorkCase, WorkSection } from '@/lib/content/types';
  * panel: the intro (heading, paragraph, ink pill CTA) beside a staggered
  * two-column card index. Cards alternate a light lavender tint with white,
  * positionally — the sequence is the design, so no per-card styling lives
- * in content. Each card keeps its proof figure (the recovering number
- * counts up in ember); a case `image`, when present, covers the card under
- * a dark gradient via the shared media resolver, otherwise the generated
- * flow lines carry it.
+ * in content. Each card stacks its media on top (a cropped photo via the
+ * shared media resolver, otherwise generated flow lines) above the copy
+ * and its proof figure (the recovering number counts up in ember).
  */
 
 /** Light lavender tint, except every third card which stays white — a
@@ -64,51 +63,49 @@ function CaseCard({ kase, index }: { kase: WorkCase; index: number }) {
     <article
       aria-label={`${kase.depth || kase.client} — ${kase.headline}`}
       className={[
-        'group relative flex min-h-[340px] flex-col overflow-hidden rounded-3xl p-7',
+        'group relative flex min-h-[340px] flex-col overflow-hidden rounded-3xl',
         isLow(index) ? 'md:mt-12 md:min-h-[320px]' : 'md:min-h-[400px]',
-        !photo && tint ? 'bg-primary-100' : '',
-        !photo && !tint ? 'bg-paper-50 shadow-[0_24px_60px_-30px_rgb(var(--color-primary-600)/0.35)] ring-1 ring-ink-950/[0.08]' : '',
+        tint ? 'bg-primary-100' : 'bg-paper-50 shadow-[0_24px_60px_-30px_rgb(var(--color-primary-600)/0.35)] ring-1 ring-ink-950/[0.08]',
       ]
         .filter(Boolean)
         .join(' ')}
     >
-      {photo ? (
-        <>
-          <DynamicImage image={photo} className="absolute inset-0 h-full w-full object-cover" sizes="480px" />
-          <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/70 to-ink-950/30" />
-        </>
-      ) : (
-        <Waves
-          stroke={tint ? 'rgb(var(--color-primary-500))' : 'rgb(var(--color-primary-300))'}
-          className="absolute inset-0 h-full w-full"
-        />
-      )}
-
-      <div className="relative flex items-start justify-between gap-3">
-        <span className={`font-mono text-xs tracking-[0.14em] ${photo ? 'text-paper-50/60' : 'text-primary-600'}`}>#{index + 1}</span>
+      {/* Media on top — photo first, generated flow lines as the fallback. */}
+      <div className="relative h-48 w-full shrink-0 overflow-hidden md:h-52">
+        {photo ? (
+          <DynamicImage image={photo} className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" sizes="480px" />
+        ) : (
+          <Waves
+            stroke={tint ? 'rgb(var(--color-primary-500))' : 'rgb(var(--color-primary-300))'}
+            className="absolute inset-0 h-full w-full"
+          />
+        )}
+        <span className="absolute left-5 top-5 rounded-full bg-ink-950/55 px-2.5 py-1 font-mono text-xs tracking-[0.14em] text-paper-50 backdrop-blur-sm">#{index + 1}</span>
         {kase.tag ? (
-          <span className={`rounded-full px-2.5 py-1 font-mono text-[10px] capitalize tracking-[0.14em] ${photo ? 'bg-paper-50/15 text-paper-50' : 'bg-accent-500/15 text-accent-700'}`}>
+          <span className="absolute right-5 top-5 rounded-full bg-paper-50/90 px-2.5 py-1 font-mono text-[10px] capitalize tracking-[0.14em] text-accent-700 backdrop-blur-sm">
             {kase.tag}
           </span>
         ) : null}
       </div>
 
-      <div className="relative mt-auto pt-10">
-        <p className={`font-mono text-[10.5px] capitalize tracking-[0.16em] ${photo ? 'text-primary-200' : 'text-primary-600'}`}>
+      <div className="relative flex flex-1 flex-col p-7 pt-6">
+        <p className="font-mono text-[10.5px] capitalize tracking-[0.16em] text-primary-600">
           {kase.industry}
         </p>
-        <h3 className={`verb mt-2 text-[clamp(1.25rem,1.8vw,1.5rem)] leading-snug ${photo ? 'text-paper-50' : 'text-ink-950'}`}>
+        <h3 className="verb mt-2 text-[clamp(1.25rem,1.8vw,1.5rem)] leading-snug text-ink-950">
           {kase.client}
         </h3>
-        <p className={`mt-2 line-clamp-4 text-[13px] leading-relaxed ${photo ? 'text-paper-50/75' : 'text-ink-500'}`}>{kase.body}</p>
-        <div className={`mt-5 border-t pt-4 ${photo ? 'border-paper-50/15' : 'border-ink-950/10'}`}>
-          <CountUp
-            value={kase.metric}
-            className={`num block text-[clamp(1.5rem,2.4vw,2rem)] leading-none ${photo ? 'text-paper-50' : 'text-accent-600'}`}
-          />
-          <span className={`mt-1.5 block font-mono text-[9.5px] capitalize leading-relaxed tracking-[0.14em] ${photo ? 'text-paper-50/60' : 'text-ink-500'}`}>
-            {kase.metricLabel}
-          </span>
+        <p className="mt-2 line-clamp-4 text-[13px] leading-relaxed text-ink-500">{kase.body}</p>
+        <div className="mt-auto pt-5">
+          <div className="border-t border-ink-950/10 pt-4">
+            <CountUp
+              value={kase.metric}
+              className="num block text-[clamp(1.5rem,2.4vw,2rem)] leading-none text-accent-600"
+            />
+            <span className="mt-1.5 block font-mono text-[9.5px] capitalize leading-relaxed tracking-[0.14em] text-ink-500">
+              {kase.metricLabel}
+            </span>
+          </div>
         </div>
       </div>
     </article>
@@ -120,7 +117,7 @@ export function Work({ data, classes, className, id }: DataProps<WorkSection, 'p
   return (
     <section id={id ?? 'work'} className="relative overflow-hidden bg-paper py-24 md:py-32">
       {/* Stage backdrop — faint flow, never information. */}
-      <div aria-hidden className="pointer-events-none absolute inset-0">
+      {/* <div aria-hidden className="pointer-events-none absolute inset-0">
         <div className="absolute -right-48 -top-32 h-[760px] w-[760px] opacity-70">
           <Waves stroke="rgb(var(--color-primary-300))" className="h-full w-full" />
         </div>
@@ -128,7 +125,7 @@ export function Work({ data, classes, className, id }: DataProps<WorkSection, 'p
           <Waves stroke="rgb(var(--color-primary-400))" className="h-full w-full" />
         </div>
         <div className="absolute left-1/2 top-1/3 h-[480px] w-[720px] -translate-x-1/2 rounded-full bg-primary-200/50 blur-3xl" />
-      </div>
+      </div> */}
 
       <div className="relative mx-auto w-full max-w-7xl px-5 md:px-8">
         <GsapReveal>
