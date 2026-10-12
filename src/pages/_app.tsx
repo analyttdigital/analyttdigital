@@ -9,7 +9,7 @@ import { defaultLocale, type Locale } from '@/lib/content/types';
 // module graph, so a family imported only by `_document` never has its
 // variable defined. `_document` mounts the classes on `<Html>` (where `body`
 // can see them); this import is what makes the CSS exist at all.
-import { fontsClass } from '@/lib/fonts';
+import { fontsClass } from '@/fonts/fonts';
 import type { PageProps } from '@/lib/keystatic/getStaticProps';
 import { ReactLenis } from "lenis/react";
 import type { LenisRef } from "lenis/react";

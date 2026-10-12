@@ -880,7 +880,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 						<button
 							ref={menuButtonRef}
 							type="button"
-							className="relative hidden h-10 w-10 cursor-pointer place-items-center border-0 bg-transparent text-primary-100 active:bg-primary-800 [@container_site-header_(max-width:759px)]:grid"
+							className={`relative hidden h-10 w-10 cursor-pointer place-items-center border-0 bg-transparent active:bg-primary-800 [@container_site-header_(max-width:759px)]:grid ${scrolled ? " text-primary-100" : " text-primary-700"}`}
 							aria-expanded={menuOpen}
 							aria-controls={`${id}-sheet`}
 							aria-label={menuOpen ? "Close menu" : "Open menu"}

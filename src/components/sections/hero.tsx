@@ -699,7 +699,7 @@ export function HeroStage({
 						: undefined
 				}
 			>
-					<div className="mx-auto w-full max-w-7xl pb-[120px] md:pb-16">
+					<div className="mx-auto w-full max-w-7xl md:pb-[120px] md:pb-16">
 						<div className="w-full max-w-[760px]">
 							<a
 								href={ctaHref}

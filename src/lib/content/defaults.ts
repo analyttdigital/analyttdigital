@@ -71,12 +71,36 @@ const enHome: PageDoc = {
 			statB_label: "Leads / month",
 			statB_value: "1,200+",
 			marquee: [
-				{ label: "Google Ads Partner", logo: { src: "/img/partners/google.svg", alt: "Google" }, logoDark: { src: "/img/partners/google-light.svg", alt: "Google" } },
-				{ label: "Meta Business Partner", logo: { src: "/img/partners/meta.svg", alt: "Meta" }, logoDark: { src: "/img/partners/meta-light.svg", alt: "Meta" } },
-				{ label: "TikTok Marketing Partner", logo: { src: "/img/partners/tiktok.svg", alt: "TikTok" }, logoDark: { src: "/img/partners/tiktok-light.svg", alt: "TikTok" } },
-				{ label: "LinkedIn Marketing Partner", logo: { src: "/img/partners/linkedin.svg", alt: "LinkedIn" }, logoDark: { src: "/img/partners/linkedin-light.svg", alt: "LinkedIn" } },
-				{ label: "HubSpot Solutions Partner", logo: { src: "/img/partners/hubspot.svg", alt: "HubSpot" }, logoDark: { src: "/img/partners/hubspot-light.svg", alt: "HubSpot" } },
-				{ label: "Google Analytics 4 Certified", logo: { src: "/img/partners/google.svg", alt: "Google Analytics" }, logoDark: { src: "/img/partners/google-light.svg", alt: "Google Analytics" } },
+				{
+					label: "Google Ads Partner",
+					logo: { src: "/img/partners/google.svg", alt: "Google" },
+					logoDark: { src: "/img/partners/google-light.svg", alt: "Google" },
+				},
+				{
+					label: "Meta Business Partner",
+					logo: { src: "/img/partners/meta.svg", alt: "Meta" },
+					logoDark: { src: "/img/partners/meta-light.svg", alt: "Meta" },
+				},
+				{
+					label: "TikTok Marketing Partner",
+					logo: { src: "/img/partners/tiktok.svg", alt: "TikTok" },
+					logoDark: { src: "/img/partners/tiktok-light.svg", alt: "TikTok" },
+				},
+				{
+					label: "LinkedIn Marketing Partner",
+					logo: { src: "/img/partners/linkedin.svg", alt: "LinkedIn" },
+					logoDark: { src: "/img/partners/linkedin-light.svg", alt: "LinkedIn" },
+				},
+				{
+					label: "HubSpot Solutions Partner",
+					logo: { src: "/img/partners/hubspot.svg", alt: "HubSpot" },
+					logoDark: { src: "/img/partners/hubspot-light.svg", alt: "HubSpot" },
+				},
+				{
+					label: "Google Analytics 4 Certified",
+					logo: { src: "/img/partners/google.svg", alt: "Google Analytics" },
+					logoDark: { src: "/img/partners/google-light.svg", alt: "Google Analytics" },
+				},
 			],
 			panels: [
 				{
@@ -128,7 +152,11 @@ const enHome: PageDoc = {
 					kind: "code",
 					title: "server-side tracking",
 					icon: "document",
-					codeLines: ["gtag('event', 'generate_lead',", "{ value: 280, currency: 'KES' }", "// conversion attributed"],
+					codeLines: [
+						"gtag('event', 'generate_lead',",
+						"{ value: 280, currency: 'KES' }",
+						"// conversion attributed",
+					],
 				},
 				{
 					kind: "alert",
@@ -320,7 +348,12 @@ const enHome: PageDoc = {
 							{ label: "LinkedIn", pct: 10, tone: "soft" },
 						],
 						targetsTitle: "90-Day Targets",
-						targets: ["KPIs defined", "Channels chosen", "Budget allocated", "Targets set"],
+						targets: [
+							"KPIs defined",
+							"Channels chosen",
+							"Budget allocated",
+							"Targets set",
+						],
 					},
 				},
 				{
@@ -378,7 +411,8 @@ const enHome: PageDoc = {
 			orderLabel: "Reading order",
 			orderServices: "By service",
 			orderSequence: "By engagement",
-			illustrativeNote: "Figures are illustrative samples of a measured account, not client results.",
+			illustrativeNote:
+				"Figures are illustrative samples of a measured account, not client results.",
 			items: [
 				{
 					tag: "Paid Media",
@@ -460,6 +494,7 @@ const enHome: PageDoc = {
 			cases: [
 				{
 					client: "Mandevu BeardCare",
+					image: { src: "/media/work/case-1.png", alt: "Mandevu BeardCare" },
 					industry: "Retail · Nairobi",
 					depth: "Case 01",
 					headline: "From KES 80K/mo in losses to KES 2.4M in monthly revenue.",
@@ -469,6 +504,7 @@ const enHome: PageDoc = {
 				},
 				{
 					client: "ZoomTech Ke",
+					image: { src: "/media/work/case-2.png", alt: "ZoomTech Ke" },
 					industry: "Technology",
 					depth: "Case 02",
 					headline: "1,200+ qualified leads per month at KES 280 CPL.",
@@ -478,6 +514,7 @@ const enHome: PageDoc = {
 				},
 				{
 					client: "Kings Bliss Developers",
+					image: { src: "/media/work/case-3.png", alt: "Kings Bliss Developers" },
 					industry: "Real Estate",
 					depth: "Case 03",
 					headline: "37 property inquiries per week from a KES 150K budget.",
@@ -486,7 +523,8 @@ const enHome: PageDoc = {
 					metricLabel: "growth in weekly inquiries",
 				},
 				{
-					client: "Mabati Yetu",
+                    client: "Mabati Yetu",
+                    image: { src: "/media/work/case-4.png", alt: "Mabati Yetu" },
 					industry: "Logistics",
 					depth: "Case 04",
 					headline: "Page 1 rankings for 47 high-intent keywords in 8 months.",
@@ -548,7 +586,15 @@ const enHome: PageDoc = {
 				betweenNote: "between 08:00 and 18:00",
 				tableCaption: "Hourly values by day of the week",
 				days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-				dayNames: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+				dayNames: [
+					"Monday",
+					"Tuesday",
+					"Wednesday",
+					"Thursday",
+					"Friday",
+					"Saturday",
+					"Sunday",
+				],
 				metrics: [
 					{
 						key: "leads",
@@ -1207,7 +1253,8 @@ const swHome: PageDoc = {
 			ctaHref: "#",
 			cases: [
 				{
-					client: "Mandevu BeardCare",
+                    client: "Mandevu BeardCare",
+                    image: { src: "/media/work/case-1.png", alt: "Mandevu BeardCare" },
 					industry: "Reja Reja · Nairobi",
 					depth: "Kesi 01",
 					headline: "Kutoka hasara za KES 80K/mwezi hadi mapato ya KES 2.4M.",
@@ -1216,7 +1263,8 @@ const swHome: PageDoc = {
 					metricLabel: "KES mapato ya mwezi ndani ya siku 90",
 				},
 				{
-					client: "ZoomTech Ke",
+                    client: "ZoomTech Ke",
+                    image: { src: "/media/work/case-2.png", alt: "ZoomTech Ke" },
 					industry: "Teknolojia",
 					depth: "Kesi 02",
 					headline: "Wateja 1,200+ kwa mwezi kwa KES 280 kila mmoja.",
@@ -1225,7 +1273,8 @@ const swHome: PageDoc = {
 					metricLabel: "gharama kwa mteja ndani ya siku 60",
 				},
 				{
-					client: "Kings Bliss Developers",
+                    client: "Kings Bliss Developers",
+                    image: { src: "/media/work/case-3.png", alt: "Kings Bliss Developers" },
 					industry: "Ardhi na Nyumba",
 					depth: "Kesi 03",
 					headline: "Maswali 37 kwa wiki kwa bajeti ya KES 150K.",
@@ -1234,7 +1283,8 @@ const swHome: PageDoc = {
 					metricLabel: "kuongezeka kwa maswali ya wiki",
 				},
 				{
-					client: "Mabati Yetu",
+                    client: "Mabati Yetu",
+                    image: { src: "/media/work/case-4.png", alt: "Mabati Yetu" },
 					industry: "Usafirishaji",
 					depth: "Kesi 04",
 					headline: "Ukurasa wa kwanza kwa maneno 47 ndani ya miezi 8.",

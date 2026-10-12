@@ -381,7 +381,7 @@ export function CapabilityReadout({ readout }: { readout?: Readout }) {
         armed && (inView || reduce) ? 'fig-lit' : ''
       }`}
     >
-      <figcaption className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b border-primary-50/15 pb-2.5">
+      <figcaption className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 pb-2.5">
         <span className="font-mono text-[9.5px] font-medium capitalize tracking-[0.16em] text-primary-300">
           {readout.caption}
         </span>
