@@ -24,6 +24,9 @@ export type Chrome = {
   everyHundred: string;
   attributed: string;
   workNote: string;
+  workPrev: string;
+  workNext: string;
+  workDrag: string;
   inPreparation: string;
   imprint: string;
   backToTop: string;
@@ -41,6 +44,9 @@ const en: Chrome = {
   everyHundred: 'Every 100 shillings of spend',
   attributed: 'Attributed',
   workNote: 'Figures are real; client names are withheld pending publication permission.',
+  workPrev: 'Previous case',
+  workNext: 'Next case',
+  workDrag: 'Drag or use the keys',
   inPreparation: 'In preparation',
   imprint: 'Measured in Nairobi. Serving East Africa.',
   backToTop: 'Back to top',
@@ -58,6 +64,9 @@ const sw: Chrome = {
   everyHundred: 'Kila shilingi 100 ya matumizi',
   attributed: 'Zilizofuatiliwa',
   workNote: 'Takwimu ni halisi; majina ya wateja yamefichwa hadi kibali.',
+  workPrev: 'Kesi iliyotangulia',
+  workNext: 'Kesi inayofuata',
+  workDrag: 'Buruta au tumia vitufe',
   inPreparation: 'Inaandikwa',
   imprint: 'Kilipimwa Nairobi. Tunahudumia Afrika Mashariki.',
   backToTop: 'Rudi juu',

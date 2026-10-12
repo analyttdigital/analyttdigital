@@ -4,6 +4,7 @@ import {
   mdiAnchor,
   mdiArrowBottomRight,
   mdiArrowDown,
+  mdiArrowLeft,
   mdiArrowRight,
   mdiArrowTopRight,
   mdiAsterisk,
@@ -64,6 +65,7 @@ import {
  */
 export const mdi = {
   arrowRight: mdiArrowRight,
+  arrowLeft: mdiArrowLeft,
   arrowDown: mdiArrowDown,
   arrowBottomRight: mdiArrowBottomRight,
   arrowTopRight: mdiArrowTopRight,
