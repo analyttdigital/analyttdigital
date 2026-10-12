@@ -26,6 +26,7 @@ export type Chrome = {
   workNote: string;
   inPreparation: string;
   imprint: string;
+  backToTop: string;
 };
 
 const en: Chrome = {
@@ -42,6 +43,7 @@ const en: Chrome = {
   workNote: 'Figures are real; client names are withheld pending publication permission.',
   inPreparation: 'In preparation',
   imprint: 'Measured in Nairobi. Serving East Africa.',
+  backToTop: 'Back to top',
 };
 
 const sw: Chrome = {
@@ -58,6 +60,7 @@ const sw: Chrome = {
   workNote: 'Takwimu ni halisi; majina ya wateja yamefichwa hadi kibali.',
   inPreparation: 'Inaandikwa',
   imprint: 'Kilipimwa Nairobi. Tunahudumia Afrika Mashariki.',
+  backToTop: 'Rudi juu',
 };
 
 const strings: Record<Locale, Chrome> = { en, sw };

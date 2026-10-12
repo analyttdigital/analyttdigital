@@ -1,8 +1,9 @@
 'use client';
 
+import { DynamicImage } from '@/components/media/dynamic-image';
 import { MdiIcon } from '@/lib/icons/resolve-icon';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
-import type { CtaSection, DataProps } from '@/lib/content/types';
+import type { ContentImage, CtaSection, DataProps } from '@/lib/content/types';
 
 /**
  * CtaBanner — the mid-page ask as a centered ember panel.
@@ -10,22 +11,36 @@ import type { CtaSection, DataProps } from '@/lib/content/types';
  * A rounded ember panel inset on the paper stage: giant centered statement,
  * one large paper pill, the small print beneath it. A ghost ring and a
  * held shade give it depth without ornament. Shares the CTA content shape,
- * so editors reuse the same fields in Keystatic.
+ * so editors reuse the same fields in Keystatic. An optional `background`
+ * image ref covers the panel (resolved through the shared media resolver)
+ * under a dark gradient — used when the banner rides as the process
+ * bridge. `bare` drops the outer stage wrapper so the banner can sit
+ * inside a pinned bridge.
  */
-export function CtaBanner({ data, classes, className, id }: DataProps<CtaSection, 'band'>) {
-  return (
-    <section id={id} className="relative overflow-hidden bg-paper py-20 md:py-24">
-      <div className="relative mx-auto w-full max-w-7xl px-5 md:px-8">
-        <GsapReveal>
-          <div
-            className={[
-              'relative overflow-hidden rounded-[2.5rem] bg-accent-500 px-6 py-16 text-center shadow-[0_40px_100px_-40px_rgb(var(--color-accent-600)/0.6)] md:py-20',
-              classes?.band,
-              className,
-            ]
-              .filter(Boolean)
-              .join(' ')}
-          >
+export function CtaBanner({
+  data,
+  classes,
+  className,
+  id,
+  background,
+  bare,
+}: DataProps<CtaSection, 'band'> & { background?: ContentImage | null; bare?: boolean }) {
+  const panel = (
+    <div
+      className={[
+        'relative overflow-hidden rounded-[2.5rem] bg-accent-500 px-6 py-16 text-center shadow-[0_40px_100px_-40px_rgb(var(--color-accent-600)/0.6)] md:py-20',
+        classes?.band,
+        className,
+      ]
+        .filter(Boolean)
+        .join(' ')}
+    >
+      {background?.src?.trim() ? (
+        <>
+          <DynamicImage image={background} className="absolute inset-0 h-full w-full object-cover" sizes="960px" />
+          <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/70 to-ink-950/30" />
+        </>
+      ) : null}
             {/* Depth, never information. */}
             <div
               aria-hidden
@@ -64,8 +79,15 @@ export function CtaBanner({ data, classes, className, id }: DataProps<CtaSection
                 </p>
               ) : null}
             </div>
-          </div>
-        </GsapReveal>
+    </div>
+  );
+
+  if (bare) return panel;
+
+  return (
+    <section id={id} className="relative overflow-hidden bg-paper py-20 md:py-24">
+      <div className="relative mx-auto w-full max-w-7xl px-5 md:px-8">
+        <GsapReveal>{panel}</GsapReveal>
       </div>
     </section>
   );

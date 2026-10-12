@@ -3,11 +3,11 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { MdiIcon, processStepIcons } from '@/lib/icons/resolve-icon';
-import { DynamicImage } from '@/components/media/dynamic-image';
+import { CtaBanner } from '@/components/sections/cta-banner';
 import { GlowButton } from '@/components/layout/glow-button';
 import { InViewTitle } from '@/components/graphics/in-view-title';
 import { Reveal } from '@/lib/motion/reveal';
-import type { ProcessSection } from '@/lib/content/types';
+import type { ContentImage, CtaSection, ProcessSection } from '@/lib/content/types';
 import type { MotionValue } from 'framer-motion';
 
 /**
@@ -24,7 +24,9 @@ import type { MotionValue } from 'framer-motion';
  * positional watermark — one big faint MDI glyph bottom-right of the detail
  * panel (`processStepIcons`, same convention as the capability/stat defaults).
  * The closing row lives in `ProcessClosing` below so it can scroll on after
- * the pin, instead of squeezing into the 100svh stage.
+ * the pin, instead of squeezing into the 100svh stage. The stage itself
+ * carries no background image — the process `image` moved to the bridge
+ * panel (see `ProcessBridge`), which renders the page's cta-banner block.
  */
 export function ProcessChapter({
   process,
@@ -69,12 +71,6 @@ export function ProcessChapter({
 			data-process-stage
 			className="bg-paper relative flex h-full min-h-[max(100svh,640px)] w-full flex-col overflow-hidden text-ink-800"
 		>
-			{process?.image?.src?.trim() ? (
-				<div aria-hidden className="pointer-events-none absolute inset-0">
-					<DynamicImage image={process.image} className="absolute inset-0 h-full w-full object-cover" sizes="100vw" />
-					<div className="absolute inset-0 bg-gradient-to-b from-paper via-paper-50/70 to-paper" />
-				</div>
-			) : null}
 			<div className="relative flex min-h-0 flex-1 flex-col justify-center overflow-hidden py-14 pt-32">
 					<div className="mx-auto  w-full max-w-7xl flex flex-col items-center justify-center ">
 					<p className="label text-ink-500">{process?.eyebrow}</p>
@@ -213,16 +209,23 @@ export function ProcessClosing({ process }: { process?: ProcessSection }) {
  *
  *  The shrink runway ends with the stage empty, so the renderer passes this
  *  as the `ScrollSection` bridge: it rises as the step card dissolves — the
- *  runway resolves onto the ask instead of onto blank paper. Same content
- *  fields as the closing row, no new shape. */
-export function ProcessBridge({ process }: { process?: ProcessSection }) {
-	return (
-		<div className="flex flex-col items-center gap-7 text-center">
-			<span className="label label--live text-ink-500">{process?.cardTitle ?? "Process"}</span>
-			<GlowButton
-				data={{ label: process?.cta ?? "", href: process?.ctaHref }}
-				tone="ember"
-			/>
-		</div>
-	);
+ *  runway resolves onto the ask instead of onto blank paper. The bridge is
+ *  the page's `cta-banner` block (consumed, not rendered standalone), with
+ *  the process `image` as its panel background — the image moved off the
+ *  steps stage onto this panel. */
+export function ProcessBridge({
+  process,
+  banner,
+}: {
+  process?: ProcessSection;
+  /** The page's `cta-banner` block, consumed here and hidden standalone. */
+  banner?: CtaSection;
+}) {
+  if (!banner) return null;
+  const background: ContentImage | null = process?.image?.src?.trim() ? process.image : null;
+  return (
+    <div className="mx-auto w-full max-w-5xl">
+      <CtaBanner data={banner} background={background} bare />
+    </div>
+  );
 }

@@ -729,7 +729,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 		<header
 			ref={setRefs}
 			className={[
-				"relative z-20 [container-type:inline-size] [container-name:site-header] bg-transparent font-sans text-ink transition-colors duration-200 data-[scrolled]:backdrop-blur-lg data-[scrolled]:bg-primary-800 data-[scrolled]:text-paper motion-reduce:transition-none",
+				"relative z-20 [container-type:inline-size] [container-name:site-header] bg-transparent font-sans text-ink transition-colors duration-200 data-[scrolled]:backdrop-blur-lg data-[scrolled]:bg-primary-900 data-[scrolled]:text-paper motion-reduce:transition-none",
 				sticky ? "sticky top-0" : "",
 				className,
 				classes?.root,

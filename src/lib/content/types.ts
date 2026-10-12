@@ -21,6 +21,10 @@ export type NavLink = { label: string; href: string };
 
 export type FooterColumn = { title: string; links: NavLink[] };
 
+/** One social/contact link in the footer connect rail. `icon` resolves
+ *  through the shared MDI resolver — empty keeps the fallback glyph. */
+export type SocialLink = { label: string; href: string; icon?: string };
+
 export type LayoutContent = {
   brand: string;
   brandEmphasis: string;
@@ -37,6 +41,10 @@ export type LayoutContent = {
   tagline: string;
   footnote: string;
   footerColumns: FooterColumn[];
+  /** Rail label above the social/contact icon buttons. */
+  socialTitle: string;
+  /** Social/contact links — Keystatic editable, icons via shared resolver. */
+  socialLinks: SocialLink[];
   contactEmail: string;
   contactNote: string;
   legal: string;

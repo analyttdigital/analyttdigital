@@ -1,110 +1,227 @@
 import Image from 'next/image';
 
-import { Action } from '@/components/layout/action';
-import { Band, BandHead, DEEP, PAPER } from '@/components/layout/band';
-import { Reveal } from '@/lib/motion/reveal';
+import { GsapReveal } from '@/lib/motion/gsap-reveal';
+import { InViewTitle } from '@/components/graphics/in-view-title';
 import { useChrome } from '@/lib/content/chrome';
-import type { LayoutContent } from '@/lib/content/types';
+import { MdiIcon } from '@/lib/icons/resolve-icon';
+import type { DataProps, LayoutContent } from '@/lib/content/types';
 
 /**
- * The footer — where the path terminates.
+ * The footer — the page's closing card, not a separate deep world.
  *
- * The page's last ground change is its one dissolve: the paper CTA resolves
- * into the deep band, and everything after it is terminus. The closing
- * statement and the audit action arrive first on the violet-ink, then the
- * rail — wordmark, tagline, the two link columns — between hairlines, with
- * an imprint line that carries the operating facts rather than a slogan.
- * The wordmark lands last as a faint outline one tone off the ground, like
- * a terminal node: the signal arrives, and the page stops.
+ * The page is light paper: rounded `paper-50` panels with ring + shadow,
+ * ink pill CTAs, top-image cards, and one ember panel per page. The old
+ * footer was the lone deep violet band; this one follows the page instead.
+ * A paper stage holds a closing card (intro left like Work: live eyebrow,
+ * display title, direct line, ink pill CTA + back-to-top — index right like
+ * Work's case grid: CMS link columns beside a signal list of labeled rows
+ * with MDI keys and travel arrows), then the centered ember panel
+ * (headline, audit pill, small print — the cta-banner shape, fed by the
+ * footer fields), then the imprint row. Socials come from `socialLinks`
+ * (shared MDI resolver) with the contact email appended unless the CMS list
+ * already holds a `mailto:` entry.
  */
-export function SiteFooter({ footer }: { footer?: LayoutContent }) {
+export function SiteFooter({
+  footer,
+  data,
+  classes,
+  className,
+  id,
+}: {
+  footer?: LayoutContent;
+  data?: LayoutContent;
+} & Partial<DataProps<LayoutContent, 'panel' | 'intro' | 'grid' | 'card' | 'band'>>) {
+  const content = data ?? footer;
   const chrome = useChrome();
-  const brand = footer?.brand ?? 'analytt';
-  const emphasis = footer?.brandEmphasis ?? 'digital';
+  const brand = content?.brand ?? 'analytt';
+  const emphasis = content?.brandEmphasis ?? 'digital';
+  const socialLinks = content?.socialLinks ?? [];
+  // The signal list: the editors' links plus the direct line (email, phone)
+  // appended from the contact fields, so the rail stays complete even where
+  // the CMS list is short. `tel:` keeps its content phone label.
+  const socials = [...socialLinks];
+  if (content?.contactEmail && !socials.some((s) => s.href.startsWith('mailto:'))) {
+    socials.push({ label: content.contactEmail, href: `mailto:${content.contactEmail}`, icon: 'mail' });
+  }
+  const phone = socials.find((s) => s.href.startsWith('tel:'));
+  // The direct line under the ask: email first, phone after the location
+  // note — both already content-layer fields, no new strings.
+  const contactHref = content?.contactEmail ? `mailto:${content.contactEmail}` : phone?.href;
+  const contactLabel = content?.contactEmail ?? phone?.label;
 
   return (
-    <footer id="contact" className="relative">
-      <Band ground="deep" resolve={{ from: PAPER, to: DEEP }}>
-        <div className="flex flex-col items-start gap-10 lg:flex-row lg:items-end lg:justify-between">
-          <Reveal>
-            <h2 className="display max-w-[20ch] text-[clamp(2.1rem,5vw,3.7rem)] text-primary-50">
-              {footer?.footerHeadline ?? 'Ready to see exactly where your growth is hiding?'}
-            </h2>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <Action
-              href={footer?.footerCtaHref ?? '/#contact'}
-              label={footer?.footerCta ?? 'Start with a free audit'}
-              variant="ember"
-            />
-          </Reveal>
-        </div>
-
-        <div aria-hidden className="hairline hairline--strong mt-16" />
-
-        <div className="mt-12 grid gap-x-12 gap-y-10 md:grid-cols-[minmax(0,1.25fr)_repeat(2,minmax(0,0.75fr))]">
-          <div>
-            <Image
-              src="/img/logo-alt-light.svg"
-              alt={`${brand} ${emphasis}`}
-              width={176}
-              height={44}
-              className="h-8 w-auto"
-            />
-            <p className="body mt-5 max-w-[42ch] text-[15px]">{footer?.tagline}</p>
-            <p className="label mt-5 text-primary-400">{footer?.footnote}</p>
-          </div>
-
-          {footer?.footerColumns?.map((column) => (
-            <nav key={column.title} aria-label={column.title}>
-              <BandHead>{column.title}</BandHead>
-              <ul className="mt-5 space-y-3">
-                {column.links.map((link) => (
-                  <li key={link.label}>
-                    <a href={link.href} className="link text-[14.5px] text-primary-200">
-                      {link.label}
+    <footer id={id ?? 'contact'} className={`relative overflow-hidden bg-paper py-24 md:py-32 ${className ?? ''}`}>
+      <div className="relative mx-auto w-full max-w-7xl px-5 md:px-8">
+        <GsapReveal>
+          {/* The closing card — the Work shape: intro left, index right. */}
+          <div
+            className={[
+              'rounded-[2rem] bg-paper-50 px-6 py-12 shadow-[0_40px_100px_-40px_rgb(var(--color-primary-600)/0.35)] ring-1 ring-ink-950/[0.08] md:p-14',
+              classes?.panel,
+            ]
+              .filter(Boolean)
+              .join(' ')}
+          >
+            <div className={`grid gap-12 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-14 ${classes?.intro ?? ''}`}>
+            <div>
+              <div data-rise>
+                <p className="font-mono text-[10.5px] capitalize tracking-[0.16em] text-primary-600">
+                  {content?.footnote ?? 'A measurement-first agency, by design.'}
+                </p>
+                <InViewTitle
+                  text={(content?.footerHeadline ?? 'Ready to see exactly where your growth is hiding?').replace(/\n/g, ' ')}
+                  variant="blur"
+                  as="h2"
+                  className="title mt-4 max-w-[16ch] text-[clamp(2rem,3.6vw,2.9rem)] text-ink-950"
+                />
+              </div>
+              {contactHref || content?.contactNote ? (
+                <p data-rise="1" className="mt-5 max-w-[38ch] text-sm leading-relaxed text-ink-500">
+                  {contactHref ? (
+                    <a href={contactHref} className="font-medium text-ink-950 underline decoration-primary-300 underline-offset-4 transition-colors hover:text-accent-600">
+                      {contactLabel}
                     </a>
-                  </li>
-                ))}
+                  ) : null}
+                  {contactHref && content?.contactNote ? ' · ' : null}
+                  {content?.contactNote ?? null}
+                </p>
+              ) : null}
+              {content?.tagline ? (
+                <p data-rise="1" className="mt-4 max-w-[38ch] text-sm leading-relaxed text-ink-500">
+                  {content.tagline}
+                </p>
+              ) : null}
+              <p data-rise="2" className="mt-8 flex flex-wrap items-center gap-4">
+                <a
+                  href={content?.footerCtaHref || '#'}
+                  className="inline-flex items-center gap-2.5 rounded-full bg-ink-950 px-6 py-3.5 text-sm font-medium text-paper-50 transition-colors duration-200 hover:bg-primary-700"
+                >
+                  {content?.footerCta ?? 'Start with a free audit'}
+                  <MdiIcon name="arrowRight" size={0.8} />
+                </a>
+                <a href="#main" className="text-sm font-medium text-ink-500 underline decoration-ink-950/20 underline-offset-4 transition-colors hover:text-accent-600">
+                  {chrome.backToTop}
+                </a>
+              </p>
+            </div>
+            {/* The index — CMS link columns beside the signal list, Work's
+                case-grid rhythm: tinted card beside white card. */}
+            <div className={['grid gap-6 sm:grid-cols-2', classes?.grid].filter(Boolean).join(' ')}>
+            <div className={['grid content-start gap-6', classes?.card].filter(Boolean).join(' ')}>
+              {content?.footerColumns?.map((column) => (
+                <nav key={column.title} aria-label={column.title} className="rounded-3xl bg-primary-100 p-7">
+                  <p className="font-mono text-[10.5px] capitalize tracking-[0.16em] text-primary-600">
+                    {column.title}
+                  </p>
+                  <ul className="mt-4 space-y-2.5">
+                    {column.links.map((link) => (
+                      <li key={link.label}>
+                        <a href={link.href} className="text-[14.5px] font-medium text-ink-950 underline decoration-ink-950/15 underline-offset-4 transition-colors hover:text-accent-600">
+                          {link.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              ))}
+            </div>
+
+          {socials.length ? (
+            <nav aria-label={content?.socialTitle ?? 'Follow the signal'} className="rounded-3xl bg-paper-50 p-7 shadow-[0_24px_60px_-30px_rgb(var(--color-primary-600)/0.35)] ring-1 ring-ink-950/[0.08]">
+              <p className="font-mono text-[10.5px] capitalize tracking-[0.16em] text-primary-600">
+                {content?.socialTitle ?? 'Follow the signal'}
+              </p>
+              <ul className="mt-4">
+                {socials.map((link, i) => {
+                  const external = /^(https?:|mailto:|tel:)/.test(link.href);
+                  return (
+                    <li key={link.label} className={i > 0 ? 'border-t border-ink-950/10' : ''}>
+                      <a
+                        href={link.href}
+                        title={link.label}
+                        aria-label={link.label}
+                        {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}
+                        className="group flex items-center gap-3 py-2.5 text-ink-950 transition-colors duration-200 hover:text-accent-600"
+                      >
+                        <MdiIcon name={link.icon || link.label.toLowerCase()} size={0.85} title={link.label} />
+                        <span className="flex-1 text-[14.5px] font-medium">{link.label}</span>
+                        <MdiIcon
+                          name="arrowTopRight"
+                          size={0.7}
+                          className="text-ink-300 transition-all duration-200 group-hover:-translate-y-px group-hover:translate-x-px group-hover:text-accent-500"
+                        />
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             </nav>
-          ))}
-        </div>
+          ) : null}
+            </div>
+          </div>
+          </div>
+        </GsapReveal>
 
-        <div aria-hidden className="hairline mt-14" />
+        {/* The one ember panel — the cta-banner shape, fed by footer fields. */}
+        <GsapReveal>
+          <div
+            className={[
+              'relative mt-6 overflow-hidden rounded-[2.5rem] bg-accent-500 px-6 py-16 text-center shadow-[0_40px_100px_-40px_rgb(var(--color-accent-600)/0.6)] md:py-20',
+              classes?.band,
+            ]
+              .filter(Boolean)
+              .join(' ')}
+          >
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(55%_100%_at_50%_115%,rgb(0_0_0/0.25),transparent_70%)]"
+            />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full ring-[28px] ring-paper-50/15"
+            />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -bottom-28 -left-20 h-80 w-80 rounded-full ring-[36px] ring-ink-950/10"
+            />
+            <div data-rise className="relative mx-auto max-w-[28ch]">
+              <p className="font-display text-[clamp(2.2rem,4.6vw,3.4rem)] font-bold leading-[1.05] tracking-tight text-paper-50">
+                {content?.footerHeadline ?? 'Ready to see exactly where your growth is hiding?'}
+              </p>
+            </div>
+            <div data-rise="2" className="relative mt-9 flex flex-col items-center gap-4">
+              <a
+                href={content?.footerCtaHref || '#'}
+                className="inline-flex items-center gap-2.5 rounded-full bg-paper-50 px-8 py-4 text-base font-semibold text-ink-950 shadow-[0_14px_36px_-14px_rgb(0_0_0/0.5)] transition hover:scale-[1.02] hover:bg-paper-100 active:scale-[0.98]"
+              >
+                {content?.footerCta ?? 'Start with a free audit'}
+                <MdiIcon name="arrowRight" size={0.85} />
+              </a>
+              {phone ? (
+                <a href={phone.href} className="font-mono text-[10px] capitalize tracking-[0.14em] text-paper-50/70 underline underline-offset-4 hover:text-paper-50">
+                  {phone.label === phone.href ? phone.href : `${phone.label}: ${phone.href.replace('tel:', '')}`}
+                </a>
+              ) : null}
+            </div>
+          </div>
+        </GsapReveal>
 
-        {/* the imprint */}
-        <div className="mt-6 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <p className="label text-primary-400">{footer?.legal}</p>
-          <p className="label text-primary-400">
-            {footer?.contactNote} · {chrome.imprint}
+        {/* The imprint — brand left, facts right. */}
+        <div className="mt-10 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <Image
+            src="/img/logo-alt.svg"
+            alt={`${brand} ${emphasis}`}
+            width={176}
+            height={44}
+            className="h-7 w-auto"
+          />
+          <p className="font-mono text-[10.5px] capitalize tracking-[0.16em] text-ink-500">
+            {content?.legal}
+            {content?.legal && content?.contactNote ? ' · ' : null}
+            {content?.contactNote} · {chrome.imprint}
           </p>
         </div>
-
-        {/* the terminal node — the wordmark lands last, drawn as a faint
-            outline one tone off the ground. Paths mirrored from
-            public/img/logo-alt-light.svg, re-stroked from fill to stroke. */}
-        <svg
-          aria-hidden
-          viewBox="0 0 319.64010125 79.705140625"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={0.8}
-          strokeLinejoin="round"
-          className="-mb-6 mt-16 block h-auto w-full select-none text-primary-700/40 md:-mb-10"
-        >
-          <path d="m314.42 57.09h-14.99v-13.64h14.99z" />
-          <path d="m288.49 42.55h5.69v14.54h-11.31q-6.75 0-10.57-3.86-3.83-3.86-3.83-10.6v-13.42h-7.49v-4.12l20.16-21.52h3.6v13.05h9.22v12.59h-8.7v10.12q0 1.42 0.87 2.32 0.86 0.9 2.36 0.9z" />
-          <path d="m253.18 42.55h5.69v14.54h-11.31q-6.75 0-10.57-3.86-3.83-3.86-3.83-10.6v-13.42h-7.49v-4.12l20.16-21.52h3.6v13.05h9.22v12.59h-8.7v10.12q0 1.42 0.87 2.32 0.86 0.9 2.36 0.9z" />
-          <g>
-            <path d="m203.34 36.55l6.14-19.93h18.22l-16.49 37.55q-4.65 10.49-9.86 14.54-5.21 4.05-14.13 4.05h-4.95v-13.79h3.75q3.97 0 5.88-1.17 1.92-1.16 3.12-4.23l-16.42-36.95h18.21z" />
-            <path d="m175.52 57.09h-16.79v-55.09h16.79z" />
-            <path d="m125.61 15.27q-9.45 0-15.29 5.96-5.85 5.95-5.85 15.62 0 9.75 5.85 15.75 5.84 5.99 15.29 5.99 6.75 0 11.84-3.97l1.35 2.47h12.89v-40.47h-12.59l-1.57 2.77q-5.1-4.12-11.92-4.12zm3.07 14.01q3.22 0 5.32 2.18 2.1 2.17 2.1 5.47 0 3.3-2.1 5.51-2.1 2.21-5.32 2.21-3.22 0-5.32-2.21-2.1-2.21-2.1-5.51 0-3.3 2.1-5.47 2.1-2.18 5.32-2.18z" />
-            <path d="m83.33 15.12q7.34 0 11.95 4.76 4.61 4.76 4.61 12.4v24.81h-16.79v-22.71q0-2.55-1.01-3.93-1.01-1.39-2.88-1.39-2.18 0-3.41 1.54-1.24 1.53-1.24 4.23v22.26h-16.79v-40.47h12.07l1.42 3.29q4.5-4.79 12.07-4.79z" />
-            <path d="m24.64 15.27q-9.45 0-15.3 5.96-5.84 5.95-5.84 15.62 0 9.75 5.84 15.75 5.85 5.99 15.3 5.99 6.74 0 11.84-3.97l1.35 2.47h12.89v-40.47h-12.59l-1.58 2.77q-5.09-4.12-11.91-4.12zm3.07 14.01q3.22 0 5.32 2.18 2.1 2.17 2.1 5.47 0 3.3-2.1 5.51-2.1 2.21-5.32 2.21-3.22 0-5.32-2.21-2.1-2.21-2.1-5.51 0-3.3 2.1-5.47 2.1-2.18 5.32-2.18z" />
-          </g>
-        </svg>
-      </Band>
+      </div>
     </footer>
   );
 }

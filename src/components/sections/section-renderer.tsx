@@ -3,7 +3,6 @@ import { AboutSection } from '@/components/sections/about';
 import { Belief } from '@/components/sections/belief';
 import { Capabilities } from '@/components/sections/capabilities';
 import { Cta } from '@/components/sections/cta';
-import { CtaBanner } from '@/components/sections/cta-banner';
 import { CtaSplit } from '@/components/sections/cta-split';
 import { HeroStage } from '@/components/sections/hero';
 import { Industries } from '@/components/sections/industries';
@@ -12,8 +11,7 @@ import { Problem } from '@/components/sections/problem';
 import { ProcessChapter, ProcessClosing, ProcessBridge } from '@/components/sections/process-chapter';
 import { Stats } from '@/components/sections/stats';
 import { Work } from '@/components/sections/work';
-import type { Section } from '@/lib/content/types';
-import type { AboutSection as AboutContent, } from "@/lib/content/types";
+import type { AboutSection as AboutContent, CtaSection, Section } from "@/lib/content/types";
 import {
   PORTAL_BRIDGE_RANGE,
   PORTAL_ORIGIN,
@@ -81,6 +79,9 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
         // at (n-1)/n — the exit opens half a step-window later.
         const n = Math.max(section.steps?.length ?? 1, 1);
         const exitStart = 1 - 0.5 / n;
+        // The bridge is the page's cta-banner block: consumed here, hidden
+        // standalone below — the process `image` is its panel background.
+        const banner = sections.find((s): s is { type: 'cta-banner' } & CtaSection => s.type === 'cta-banner');
         return (
 				<>
 					<ScrollSection
@@ -92,7 +93,7 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
 						// crossfades up as the step card dissolves — the runway
 						// resolves onto the CTA, not onto bare paper.
 						bridgeRange={[exitStart, 1]}
-						bridge={<ProcessBridge process={section} />}
+						bridge={banner ? <ProcessBridge process={section} banner={banner} /> : undefined}
 						// The cover trick: pulled up over the hero's held flood on an
 						// opaque ground (`bg-background` is not a theme token, so the
 						// process ground `bg-paper` stands in).
@@ -141,12 +142,9 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
       return (
           <Cta cta={section} />
       );
+    // Consumed as the process bridge above — never rendered standalone.
     case 'cta-banner':
-      return (
-			<ScrollSection variant="zoom-settle">
-				<CtaBanner data={section} />
-			</ScrollSection>
-		);
+      return null;
     case 'cta-split':
       return (
 			<ScrollSection variant="zoom-settle">

@@ -71,6 +71,17 @@ export const layoutFields = {
     }),
     { label: 'Footer link columns', itemLabel: (props) => props.fields.title.value || 'Column' },
   ),
+  socialTitle: fields.text({ label: 'Social rail title', defaultValue: 'Follow the signal' }),
+  socialLinks: fields.array(
+    fields.object({
+      label: fields.text({ label: 'Label (e.g. LinkedIn)' }),
+      href: fields.text({ label: 'URL or tel: link' }),
+      // Icon-name string resolved through the shared MDI resolver in
+      // components — same convention as the section `iconField`.
+      icon: fields.text({ label: 'Icon name (e.g. linkedin, musicNote for TikTok, phone)' }),
+    }),
+    { label: 'Social / contact links', itemLabel: (props) => props.fields.label.value || 'Link' },
+  ),
   contactEmail: fields.text({ label: 'Contact email', defaultValue: 'hello@analyttdigital.com' }),
   contactNote: fields.text({ label: 'Location note', defaultValue: 'Nairobi · across East Africa' }),
   legal: fields.text({ label: 'Legal line', defaultValue: '© 2026 Analytt Digital. All rights reserved.' }),

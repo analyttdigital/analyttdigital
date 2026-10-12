@@ -24,6 +24,16 @@ const enLayout: LayoutContent = {
 	footerHeadline: "Ready to see exactly where your growth is hiding?",
 	footerCta: "Start with a free audit",
 	footerCtaHref: "/contact",
+	socialTitle: "Follow the signal",
+	socialLinks: [
+		{ label: "LinkedIn", href: "https://www.linkedin.com/company/94839128/admin/page-posts/published/", icon: "linkedin" },
+		{ label: "Facebook", href: "https://www.facebook.com/AnalyttDigital", icon: "facebook" },
+		{ label: "X", href: "https://x.com/AnalyttDigital", icon: "twitter" },
+		{ label: "Instagram", href: "https://www.instagram.com/", icon: "instagram" },
+		{ label: "YouTube", href: "https://youtube.com/@analyttdigital?si=-4E8UHpHcPT32s30", icon: "youtube" },
+		{ label: "TikTok", href: "https://www.tiktok.com/@analyttdigital", icon: "musicNote" },
+		{ label: "Phone", href: "tel:+254784488542", icon: "phone" },
+	],
 	tagline: "Performance marketing & growth infrastructure, from Nairobi.",
 	footnote: "A measurement-first agency, by design.",
 	footerColumns: [
@@ -734,6 +744,16 @@ const swLayout: LayoutContent = {
 	footerHeadline: "Uko tayari kuona wako uko wapi ukuaji unafichwa?",
 	footerCta: "Anza na ukaguzi wa bure",
 	footerCtaHref: "/sw#contact",
+	socialTitle: "Fuata mawimbi",
+	socialLinks: [
+		{ label: "LinkedIn", href: "https://www.linkedin.com/company/94839128/admin/page-posts/published/", icon: "linkedin" },
+		{ label: "Facebook", href: "https://www.facebook.com/AnalyttDigital", icon: "facebook" },
+		{ label: "X", href: "https://x.com/AnalyttDigital", icon: "twitter" },
+		{ label: "Instagram", href: "https://www.instagram.com/", icon: "instagram" },
+		{ label: "YouTube", href: "https://youtube.com/@analyttdigital?si=-4E8UHpHcPT32s30", icon: "youtube" },
+		{ label: "TikTok", href: "https://www.tiktok.com/@analyttdigital", icon: "musicNote" },
+		{ label: "Simu", href: "tel:+254784488542", icon: "phone" },
+	],
 	tagline: "Uuzaji wa utendaji na miundombinu ya ukuaji, kutoka Nairobi.",
 	footnote: "Shirika linalopima kwanza, kwa makusudi.",
 	footerColumns: [
