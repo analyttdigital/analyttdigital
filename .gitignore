@@ -75,6 +75,7 @@ kilo.jsonc
 opencode.json
 opencode.jsonc
 .impeccable
+docs/
 
 # Verification files
 *.txt
@@ -86,3 +87,4 @@ opencode.jsonc
 
 #Design
 /design
+/.tasks
