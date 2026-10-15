@@ -137,9 +137,9 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
 					>
 						{(p) => <ProcessChapter process={section} progress={p} />}
 					</ScrollSection>
-					<ScrollSection variant="fade-up">
-						<ProcessClosing process={section} />
-					</ScrollSection>
+                    {section.closing && <ScrollSection variant="fade-up">
+                        <ProcessClosing process={section} />
+                    </ScrollSection>}
 				</>
 			);
 		}

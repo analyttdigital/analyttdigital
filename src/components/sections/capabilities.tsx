@@ -52,7 +52,7 @@ export function Capabilities({ capabilities }: { capabilities?: CapabilitiesSect
               text={(capabilities?.headline ?? '').replace(/\n/g, ' ')}
               variant="blur"
               as="h2"
-              className="title max-w-[12em] font-display text-[clamp(2.4rem,5.2vw,4.4rem)] font-bold leading-[1.02] tracking-[-.035em] text-ink-950"
+              className="title max-w-[12em] font-display text-[clamp(2.4rem,5.2vw,3.4rem)] text-ink-950"
             />
           </div>
 
@@ -61,7 +61,7 @@ export function Capabilities({ capabilities }: { capabilities?: CapabilitiesSect
               {capabilities?.lede}
             </p>
 
-            {items.length > 1 ? (
+            {/* items.length > 1 ? (
               <div className="flex items-center gap-3">
                 <span className="whitespace-nowrap text-[.72rem] text-primary-800/70">
                   {capabilities?.orderLabel}
@@ -98,7 +98,7 @@ export function Capabilities({ capabilities }: { capabilities?: CapabilitiesSect
                   ))}
                 </div>
               </div>
-            ) : null}
+            ) : null */}
           </div>
         </div>
 
@@ -110,7 +110,7 @@ export function Capabilities({ capabilities }: { capabilities?: CapabilitiesSect
                 <MdiIcon
                   name={item.icon || capabilityIcons[i % capabilityIcons.length]}
                   size={10}
-                  className="pointer-events-none absolute -bottom-6 -right-6 select-none text-primary-800/[0.06] transition duration-500 group-hover:-rotate-6 group-hover:scale-110"
+                  className="pointer-events-none absolute -top-6 -right-6 select-none text-primary-50/50 transition duration-500 group-hover:-rotate-6 group-hover:scale-110"
                 />
                 <div className="flex items-center justify-between text-[11px] font-medium text-primary-800">
                   <span className="flex items-center gap-2">
@@ -126,7 +126,7 @@ export function Capabilities({ capabilities }: { capabilities?: CapabilitiesSect
                   {item.body}
                 </p>
 
-                <div className="relative mt-7 rounded-2xl bg-ink-950 p-4 sm:p-5">
+                <div className="relative mt-7 rounded-2xl bg-ink-950/5 p-4 sm:p-5">
                   <CapabilityReadout readout={item.readout} />
                 </div>
               </article>

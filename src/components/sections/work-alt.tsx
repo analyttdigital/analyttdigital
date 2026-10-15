@@ -62,11 +62,11 @@ export function WorkAlt({ data, classes, className, id }: DataProps<WorkSection,
                   data-rise={Math.min(i + 1, 3)}
                   className={`grid overflow-hidden rounded-3xl border border-ink-950/[0.07] bg-paper-50 md:grid-cols-2 ${classes?.row ?? ''}`}
                 >
-                  <div className={`relative min-h-56 overflow-hidden ${i % 2 === 1 ? 'md:order-2' : ''}`}>
+                  <div className={`relative min-h-28 overflow-hidden ${i % 2 === 1 ? 'md:order-2' : ''}`}>
                     {kase.image?.src?.trim() ? (
                       <DynamicImage
                         image={kase.image}
-                        sizes="(max-width: 48rem) 100vw, 50vw"
+                        sizes="(max-width: 24rem) 100vw, 50vw"
                         className="absolute inset-0 h-full w-full object-cover"
                       />
                     ) : (

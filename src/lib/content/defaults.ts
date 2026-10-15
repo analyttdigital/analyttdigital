@@ -428,10 +428,9 @@ const enHome: PageDoc = {
 					},
 				},
 			],
-			closing:
-				"Ready to see exactly where your growth is hiding? We will audit your current marketing setup for free, with no obligation.",
-			cta: "Request Digital Audit",
-			ctaHref: "/#contact",
+			closing: "",
+			cta: "",
+			ctaHref: "",
 		},
 		{
 			type: "capabilities",
@@ -515,12 +514,12 @@ const enHome: PageDoc = {
 		},
 
 		{
-			type: "work",
+			type: "work-alt",
 			eyebrow: "Selected Work",
 			headline: "Proof, not promises.",
 			body: "Engagements measured to the shilling — the proof behind the promises.",
-			cta: "View cases",
-			ctaHref: "#",
+			cta: "",
+			ctaHref: "",
 			cases: [
 				{
 					client: "Mandevu BeardCare",
@@ -574,7 +573,7 @@ const enHome: PageDoc = {
 			note: "No deck. No obligation. Just the findings.",
 		},
 		{
-			type: "problem",
+			type: "problem-alt",
 			eyebrow: "The Problem",
 			headline: "The spend was never the problem.",
 			paragraphs: [
@@ -3452,7 +3451,7 @@ const swHome: PageDoc = {
 			],
 		},
 		{
-			type: "work",
+			type: "work-alt",
 			eyebrow: "Kazi Tulizofanya",
 			headline: "Ushahidi, si ahadi.",
 			body: "Kazi zilizopimwa kwa shilingi — ushahidi ulio nyuma ya ahadi.",

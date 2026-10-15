@@ -12,8 +12,8 @@ import localFont from 'next/font/local';
  * locales.
  */
 
-export const montBlack = localFont({
-	src: "./mont-black/Mont-Heavy.woff2",
+export const mont = localFont({
+	src: "./mont/Mont-Heavy.woff2",
 	weight: "900",
 	variable: "--font-display",
 	display: "swap",
@@ -43,9 +43,9 @@ export const sans = localFont({
 });
 
 export const mono = localFont({
-	src: "./mont-black/Mont-Variable-Regular.woff2",
+	src: "./mont/Mont-Variable-Regular.woff2",
 	variable: "--font-mono",
 	display: "swap",
 });
 
-export const fontsClass = `${montBlack.variable} ${brother.variable} ${sans.variable} ${mono.variable}`;
+export const fontsClass = `${mont.variable} ${brother.variable} ${sans.variable} ${mono.variable}`;

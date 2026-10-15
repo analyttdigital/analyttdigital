@@ -187,20 +187,21 @@ export function ProcessChapter({
 export function ProcessClosing({ process }: { process?: ProcessSection }) {
 	return (
 		<div className="bg-paper-50">
-			<div className="mx-auto flex w-full max-w-7xl flex-col justify-between gap-5 px-5 py-16 md:flex-row md:items-center">
-				<Reveal className="max-w-xl">
-					<p className="body body--paper text-sm leading-relaxed">
-						{process?.closing}
-					</p>
-				</Reveal>
-					<Reveal delay={0.1} className="shrink-0">
-						<GlowButton
-							data={{ label: process?.cta ?? "", href: process?.ctaHref }}
-							className="w-full sm:w-auto "
-							tone="ember"
-						/>
-					</Reveal>
-				</div>
+            {(!!process?.closing || !!process?.cta) && <div className="mx-auto flex w-full max-w-7xl flex-col justify-between gap-5 px-5 py-16 md:flex-row md:items-center">
+                {process?.closing && <Reveal className="max-w-xl">
+                    <p className="body body--paper text-sm leading-relaxed">
+                        {process?.closing}
+                    </p>
+                </Reveal>}
+                {process?.cta && (
+                    <Reveal delay={0.1} className="shrink-0">
+                        <GlowButton
+                            data={{ label: process?.cta ?? "", href: process?.ctaHref }}
+                            className="w-full sm:w-auto "
+                            tone="ember"
+                        />
+                    </Reveal>)}
+            </div>}
 			</div>
 	);
 }

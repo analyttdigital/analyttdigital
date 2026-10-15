@@ -28,7 +28,6 @@ export function CapabilitiesAlt({
           .filter(Boolean)
           .join(' ')}
       >
-        <GsapReveal>
           <div data-rise>
             <p className="label text-ink-500">{data?.eyebrow}</p>
             <InViewTitle
@@ -108,7 +107,6 @@ export function CapabilitiesAlt({
               {data.illustrativeNote}
             </p>
           ) : null}
-        </GsapReveal>
       </div>
     </section>
   );

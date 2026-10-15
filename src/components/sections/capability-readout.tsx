@@ -141,7 +141,7 @@ function AttributionFigure({ readout }: { readout: Readout }) {
           x += width;
           return seg;
         })}
-        <line
+        {/* <line
           x1="0"
           y1={y + 14}
           x2={W}
@@ -150,7 +150,7 @@ function AttributionFigure({ readout }: { readout: Readout }) {
           strokeWidth="1"
           vectorEffect="non-scaling-stroke"
           opacity="0.24"
-        />
+        /> */}
       </g>
     );
   };
@@ -296,19 +296,7 @@ function OrganicFigure({ readout }: { readout: Readout }) {
 
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="h-[92px] w-full" aria-hidden focusable="false">
-      {[0.25, 0.5, 0.75].map((t) => (
-        <line
-          key={t}
-          x1={x0}
-          y1={y1 - t * (y1 - y0)}
-          x2={x1}
-          y2={y1 - t * (y1 - y0)}
-          stroke="currentColor"
-          strokeWidth="1"
-          vectorEffect="non-scaling-stroke"
-          opacity="0.18"
-        />
-      ))}
+      
       {priorLine ? (
         <path
           className="cap-draw"
@@ -377,7 +365,7 @@ export function CapabilityReadout({ readout }: { readout?: Readout }) {
   return (
     <figure
       ref={ref}
-      className={`cap-fig m-0 text-primary-300 ${armed ? 'fig-anim' : ''} ${
+      className={`cap-fig m-0 text-primary-500 ${armed ? 'fig-anim' : ''} ${
         armed && (inView || reduce) ? 'fig-lit' : ''
       }`}
     >
@@ -396,7 +384,7 @@ export function CapabilityReadout({ readout }: { readout?: Readout }) {
       <Figure readout={readout} />
 
       <div className="mt-1 flex flex-wrap items-baseline gap-x-4 gap-y-1">
-        <span className="num block text-[clamp(1.9rem,3vw,2.6rem)] leading-none text-primary-50">
+        <span className="num block text-[clamp(1.9rem,3vw,2.6rem)] leading-none text-primary-650">
           <CountUp value={readout.value} />
         </span>
         <span className="max-w-[30ch] font-mono text-[9.5px] capitalize tracking-[0.13em] leading-[1.7] text-primary-300">
