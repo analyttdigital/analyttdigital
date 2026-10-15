@@ -827,6 +827,22 @@ const embedBlock = component({
     ),
 });
 
+/** Tinted aside for key takeaways. Rendered as an accent-washed panel
+ *  in `blog-post.tsx`; empty title/body counts as empty in the reader. */
+const calloutBlock = component({
+  label: 'Callout',
+  schema: {
+    title: fields.text({ label: 'Title (empty hides it)', defaultValue: '' }),
+    body: fields.text({ label: 'Body', multiline: true }),
+  },
+  preview: (props) =>
+    createElement(
+      'div',
+      null,
+      String((props.fields as { title: { value: unknown } }).title.value || 'Callout'),
+    ),
+});
+
 export const postFields = {
   title: fields.text({ label: 'Title' }),
   // Auto-generating slug: typing the name fills the slug (still editable).
@@ -845,9 +861,21 @@ export const postFields = {
   body: fields.document({
     label: 'Body',
     formatting: {
-      headingLevels: [2, 3, 4],
-      inlineMarks: { bold: true, italic: true },
+      headingLevels: [1, 2, 3, 4, 5, 6],
+      inlineMarks: {
+        bold: true,
+        italic: true,
+        underline: true,
+        strikethrough: true,
+        code: true,
+        superscript: true,
+        subscript: true,
+        keyboard: true,
+      },
       listTypes: { ordered: true, unordered: true },
+      alignment: { center: true, end: true },
+      blockTypes: { blockquote: true, code: true },
+      softBreaks: true,
     },
     links: true,
     dividers: true,
@@ -856,7 +884,7 @@ export const postFields = {
       directory: 'public/media/uploads',
       publicPath: '/media/uploads/',
     },
-    componentBlocks: { embed: embedBlock },
+    componentBlocks: { embed: embedBlock, callout: calloutBlock },
   }),
 };
 

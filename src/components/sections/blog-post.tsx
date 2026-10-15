@@ -48,22 +48,43 @@ function Embed({ url, caption }: { url: string; caption?: string }): ReactElemen
   );
 }
 
-function Para({ children }: any): any {
-  return <p className="mt-6 text-[15px] leading-[1.9] text-ink-600 first:mt-0">{children}</p>;
+function alignClass(textAlign: unknown): string {
+  return textAlign === 'center' ? ' text-center' : textAlign === 'end' ? ' text-right' : '';
 }
 
-function Heading({ level, children }: any): any {
+function Para({ children, textAlign }: any): any {
+  return <p className={`mt-6 text-[15px] leading-[1.9] text-ink-600 first:mt-0${alignClass(textAlign)}`}>{children}</p>;
+}
+
+function Heading({ level, children, textAlign }: any): any {
+  const align = alignClass(textAlign);
   if (level <= 2) {
     return (
-      <h2 className="verb mt-12 text-[clamp(1.4rem,2.4vw,1.8rem)] leading-snug text-ink-950">
+      <h2 className={`verb mt-12 text-[clamp(1.4rem,2.4vw,1.8rem)] leading-snug text-ink-950${align}`}>
         {children}
       </h2>
     );
   }
   return (
-    <h3 className="verb mt-10 text-[clamp(1.1rem,1.8vw,1.3rem)] leading-snug text-ink-950">
+    <h3 className={`verb mt-10 text-[clamp(1.1rem,1.8vw,1.3rem)] leading-snug text-ink-950${align}`}>
       {children}
     </h3>
+  );
+}
+
+function Callout({ title, body }: any): any {
+  if (!String(title ?? '').trim() && !String(body ?? '').trim()) return null;
+  return (
+    <aside className="my-10 rounded-3xl border border-accent-500/25 bg-accent-500/[0.07] p-6 md:p-8">
+      {String(title ?? '').trim() ? (
+        <p className="font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-accent-600">
+          {title}
+        </p>
+      ) : null}
+      {String(body ?? '').trim() ? (
+        <p className="mt-3 text-[15px] font-medium leading-[1.85] text-ink-900">{body}</p>
+      ) : null}
+    </aside>
   );
 }
 
@@ -231,6 +252,16 @@ export function BlogPostView({
                   paragraph: Para,
                   heading: Heading,
                   list: PostList,
+                  blockquote: ({ children }: any): any => (
+                    <blockquote className="mt-8 border-l-2 border-accent-500 pl-5 text-[15px] italic leading-[1.9] text-ink-700">
+                      {children}
+                    </blockquote>
+                  ),
+                  code: ({ children }: any): any => (
+                    <pre className="my-8 overflow-x-auto rounded-2xl bg-ink-950 p-5 text-[13px] leading-[1.8] text-paper-50">
+                      <code>{children}</code>
+                    </pre>
+                  ),
                   divider: () => (
                     <hr className="my-10 border-0 border-t border-ink-950/10" />
                   ),
@@ -247,7 +278,7 @@ export function BlogPostView({
                   table: PostTable,
                 },
               }}
-              componentBlocks={{ embed: Embed }}
+              componentBlocks={{ embed: Embed, callout: Callout }}
             />
           </div>
         </div>
