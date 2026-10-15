@@ -1,26 +1,43 @@
 import { ScrollSection } from '@/components/blocks/scroll-section';
 import { AboutSection } from '@/components/sections/about';
 import { Belief } from '@/components/sections/belief';
+import { BeliefAlt } from '@/components/sections/belief-alt';
 import { Capabilities } from '@/components/sections/capabilities';
+import { CapabilitiesAlt } from '@/components/sections/capabilities-alt';
 import { CompareTable } from '@/components/sections/compare-table';
+import { CompareTableAlt } from '@/components/sections/compare-table-alt';
 import { ContactChannels } from '@/components/sections/contact-channels';
+import { ContactChannelsAlt } from '@/components/sections/contact-channels-alt';
 import { Cta } from '@/components/sections/cta';
+import { CtaAlt } from '@/components/sections/cta-alt';
 import { CtaSplit } from '@/components/sections/cta-split';
 import { Exclusions } from '@/components/sections/exclusions';
+import { ExclusionsAlt } from '@/components/sections/exclusions-alt';
 import { Faq } from '@/components/sections/faq';
+import { FaqAlt } from '@/components/sections/faq-alt';
 import { FormShell } from '@/components/sections/form-shell';
+import { FormShellAlt } from '@/components/sections/form-shell-alt';
 import { HeroStage } from '@/components/sections/hero';
 import { Industries } from '@/components/sections/industries';
+import { IndustriesAlt } from '@/components/sections/industries-alt';
 import { Insights } from '@/components/sections/insights';
+import { InsightsAlt } from '@/components/sections/insights-alt';
 import { PageHero } from '@/components/sections/page-hero';
+import { PageHeroAlt } from '@/components/sections/page-hero-alt';
 import { PlanPicker } from '@/components/sections/plan-picker';
+import { PlanPickerAlt } from '@/components/sections/plan-picker-alt';
 import { PricingTiers } from '@/components/sections/pricing-tiers';
+import { PricingTiersAlt } from '@/components/sections/pricing-tiers-alt';
 import { Problem } from '@/components/sections/problem';
+import { ProblemAlt } from '@/components/sections/problem-alt';
 import { ProcessChapter, ProcessClosing, ProcessBridge } from '@/components/sections/process-chapter';
 import { ProcessAlt } from '@/components/sections/process-alt';
 import { Stats } from '@/components/sections/stats';
+import { StatsAlt } from '@/components/sections/stats-alt';
 import { TeamGrid } from '@/components/sections/team-grid';
+import { TeamGridAlt } from '@/components/sections/team-grid-alt';
 import { Work } from '@/components/sections/work';
+import { WorkAlt } from '@/components/sections/work-alt';
 import type { AboutSection as AboutContent, CtaSection, Section } from "@/lib/content/types";
 import {
   PORTAL_BRIDGE_RANGE,
@@ -75,10 +92,22 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
 			return null;
 		case "problem":
 			return <Problem data={section} />;
+		case "problem-alt":
+			return (
+				<ScrollSection variant="fade-up">
+					<ProblemAlt data={section} />
+				</ScrollSection>
+			);
 		case "belief":
 			return (
 				<ScrollSection variant="fade-up">
 					<Belief data={section} />
+				</ScrollSection>
+			);
+		case "belief-alt":
+			return (
+				<ScrollSection variant="fade-up">
+					<BeliefAlt data={section} />
 				</ScrollSection>
 			);
 		case "process": {
@@ -133,10 +162,22 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
 					<Capabilities capabilities={section} />
 				</ScrollSection>
 			);
+		case "capabilities-alt":
+			return (
+				<ScrollSection variant="fade-up">
+					<CapabilitiesAlt data={section} />
+				</ScrollSection>
+			);
 		case "work":
 			return (
 				<ScrollSection variant="window-open">
 					<Work data={section} />
+				</ScrollSection>
+			);
+		case "work-alt":
+			return (
+				<ScrollSection variant="fade-up">
+					<WorkAlt data={section} />
 				</ScrollSection>
 			);
 		case "stats":
@@ -145,10 +186,22 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
 					<Stats data={section} />
 				</ScrollSection>
 			);
+		case "stats-alt":
+			return (
+				<ScrollSection variant="fade-up">
+					<StatsAlt data={section} />
+				</ScrollSection>
+			);
 		case "industries":
 			return (
 				<ScrollSection variant="fade-up">
 					<Industries data={section} />
+				</ScrollSection>
+			);
+		case "industries-alt":
+			return (
+				<ScrollSection variant="fade-up">
+					<IndustriesAlt data={section} />
 				</ScrollSection>
 			);
 		case "insights":
@@ -157,8 +210,20 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
 					<Insights insights={section} />
 				</ScrollSection>
 			);
+		case "insights-alt":
+			return (
+				<ScrollSection variant="fade-up">
+					<InsightsAlt data={section} />
+				</ScrollSection>
+			);
 		case "cta":
 			return <Cta cta={section} />;
+		case "cta-alt":
+			return (
+				<ScrollSection variant="fade-up">
+					<CtaAlt data={section} />
+				</ScrollSection>
+			);
 		// Consumed as the process bridge above — never rendered standalone.
 		case "cta-banner":
 			return null;
@@ -170,10 +235,18 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
 			);
 		case "page-hero":
 			return <PageHero data={section} />;
+		case "page-hero-alt":
+			return <PageHeroAlt data={section} />;
 		case "team-grid":
 			return (
 				<ScrollSection variant="fade-up">
 					<TeamGrid data={section} />
+				</ScrollSection>
+			);
+		case "team-grid-alt":
+			return (
+				<ScrollSection variant="fade-up">
+					<TeamGridAlt data={section} />
 				</ScrollSection>
 			);
 		case "contact-channels":
@@ -182,10 +255,22 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
 					<ContactChannels data={section} />
 				</ScrollSection>
 			);
+		case "contact-channels-alt":
+			return (
+				<ScrollSection variant="fade-up">
+					<ContactChannelsAlt data={section} />
+				</ScrollSection>
+			);
 		case "form-shell":
 			return (
 				<ScrollSection variant="fade-up">
 					<FormShell data={section} />
+				</ScrollSection>
+			);
+		case "form-shell-alt":
+			return (
+				<ScrollSection variant="fade-up">
+					<FormShellAlt data={section} />
 				</ScrollSection>
 			);
 		case "faq":
@@ -194,10 +279,22 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
 					<Faq data={section} />
 				</ScrollSection>
 			);
+		case "faq-alt":
+			return (
+				<ScrollSection variant="fade-up">
+					<FaqAlt data={section} />
+				</ScrollSection>
+			);
 		case "pricing-tiers":
 			return (
 				<ScrollSection variant="fade-up">
 					<PricingTiers data={section} />
+				</ScrollSection>
+			);
+		case "pricing-tiers-alt":
+			return (
+				<ScrollSection variant="fade-up">
+					<PricingTiersAlt data={section} />
 				</ScrollSection>
 			);
 		case "compare-table":
@@ -206,16 +303,34 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
 					<CompareTable data={section} />
 				</ScrollSection>
 			);
+		case "compare-table-alt":
+			return (
+				<ScrollSection variant="fade-up">
+					<CompareTableAlt data={section} />
+				</ScrollSection>
+			);
 		case "exclusions":
 			return (
 				<ScrollSection variant="fade-up">
 					<Exclusions data={section} />
 				</ScrollSection>
 			);
+		case "exclusions-alt":
+			return (
+				<ScrollSection variant="fade-up">
+					<ExclusionsAlt data={section} />
+				</ScrollSection>
+			);
 		case "plan-picker":
 			return (
 				<ScrollSection variant="fade-up">
 					<PlanPicker data={section} />
+				</ScrollSection>
+			);
+		case "plan-picker-alt":
+			return (
+				<ScrollSection variant="fade-up">
+					<PlanPickerAlt data={section} />
 				</ScrollSection>
 			);
 		default:

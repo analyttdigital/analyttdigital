@@ -753,7 +753,7 @@ const enAboutUs: PageDoc = {
 		"Analytt Digital is a performance marketing agency that places data at the heart of every marketing endeavour, helping businesses across Kenya and East Africa grow with measurable results.",
 	sections: [
 		{
-			type: "page-hero",
+			type: "page-hero-alt",
 			eyebrow: "About Us",
 			headline: "About Us",
 			lede: "Analytt Digital is a cutting-edge performance marketing digital agency that redefines the digital landscape by placing data at the heart of every marketing endeavor.",
@@ -764,14 +764,14 @@ const enAboutUs: PageDoc = {
 			secondaryCtaHref: "",
 		},
 		{
-			type: "belief",
+			type: "belief-alt",
 			eyebrow: "Who we are",
 			headline: "Data at the heart of",
 			headlineAccent: "every marketing endeavor.",
 			lede: "We specialize in leveraging data-driven strategies to propel businesses forward in the highly competitive online realm. From Nairobi to Kampala, Dar es Salaam to Kigali, we help ambitious brands turn marketing spend into measurable, compounding revenue.",
 		},
 		{
-			type: "problem",
+			type: "problem-alt",
 			eyebrow: "Our story",
 			headline: "Built for the opposite of gut feel.",
 			paragraphs: [
@@ -787,7 +787,7 @@ const enAboutUs: PageDoc = {
 			],
 		},
 		{
-			type: "capabilities",
+			type: "capabilities-alt",
 			eyebrow: "Our main pillars",
 			headline: "Four principles behind every engagement.",
 			lede: "Four principles shape every engagement, from first audit to scale.",
@@ -826,7 +826,7 @@ const enAboutUs: PageDoc = {
 			],
 		},
 		{
-			type: "team-grid",
+			type: "team-grid-alt",
 			eyebrow: "Meet our team",
 			headline: "The people behind the performance.",
 			body: "Operators, buyers, and creatives who treat your budget like their own.",
@@ -876,7 +876,7 @@ const enAboutUs: PageDoc = {
 			],
 		},
 		{
-			type: "belief",
+			type: "belief-alt",
 			eyebrow: "What our customers say",
 			headline: "Real ROI,",
 			headlineAccent: "clear and honest reporting.",
@@ -901,7 +901,7 @@ const enAboutUs: PageDoc = {
 			ctaHref: "/digital-audit/",
 		},
 		{
-			type: "industries",
+			type: "industries-alt",
 			eyebrow: "Where we work",
 			headline: "Serving Kenya, East Africa, and beyond.",
 			body: "Clients across Kenya, East Africa, Pan-African expansion, and global brands entering African markets.",
@@ -932,7 +932,7 @@ const enContact: PageDoc = {
 		"Get in touch with Analytt Digital. Book a free consultation, request a performance audit, or ask us anything about growing your business across Kenya and East Africa.",
 	sections: [
 		{
-			type: "page-hero",
+			type: "page-hero-alt",
 			eyebrow: "Contact Us",
 			headline: "We're here to help.",
 			lede: "Whether you're ready to start a project, need a second opinion on your marketing, or just want to explore what's possible, reach out. We respond fast, and we don't do hard sells.",
@@ -943,7 +943,7 @@ const enContact: PageDoc = {
 			secondaryCtaHref: "",
 		},
 		{
-			type: "contact-channels",
+			type: "contact-channels-alt",
 			eyebrow: "Get in touch",
 			headline: "Three ways to reach us.",
 			body: "WhatsApp is fastest. Email works for detail. Nairobi is home; East Africa is the field.",
@@ -972,7 +972,7 @@ const enContact: PageDoc = {
 			],
 		},
 		{
-			type: "form-shell",
+			type: "form-shell-alt",
 			eyebrow: "General inquiries",
 			headline: "Send us a message.",
 			body: "Fill out the form below and our team will get back to you within one business day.",
@@ -1016,7 +1016,7 @@ const enContact: PageDoc = {
 			ctaHref: "/digital-audit/",
 		},
 		{
-			type: "faq",
+			type: "faq-alt",
 			eyebrow: "FAQ",
 			headline: "Questions, answered.",
 			body: "Fast answers before you reach out.",
@@ -1045,7 +1045,7 @@ const enDigitalAudit: PageDoc = {
 		"Book a free 30-minute digital audit with Analytt Digital. We'll review your strategy, paid media, tracking and funnel, and show you where your biggest growth opportunities are.",
 	sections: [
 		{
-			type: "page-hero",
+			type: "page-hero-alt",
 			eyebrow: "Free 30-minute digital audit",
 			headline: "Book your free session today.",
 			lede: "Book a brief session with our team to discuss your challenges and the support you require. Whether it's strategy, paid media, or creative direction, we are here to listen, understand, and tailor solutions that work for your brand.",
@@ -1056,14 +1056,14 @@ const enDigitalAudit: PageDoc = {
 			secondaryCtaHref: "",
 		},
 		{
-			type: "belief",
+			type: "belief-alt",
 			eyebrow: "What is a digital audit?",
 			headline: "A working session,",
 			headlineAccent: "not a sales call.",
 			lede: "A Digital Audit is a free, no-obligation 30-minute session with our team. It's not a sales call, it's a working session where we look at your current marketing and give you honest, actionable feedback. You'll leave with clarity on what's working, what's leaking budget, where your biggest growth opportunities are, and what the right next step looks like, whether or not you work with us.",
 		},
 		{
-			type: "capabilities",
+			type: "capabilities-alt",
 			eyebrow: "What we review",
 			headline: "Five lenses on your marketing.",
 			lede: "Depending on your business, we'll look at some or all of the following.",
@@ -1109,14 +1109,14 @@ const enDigitalAudit: PageDoc = {
 			],
 		},
 		{
-			type: "belief",
+			type: "belief-alt",
 			eyebrow: "Who this is for",
 			headline: "Built for owners,",
 			headlineAccent: "managers, and challengers.",
 			lede: "Business owners who want an honest second opinion. Marketing managers who need external expertise to validate their plan. Startups preparing to invest seriously in growth. Established brands who feel their current agency isn't delivering. Anyone spending money on ads and unsure if it's working.",
 		},
 		{
-			type: "problem",
+			type: "problem-alt",
 			eyebrow: "What you'll get",
 			headline: "Leave with a diagnosis.",
 			paragraphs: [
@@ -1150,7 +1150,7 @@ const enDigitalAudit: PageDoc = {
 			ctaHref: "#book",
 		},
 		{
-			type: "belief",
+			type: "belief-alt",
 			eyebrow: "Why we offer this free",
 			headline: "We'd rather earn trust",
 			headlineAccent: "than sell to you.",
@@ -1167,7 +1167,7 @@ const enDigitalAudit: PageDoc = {
 			portalLabel: "Free · No commitment",
 		},
 		{
-			type: "faq",
+			type: "faq-alt",
 			eyebrow: "FAQ",
 			headline: "Questions, answered.",
 			body: "Everything teams ask before booking.",
@@ -1197,7 +1197,7 @@ const enPricingPlans: PageDoc = {
 		"Transparent performance marketing pricing for Kenyan and East African businesses. Choose from Starter, Growth, Scale, or a fully custom plan.",
 	sections: [
 		{
-			type: "page-hero",
+			type: "page-hero-alt",
 			eyebrow: "Pricing plans",
 			headline: "Clear plans for every stage.",
 			lede: "Clear, tiered plans for businesses at every stage of growth. Whether you're a local SME getting started or an enterprise scaling across Africa, there's a plan built for you. Not sure which fits? Book a free digital audit and we'll recommend the right one.",
@@ -1208,7 +1208,7 @@ const enPricingPlans: PageDoc = {
 			secondaryCtaHref: "",
 		},
 		{
-			type: "pricing-tiers",
+			type: "pricing-tiers-alt",
 			eyebrow: "Plans",
 			headline: "Four ways to work with us.",
 			body: "Custom for unique scopes; Starter, Growth, and Scale for staged growth.",
@@ -1290,7 +1290,7 @@ const enPricingPlans: PageDoc = {
 			],
 		},
 		{
-			type: "compare-table",
+			type: "compare-table-alt",
 			eyebrow: "Compare",
 			headline: "Compare plans at a glance.",
 			body: "Nine rows, four plans, zero fine print.",
@@ -1308,7 +1308,7 @@ const enPricingPlans: PageDoc = {
 			],
 		},
 		{
-			type: "exclusions",
+			type: "exclusions-alt",
 			eyebrow: "Honest scope",
 			headline: "What's not included.",
 			body: "To keep things honest and transparent:",
@@ -1321,7 +1321,7 @@ const enPricingPlans: PageDoc = {
 			],
 		},
 		{
-			type: "plan-picker",
+			type: "plan-picker-alt",
 			eyebrow: "Find your fit",
 			headline: "Which plan is right for you?",
 			body: "Pick the closest fit; we'll confirm it on a free call.",
@@ -1346,7 +1346,7 @@ const enPricingPlans: PageDoc = {
 			portalLabel: "Free · No commitment",
 		},
 		{
-			type: "faq",
+			type: "faq-alt",
 			eyebrow: "FAQ",
 			headline: "Questions, answered.",
 			body: "Contracts, spend, upgrades, and single-service scopes.",
@@ -1367,7 +1367,7 @@ const enServices: PageDoc = {
 		"Paid media that converts, data infrastructure you can trust, and growth strategy that compounds. Explore Analytt Digital's full range of performance marketing services for Kenya and East Africa.",
 	sections: [
 		{
-			type: "page-hero",
+			type: "page-hero-alt",
 			eyebrow: "Our services",
 			headline: "Performance marketing for Africa.",
 			lede: "We focus on three things: paid media that converts, data infrastructure you can actually trust, and growth strategy that compounds. Everything else we offer exists to support those three pillars.",
@@ -1378,14 +1378,14 @@ const enServices: PageDoc = {
 			secondaryCtaHref: "",
 		},
 		{
-			type: "belief",
+			type: "belief-alt",
 			eyebrow: "Who we serve",
 			headline: "Built for ambitious brands",
 			headlineAccent: "across East Africa.",
 			lede: "Whether you're a Nairobi-based e-commerce brand scaling past your first 1,000 orders, a fintech startup acquiring app users across East Africa, or an established business tired of guessing where your marketing budget goes, our services are built around one outcome: measurable, compounding revenue growth.",
 		},
 		{
-			type: "capabilities",
+			type: "capabilities-alt",
 			eyebrow: "What we do",
 			headline: "Six services, one outcome.",
 			lede: "These services aren't sold in isolation, they compound. Most clients start with one or two, then expand as results build.",
@@ -1438,7 +1438,7 @@ const enServices: PageDoc = {
 			],
 		},
 		{
-			type: "compare-table",
+			type: "compare-table-alt",
 			eyebrow: "How services fit",
 			headline: "How our services fit together.",
 			body: "Most clients start with one or two services, then expand as results build.",
@@ -1452,7 +1452,7 @@ const enServices: PageDoc = {
 			],
 		},
 		{
-			type: "industries",
+			type: "industries-alt",
 			eyebrow: "Industries we serve",
 			headline: "Playbooks for East Africa's digital economy.",
 			body: "We've built deep playbooks for the sectors driving East Africa's digital economy. E-commerce and retail, financial services and fintech, real estate and property, healthcare and wellness, education and edtech, hospitality and tourism, SaaS and technology, logistics and supply chain.",
@@ -1469,7 +1469,7 @@ const enServices: PageDoc = {
 			],
 		},
 		{
-			type: "faq",
+			type: "faq-alt",
 			eyebrow: "FAQ",
 			headline: "Questions, answered.",
 			body: "Scope, timing, contracts, and cost.",
@@ -1500,7 +1500,7 @@ const enServicePaidMedia: PageDoc = {
 		"Performance paid media across Google, Meta, TikTok, LinkedIn and YouTube, built for Kenya and East African conversion journeys. 4.2x average ROAS.",
 	sections: [
 		{
-			type: "page-hero",
+			type: "page-hero-alt",
 			eyebrow: "Paid Media",
 			headline: "Google Ads and Paid Social That Converts.",
 			lede: "Most businesses across Kenya and East Africa are wasting 30-60% of their ad spend targeting the wrong audiences, running untested creatives, and operating without proper conversion tracking. We fix all three, before we spend a single shilling of your budget.",
@@ -1511,7 +1511,7 @@ const enServicePaidMedia: PageDoc = {
 			secondaryCtaHref: "",
 		},
 		{
-			type: "problem",
+			type: "problem-alt",
 			eyebrow: "The problem we solve",
 			headline: "Five questions for your ad accounts.",
 			paragraphs: [
@@ -1527,14 +1527,14 @@ const enServicePaidMedia: PageDoc = {
 			],
 		},
 		{
-			type: "belief",
+			type: "belief-alt",
 			eyebrow: "Our approach",
 			headline: "Localised paid media,",
 			headlineAccent: "built around your goal.",
 			lede: "Our paid media team manages campaigns across Google Search, Google Display, YouTube, Meta, TikTok, LinkedIn, and programmatic channels, built around your business goal: lead generation, e-commerce sales, app installs, or direct response. Every campaign is localised: M-Pesa and mobile money journeys in the funnel, Swahili-English creative testing, mobile-first formats, and peak-time bid strategies tuned across Kenya, Uganda, Tanzania, and Rwanda.",
 		},
 		{
-			type: "stats",
+			type: "stats-alt",
 			eyebrow: "Results we deliver",
 			headline: "Paid media that pays back.",
 			body: "Average outcomes across managed accounts.",
@@ -1545,7 +1545,7 @@ const enServicePaidMedia: PageDoc = {
 			],
 		},
 		{
-			type: "capabilities",
+			type: "capabilities-alt",
 			eyebrow: "What's included",
 			headline: "Eight deliverables, zero guesswork.",
 			lede: "Rebuild or audit first, then tracking, audiences, creative, and weekly optimisation.",
@@ -1612,14 +1612,14 @@ const enServicePaidMedia: PageDoc = {
 			],
 		},
 		{
-			type: "belief",
+			type: "belief-alt",
 			eyebrow: "Platforms we manage",
 			headline: "Every major platform,",
 			headlineAccent: "one strategy.",
 			lede: "Google: Search, Display, Performance Max, YouTube, Shopping. Meta: Facebook and Instagram, catalogue ads, lead gen forms, Advantage+. TikTok: Spark Ads, in-feed, creative testing. LinkedIn: B2B lead gen, ABM, sponsored content. Programmatic: display and native networks for reach and retargeting.",
 		},
 		{
-			type: "belief",
+			type: "belief-alt",
 			eyebrow: "Who this is for",
 			headline: "Built for scalers,",
 			headlineAccent: "not click-counters.",
@@ -1644,7 +1644,7 @@ const enServicePaidMedia: PageDoc = {
 			ctaHref: "/digital-audit/",
 		},
 		{
-			type: "problem",
+			type: "problem-alt",
 			eyebrow: "Common mistakes we fix",
 			headline: "Six leaks we plug first.",
 			paragraphs: [
@@ -1660,7 +1660,7 @@ const enServicePaidMedia: PageDoc = {
 			],
 		},
 		{
-			type: "faq",
+			type: "faq-alt",
 			eyebrow: "FAQ",
 			headline: "Questions, answered.",
 			body: "Spend, fees, timelines, and platforms.",
@@ -1691,7 +1691,7 @@ const enServiceDataAnalytics: PageDoc = {
 		"GA4, Google Tag Manager, server-side tracking, Looker Studio dashboards and multi-touch attribution for East African businesses. 100% tracking coverage.",
 	sections: [
 		{
-			type: "page-hero",
+			type: "page-hero-alt",
 			eyebrow: "Data and Analytics",
 			headline: "See exactly what's making you money.",
 			lede: "The biggest problem we see isn't poor marketing, it's invisible marketing. When you can't see which channels or creatives generate revenue, every decision is a guess.",
@@ -1702,7 +1702,7 @@ const enServiceDataAnalytics: PageDoc = {
 			secondaryCtaHref: "",
 		},
 		{
-			type: "stats",
+			type: "stats-alt",
 			eyebrow: "Results we deliver",
 			headline: "Coverage you can trust.",
 			body: "Targets for every data engagement.",
@@ -1713,7 +1713,7 @@ const enServiceDataAnalytics: PageDoc = {
 			],
 		},
 		{
-			type: "capabilities",
+			type: "capabilities-alt",
 			eyebrow: "What's included",
 			headline: "Eight deliverables, one source of truth.",
 			lede: "Implementation, integration, dashboards, and ongoing briefings.",
@@ -1750,7 +1750,7 @@ const enServiceDataAnalytics: PageDoc = {
 			ctaHref: "/digital-audit/",
 		},
 		{
-			type: "belief",
+			type: "belief-alt",
 			eyebrow: "Why this comes first",
 			headline: "Fix tracking",
 			headlineAccent: "before scaling spend.",
@@ -1775,7 +1775,7 @@ const enServiceGrowthStrategy: PageDoc = {
 		"Market research, competitive intelligence, ICP development and 12-month performance marketing blueprints for businesses scaling across Kenya and East Africa.",
 	sections: [
 		{
-			type: "page-hero",
+			type: "page-hero-alt",
 			eyebrow: "Growth Strategy",
 			headline: "Win before you spend a single dollar.",
 			lede: "Before you spend on ads or content: who is your ideal customer, what does the competitive landscape look like, and which channels return best? Strategy answers with data, not gut feel.",
@@ -1786,7 +1786,7 @@ const enServiceGrowthStrategy: PageDoc = {
 			secondaryCtaHref: "",
 		},
 		{
-			type: "stats",
+			type: "stats-alt",
 			eyebrow: "Results we deliver",
 			headline: "Plans that pay for themselves.",
 			body: "Strategy outcomes we aim for.",
@@ -1814,7 +1814,7 @@ const enServiceSeo: PageDoc = {
 		"Technical SEO, content authority and local search dominance built for English, Swahili and code-switching search behaviour across East Africa.",
 	sections: [
 		{
-			type: "page-hero",
+			type: "page-hero-alt",
 			eyebrow: "SEO",
 			headline: "Rank #1 for searches that drive revenue.",
 			lede: "Most businesses across Kenya and East Africa still have no structured SEO strategy, leaving high-intent customers to find competitors first.",
@@ -1843,7 +1843,7 @@ const enServiceCro: PageDoc = {
 		"Heatmaps, session recordings, A/B testing and mobile-first funnel optimisation for Kenyan and East African audiences. 2.8x average conversion lift.",
 	sections: [
 		{
-			type: "page-hero",
+			type: "page-hero-alt",
 			eyebrow: "CRO",
 			headline: "More revenue from your existing traffic.",
 			lede: "The average Kenyan business website converts less than 1.5% of its visitors. CRO fixes that, without spending more on traffic.",
@@ -1874,7 +1874,7 @@ const enServiceEmailCrm: PageDoc = {
 		"Welcome flows, abandoned cart recovery, lead nurture and retention marketing for Kenyan and East African businesses. 3.1x customer LTV.",
 	sections: [
 		{
-			type: "page-hero",
+			type: "page-hero-alt",
 			eyebrow: "Email and CRM",
 			headline: "Turn leads into loyal, repeat customers.",
 			lede: "Acquiring a new customer costs 5-7x more than retaining one. Yet most businesses spend 90% of budget on acquisition, and almost nothing on customers already won.",
@@ -1903,7 +1903,7 @@ const enServiceIndustries: PageDoc = {
 		"Performance marketing for e-commerce, fintech, real estate, healthcare, education, hospitality, SaaS and logistics across Kenya and East Africa.",
 	sections: [
 		{
-			type: "page-hero",
+			type: "page-hero-alt",
 			eyebrow: "Industries",
 			headline: "Industries we serve.",
 			lede: "Deep playbooks for the sectors driving East Africa's digital economy. Different buying behaviour, compliance, and channel economics, learned over years.",
@@ -1914,7 +1914,7 @@ const enServiceIndustries: PageDoc = {
 			secondaryCtaHref: "",
 		},
 		{
-			type: "industries",
+			type: "industries-alt",
 			eyebrow: "Sectors",
 			headline: "Eight playbooks, one standard.",
 			body: "E-commerce and retail. Financial services and fintech. Real estate and property. Healthcare and wellness. Education and edtech. Hospitality and tourism. SaaS and technology. Logistics and supply chain.",
@@ -1948,7 +1948,7 @@ const swAboutUs: PageDoc = {
 		"Analytt Digital ni shirika la uuzaji wa utendaji linaloweka data katikati ya kila juhudi za uuzaji, likisaidia biashara kote Kenya na Afrika Mashariki kukua kwa matokeo yanayopimika.",
 	sections: [
 		{
-			type: "page-hero",
+			type: "page-hero-alt",
 			eyebrow: "Kuhusu Sisi",
 			headline: "Kuhusu Sisi",
 			lede: "Analytt Digital ni shirika la uuzaji wa utendaji linaloweka data katikati ya kila juhudi za uuzaji.",
@@ -1959,14 +1959,14 @@ const swAboutUs: PageDoc = {
 			secondaryCtaHref: "",
 		},
 		{
-			type: "belief",
+			type: "belief-alt",
 			eyebrow: "Sisi ni nani",
 			headline: "Data katikati ya",
 			headlineAccent: "kila juhudi za uuzaji.",
 			lede: "Tuna utaalamu wa mikakati inayoongozwa na data. Kutoka Nairobi hadi Kampala, Dar es Salaam hadi Kigali, tunasaidia chapa kubwa kubadilisha matumizi ya uuzaji kuwa mapato yanayopimika.",
 		},
 		{
-			type: "problem",
+			type: "problem-alt",
 			eyebrow: "Historia yetu",
 			headline: "Imeundwa kinyume cha kubahatisha.",
 			paragraphs: [
@@ -1982,7 +1982,7 @@ const swAboutUs: PageDoc = {
 			],
 		},
 		{
-			type: "capabilities",
+			type: "capabilities-alt",
 			eyebrow: "Nguzo zetu kuu",
 			headline: "Kanuni nne nyuma ya kila kazi.",
 			lede: "Kanuni nne zinaunda kila kazi, kutoka ukaguzi wa kwanza hadi ukuaji.",
@@ -1997,7 +1997,7 @@ const swAboutUs: PageDoc = {
 			],
 		},
 		{
-			type: "team-grid",
+			type: "team-grid-alt",
 			eyebrow: "Kutana na timu yetu",
 			headline: "Watu nyuma ya utendaji.",
 			body: "Waendeshaji, wanunuzi na wabunifu wanaoshughulikia bajeti yako kama yao wenyewe.",
@@ -2047,7 +2047,7 @@ const swAboutUs: PageDoc = {
 			],
 		},
 		{
-			type: "belief",
+			type: "belief-alt",
 			eyebrow: "Wateja wetu wanasema",
 			headline: "ROI halisi,",
 			headlineAccent: "ripoti wazi na za uaminifu.",
@@ -2072,7 +2072,7 @@ const swAboutUs: PageDoc = {
 			ctaHref: "/digital-audit/",
 		},
 		{
-			type: "industries",
+			type: "industries-alt",
 			eyebrow: "Tunafanya kazi wapi",
 			headline: "Tunahudumia Kenya, Afrika Mashariki na zaidi.",
 			body: "Wateja kote Kenya, Afrika Mashariki, upanuzi wa Afrika nzima, na chapa za kimataifa zinazoingia masoko ya Afrika.",
@@ -2103,7 +2103,7 @@ const swContact: PageDoc = {
 		"Wasiliana na Analytt Digital. Weka miadi ya bure, omba ukaguzi wa utendaji, au tuulize chochote kuhusu kukuza biashara yako Kenya na Afrika Mashariki.",
 	sections: [
 		{
-			type: "page-hero",
+			type: "page-hero-alt",
 			eyebrow: "Wasiliana Nasi",
 			headline: "Tuko hapa kukusaidia.",
 			lede: "Uko tayari kuanza mradi, unahitaji maoni ya pili, au unataka kuchunguza yanayowezekana, wasiliana nasi. Tunajibu haraka.",
@@ -2114,7 +2114,7 @@ const swContact: PageDoc = {
 			secondaryCtaHref: "",
 		},
 		{
-			type: "contact-channels",
+			type: "contact-channels-alt",
 			eyebrow: "Wasiliana nasi",
 			headline: "Njia tatu za kutufikia.",
 			body: "WhatsApp ni haraka zaidi. Barua pepe inafaa kwa maelezo.",
@@ -2125,7 +2125,7 @@ const swContact: PageDoc = {
 			],
 		},
 		{
-			type: "form-shell",
+			type: "form-shell-alt",
 			eyebrow: "Maswali ya jumla",
 			headline: "Tutumie ujumbe.",
 			body: "Jaza fomu hapa chini na timu yetu itakujibu ndani ya siku moja ya kazi.",
@@ -2169,7 +2169,7 @@ const swContact: PageDoc = {
 			ctaHref: "/digital-audit/",
 		},
 		{
-			type: "faq",
+			type: "faq-alt",
 			eyebrow: "Maswali",
 			headline: "Maswali, majibu.",
 			body: "Majibu ya haraka kabla ya kuwasiliana.",
@@ -2199,7 +2199,7 @@ const swDigitalAudit: PageDoc = {
 		"Weka ukaguzi wa bure wa dakika 30 na Analytt Digital. Tutapitia mkakati, matangazo, ufuatiliaji na faneli yako.",
 	sections: [
 		{
-			type: "page-hero",
+			type: "page-hero-alt",
 			eyebrow: "Ukaguzi wa bure wa dakika 30",
 			headline: "Weka kikao chako cha bure leo.",
 			lede: "Weka kikao kifupi na timu yetu kujadili changamoto zako. Iwe mkakati, matangazo, au ubunifu, tuko hapa kusikiliza na kutengeneza suluhisho.",
@@ -2210,14 +2210,14 @@ const swDigitalAudit: PageDoc = {
 			secondaryCtaHref: "",
 		},
 		{
-			type: "belief",
+			type: "belief-alt",
 			eyebrow: "Ukaguzi wa kidijitali ni nini?",
 			headline: "Kikao cha kazi,",
 			headlineAccent: "si simu ya mauzo.",
 			lede: "Ukaguzi wa Kidijitali ni kikao cha bure cha dakika 30 bila wajibu na timu yetu. Si simu ya mauzo, ni kikao cha kazi tunachopitia uuzaji wako wa sasa na kukupa maoni ya uaminifu yanayoweza kutekelezeka. Utaondoka na uwazi wa kinachofanya kazi, kinachopoteza bajeti, fursa zako kubwa za ukuaji na hatua sahihi inayofuata, iwe unafanya kazi nasi au la.",
 		},
 		{
-			type: "capabilities",
+			type: "capabilities-alt",
 			eyebrow: "Tunachokagua",
 			headline: "Miango tano kwenye uuzaji wako.",
 			lede: "Kutegemea biashara yako, tutaangalia baadhi au yote yafuatayo.",
@@ -2233,14 +2233,14 @@ const swDigitalAudit: PageDoc = {
 			],
 		},
 		{
-			type: "belief",
+			type: "belief-alt",
 			eyebrow: "Hii ni kwa nani",
 			headline: "Imeundwa kwa wamiliki,",
 			headlineAccent: "wasimamizi na wanaotoa changamoto.",
 			lede: "Wamiliki wa biashara wanaotaka maoni ya pili ya uaminifu. Wasimamizi wa uuzaji wanaohitaji utaalamu wa nje kuthibitisha mpango wao. Startups zinazojitayarisha kuwekeza kwa uzito kwenye ukuaji. Chapa zilizoimara zinazohisi shirika lao la sasa halitoi matokeo. Yeyote anayetumia pesa kwenye matangazo bila uhakika kama yanafanya kazi.",
 		},
 		{
-			type: "problem",
+			type: "problem-alt",
 			eyebrow: "Utakachopata",
 			headline: "Ondoka na utambuzi.",
 			paragraphs: [
@@ -2274,7 +2274,7 @@ const swDigitalAudit: PageDoc = {
 			ctaHref: "#book",
 		},
 		{
-			type: "belief",
+			type: "belief-alt",
 			eyebrow: "Kwa nini tunatoa bure",
 			headline: "Tunapendelea kujipatia uaminifu",
 			headlineAccent: "kuliko kukuuzia.",
@@ -2291,7 +2291,7 @@ const swDigitalAudit: PageDoc = {
 			portalLabel: "Bure · Bila wajibu",
 		},
 		{
-			type: "faq",
+			type: "faq-alt",
 			eyebrow: "Maswali",
 			headline: "Maswali, majibu.",
 			body: "Kila timu inauliza kabla ya kuweka miadi.",
@@ -2322,7 +2322,7 @@ const swPricingPlans: PageDoc = {
 		"Bei za wazi za uuzaji wa utendaji kwa biashara za Kenya na Afrika Mashariki. Chagua Starter, Growth, Scale, au mpango maalum.",
 	sections: [
 		{
-			type: "page-hero",
+			type: "page-hero-alt",
 			eyebrow: "Mipango ya bei",
 			headline: "Mipango iliyo wazi kwa kila hatua.",
 			lede: "Mipango ya viwango kwa biashara katika kila hatua ya ukuaji. Huna uhakika? Weka ukaguzi wa bure na tutapendekeza unaofaa.",
@@ -2333,7 +2333,7 @@ const swPricingPlans: PageDoc = {
 			secondaryCtaHref: "",
 		},
 		{
-			type: "pricing-tiers",
+			type: "pricing-tiers-alt",
 			eyebrow: "Mipango",
 			headline: "Njia nne za kufanya kazi nasi.",
 			body: "Maalum kwa mahitaji ya kipekee; Starter, Growth, na Scale kwa ukuaji wa hatua.",
@@ -2346,7 +2346,7 @@ const swPricingPlans: PageDoc = {
 			],
 		},
 		{
-			type: "compare-table",
+			type: "compare-table-alt",
 			eyebrow: "Linganisha",
 			headline: "Linganisha mipango kwa muhtasari.",
 			body: "Mistari tisa, mipango minne, bila maneno madogo ya siri.",
@@ -2364,7 +2364,7 @@ const swPricingPlans: PageDoc = {
 			],
 		},
 		{
-			type: "exclusions",
+			type: "exclusions-alt",
 			eyebrow: "Wigo wa uwazi",
 			headline: "Kisichojumuishwa.",
 			body: "Ili tuwe waaminifu na wazi:",
@@ -2377,7 +2377,7 @@ const swPricingPlans: PageDoc = {
 			],
 		},
 		{
-			type: "plan-picker",
+			type: "plan-picker-alt",
 			eyebrow: "Tafuta kinachokufaa",
 			headline: "Mpango upi unakufaa?",
 			body: "Chagua unaokaribia; tutathibitisha kwenye simu ya bure.",
@@ -2402,7 +2402,7 @@ const swPricingPlans: PageDoc = {
 			portalLabel: "Bure · Bila wajibu",
 		},
 		{
-			type: "faq",
+			type: "faq-alt",
 			eyebrow: "Maswali",
 			headline: "Maswali, majibu.",
 			body: "Mikataba, matumizi, na huduma moja.",
@@ -2423,7 +2423,7 @@ const swServiceSeo: PageDoc = {
 		"SEO ya kiufundi, mamlaka ya maudhui na uongozi wa utafutaji wa ndani, kwa tabia za utafutaji za Kiingereza, Kiswahili na kuchanganya lugha kote Afrika Mashariki.",
 	sections: [
 		{
-			type: "page-hero",
+			type: "page-hero-alt",
 			eyebrow: "SEO",
 			headline: "Ongoza kwa utafutaji unaoleta mapato.",
 			lede: "Biashara nyingi Kenya na Afrika Mashariki hazina mkakati wa SEO uliopangwa, hivyo wateja wenye nia huwapata washindani kwanza.",
@@ -2452,7 +2452,7 @@ const swServiceCro: PageDoc = {
 		"Heatmap, kurekodi vikao, majaribio ya A/B na uboreshaji wa faneli unaozingatia simu kwa hadhira za Kenya na Afrika Mashariki. Ongezeko la wastani la 2.8x kwenye mabadiliko.",
 	sections: [
 		{
-			type: "page-hero",
+			type: "page-hero-alt",
 			eyebrow: "CRO",
 			headline: "Mapato zaidi kutoka kwa wageni ulionao.",
 			lede: "Tovuti ya wastani ya biashara ya Kenya hubadilisha chini ya 1.5% ya wageni wake. CRO hutatua hilo, bila kulipa zaidi kwa trafiki.",
@@ -2481,7 +2481,7 @@ const swServiceEmailCrm: PageDoc = {
 		"Mtiririko wa kukaribisha, kurejesha rukwama zilizotelekezwa, kulea wateja na uuzaji wa uaminifu kwa biashara za Kenya na Afrika Mashariki. 3.1x thamani ya maisha ya mteja.",
 	sections: [
 		{
-			type: "page-hero",
+			type: "page-hero-alt",
 			eyebrow: "Barua pepe na CRM",
 			headline: "Badilisha wateja kuwa wateja waaminifu wanaorudia.",
 			lede: "Kumpata mteja mpya hugharimu mara 5-7 zaidi ya kumhifadhi. Lakini biashara nyingi hutumia 90% ya bajeti kuwapata wapya, na karibu hakuna kwa wateja waliokwisha patikana.",
@@ -2510,7 +2510,7 @@ const swServiceGrowthStrategy: PageDoc = {
 		"Utafiti wa soko, ufahamu wa washindani, ukuzaji wa wasifu wa mteja bora na ramani za uuzaji za miezi 12 kwa biashara zinazokua kote Kenya na Afrika Mashariki.",
 	sections: [
 		{
-			type: "page-hero",
+			type: "page-hero-alt",
 			eyebrow: "Mkakati wa Ukuaji",
 			headline: "Shinda kabla ya kutumia shilingi moja.",
 			lede: "Kabla ya kutumia kwa matangazo au maudhui: mteja wako bora ni nani, mandhari ya ushindani ikoje, na njia zipi hurejesha zaidi? Mkakati hujibu kwa data, si kwa hisia.",
@@ -2521,7 +2521,7 @@ const swServiceGrowthStrategy: PageDoc = {
 			secondaryCtaHref: "",
 		},
 		{
-			type: "stats",
+			type: "stats-alt",
 			eyebrow: "Matokeo tunayotoa",
 			headline: "Mipango inayojilipa yenyewe.",
 			body: "Matokeo ya mkakati tunayolenga.",
@@ -2550,7 +2550,7 @@ const swServiceIndustries: PageDoc = {
 		"Uuzaji wa utendaji kwa biashara ya mtandao, fintech, majengo, afya, elimu, ukarimu, SaaS na usafirishaji kote Kenya na Afrika Mashariki.",
 	sections: [
 		{
-			type: "page-hero",
+			type: "page-hero-alt",
 			eyebrow: "Sekta",
 			headline: "Sekta tunazohudumia.",
 			lede: "Miongozo ya kina kwa sekta zinazoendesha uchumi wa kidijitali wa Afrika Mashariki. Tabia tofauti za kununua, uzingatiaji wa sheria na uchumi wa njia, tuliojifunza kwa miaka.",
@@ -2561,7 +2561,7 @@ const swServiceIndustries: PageDoc = {
 			secondaryCtaHref: "",
 		},
 		{
-			type: "industries",
+			type: "industries-alt",
 			eyebrow: "Sekta",
 			headline: "Miongozo minane, kiwango kimoja.",
 			body: "Biashara ya mtandao na rejareja. Huduma za fedha na fintech. Majengo na mali. Afya na ustawi. Elimu na teknolojia ya elimu. Ukarimu na utalii. SaaS na teknolojia. Usafirishaji na ugavi.",
@@ -2596,7 +2596,7 @@ const swServices: PageDoc = {
 		"Matangazo yanayolipiwa yanayobadilisha wateja, miundombinu ya data unayoweza kuamini, na mkakati wa ukuaji unaojilimbikiza. Chunguza huduma zote za uuzaji wa utendaji za Analytt Digital kwa Kenya na Afrika Mashariki.",
 	sections: [
 		{
-			type: "page-hero",
+			type: "page-hero-alt",
 			eyebrow: "Huduma zetu",
 			headline: "Uuzaji wa utendaji kwa Afrika.",
 			lede: "Tunazingatia mambo matatu: matangazo yanayolipiwa yanayobadilisha wateja, miundombinu ya data unayoweza kuamini, na mkakati wa ukuaji unaojilimbikiza. Kila kitu kingine tunachotoa huwepo kusaidia nguzo hizo tatu.",
@@ -2607,14 +2607,14 @@ const swServices: PageDoc = {
 			secondaryCtaHref: "",
 		},
 		{
-			type: "belief",
+			type: "belief-alt",
 			eyebrow: "Tunawatumikia nani",
 			headline: "Imeundwa kwa chapa zenye ari",
 			headlineAccent: "kote Afrika Mashariki.",
 			lede: "Iwe wewe ni chapa ya mtandao ya Nairobi inayovuka oda zako 1,000 za kwanza, startup ya fintech inayopata watumiaji wa app kote Afrika Mashariki, au biashara iliyoimara iliyochoka kubahatisha bajeti yake ya uuzaji, huduma zetu zimeundwa kwa lengo moja: ukuaji wa mapato unaopimika na kujilimbikiza.",
 		},
 		{
-			type: "capabilities",
+			type: "capabilities-alt",
 			eyebrow: "Tunachofanya",
 			headline: "Huduma sita, lengo moja.",
 			lede: "Huduma hizi huuawa peke yao, zinajilimbikiza. Wateja wengi huanza na moja au mbili, kisha kuongeza matokeo yanapojenga.",
@@ -2631,7 +2631,7 @@ const swServices: PageDoc = {
 			],
 		},
 		{
-			type: "compare-table",
+			type: "compare-table-alt",
 			eyebrow: "Huduma zinaunganishwaje",
 			headline: "Jinsi huduma zetu zinaunganishwa.",
 			body: "Wateja wengi huanza na huduma moja au mbili, kisha kuongeza matokeo yanapojenga.",
@@ -2645,7 +2645,7 @@ const swServices: PageDoc = {
 			],
 		},
 		{
-			type: "industries",
+			type: "industries-alt",
 			eyebrow: "Sekta tunazohudumia",
 			headline: "Miongozo kwa uchumi wa kidijitali wa Afrika Mashariki.",
 			body: "Tumejenga miongozo ya kina kwa sekta zinazoendesha uchumi wa kidijitali wa Afrika Mashariki. Biashara ya mtandao na rejareja, huduma za fedha na fintech, majengo na mali, afya na ustawi, elimu na teknolojia ya elimu, ukarimu na utalii, SaaS na teknolojia, usafirishaji na ugavi.",
@@ -2662,7 +2662,7 @@ const swServices: PageDoc = {
 			],
 		},
 		{
-			type: "faq",
+			type: "faq-alt",
 			eyebrow: "Maswali",
 			headline: "Maswali, majibu.",
 			body: "Wigo, muda, mikataba na gharama.",
@@ -2693,7 +2693,7 @@ const swServiceDataAnalytics: PageDoc = {
 		"GA4, Google Tag Manager, ufuatiliaji wa server-side, dashibodi za Looker Studio na ugawaji wa mabadiliko wa hatua nyingi kwa biashara za Afrika Mashariki. Ufuatiliaji kamili wa 100%.",
 	sections: [
 		{
-			type: "page-hero",
+			type: "page-hero-alt",
 			eyebrow: "Data na Uchanganuzi",
 			headline: "Ona hasa kinachokuingizia pesa.",
 			lede: "Tatizo kubwa tunaloliona si uuzaji mbaya, ni uuzaji usioonekana. Usipoweza kuona njia au ubunifu unaoleta mapato, kila uamuzi ni kubahatisha.",
@@ -2704,7 +2704,7 @@ const swServiceDataAnalytics: PageDoc = {
 			secondaryCtaHref: "",
 		},
 		{
-			type: "stats",
+			type: "stats-alt",
 			eyebrow: "Matokeo tunayotoa",
 			headline: "Ufuatiliaji unaoweza kuaminiwa.",
 			body: "Malengo ya kila kazi ya data.",
@@ -2715,7 +2715,7 @@ const swServiceDataAnalytics: PageDoc = {
 			],
 		},
 		{
-			type: "capabilities",
+			type: "capabilities-alt",
 			eyebrow: "Kinachojumuishwa",
 			headline: "Vitu vinane, chanzo kimoja cha ukweli.",
 			lede: "Utekelezaji, muunganisho, dashibodi na maelezo ya mara kwa mara.",
@@ -2734,7 +2734,7 @@ const swServiceDataAnalytics: PageDoc = {
 			],
 		},
 		{
-			type: "process",
+			type: "process-alt",
 			eyebrow: "Mchakato wetu",
 			headline: "Kutoka ukaguzi hadi uchanganuzi unaoendelea,",
 			headlineAccent: "katika hatua tano.",
@@ -2752,7 +2752,7 @@ const swServiceDataAnalytics: PageDoc = {
 			ctaHref: "/digital-audit/",
 		},
 		{
-			type: "belief",
+			type: "belief-alt",
 			eyebrow: "Kwa nini hii kwanza",
 			headline: "Rekebisha ufuatiliaji",
 			headlineAccent: "kabla ya kuongeza matumizi.",
@@ -2777,7 +2777,7 @@ const swServicePaidMedia: PageDoc = {
 		"Matangazo ya utendaji kwenye Google, Meta, TikTok, LinkedIn na YouTube, yaliyoundwa kwa safari za mabadiliko za Kenya na Afrika Mashariki. ROAS ya wastani 4.2x.",
 	sections: [
 		{
-			type: "page-hero",
+			type: "page-hero-alt",
 			eyebrow: "Matangazo Yanayolipiwa",
 			headline: "Matangazo ya Google na Mitandao Yanayobadilisha Wateja.",
 			lede: "Biashara nyingi Kenya na Afrika Mashariki zinapoteza 30-60% ya matumizi yao ya matangazo kwa kulenga hadhira isiyofaa, kutumia ubunifu ambao haujajaribiwa, na kufanya kazi bila ufuatiliaji sahihi wa mabadiliko. Tunarekebisha yote matatu, kabla ya kutumia shilingi moja ya bajeti yako.",
@@ -2788,7 +2788,7 @@ const swServicePaidMedia: PageDoc = {
 			secondaryCtaHref: "",
 		},
 		{
-			type: "problem",
+			type: "problem-alt",
 			eyebrow: "Tatizo tunalotatua",
 			headline: "Maswali matano kwa akaunti zako za matangazo.",
 			paragraphs: [
@@ -2804,14 +2804,14 @@ const swServicePaidMedia: PageDoc = {
 			],
 		},
 		{
-			type: "belief",
+			type: "belief-alt",
 			eyebrow: "Mbinu yetu",
 			headline: "Matangazo ya kienyeji,",
 			headlineAccent: "yaliyoundwa kwa lengo lako.",
 			lede: "Timu yetu ya matangazo husimamia kampeni kwenye Google Search, Google Display, YouTube, Meta, TikTok, LinkedIn na njia za programmatic, zilizoundwa kwa lengo lako la biashara: kuzalisha wateja, mauzo ya mtandao, usanidi wa app au mwitikio wa moja kwa moja. Kila kampeni inaboreshwa kienyeji: safari za M-Pesa na pesa za simu kwenye faneli, majaribio ya ubunifu wa Kiswahili-Kiingereza, miundo inayozingatia simu na mikakati ya zabuni za saa za kilele kote Kenya, Uganda, Tanzania na Rwanda.",
 		},
 		{
-			type: "stats",
+			type: "stats-alt",
 			eyebrow: "Matokeo tunayotoa",
 			headline: "Matangazo yanayolipa yenyewe.",
 			body: "Wastani wa matokeo kwenye akaunti tunazosimamia.",
@@ -2822,7 +2822,7 @@ const swServicePaidMedia: PageDoc = {
 			],
 		},
 		{
-			type: "capabilities",
+			type: "capabilities-alt",
 			eyebrow: "Kinachojumuishwa",
 			headline: "Vitu vinane, bila kubahatisha.",
 			lede: "Kujenga upya au kukagua kwanza, kisha ufuatiliaji, hadhira, ubunifu na uboreshaji wa kila wiki.",
@@ -2841,14 +2841,14 @@ const swServicePaidMedia: PageDoc = {
 			],
 		},
 		{
-			type: "belief",
+			type: "belief-alt",
 			eyebrow: "Majukwaa tunayosimamia",
 			headline: "Kila jukwaa kuu,",
 			headlineAccent: "mkakati mmoja.",
 			lede: "Google: Search, Display, Performance Max, YouTube, Shopping. Meta: Facebook na Instagram, matangazo ya katalogi, fomu za kuzalisha wateja, Advantage+. TikTok: Spark Ads, in-feed, majaribio ya ubunifu. LinkedIn: kuzalisha wateja B2B, ABM, maudhui yanayofadhiliwa. Programmatic: mitandao ya display na native kwa ufikiaji na kurudia kulenga.",
 		},
 		{
-			type: "belief",
+			type: "belief-alt",
 			eyebrow: "Hii ni kwa nani",
 			headline: "Imeundwa kwa wanaokua,",
 			headlineAccent: "si kwa wanahesabu mibofyo.",
@@ -2873,7 +2873,7 @@ const swServicePaidMedia: PageDoc = {
 			ctaHref: "/digital-audit/",
 		},
 		{
-			type: "problem",
+			type: "problem-alt",
 			eyebrow: "Makosa ya kawaida tunayorekebisha",
 			headline: "Mivujo sita tunayoziba kwanza.",
 			paragraphs: [
@@ -2889,7 +2889,7 @@ const swServicePaidMedia: PageDoc = {
 			],
 		},
 		{
-			type: "faq",
+			type: "faq-alt",
 			eyebrow: "Maswali",
 			headline: "Maswali, majibu.",
 			body: "Matumizi, ada, muda na majukwaa.",

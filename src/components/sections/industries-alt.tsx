@@ -38,7 +38,7 @@ export function IndustriesAlt({ data, classes, className, id }: DataProps<Indust
               <p className="text-sm leading-[1.85] text-ink-500">{data?.body}</p>
               {data?.hint ? (
                 <p className="mt-4 font-mono text-[10px] capitalize text-ink-400">
-                  {data.hint} — {String(items.length).padStart(2, '0')}
+                  {data.hint} · {String(items.length).padStart(2, '0')}
                 </p>
               ) : null}
             </div>
