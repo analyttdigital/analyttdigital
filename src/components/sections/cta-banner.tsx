@@ -74,7 +74,7 @@ export function CtaBanner({
                 <MdiIcon name="arrowRight" size={0.85} />
               </a>
               {data?.note ? (
-                <p className="font-mono text-[10px] capitalize tracking-[0.14em] text-paper-50/70">
+                <p className="font-mono text-[10px] capitalize  text-paper-50/70">
                   {data.note}
                 </p>
               ) : null}

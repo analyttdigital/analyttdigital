@@ -47,7 +47,7 @@ export function FormShell({ data, classes, className, id }: DataProps<FormShellS
                 {fields.map((field) =>
                   field.kind === 'textarea' ? (
                     <label key={field.name} className="grid gap-2 sm:col-span-2">
-                      <span className="font-mono text-[10px] capitalize tracking-[0.14em] text-ink-400">
+                      <span className="font-mono text-[10px] capitalize  text-ink-400">
                         {field.label}
                       </span>
                       <textarea
@@ -60,7 +60,7 @@ export function FormShell({ data, classes, className, id }: DataProps<FormShellS
                     </label>
                   ) : (
                     <label key={field.name} className="grid gap-2">
-                      <span className="font-mono text-[10px] capitalize tracking-[0.14em] text-ink-400">
+                      <span className="font-mono text-[10px] capitalize  text-ink-400">
                         {field.label}
                       </span>
                       <input
@@ -87,7 +87,7 @@ export function FormShell({ data, classes, className, id }: DataProps<FormShellS
                 </a>
               </div>
               {data?.note ? (
-                <p className="mt-6 font-mono text-[10px] capitalize tracking-[0.14em] text-ink-400">
+                <p className="mt-6 font-mono text-[10px] capitalize  text-ink-400">
                   {data.note}
                 </p>
               ) : null}

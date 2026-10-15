@@ -248,7 +248,7 @@ export function ProcessPlayer({
         }`}
       >
         <div key={`copy-${index}`} className="pv-in flex flex-col justify-center">
-          <div className="text-[12px] font-semibold tracking-[0.14em] text-accent-600">{counter}</div>
+          <div className="text-[12px] font-semibold  text-accent-600">{counter}</div>
           <h4 className="mt-2.5 text-[30px] font-medium leading-[1.1] tracking-[-0.02em] text-ink-950">
             {step.title}
           </h4>

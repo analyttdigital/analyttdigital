@@ -49,7 +49,7 @@ export function PricingTiers({ data, classes, className, id }: DataProps<Pricing
                     .filter(Boolean)
                     .join(' ')}
                 >
-                  <p className={`font-mono text-[10px] capitalize tracking-[0.14em] ${tier.featured ? 'text-accent-300' : 'text-accent-600'}`}>
+                  <p className={`font-mono text-[10px] capitalize  ${tier.featured ? 'text-accent-300' : 'text-accent-600'}`}>
                     {tier.name}
                   </p>
                   <h3 className={`verb mt-3 text-[clamp(1.2rem,1.9vw,1.5rem)] ${tier.featured ? 'text-paper-50' : 'text-ink-950'}`}>
@@ -67,7 +67,7 @@ export function PricingTiers({ data, classes, className, id }: DataProps<Pricing
                     ))}
                   </ul>
                   {tier.bestFor ? (
-                    <p className={`mt-6 font-mono text-[10px] capitalize tracking-[0.14em] ${tier.featured ? 'text-paper-50/50' : 'text-ink-400'}`}>
+                    <p className={`mt-6 font-mono text-[10px] capitalize  ${tier.featured ? 'text-paper-50/50' : 'text-ink-400'}`}>
                       {tier.bestFor}
                     </p>
                   ) : null}

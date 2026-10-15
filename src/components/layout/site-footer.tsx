@@ -66,7 +66,7 @@ export function SiteFooter({
             <div className={`grid gap-12 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-14 ${classes?.intro ?? ''}`}>
             <div>
               <div data-rise>
-                <p className="font-mono text-[10.5px] capitalize tracking-[0.16em] text-paper-50/80">
+                <p className="font-mono text-[10.5px] capitalize text-paper-50/80">
                   {content?.footnote ?? 'A measurement-first agency, by design.'}
                 </p>
                 <InViewTitle
@@ -111,7 +111,7 @@ export function SiteFooter({
             <div className={['grid content-start gap-6', classes?.card].filter(Boolean).join(' ')}>
               {content?.footerColumns?.map((column) => (
                 <nav key={column.title} aria-label={column.title} className="rounded-3xl bg-primary-100 p-7">
-                  <p className="font-mono text-[10.5px] capitalize tracking-[0.16em] text-primary-600">
+                  <p className="font-mono text-[10.5px] capitalize  text-primary-600">
                     {column.title}
                   </p>
                   <ul className="mt-4 space-y-2.5">
@@ -129,7 +129,7 @@ export function SiteFooter({
 
           {socials.length ? (
             <nav aria-label={content?.socialTitle ?? 'Follow the signal'} className="rounded-3xl bg-paper-50 p-7 shadow-[0_24px_60px_-30px_rgb(var(--color-primary-600)/0.35)] ring-1 ring-ink-950/[0.08]">
-              <p className="font-mono text-[10.5px] capitalize tracking-[0.16em] text-primary-600">
+              <p className="font-mono text-[10.5px] capitalize text-primary-600">
                 {content?.socialTitle ?? 'Follow the signal'}
               </p>
               <ul className="mt-4">
@@ -186,7 +186,7 @@ export function SiteFooter({
               className="pointer-events-none absolute -bottom-28 -left-20 h-80 w-80 rounded-full ring-[36px] ring-ink-950/10"
             />
             <div data-rise className="relative mx-auto max-w-[28ch]">
-              <p className="font-display text-[clamp(2.2rem,4.6vw,3.4rem)] font-bold leading-[1.05] tracking-tight text-paper-50">
+              <p className="font-display text-[clamp(2.2rem,4.6vw,3.4rem)] font-bold leading-[1.05] text-paper-50">
                 {content?.footerHeadline ?? 'Ready to see exactly where your growth is hiding?'}
               </p>
             </div>
@@ -199,7 +199,7 @@ export function SiteFooter({
                 <MdiIcon name="arrowRight" size={0.85} />
               </a>
               {phone ? (
-                <a href={phone.href} className="font-mono text-[10px] capitalize tracking-[0.14em] text-paper-50/70 underline underline-offset-4 hover:text-paper-50">
+                <a href={phone.href} className="font-mono text-[10px] capitalize text-paper-50/70 underline underline-offset-4 hover:text-paper-50">
                   {phone.label === phone.href ? phone.href : `${phone.label}: ${phone.href.replace('tel:', '')}`}
                 </a>
               ) : null}
@@ -216,7 +216,7 @@ export function SiteFooter({
             height={44}
             className="h-7 w-auto"
           />
-          <p className="font-mono text-[10.5px] capitalize tracking-[0.16em] text-ink-500">
+          <p className="font-mono text-[10.5px] capitalize text-ink-500">
             {content?.legal}
             {content?.legal && content?.contactNote ? ' · ' : null}
             {content?.contactNote} · {chrome.imprint}

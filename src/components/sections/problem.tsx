@@ -90,10 +90,10 @@ export function Problem({ data, classes, className, id }: DataProps<ProblemSecti
             ) : null}
 
             <div className="relative flex items-start justify-between gap-6">
-              <p className="font-mono text-[10px] capitalize tracking-[0.16em] text-ink-500">
+              <p className="font-mono text-[10px] capitalize  text-ink-500">
                 {data?.panelTitle ?? 'Account snapshot'}
               </p>
-              <p className="font-mono text-[10px] capitalize tracking-[0.16em] text-ink-400">
+              <p className="font-mono text-[10px] capitalize  text-ink-400">
                 {chrome.everyHundred}
               </p>
             </div>
@@ -150,7 +150,7 @@ export function Problem({ data, classes, className, id }: DataProps<ProblemSecti
                       <span className={`font-display text-base font-medium tracking-tight transition-colors duration-200 ${live ? 'text-accent-600' : 'text-ink-950'}`}>
                         {chip.value}
                       </span>
-                      <span className="w-10 text-right font-mono text-[10px] tracking-[0.14em] text-ink-400">
+                      <span className="w-10 text-right font-mono text-[10px]  text-ink-400">
                         {Math.round(share)}%
                       </span>
                     </button>

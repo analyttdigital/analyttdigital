@@ -48,7 +48,7 @@ export function CompareTable({ data, classes, className, id }: DataProps<Compare
                     <th
                       key={`${column}-${i}`}
                       scope="col"
-                      className={`px-4 py-3 font-mono text-[10px] font-medium capitalize tracking-[0.14em] ${i === 0 ? 'text-ink-400' : 'text-ink-950'}`}
+                      className={`px-4 py-3 font-mono text-[10px] font-medium capitalize  ${i === 0 ? 'text-ink-400' : 'text-ink-950'}`}
                     >
                       {column}
                     </th>

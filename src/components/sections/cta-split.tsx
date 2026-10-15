@@ -34,7 +34,7 @@ export function CtaSplit({ data, classes, className, id }: DataProps<CtaSection,
                 {data?.body}
               </p>
               {data?.note ? (
-                <p className="mt-6 font-mono text-[10px] capitalize tracking-[0.14em] text-paper-50/50">
+                <p className="mt-6 font-mono text-[10px] capitalize  text-paper-50/50">
                   {data.note}
                 </p>
               ) : null}
@@ -49,7 +49,7 @@ export function CtaSplit({ data, classes, className, id }: DataProps<CtaSection,
                 .join(' ')}
             >
               {data?.portalLabel ? (
-                <p className="font-mono text-[10px] capitalize tracking-[0.16em] text-accent-300">
+                <p className="font-mono text-[10px] capitalize  text-accent-300">
                   {data.portalLabel}
                 </p>
               ) : null}
@@ -59,7 +59,7 @@ export function CtaSplit({ data, classes, className, id }: DataProps<CtaSection,
                 tone="ember"
               />
               {data?.eyebrow ? (
-                <p className="font-mono text-[10px] capitalize tracking-[0.16em] text-paper-50/40">
+                <p className="font-mono text-[10px] capitalize  text-paper-50/40">
                   {data.eyebrow}
                 </p>
               ) : null}

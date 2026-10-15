@@ -264,7 +264,6 @@ button {
    three of them. */
 .label {
   @apply font-mono text-[10.5px] font-medium capitalize;
-  letter-spacing: 0.16em;
   color: inherit;
 }
 .label::before {

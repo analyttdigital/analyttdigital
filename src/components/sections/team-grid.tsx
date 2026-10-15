@@ -63,7 +63,7 @@ export function TeamGrid({ data, classes, className, id }: DataProps<TeamGridSec
                     )}
                   </div>
                   <div className="flex flex-1 flex-col p-6">
-                    <p className="flex items-center gap-2 font-mono text-[10px] capitalize tracking-[0.14em] text-ink-400">
+                    <p className="flex items-center gap-2 font-mono text-[10px] capitalize  text-ink-400">
                       <MdiIcon name={member.icon || 'asterisk'} size={0.7} />
                       {member.role}
                     </p>

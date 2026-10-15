@@ -81,16 +81,16 @@ function CaseCard({ kase, index, total }: { kase: WorkCase; index: number; total
             className="absolute inset-0 h-full w-full"
           />
         )}
-        <span className="absolute left-5 top-5 rounded-full bg-ink-950/55 px-2.5 py-1 font-mono text-xs tracking-[0.14em] text-paper-50 backdrop-blur-sm">{String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}</span>
+        <span className="absolute left-5 top-5 rounded-full bg-ink-950/55 px-2.5 py-1 font-mono text-xs  text-paper-50 backdrop-blur-sm">{String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}</span>
         {kase.tag ? (
-          <span className="absolute right-5 top-5 rounded-full bg-paper-50/90 px-2.5 py-1 font-mono text-[10px] capitalize tracking-[0.14em] text-accent-700 backdrop-blur-sm">
+          <span className="absolute right-5 top-5 rounded-full bg-paper-50/90 px-2.5 py-1 font-mono text-[10px] capitalize  text-accent-700 backdrop-blur-sm">
             {kase.tag}
           </span>
         ) : null}
       </div>
 
       <div className="relative flex flex-1 flex-col p-7 pt-6">
-        <p className="font-mono text-[10.5px] capitalize tracking-[0.16em] text-primary-600">
+        <p className="font-mono text-[10.5px] capitalize  text-primary-600">
           {kase.industry}
         </p>
         <h3 className="verb mt-2 text-[clamp(1.25rem,1.8vw,1.5rem)] leading-snug text-ink-950">
@@ -103,7 +103,7 @@ function CaseCard({ kase, index, total }: { kase: WorkCase; index: number; total
               value={kase.metric}
               className="num block text-[clamp(1.5rem,2.4vw,2rem)] leading-none text-accent-600"
             />
-            <span className="mt-1.5 block font-mono text-[9.5px] capitalize leading-relaxed tracking-[0.14em] text-ink-500">
+            <span className="mt-1.5 block font-mono text-[9.5px] capitalize leading-relaxed  text-ink-500">
               {kase.metricLabel}
             </span>
           </div>
@@ -205,7 +205,7 @@ export function Work({ data, classes, className, id }: DataProps<WorkSection, 'p
             <div className="flex flex-wrap items-end justify-between gap-8">
               <div className={classes?.intro}>
                 <div data-rise>
-                  <p className="font-mono text-[10.5px] capitalize tracking-[0.16em] text-primary-600">
+                  <p className="font-mono text-[10.5px] capitalize  text-primary-600">
                     {data?.eyebrow ?? ''}
                   </p>
                   <InViewTitle
@@ -235,7 +235,7 @@ export function Work({ data, classes, className, id }: DataProps<WorkSection, 'p
 
               {total > 1 ? (
                 <div data-rise="2" className="flex items-center gap-3">
-                  <span className="font-mono text-[10.5px] tracking-[0.14em] text-ink-500" aria-live="polite">
+                  <span className="font-mono text-[10.5px]  text-ink-500" aria-live="polite">
                     {String(active + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
                   </span>
                   <button
@@ -276,7 +276,7 @@ export function Work({ data, classes, className, id }: DataProps<WorkSection, 'p
                 <div className="relative h-[2px] flex-1 bg-ink-950/10">
                   <span className="absolute inset-y-0 left-0 bg-accent-500 transition-[width] duration-300" style={{ width: `${progress * 100}%` }} />
                 </div>
-                <span className="font-mono text-[9.5px] capitalize tracking-[0.14em] text-ink-400">{chrome.workDrag}</span>
+                <span className="font-mono text-[9.5px] capitalize  text-ink-400">{chrome.workDrag}</span>
               </div>
             ) : null}
           </div>

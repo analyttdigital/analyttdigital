@@ -382,11 +382,11 @@ export function CapabilityReadout({ readout }: { readout?: Readout }) {
       }`}
     >
       <figcaption className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 pb-2.5">
-        <span className="font-mono text-[9.5px] font-medium capitalize tracking-[0.16em] text-primary-300">
+        <span className="font-mono text-[9.5px] font-medium capitalize  text-primary-300">
           {readout.caption}
         </span>
         {readout.tag ? (
-          <span className="inline-flex items-center gap-2 font-mono text-[9px] font-medium capitalize tracking-[0.16em] text-accent-300">
+          <span className="inline-flex items-center gap-2 font-mono text-[9px] font-medium capitalize  text-accent-300">
             <span aria-hidden className="h-2 w-2 bg-accent-500" />
             {readout.tag}
           </span>

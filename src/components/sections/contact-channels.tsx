@@ -52,7 +52,7 @@ export function ContactChannels({
                     <MdiIcon name={channel.icon || 'asterisk'} size={0.9} />
                   </span>
                   <span>
-                    <span className="block font-mono text-[10px] capitalize tracking-[0.14em] text-ink-400">
+                    <span className="block font-mono text-[10px] capitalize  text-ink-400">
                       {channel.label}
                     </span>
                     <span className="verb mt-2 block text-[clamp(1.1rem,1.8vw,1.4rem)] text-ink-950 transition-colors duration-200 group-hover:text-accent-600">

@@ -102,7 +102,7 @@ export function ProcessChapter({
 												: "text-ink-500 hover:text-accent-600"
 										}`}
 										>
-											<span className="font-mono text-[10.5px] tracking-[0.14em] opacity-70">
+											<span className="font-mono text-[10.5px]  opacity-70">
 												{step.n}
 											</span>
 											<span className="flex-1">{step.title}</span>

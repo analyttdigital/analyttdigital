@@ -40,7 +40,7 @@ function Embed({ url, caption }: { url: string; caption?: string }): ReactElemen
         />
       </div>
       {caption?.trim() ? (
-        <figcaption className="mt-3 font-mono text-[10px] tracking-[0.14em] text-ink-400">
+        <figcaption className="mt-3 font-mono text-[10px]  text-ink-400">
           {caption}
         </figcaption>
       ) : null}

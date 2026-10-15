@@ -87,7 +87,7 @@ export function PlanPicker({ data, classes, className, id }: DataProps<PlanPicke
               <MdiIcon name="arrowRight" size={0.8} />
             </a>
             {data?.note ? (
-              <p className="font-mono text-[10px] capitalize tracking-[0.14em] text-ink-400">
+              <p className="font-mono text-[10px] capitalize  text-ink-400">
                 {data.note}
               </p>
             ) : null}

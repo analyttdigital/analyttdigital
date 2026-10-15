@@ -49,7 +49,7 @@ export function Industries({ data, classes, className, id }: DataProps<Industrie
             <div data-rise="1" className="max-w-[42ch]">
               <p className="text-sm leading-[1.85] text-ink-500">{data?.body}</p>
               {data?.hint ? (
-                <p className="mt-4 font-mono text-[10px] capitalize tracking-[0.16em] text-ink-400">
+                <p className="mt-4 font-mono text-[10px] capitalize  text-ink-400">
                   {data.hint} — {String(items.length).padStart(2, '0')}
                 </p>
               ) : null}
@@ -66,7 +66,7 @@ export function Industries({ data, classes, className, id }: DataProps<Industrie
             <ol className="flex flex-wrap items-baseline gap-x-8 gap-y-5 md:gap-x-12">
               {items.map((item, i) => (
                 <li key={item} className="group flex cursor-default items-baseline gap-3">
-                  <span className="font-mono text-[10px] tracking-[0.14em] text-ink-300 transition-colors duration-200 group-hover:text-accent-500">
+                  <span className="font-mono text-[10px]  text-ink-300 transition-colors duration-200 group-hover:text-accent-500">
                     {String(i + 1).padStart(2, '0')}
                   </span>
                   <span

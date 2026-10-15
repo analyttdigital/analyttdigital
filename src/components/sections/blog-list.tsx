@@ -117,7 +117,7 @@ export function BlogList({
             ) : (
               <span />
             )}
-            <p className="font-mono text-[10px] tracking-[0.16em] text-ink-400">
+            <p className="font-mono text-[10px] text-ink-400">
               {fillTemplate(data.pageOfTemplate, {
                 n: String(data.page),
                 total: String(data.totalPages),
