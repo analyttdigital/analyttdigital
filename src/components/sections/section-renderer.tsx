@@ -94,21 +94,15 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
 			return <Problem data={section} />;
 		case "problem-alt":
 			return (
-				<ScrollSection variant="fade-up">
 					<ProblemAlt data={section} />
-				</ScrollSection>
 			);
 		case "belief":
 			return (
-				<ScrollSection variant="fade-up">
 					<Belief data={section} />
-				</ScrollSection>
 			);
 		case "belief-alt":
 			return (
-				<ScrollSection variant="fade-up">
 					<BeliefAlt data={section} />
-				</ScrollSection>
 			);
 		case "process": {
 			// The shrink exit starts after the last step has had dwell: steps
@@ -151,87 +145,61 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
 		}
 		case "process-alt": {
 			return (
-				<ScrollSection variant="fade-up">
 					<ProcessAlt data={section} />
-				</ScrollSection>
 			);
 		}
 		case "capabilities":
 			return (
-				<ScrollSection variant="tilt-up">
 					<Capabilities capabilities={section} />
-				</ScrollSection>
 			);
 		case "capabilities-alt":
 			return (
-				<ScrollSection variant="fade-up">
 					<CapabilitiesAlt data={section} />
-				</ScrollSection>
 			);
 		case "work":
 			return (
-				<ScrollSection variant="window-open">
 					<Work data={section} />
-				</ScrollSection>
 			);
 		case "work-alt":
 			return (
-				<ScrollSection variant="fade-up">
 					<WorkAlt data={section} />
-				</ScrollSection>
 			);
 		case "stats":
 			return (
-				<ScrollSection variant="scale-in">
 					<Stats data={section} />
-				</ScrollSection>
 			);
 		case "stats-alt":
 			return (
-				<ScrollSection variant="fade-up">
 					<StatsAlt data={section} />
-				</ScrollSection>
 			);
 		case "industries":
 			return (
-				<ScrollSection variant="fade-up">
 					<Industries data={section} />
-				</ScrollSection>
 			);
 		case "industries-alt":
 			return (
-				<ScrollSection variant="fade-up">
 					<IndustriesAlt data={section} />
-				</ScrollSection>
 			);
 		case "insights":
 			return (
-				<ScrollSection variant="mask-up">
 					<Insights insights={section} />
-				</ScrollSection>
 			);
 		case "insights-alt":
 			return (
-				<ScrollSection variant="fade-up">
 					<InsightsAlt data={section} />
-				</ScrollSection>
 			);
 		case "cta":
 			return <Cta cta={section} />;
 		case "cta-alt":
 			return (
-				<ScrollSection variant="fade-up">
 					<CtaAlt data={section} />
-				</ScrollSection>
 			);
 		// Consumed as the process bridge above — never rendered standalone.
 		case "cta-banner":
 			return null;
 		case "cta-split":
 			return (
-				<ScrollSection variant="zoom-settle">
 					<CtaSplit data={section} />
-				</ScrollSection>
 			);
 		case "page-hero":
 			return <PageHero data={section} />;
@@ -239,99 +207,67 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
 			return <PageHeroAlt data={section} />;
 		case "team-grid":
 			return (
-				<ScrollSection variant="fade-up">
 					<TeamGrid data={section} />
-				</ScrollSection>
 			);
 		case "team-grid-alt":
 			return (
-				<ScrollSection variant="fade-up">
 					<TeamGridAlt data={section} />
-				</ScrollSection>
 			);
 		case "contact-channels":
 			return (
-				<ScrollSection variant="fade-up">
 					<ContactChannels data={section} />
-				</ScrollSection>
 			);
 		case "contact-channels-alt":
 			return (
-				<ScrollSection variant="fade-up">
 					<ContactChannelsAlt data={section} />
-				</ScrollSection>
 			);
 		case "form-shell":
 			return (
-				<ScrollSection variant="fade-up">
 					<FormShell data={section} />
-				</ScrollSection>
 			);
 		case "form-shell-alt":
 			return (
-				<ScrollSection variant="fade-up">
 					<FormShellAlt data={section} />
-				</ScrollSection>
 			);
 		case "faq":
 			return (
-				<ScrollSection variant="fade-up">
 					<Faq data={section} />
-				</ScrollSection>
 			);
 		case "faq-alt":
 			return (
-				<ScrollSection variant="fade-up">
 					<FaqAlt data={section} />
-				</ScrollSection>
 			);
 		case "pricing-tiers":
 			return (
-				<ScrollSection variant="fade-up">
 					<PricingTiers data={section} />
-				</ScrollSection>
 			);
 		case "pricing-tiers-alt":
 			return (
-				<ScrollSection variant="fade-up">
 					<PricingTiersAlt data={section} />
-				</ScrollSection>
 			);
 		case "compare-table":
 			return (
-				<ScrollSection variant="fade-up">
 					<CompareTable data={section} />
-				</ScrollSection>
 			);
 		case "compare-table-alt":
 			return (
-				<ScrollSection variant="fade-up">
 					<CompareTableAlt data={section} />
-				</ScrollSection>
 			);
 		case "exclusions":
 			return (
-				<ScrollSection variant="fade-up">
 					<Exclusions data={section} />
-				</ScrollSection>
 			);
 		case "exclusions-alt":
 			return (
-				<ScrollSection variant="fade-up">
 					<ExclusionsAlt data={section} />
-				</ScrollSection>
 			);
 		case "plan-picker":
 			return (
-				<ScrollSection variant="fade-up">
 					<PlanPicker data={section} />
-				</ScrollSection>
 			);
 		case "plan-picker-alt":
 			return (
-				<ScrollSection variant="fade-up">
 					<PlanPickerAlt data={section} />
-				</ScrollSection>
 			);
 		default:
 			return null;

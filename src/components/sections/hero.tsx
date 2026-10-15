@@ -10,6 +10,7 @@ import {
 } from 'framer-motion';
 
 import { MdiIcon } from '@/lib/icons/resolve-icon';
+import { TextReveal } from '@/components/graphics/text-reveal';
 import { DynamicImage } from '@/components/media/dynamic-image';
 import type { HeroPartner, HeroPanel, HeroProof, HeroSection } from '@/lib/content/types';
 import { HeroGather } from '@/components/graphics/hero-gather';
@@ -584,7 +585,6 @@ export function HeroStage({
   progress?: MotionValue<number>;
 }) {
   const eyebrow = hero?.eyebrow || FALLBACK.eyebrow;
-  const lines = (hero?.headline || FALLBACK.headline).split('\n');
   const sub = hero?.sub || FALLBACK.sub;
   const ctaHref = hero?.ctaHref ?? '/#contact';
   const cta = hero?.cta || FALLBACK.cta;
@@ -699,7 +699,7 @@ export function HeroStage({
 						: undefined
 				}
 			>
-					<div className="mx-auto w-full max-w-7xl md:pb-[120px] md:pb-16">
+					<div className="mx-auto w-full max-w-7xl ">
 						<div className="w-full max-w-[760px]">
 							<a
 								href={ctaHref}
@@ -720,21 +720,13 @@ export function HeroStage({
 								/>
 							</a>
 
-							<h1
+							<TextReveal
+								text={hero?.headline || FALLBACK.headline}
+								as="h1"
 								className={`font-display text-[clamp(1.6rem,4.2vw,3.6rem)] font-bold leading-[1.02] tracking-tightest ${
 									dark ? "text-primary-50" : "text-primary-900"
 								}`}
-							>
-								{lines.map((line, i) => (
-									<span
-										key={`${line}-${i}`}
-										className={`block whitespace-nowrap ${i === lines.length - 1 ? (dark ? "text-accent-400" : "text-accent-600") : ""}`}
-
-									>
-										{line || " "}
-									</span>
-								))}
-							</h1>
+							/>
 
 							<p
 								className={`mt-[18px] max-w-[30em]  leading-relaxed sm:mt-6 ${dark ? "text-primary-200" : "text-ink-500"}`}

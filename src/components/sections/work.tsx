@@ -9,15 +9,13 @@ import { GsapReveal } from '@/lib/motion/gsap-reveal';
 import type { DataProps, WorkCase, WorkSection } from '@/lib/content/types';
 
 /**
- * Work — selected cases as a proof grid.
+ * Work — selected cases as light proof cards in a grid.
  *
- * Follows `html.bak/analytt-proof-section.html` card language (square-dot
- * eyebrow, display head with ink pill CTA, mist cards with photo banner,
- * index pill, initial tile, industry/client/body, ember proof figure) but
- * lays the cases out as a responsive grid instead of a scroll strip — every
- * case visible at once, so no nudge keys, counter, or meter. Token map
- * bak→site: mist → `bg-primary-100`, ember → `accent-600`, ink → `ink-950`,
- * paper → `paper-50`. Same `WorkCase` content shape, no new fields.
+ * Proof-card language (square-dot eyebrow, display head with ink pill CTA,
+ * photo banner with overlaid pills, initial tile, industry/client/body,
+ * ember proof figure) on mist cards (`bg-primary-100`) with ink text.
+ * Token map: mist panels, `accent-600` metric, primary-800/ink-950 ink.
+ * Same `WorkCase` content shape, no new fields.
  */
 
 function ProofCard({ kase, index, total }: { kase: WorkCase; index: number; total: number }) {

@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import { useReducedMotion } from 'framer-motion';
 
 import { GlowButton } from '@/components/layout/glow-button';
+import { InViewTitle } from '@/components/graphics/in-view-title';
 import { GsapReveal, Magnetic } from '@/lib/motion/gsap-reveal';
 import type { CtaSection } from '@/lib/content/types';
 
@@ -23,7 +24,6 @@ import type { CtaSection } from '@/lib/content/types';
 const SignalOrb = dynamic(() => import('@/components/graphics/signal-orb'), { ssr: false });
 
 export function Cta({ cta }: { cta?: CtaSection }) {
-  const lines = (cta?.headline ?? '').split('\n');
   const reduce = useReducedMotion();
 
   return (
@@ -42,21 +42,18 @@ export function Cta({ cta }: { cta?: CtaSection }) {
             {cta?.portalLabel ?? cta?.eyebrow}
           </p>
 
-          <h2 className="title mt-8 text-[clamp(2.2rem,5.6vw,4.4rem)] text-ink-950">
-            {lines.map((line, i) => (
-              <span key={`${line}-${i}`} data-rise={i + 1} className="block">
-                <span className={i === lines.length - 1 ? 'text-accent-600' : undefined}>
-                  {line || ' '}
-                </span>
-              </span>
-            ))}
-          </h2>
+          <InViewTitle
+            text={(cta?.headline ?? '').replace(/\n/g, ' ')}
+            variant="blur"
+            as="h2"
+            className="title mt-8 text-[clamp(2.2rem,5.6vw,4.4rem)] text-ink-950"
+          />
 
-          <p data-rise={lines.length + 1} className="mx-auto mt-7 max-w-[52ch] text-sm leading-[1.85] text-ink-500 md:text-base">
+          <p data-rise={2} className="mx-auto mt-7 max-w-[52ch] text-sm leading-[1.85] text-ink-500 md:text-base">
             {cta?.body}
           </p>
 
-          <div data-rise={lines.length + 2} className="mt-11 flex justify-center">
+          <div data-rise={3} className="mt-11 flex justify-center">
             <Magnetic>
               <GlowButton
                 data={{ label: cta?.cta ?? 'Request a free audit', href: cta?.ctaHref ?? 'mailto:hello@analyttdigital.com' }}
@@ -65,7 +62,7 @@ export function Cta({ cta }: { cta?: CtaSection }) {
             </Magnetic>
           </div>
 
-          <div data-rise={lines.length + 3} className="mt-20 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 text-left">
+          <div data-rise={4} className="mt-20 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 text-left">
             <p className="font-mono text-[10px] capitalize  text-ink-400">
               {cta?.note ?? 'No deck. No obligation. Just the findings.'}
             </p>

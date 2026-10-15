@@ -1,6 +1,7 @@
 'use client';
 
 import { DynamicImage } from '@/components/media/dynamic-image';
+import { InViewTitle } from '@/components/graphics/in-view-title';
 import { MdiIcon } from '@/lib/icons/resolve-icon';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
 import type { ContentImage, CtaSection, DataProps } from '@/lib/content/types';
@@ -56,9 +57,12 @@ export function CtaBanner({
             />
 
             <div data-rise className="relative mx-auto max-w-[28ch]">
-              <h2 className="font-display text-[clamp(2.2rem,4.6vw,3.4rem)] font-bold leading-[1.05] tracking-tight text-paper-50">
-                {data?.headline}
-              </h2>
+              <InViewTitle
+                text={(data?.headline ?? '').replace(/\n/g, ' ')}
+                variant="blur"
+                as="h2"
+                className="font-display text-[clamp(2.2rem,4.6vw,3.4rem)] font-bold leading-[1.05] tracking-tight text-paper-50"
+              />
             </div>
             {data?.body ? (
               <p data-rise="1" className="relative mx-auto mt-5 max-w-[52ch] text-sm leading-relaxed text-paper-50/85 md:text-base">

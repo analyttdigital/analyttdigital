@@ -1,4 +1,5 @@
 import { ActivityTerrain } from '@/components/graphics/activity-terrain';
+import { InViewTitle } from '@/components/graphics/in-view-title';
 import { Reveal } from '@/lib/motion/reveal';
 import type { BeliefSection, DataProps } from '@/lib/content/types';
 
@@ -28,12 +29,12 @@ export function Belief({ data, classes, className, id }: DataProps<BeliefSection
 						as="h2"
 						className="title max-w-[16ch] text-[clamp(2.4rem,5.4vw,4rem)] text-ink-950"
 					/> */}
-					<Reveal>
-						<h2 className="title text-[clamp(2.4rem,5.4vw,4.2rem)] font-medium leading-[1.05] tracking-tight text-ink-950">
-							{data?.headline}{" "}
-							<span className="text-accent-600">{data?.headlineAccent}</span>
-						</h2>
-					</Reveal>
+					<InViewTitle
+						text={`${data?.headline ?? ""} ${data?.headlineAccent ?? ""}`.replace(/\n/g, " ").trim()}
+						variant="blur"
+						as="h2"
+						className="title text-[clamp(2.4rem,5.4vw,4.2rem)] font-medium leading-[1.05] tracking-tight text-ink-950"
+					/>
 					<Reveal delay={0.1}>
 						<p className="mt-6 max-w-[62ch] text-sm leading-[1.85] text-ink-500 md:text-base">
 							{data?.lede}

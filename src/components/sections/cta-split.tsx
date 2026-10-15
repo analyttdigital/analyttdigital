@@ -1,6 +1,7 @@
 'use client';
 
 import { GlowButton } from '@/components/layout/glow-button';
+import { InViewTitle } from '@/components/graphics/in-view-title';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
 import type { CtaSection, DataProps } from '@/lib/content/types';
 
@@ -27,9 +28,12 @@ export function CtaSplit({ data, classes, className, id }: DataProps<CtaSection,
               .join(' ')}
           >
             <div data-rise>
-              <h2 className="font-display text-[clamp(2rem,4vw,3rem)] font-bold leading-[1.05] tracking-tight text-paper-50">
-                {data?.headline}
-              </h2>
+              <InViewTitle
+                text={(data?.headline ?? '').replace(/\n/g, ' ')}
+                variant="blur"
+                as="h2"
+                className="font-display text-[clamp(2rem,4vw,3rem)] font-bold leading-[1.05] tracking-tight text-paper-50"
+              />
               <p className="mt-5 max-w-[52ch] text-sm leading-[1.85] text-primary-200 md:text-base">
                 {data?.body}
               </p>
