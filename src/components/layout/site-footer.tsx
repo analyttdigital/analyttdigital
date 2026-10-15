@@ -163,7 +163,7 @@ export function SiteFooter({
         </GsapReveal>
 
         {/* The one ember panel — the cta-banner shape, fed by footer fields. */}
-        <GsapReveal>
+        {/* <GsapReveal>
           <div
             className={[
               'relative mt-6 overflow-hidden rounded-[2.5rem] bg-accent-500 px-6 py-16 text-center shadow-[0_40px_100px_-40px_rgb(var(--color-accent-600)/0.6)] md:py-20',
@@ -204,7 +204,7 @@ export function SiteFooter({
               ) : null}
             </div>
           </div>
-        </GsapReveal>
+        </GsapReveal> */}
 
         {/* The imprint — brand left, facts right. */}
         <div className="mt-10 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">

@@ -871,6 +871,7 @@ export const pageFields = {
         { label: 'Problem', value: 'problem' },
         { label: 'Belief', value: 'belief' },
         { label: 'Process', value: 'process' },
+        { label: 'Process alt', value: 'process-alt' },
         { label: 'Capabilities', value: 'capabilities' },
         { label: 'Work', value: 'work' },
         { label: 'Stats', value: 'stats' },
@@ -896,6 +897,9 @@ export const pageFields = {
       problem: fields.object(problemFields, { label: 'Problem content' }),
       belief: fields.object(beliefFields, { label: 'Belief content' }),
       process: fields.object(processFields, { label: 'Process content' }),
+      // The alt variant shares the process content shape — same fields,
+      // static card presentation (no scroll-driven stage).
+      'process-alt': fields.object(processFields, { label: 'Process alt content' }),
       capabilities: fields.object(capabilitiesFields, { label: 'Capabilities content' }),
       work: fields.object(workFields, { label: 'Work content' }),
       stats: fields.object(statsFields, { label: 'Stats content' }),

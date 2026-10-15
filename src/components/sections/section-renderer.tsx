@@ -17,6 +17,7 @@ import { PlanPicker } from '@/components/sections/plan-picker';
 import { PricingTiers } from '@/components/sections/pricing-tiers';
 import { Problem } from '@/components/sections/problem';
 import { ProcessChapter, ProcessClosing, ProcessBridge } from '@/components/sections/process-chapter';
+import { ProcessAlt } from '@/components/sections/process-alt';
 import { Stats } from '@/components/sections/stats';
 import { TeamGrid } from '@/components/sections/team-grid';
 import { Work } from '@/components/sections/work';
@@ -121,8 +122,9 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
 		}
 		case "process-alt": {
 			return (
-				<ProcessChapter process={section}  />
-					
+				<ScrollSection variant="fade-up">
+					<ProcessAlt data={section} />
+				</ScrollSection>
 			);
 		}
 		case "capabilities":

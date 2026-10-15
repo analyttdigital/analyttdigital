@@ -13,7 +13,7 @@ import localFont from 'next/font/local';
  */
 
 export const montBlack = localFont({
-	src: "./mont-black/Mont-Black.woff2",
+	src: "./mont-black/Mont-Heavy.woff2",
 	weight: "900",
 	variable: "--font-display",
 	display: "swap",
