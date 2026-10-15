@@ -40,9 +40,9 @@ export function SiteFooter({
   // appended from the contact fields, so the rail stays complete even where
   // the CMS list is short. `tel:` keeps its content phone label.
   const socials = [...socialLinks];
-  if (content?.contactEmail && !socials.some((s) => s.href.startsWith('mailto:'))) {
-    socials.push({ label: content.contactEmail, href: `mailto:${content.contactEmail}`, icon: 'mail' });
-  }
+//   if (content?.contactEmail && !socials.some((s) => s.href.startsWith('mailto:'))) {
+//     socials.push({ label: content.contactEmail, href: `mailto:${content.contactEmail}`, icon: 'mail' });
+//   }
   const phone = socials.find((s) => s.href.startsWith('tel:'));
   // The direct line under the ask: email first, phone after the location
   // note — both already content-layer fields, no new strings.

@@ -829,7 +829,14 @@ const embedBlock = component({
 
 export const postFields = {
   title: fields.text({ label: 'Title' }),
-  slug: fields.text({ label: 'Slug (bare URL segment, e.g. why-ads-fail-in-kenya)' }),
+  // Auto-generating slug: typing the name fills the slug (still editable).
+  // Reads back as a plain string, so the reader/defaults shape is unchanged.
+  slug: fields.slug({
+    name: {
+      label: 'Title for the slug',
+      description: 'Repeat the post title here — the slug below generates from it.',
+    },
+  }),
   excerpt: fields.text({ label: 'Excerpt (card summary + meta description)', multiline: true }),
   category: fields.text({ label: 'Category', defaultValue: '' }),
   publishedAt: fields.date({ label: 'Publish date', defaultValue: { kind: 'today' } }),

@@ -72,7 +72,7 @@ export function ProcessChapter({
 			className="bg-paper relative flex h-full min-h-[max(100svh,640px)] w-full flex-col overflow-hidden text-ink-800"
 		>
 			<div className="relative flex min-h-0 flex-1 flex-col justify-center overflow-hidden py-14 pt-32">
-					<div className="mx-auto  w-full max-w-7xl flex flex-col items-center justify-center ">
+				<div className="mx-auto  w-full max-w-7xl flex flex-col items-center justify-center ">
 					<p className="label text-ink-500">{process?.eyebrow}</p>
 
 					<InViewTitle
@@ -85,13 +85,13 @@ export function ProcessChapter({
 					<p className="text-ink-500 mt-12 max-w-[70%] text-center text-sm md:text-base">
 						{process?.lede}
 					</p>
-					</div>
-					<div className="mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center gap-10 px-5 md:flex-row md:items-center md:gap-16">
-						{/* Position + step list */}
-						<div className="w-full md:w-[38%] hidden md:block">
-							<ol className="mt-10">
-								{steps.map((step, i) => (
-							<li key={step.n}>
+				</div>
+				<div className="mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center gap-10 px-5 md:flex-row md:items-center md:gap-16">
+					{/* Position + step list */}
+					<div className="w-full md:w-[38%] hidden md:block">
+						<ol className="mt-10">
+							{steps.map((step, i) => (
+								<li key={step.n}>
 									<button
 										type="button"
 										onClick={() => goTo(i)}
@@ -101,26 +101,26 @@ export function ProcessChapter({
 												? "font-medium text-accent-600"
 												: "text-ink-500 hover:text-accent-600"
 										}`}
-										>
-											<span className="font-mono text-[10.5px]  opacity-70">
-												{step.n}
-											</span>
-											<span className="flex-1">{step.title}</span>
-											<MdiIcon
-												name="arrowRight"
-												size={0.8}
-												className={
-													i === active ? "text-accent-500" : "opacity-0"
-												}
-											/>
-										</button>
-									</li>
-								))}
-							</ol>
-						</div>
+									>
+										<span className="font-mono text-[10.5px]  opacity-70">
+											{step.n}
+										</span>
+										<span className="flex-1 font-mono">{step.title}</span>
+										<MdiIcon
+											name="arrowRight"
+											size={0.8}
+											className={
+												i === active ? "text-accent-500" : "opacity-0"
+											}
+										/>
+									</button>
+								</li>
+							))}
+						</ol>
+					</div>
 
-						{/* Detail panel — swaps per active step */}
-						<div className="w-full flex-1 md:w-auto">
+					{/* Detail panel — swaps per active step */}
+					<div className="w-full flex-1 md:w-auto">
 						{current ? (
 							<div
 								key={current.n}
@@ -136,10 +136,10 @@ export function ProcessChapter({
 									size={12}
 									className="pointer-events-none absolute -bottom-8 -right-4 select-none text-ink-950/[0.06]"
 								/>
-								<p className="num text-[clamp(2.6rem,6vw,4.6rem)] text-ink-300">
-										{current.n}
-									</p>
-								<h3 className="verb mt-4 text-[clamp(1.6rem,3vw,2.4rem)] text-accent-600">
+								<p className="num font-mono text-[clamp(2.6rem,6vw,4.6rem)] text-ink-300">
+									{current.n}
+								</p>
+								<h3 className="verb font-mono mt-4 text-[clamp(1.6rem,3vw,2.4rem)] text-accent-600">
 									{current.title}
 								</h3>
 								<p className="text-ink-500 mt-5 max-w-[56ch]">{current.desc}</p>
@@ -153,31 +153,27 @@ export function ProcessChapter({
 										</li>
 									))}
 								</ul>
-								</div>
-							) : null}
-						</div>
-					</div>
-				</div>
-
-				{/* Foot — meter + scroll cue. A direct stage child so it stays
-				    bottom-anchored while the story above flexes. */}
-				<div className="relative border-t border-accent/10 px-5 py-5 md:px-8">
-					<div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-6">
-						<span className="label text-ink-500">
-							{process?.cardTitle ?? "Process"}
-						</span>
-						<div className="relative h-[2px] w-40 bg-ink-950/10" aria-hidden>
-							<span
-								className="absolute inset-y-0 left-0 bg-accent-500"
-								style={{ width: `${meter * 100}%` }}
-							/>
-						</div>
-                          <span className="label text-ink-500">
-                              {/* Scroll to explore */}
-                          </span>
+							</div>
+						) : null}
 					</div>
 				</div>
 			</div>
+
+			{/* Foot — meter + scroll cue. A direct stage child so it stays
+				    bottom-anchored while the story above flexes. */}
+			<div className="relative border-t border-accent/10 px-5 py-5 md:px-8">
+				<div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-6">
+					<span className="label text-ink-500">{process?.cardTitle ?? "Process"}</span>
+					<div className="relative h-[2px] w-40 bg-ink-950/10" aria-hidden>
+						<span
+							className="absolute inset-y-0 left-0 bg-accent-500"
+							style={{ width: `${meter * 100}%` }}
+						/>
+					</div>
+					<span className="label text-ink-500">{/* Scroll to explore */}</span>
+				</div>
+			</div>
+		</div>
   );
 }
 

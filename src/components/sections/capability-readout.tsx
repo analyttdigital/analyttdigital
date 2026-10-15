@@ -214,7 +214,7 @@ function DescentFigure({ readout }: { readout: Readout }) {
     <svg viewBox={`0 0 ${W} ${H}`} className="h-[92px] w-full" aria-hidden focusable="false">
       {target ? (
         <g>
-          <line
+          {/* <line
             className="cap-seg-fill"
             x1={x0}
             y1={py(target)}
@@ -224,7 +224,7 @@ function DescentFigure({ readout }: { readout: Readout }) {
             strokeWidth="1"
             vectorEffect="non-scaling-stroke"
             opacity="0.5"
-          />
+          /> */}
           {readout.targetLabel ? (
             <text
               className="font-mono capitalize fill-accent-700 cap-pop"
@@ -297,7 +297,7 @@ function OrganicFigure({ readout }: { readout: Readout }) {
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="h-[92px] w-full" aria-hidden focusable="false">
       
-      {priorLine ? (
+      {/* priorLine ? (
         <path
           className="cap-draw"
           d={priorLine}
@@ -307,7 +307,7 @@ function OrganicFigure({ readout }: { readout: Readout }) {
           vectorEffect="non-scaling-stroke"
           opacity="0.38"
         />
-      ) : null}
+      ) : null */}
       <path className="cap-area fill-accent-500/10" d={area} />
       <path
         className="cap-draw"

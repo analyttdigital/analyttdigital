@@ -46,11 +46,19 @@ const enLayout: LayoutContent = {
 	footerCtaHref: "/contact",
 	socialTitle: "Follow the signal",
 	socialLinks: [
-		{ label: "LinkedIn", href: "https://www.linkedin.com/company/94839128/admin/page-posts/published/", icon: "linkedin" },
+		{
+			label: "LinkedIn",
+			href: "https://www.linkedin.com/company/94839128/admin/page-posts/published/",
+			icon: "linkedin",
+		},
 		{ label: "Facebook", href: "https://www.facebook.com/AnalyttDigital", icon: "facebook" },
 		{ label: "X", href: "https://x.com/AnalyttDigital", icon: "twitter" },
 		{ label: "Instagram", href: "https://www.instagram.com/", icon: "instagram" },
-		{ label: "YouTube", href: "https://youtube.com/@analyttdigital?si=-4E8UHpHcPT32s30", icon: "youtube" },
+		{
+			label: "YouTube",
+			href: "https://youtube.com/@analyttdigital?si=-4E8UHpHcPT32s30",
+			icon: "youtube",
+		},
 		{ label: "TikTok", href: "https://www.tiktok.com/@analyttdigital", icon: "musicNote" },
 		{ label: "Phone", href: "tel:+254784488542", icon: "phone" },
 	],
@@ -60,17 +68,18 @@ const enLayout: LayoutContent = {
 		{
 			title: "Navigate",
 			links: [
-				{ label: "Services", href: "/#capabilities" },
-				{ label: "Process", href: "/#process" },
-				{ label: "Work", href: "/#work" },
-				{ label: "Insights", href: "/#insights" },
+				{ label: "Services", href: "/services" },
+				{ label: "About Us", href: "/about-us" },
+				{ label: "Digital Audit", href: "/digital-audit" },
+				{ label: "Blog", href: "/blog" },
+				{ label: "Contact", href: "/contact" },
 			],
 		},
 		{
 			title: "Contact",
 			links: [
 				{ label: "hello@analyttdigital.com", href: "mailto:hello@analyttdigital.com" },
-				{ label: "Request an audit", href: "/#contact" },
+				{ label: "+254 784 488 542", href: "tel:+254784488542" },
 			],
 		},
 	],
