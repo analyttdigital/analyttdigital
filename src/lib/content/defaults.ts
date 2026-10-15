@@ -723,6 +723,17 @@ const enHome: PageDoc = {
 			articles: [],
 		},
 		{
+			type: "testimonials",
+			eyebrow: "Client voices",
+			headline: "Results our clients feel.",
+			body: "One engagement at a time, measured to the shilling.",
+			items: [
+				{ quote: "We finally started seeing real ROI from our ads. Leads became more consistent, costs went down, and reporting was clear and honest.", name: "Analytt Digital Client" },
+				{ quote: "Our cost per lead was dominating every board meeting. They cut the junk keywords and built pages by intent. The weekly review is the most useful meeting on my calendar.", name: "Analytt Digital Client" },
+				{ quote: "The report is one page I can read without a translator: spend, bookings, and what changes next week. I have stopped dreading the agency call.", name: "Analytt Digital Client" },
+			],
+		},
+		{
 			type: "cta",
 			eyebrow: "Start",
 			headline: "Most audits surface KES 50K–200K in recoverable spend.",
@@ -1120,7 +1131,7 @@ const enDigitalAudit: PageDoc = {
 			],
 		},
 		{
-			type: "process",
+			type: "booking-flow",
 			eyebrow: "How it works",
 			headline: "Book, share, meet,",
 			headlineAccent: "decide.",
@@ -2565,7 +2576,7 @@ const swDigitalAudit: PageDoc = {
 			],
 		},
 		{
-			type: "process",
+			type: "booking-flow",
 			eyebrow: "Inafanyaje kazi",
 			headline: "Weka miadi, toa ufikiaji, kutana,",
 			headlineAccent: "amua.",
@@ -4200,6 +4211,17 @@ const swHome: PageDoc = {
 						"Ufuatiliaji wa kisasa, ridhaa, na kinachobadilika ishara inapodhoofika.",
 					href: "#",
 				},
+			],
+		},
+		{
+			type: "testimonials",
+			eyebrow: "Sauti za wateja",
+			headline: "Matokeo ambayo wateja wanahisi.",
+			body: "Kazi moja kwa wakati, ikipimwa kwa shilingi.",
+			items: [
+				{ quote: "Hatimaye tulianza kuona ROI halisi kutoka matangazo yetu. Wateja wakawa wa kawaida, gharama zikapungua, na ripoti zilikuwa wazi na za uaminifu.", name: "Mteja wa Analytt Digital" },
+				{ quote: "Gharama yetu kwa mteja ilikuwa ikitawala kila mkutano wa bodi. Walikata maneno yasiyofaa na kujenga kurasa kwa nia. Mapitio ya kila wiki ni mkutano muhimu zaidi kwenye kalenda yangu.", name: "Mteja wa Analytt Digital" },
+				{ quote: "Ripoti ni ukurasa mmoja ninaoweza kusoma bila mkalimani: matumizi, nafasi zilizowekwa, na kitakachobadilika wiki ijayo. Nimeacha kuogopa simu ya shirika.", name: "Mteja wa Analytt Digital" },
 			],
 		},
 		{

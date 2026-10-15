@@ -552,6 +552,15 @@ export type PlanPickerSection = {
   note?: string;
 };
 
+export type TestimonialItem = { quote: string; name: string; role?: string };
+
+export type TestimonialSection = {
+  eyebrow: string;
+  headline: string;
+  body: string;
+  items: TestimonialItem[];
+};
+
 /* ------------------------- section union ------------------------------ */
 
 export type Section =
@@ -565,6 +574,8 @@ export type Section =
 	| ({ type: "process-alt" } & ProcessSection)
 	| ({ type: "how-we-work" } & ProcessSection)
 	| ({ type: "next-steps" } & ProcessSection)
+	| ({ type: "booking-flow" } & ProcessSection)
+	| ({ type: "testimonials" } & TestimonialSection)
 	| ({ type: "capabilities" } & CapabilitiesSection)
 	| ({ type: "capabilities-alt" } & CapabilitiesSection)
 	| ({ type: "work" } & WorkSection)

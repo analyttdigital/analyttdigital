@@ -831,6 +831,20 @@ const leakListFields = {
   closing: fields.text({ label: 'Closing line', defaultValue: '', multiline: true }),
 };
 
+const testimonialFields = {
+  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'Client voices' }),
+  headline: fields.text({ label: 'Headline', defaultValue: 'Results our clients feel.' }),
+  body: fields.text({ label: 'Body', defaultValue: '', multiline: true }),
+  items: fields.array(
+    fields.object({
+      quote: fields.text({ label: 'Quote', multiline: true }),
+      name: fields.text({ label: 'Name' }),
+      role: fields.text({ label: 'Role (empty hides it)', defaultValue: '' }),
+    }),
+    { label: 'Testimonials', itemLabel: (props) => props.fields.name.value || 'Testimonial' },
+  ),
+};
+
 /* ------------------------- M8 blog post fields ------------------------ */
 /* Convention: `slug` is the bare URL segment (`/blog/<slug>`). `body` is a
  * `fields.document` (deprecated upstream, but `fields.mdx` needs a pipeline
@@ -940,6 +954,7 @@ export const pageFields = {
         { label: 'Process alt', value: 'process-alt' },
         { label: 'How we work', value: 'how-we-work' },
         { label: 'Next steps', value: 'next-steps' },
+        { label: 'Booking flow', value: 'booking-flow' },
         { label: 'Capabilities', value: 'capabilities' },
         { label: 'Capabilities alt', value: 'capabilities-alt' },
         { label: 'Work', value: 'work' },
@@ -974,6 +989,7 @@ export const pageFields = {
         { label: 'Plan picker', value: 'plan-picker' },
         { label: 'Plan picker alt', value: 'plan-picker-alt' },
         { label: 'Leak list', value: 'leak-list' },
+        { label: 'Testimonials', value: 'testimonials' },
       ],
       defaultValue: 'hero',
     }), {
@@ -991,6 +1007,7 @@ export const pageFields = {
       'process-alt': fields.object(processFields, { label: 'Process alt content' }),
       'how-we-work': fields.object(processFields, { label: 'How we work content' }),
       'next-steps': fields.object(processFields, { label: 'Next steps content' }),
+      'booking-flow': fields.object(processFields, { label: 'Booking flow content' }),
       capabilities: fields.object(capabilitiesFields, { label: 'Capabilities content' }),
       'capabilities-alt': fields.object(capabilitiesFields, { label: 'Capabilities alt content' }),
       work: fields.object(workFields, { label: 'Work content' }),
@@ -1027,6 +1044,7 @@ export const pageFields = {
       'plan-picker': fields.object(planPickerFields, { label: 'Plan picker content' }),
       'plan-picker-alt': fields.object(planPickerFields, { label: 'Plan picker alt content' }),
       'leak-list': fields.object(leakListFields, { label: 'Leak list content' }),
+      testimonials: fields.object(testimonialFields, { label: 'Testimonials content' }),
     }),
     {
       label: 'Sections',

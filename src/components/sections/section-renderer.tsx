@@ -2,6 +2,7 @@ import { ScrollSection } from '@/components/blocks/scroll-section';
 import { AboutSection } from '@/components/sections/about';
 import { Belief } from '@/components/sections/belief';
 import { BeliefAlt } from '@/components/sections/belief-alt';
+import { BookingFlow } from '@/components/sections/booking-flow';
 import { Capabilities } from '@/components/sections/capabilities';
 import { CapabilitiesAlt } from '@/components/sections/capabilities-alt';
 import { CompareTable } from '@/components/sections/compare-table';
@@ -27,6 +28,7 @@ import { PageHero } from '@/components/sections/page-hero';
 import { PageHeroAlt } from '@/components/sections/page-hero-alt';
 import { PlanPicker } from '@/components/sections/plan-picker';
 import { LeakList } from '@/components/sections/leak-list';
+import { Testimonials } from '@/components/sections/testimonials';
 import { PlanPickerAlt } from '@/components/sections/plan-picker-alt';
 import { PricingTiers } from '@/components/sections/pricing-tiers';
 import { PricingTiersAlt } from '@/components/sections/pricing-tiers-alt';
@@ -305,6 +307,18 @@ function SectionBlock({ section, sections, latestPosts }: { section: Section; se
 			return (
 				<ScrollSection variant="fade-up">
 					<LeakList data={section} />
+				</ScrollSection>
+			);
+		case "booking-flow":
+			return (
+				<ScrollSection variant="fade-up">
+					<BookingFlow data={section} />
+				</ScrollSection>
+			);
+		case "testimonials":
+			return (
+				<ScrollSection variant="fade-up">
+					<Testimonials data={section} />
 				</ScrollSection>
 			);
 		default:
