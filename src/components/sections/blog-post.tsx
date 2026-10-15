@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { ReactElement, ReactNode } from 'react';
+import type { ReactElement } from 'react';
 import { DocumentRenderer, type DocumentRendererProps } from '@keystatic/core/renderer';
 
 import { InViewTitle } from '@/components/graphics/in-view-title';
@@ -48,11 +48,11 @@ function Embed({ url, caption }: { url: string; caption?: string }): ReactElemen
   );
 }
 
-function Para({ children }: { children: ReactNode }) {
+function Para({ children }: any): any {
   return <p className="mt-6 text-[15px] leading-[1.9] text-ink-600 first:mt-0">{children}</p>;
 }
 
-function Heading({ level, children }: { level: 1 | 2 | 3 | 4 | 5 | 6; children: ReactNode }) {
+function Heading({ level, children }: any): any {
   if (level <= 2) {
     return (
       <h2 className="verb mt-12 text-[clamp(1.4rem,2.4vw,1.8rem)] leading-snug text-ink-950">
@@ -67,7 +67,7 @@ function Heading({ level, children }: { level: 1 | 2 | 3 | 4 | 5 | 6; children: 
   );
 }
 
-function PostList({ type, children }: { type: 'ordered' | 'unordered'; children: ReactElement[] }) {
+function PostList({ type, children }: any): any {
   const Tag = type === 'ordered' ? 'ol' : 'ul';
   return (
     <Tag
@@ -85,17 +85,14 @@ function PostList({ type, children }: { type: 'ordered' | 'unordered'; children:
 function PostTable({
   head,
   body,
-}: {
-  head?: { children: ReactNode }[];
-  body: { children: ReactNode }[][];
-}) {
+}: any): any {
   return (
     <div className="my-10 overflow-x-auto rounded-3xl border border-ink-950/[0.07]">
       <table className="w-full min-w-[36rem] border-collapse bg-paper-50 text-left text-[13px] leading-[1.7]">
         {head && head.length > 0 ? (
           <thead>
             <tr>
-              {head.map((cell, i) => (
+              {head.map((cell: any, i: number) => (
                 <th
                   key={i}
                   className="border-b border-ink-950/10 px-5 py-4 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-ink-500"
@@ -107,9 +104,9 @@ function PostTable({
           </thead>
         ) : null}
         <tbody>
-          {body.map((row, r) => (
+          {body.map((row: any, r: number) => (
             <tr key={r} className="border-b border-ink-950/[0.05] last:border-0">
-              {row.map((cell, c) => (
+              {row.map((cell: any, c: number) => (
                 <td key={c} className="px-5 py-4 align-top text-ink-600">
                   {cell.children}
                 </td>
@@ -213,11 +210,15 @@ export function BlogPostView({
             <DocumentRenderer
               document={post.body as unknown as RendererDoc}
               renderers={{
+                // `any` props/returns: `@keystatic/core/renderer` types its
+                // components against its own nested `@types/react`, whose
+                // `ReactNode` is not identical to the project's — precise
+                // signatures can never satisfy both. Runtime shape is exact.
                 inline: {
-                  bold: ({ children }: { children: ReactNode }) => (
+                  bold: ({ children }: any): any => (
                     <strong className="font-semibold text-ink-900">{children}</strong>
                   ),
-                  link: ({ children, href }: { children: ReactNode; href: string }) => (
+                  link: ({ children, href }: any): any => (
                     <a
                       href={href}
                       className="font-medium text-accent-600 underline decoration-accent-500/40 underline-offset-4 transition-colors duration-200 hover:text-accent-500"

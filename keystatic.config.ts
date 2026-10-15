@@ -40,14 +40,16 @@ export default config({
       label: 'Posts (EN)',
       slugField: 'slug',
       path: 'src/content/en/posts/*',
-      format: 'markdown',
+      // 0.6.9 collections only offer `json`/`yaml` — no markdown format,
+      // so post documents serialize as YAML like pages.
+      format: 'yaml',
       schema: postFields,
     }),
     'posts-sw': collection({
       label: 'Posts (SW)',
       slugField: 'slug',
       path: 'src/content/sw/posts/*',
-      format: 'markdown',
+      format: 'yaml',
       schema: postFields,
     }),
   },
