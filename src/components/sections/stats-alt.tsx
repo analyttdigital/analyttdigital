@@ -47,7 +47,7 @@ export function StatsAlt({ data, classes, className, id }: DataProps<StatsSectio
 
             {stats.length > 0 ? (
               <dl
-                className={['mt-12 grid gap-px overflow-hidden rounded-3xl bg-primary-50/10 sm:grid-cols-2 lg:grid-cols-4', classes?.grid]
+                className={['mt-12 grid gap-px overflow-hidden rounded-3xl sm:grid-cols-2 lg:grid-cols-4', classes?.grid]
                   .filter(Boolean)
                   .join(' ')}
               >
