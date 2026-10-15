@@ -37,8 +37,14 @@ export default function App({ Component, pageProps, router }: Props) {
 		
 	}, []);
   // /keystatic renders the admin UI untouched, outside the site layout.
+  // It still goes through `<Component />`: a bare wrapper here would drop the
+  // page and the admin UI would never mount.
   if (router.pathname.startsWith('/keystatic')) {
-    return <div className={fontsClass} />;
+    return (
+      <div className={fontsClass}>
+        <Component {...pageProps} />
+      </div>
+    );
   }
 
   // Typed once: `AppProps` types pageProps as `any`, which cannot index `defaults`.

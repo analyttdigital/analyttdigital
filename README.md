@@ -91,12 +91,17 @@ Content and copy for the following sections are unchanged from the prior pass; o
 1. Add the code to `locales` in `src/lib/content/types.ts` and defaults in `src/lib/content/defaults.ts`.
 2. Register a `pages-<code>` collection and a `layout-<code>` singleton in `keystatic.config.ts` (copy the `sw` entries).
 3. Add a nav entry in the Keystatic `ui.navigation` config.
-4. Add the locale's home path to `getStaticPaths` in `src/pages/[locale]/[...slug].tsx` (currently only non-`en` `home` slugs are pre-rendered).
+4. Nothing else — `getStaticPaths` in `src/pages/[locale]/[...slug].tsx` enumerates every locale's pages from `listPageSlugs`, and the reader falls back to code defaults until the new locale has CMS content.
 
 ## Routing & locales
 
-- `/` — English homepage (default, from `src/pages/index.tsx`)
-- `/sw/home` — Kiswahili homepage (route-based locale from `src/pages/[locale]/[...slug].tsx`; there is no bare `/sw` route)
+One catch-all route (`src/pages/[locale]/[...slug].tsx`) serves every page document, in both published URL shapes:
+
+- `/` — English homepage (default locale, `src/pages/index.tsx`)
+- `/<slug>` — every other English page, e.g. `/about-us`, `/pricing-plans`, `/services/paid-media`
+- `/sw` — Kiswahili homepage, and `/sw/<slug>` for its other pages (e.g. `/sw/about-us`)
+
+The default locale is unprefixed, so a first URL segment only counts as a locale when it names one; otherwise it is the page's first slug segment (`routeFromParams` in `src/lib/content/types.ts`). Slugs missing from the build still render through the `blocking` fallback, and a slug that exists in neither Keystatic nor the code defaults answers 404.
 
 ## Docs
 

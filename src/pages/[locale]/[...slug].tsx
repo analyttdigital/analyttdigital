@@ -1,33 +1,21 @@
-import Head from 'next/head';
-
-import { SectionRenderer } from '@/components/sections/section-renderer';
-import { defaults } from '@/lib/content/defaults';
-import { locales } from '@/lib/content/types';
-import { getStaticProps, type PageProps } from '@/lib/keystatic/getStaticProps';
-import { site } from '@/lib/site';
+import { PageView } from '@/lib/content/page-view';
+import { getStaticProps, nestedStaticPaths } from '@/lib/keystatic/getStaticProps';
 
 export { getStaticProps };
 
-export default function LocalePage({ bundle, locale, slug }: PageProps) {
-  const page = bundle?.page ?? defaults[locale].pages[slug] ?? defaults[locale].pages.home;
+export default PageView;
 
-  return (
-    <>
-      <Head>
-        <title>{`${site.name} (${locale}) — ${page.title}`}</title>
-        <meta name="description" content={page.description} />
-      </Head>
-
-      <SectionRenderer sections={page.sections} />
-    </>
-  );
-}
-
-export function getStaticPaths() {
+/**
+ * The nested route (two or more segments): `/sw/about-us`, `/sw/services/seo`
+ * for a prefixed locale, and `/services/paid-media` for the default locale,
+ * whose first slug segment rides in the `locale` slot (see `routeFromParams`).
+ * One-segment URLs are served by `[locale]/index.tsx` — an optional catch-all
+ * cannot serve both shapes, because Next validates a pre-rendered path against
+ * the required-catch-all variant and rejects a one-segment path.
+ */
+export async function getStaticPaths() {
   return {
-    paths: locales
-      .filter((l) => l !== 'en')
-      .flatMap((locale) => [{ params: { locale, slug: ['home'] } }]),
-    fallback: 'blocking',
+    paths: await nestedStaticPaths(),
+    fallback: 'blocking' as const,
   };
 }

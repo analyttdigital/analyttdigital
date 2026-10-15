@@ -9,17 +9,27 @@ import keystaticConfig from '../../../../keystatic.config';
 // forwarded, not just content-type.
 const keystaticHandler = makeRouteHandler({ config: keystaticConfig });
 
+// Next's API resolver parses and drains the request body before the handler
+// runs (api-utils `parseBody`), so a `data`/`end` read here would never see a
+// chunk and every save would hang. Keystatic's `update` endpoint parses the
+// JSON itself and wants the raw bytes, so keep the stream for it.
+export const config = { api: { bodyParser: false } };
+
 export default async function handler(req: any, res: any) {
   const method = req.method === 'POST' ? 'POST' : 'GET';
   try {
     const url = new URL(req.url, 'http://localhost');
     const body =
       method === 'POST'
-        ? await new Promise<string>((resolve) => {
-            let data = '';
-            req.on('data', (chunk: any) => (data += chunk));
-            req.on('end', () => resolve(data));
-          })
+        ? req.readableEnded || req.body !== undefined
+          ? typeof req.body === 'string' || Buffer.isBuffer(req.body)
+            ? String(req.body)
+            : JSON.stringify(req.body)
+          : await new Promise<string>((resolve) => {
+              let data = '';
+              req.on('data', (chunk: any) => (data += chunk));
+              req.on('end', () => resolve(data));
+            })
         : undefined;
 
     const headers = new Headers();

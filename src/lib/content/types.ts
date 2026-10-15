@@ -9,10 +9,32 @@ export function isLocale(value: string | undefined): value is Locale {
   return locales.includes(value as Locale);
 }
 
-/** Resolve the effective locale from a pages-router params object. */
-export function localeFromParams(params?: { locale?: string; slug?: string } | string[]): Locale {
-  const raw = Array.isArray(params) ? params[0] : params?.locale;
-  return isLocale(raw) ? raw : defaultLocale;
+/** The one catch-all route's params: `locale` holds the first URL segment and
+ *  the optional catch-all `slug` holds the rest (an array, or empty at the
+ *  route's base). */
+export type RouteParams = { locale?: string; slug?: string | string[] };
+
+/**
+ * Normalize route params into the page's locale + slug.
+ *
+ * One catch-all route serves both URL shapes the site publishes:
+ * `/<slug...>` for the default locale and `/<locale>/<slug...>` elsewhere.
+ * The first segment therefore acts as a locale prefix only when it names a
+ * locale; otherwise it is the default locale's first slug segment.
+ */
+export function routeFromParams(params?: RouteParams): { locale: Locale; slug: string } {
+  const rest = Array.isArray(params?.slug) ? params.slug : [params?.slug];
+  const segments = [params?.locale, ...rest].filter(
+    (segment): segment is string => typeof segment === 'string' && segment.length > 0,
+  );
+  const [first, ...tail] = segments;
+  const prefixed = isLocale(first);
+  const slugSegments = prefixed ? tail : segments;
+  return {
+    locale: prefixed ? first : defaultLocale,
+    // The route's base is home: `/` for the default locale, `/sw` for others.
+    slug: slugSegments.join('/') || 'home',
+  };
 }
 
 /* --------------------------- shared chrome ---------------------------- */
@@ -220,7 +242,9 @@ export type BeliefSection = {
   headline: string;
   headlineAccent: string;
   lede: string;
-  terrain: TerrainData;
+  /** Activity-terrain instrument. Content pages compose `belief` as copy only
+   *  (no figure), so the component renders the readout when it is present. */
+  terrain?: TerrainData;
 };
 
 export type ProcessBarTone = 'soft' | 'mid' | 'deep' | 'field' | 'ember';
@@ -255,7 +279,9 @@ export type ProcessStep = {
   title: string;
   desc: string;
   chips: string[];
-  visual: ProcessVisual;
+  /** Figure beside the copy. Content pages compose steps without one, so the
+   *  player falls back to a copy-only card. */
+  visual?: ProcessVisual;
 };
 
 export type ProcessSection = {
@@ -264,15 +290,18 @@ export type ProcessSection = {
   headlineAccent: string;
   lede: string;  chapterTitle?: string;
   cardTitle: string;
-  cardSub: string;
-  playLabel: string;
-  pauseLabel: string;
-  stepOfTemplate: string;
-  illustrativeNote: string;
+  /* The player chrome below carries the full instrument's own words. A step
+   * list without figures (content pages) leaves them out, and the player
+   * renders the copy card with its own defaults. */
+  cardSub?: string;
+  playLabel?: string;
+  pauseLabel?: string;
+  stepOfTemplate?: string;
+  illustrativeNote?: string;
   /** Filled stage backdrop — empty `src` hides it. */
   image?: ContentImage;
   /** Ms each step holds while autoplaying. */
-  dwellMs: number;
+  dwellMs?: number;
   steps: ProcessStep[];
   closing: string;
   cta: string;
@@ -317,7 +346,8 @@ export type CapabilitiesSection = {
   orderLabel: string;
   orderServices: string;
   orderSequence: string;
-  illustrativeNote: string;
+  /** Note under the instrument rows; empty hides the row's caption line. */
+  illustrativeNote?: string;
   items: Capability[];
 };
 
@@ -382,6 +412,124 @@ export type CtaSection = {
   portalLabel?: string;
 };
 
+/* ------------------- M1 content-page section kit ------------------- */
+
+export type PageHeroSection = {
+  eyebrow: string;
+  headline: string;
+  lede: string;
+  /** Optional pull-quote under the lede — empty hides it. */
+  quote?: string;
+  cta?: string;
+  ctaHref?: string;
+  secondaryCta?: string;
+  secondaryCtaHref?: string;
+};
+
+export type TeamMember = {
+  name: string;
+  role: string;
+  body: string;
+  icon?: string;
+  image?: ContentImage;
+};
+
+export type TeamGridSection = {
+  eyebrow: string;
+  headline: string;
+  body: string;
+  members: TeamMember[];
+};
+
+export type ContactChannel = {
+  label: string;
+  value: string;
+  href: string;
+  note?: string;
+  icon?: string;
+};
+
+export type ContactChannelsSection = {
+  eyebrow: string;
+  headline: string;
+  body: string;
+  channels: ContactChannel[];
+};
+
+export type FormField = {
+  name: string;
+  label: string;
+  kind: 'text' | 'email' | 'textarea';
+};
+
+export type FormShellSection = {
+  eyebrow: string;
+  headline: string;
+  body: string;
+  submitLabel: string;
+  /** Fallback mailto when no form backend is wired. */
+  fallbackHref: string;
+  fallbackLabel: string;
+  note?: string;
+  fields: FormField[];
+};
+
+export type FaqItem = { question: string; answer: string };
+
+export type FaqSection = {
+  eyebrow: string;
+  headline: string;
+  body: string;
+  items: FaqItem[];
+};
+
+export type PricingTier = {
+  name: string;
+  tagline: string;
+  body: string;
+  cta: string;
+  ctaHref: string;
+  bestFor?: string;
+  featured?: boolean;
+  features: string[];
+};
+
+export type PricingTiersSection = {
+  eyebrow: string;
+  headline: string;
+  body: string;
+  note?: string;
+  tiers: PricingTier[];
+};
+
+export type CompareTableSection = {
+  eyebrow: string;
+  headline: string;
+  body: string;
+  columns: string[];
+  rows: { feature: string; cells: string[] }[];
+};
+
+export type ExclusionsSection = {
+  eyebrow: string;
+  headline: string;
+  body: string;
+  note?: string;
+  items: { title: string; body: string }[];
+};
+
+export type PlanOption = { value: string; label: string; hint?: string };
+
+export type PlanPickerSection = {
+  eyebrow: string;
+  headline: string;
+  body: string;
+  options: PlanOption[];
+  cta: string;
+  ctaHref: string;
+  note?: string;
+};
+
 /* ------------------------- section union ------------------------------ */
 
 export type Section =
@@ -397,7 +545,16 @@ export type Section =
   | ({ type: 'insights' } & InsightsSection)
   | ({ type: 'cta' } & CtaSection)
   | ({ type: 'cta-banner' } & CtaSection)
-  | ({ type: 'cta-split' } & CtaSection);
+  | ({ type: 'cta-split' } & CtaSection)
+  | ({ type: 'page-hero' } & PageHeroSection)
+  | ({ type: 'team-grid' } & TeamGridSection)
+  | ({ type: 'contact-channels' } & ContactChannelsSection)
+  | ({ type: 'form-shell' } & FormShellSection)
+  | ({ type: 'faq' } & FaqSection)
+  | ({ type: 'pricing-tiers' } & PricingTiersSection)
+  | ({ type: 'compare-table' } & CompareTableSection)
+  | ({ type: 'exclusions' } & ExclusionsSection)
+  | ({ type: 'plan-picker' } & PlanPickerSection);
 
 export type SectionType = Section['type'];
 

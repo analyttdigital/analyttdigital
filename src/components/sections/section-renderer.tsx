@@ -2,14 +2,23 @@ import { ScrollSection } from '@/components/blocks/scroll-section';
 import { AboutSection } from '@/components/sections/about';
 import { Belief } from '@/components/sections/belief';
 import { Capabilities } from '@/components/sections/capabilities';
+import { CompareTable } from '@/components/sections/compare-table';
+import { ContactChannels } from '@/components/sections/contact-channels';
 import { Cta } from '@/components/sections/cta';
 import { CtaSplit } from '@/components/sections/cta-split';
+import { Exclusions } from '@/components/sections/exclusions';
+import { Faq } from '@/components/sections/faq';
+import { FormShell } from '@/components/sections/form-shell';
 import { HeroStage } from '@/components/sections/hero';
 import { Industries } from '@/components/sections/industries';
 import { Insights } from '@/components/sections/insights';
+import { PageHero } from '@/components/sections/page-hero';
+import { PlanPicker } from '@/components/sections/plan-picker';
+import { PricingTiers } from '@/components/sections/pricing-tiers';
 import { Problem } from '@/components/sections/problem';
 import { ProcessChapter, ProcessClosing, ProcessBridge } from '@/components/sections/process-chapter';
 import { Stats } from '@/components/sections/stats';
+import { TeamGrid } from '@/components/sections/team-grid';
 import { Work } from '@/components/sections/work';
 import type { AboutSection as AboutContent, CtaSection, Section } from "@/lib/content/types";
 import {
@@ -151,6 +160,56 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
 				<CtaSplit data={section} />
 			</ScrollSection>
 		);
+    case 'page-hero':
+      return <PageHero data={section} />;
+    case 'team-grid':
+      return (
+        <ScrollSection variant="fade-up">
+          <TeamGrid data={section} />
+        </ScrollSection>
+      );
+    case 'contact-channels':
+      return (
+        <ScrollSection variant="fade-up">
+          <ContactChannels data={section} />
+        </ScrollSection>
+      );
+    case 'form-shell':
+      return (
+        <ScrollSection variant="fade-up">
+          <FormShell data={section} />
+        </ScrollSection>
+      );
+    case 'faq':
+      return (
+        <ScrollSection variant="fade-up">
+          <Faq data={section} />
+        </ScrollSection>
+      );
+    case 'pricing-tiers':
+      return (
+        <ScrollSection variant="fade-up">
+          <PricingTiers data={section} />
+        </ScrollSection>
+      );
+    case 'compare-table':
+      return (
+        <ScrollSection variant="fade-up">
+          <CompareTable data={section} />
+        </ScrollSection>
+      );
+    case 'exclusions':
+      return (
+        <ScrollSection variant="fade-up">
+          <Exclusions data={section} />
+        </ScrollSection>
+      );
+    case 'plan-picker':
+      return (
+        <ScrollSection variant="fade-up">
+          <PlanPicker data={section} />
+        </ScrollSection>
+      );
     default:
       return null;
   }

@@ -16,8 +16,10 @@ import {
  *
  * - Layout: `layout-<locale>` singleton, merged over code defaults. Missing
  *   entries fall back wholesale.
- * - Pages: `pages-<locale>` collection entries, keyed by slug. A missing page
- *   (or page with no sections) falls back to the code-default page document.
+ * - Pages: `pages-<locale>` collection entries, keyed by slug. A page with no
+ *   CMS entry (or one with no sections) falls back to the code-default page
+ *   document for that slug. A slug that exists in neither is `null`, so the
+ *   route can answer 404 instead of serving the wrong page.
  * - Sections: CMS sections are merged over matching code-default sections by
  *   position, so partially-filled section forms still render complete
  *   content. Empty lists defer to defaults (Keystatic arrays start empty).
@@ -73,14 +75,17 @@ export async function readLayout(reader: AnyReader | null, locale: Locale): Prom
   }
 }
 
+/** Read one page document: the CMS entry for `slug` merged over its
+ *  code-default page. `null` means the slug exists in neither layer — the
+ *  caller decides what an unknown URL means (404). */
 export async function readPage(
   reader: AnyReader | null,
   locale: Locale,
   slug: string,
-): Promise<PageDoc> {
-  const fallback = defaults[locale].pages[slug] ?? defaults[locale].pages.home;
+): Promise<PageDoc | null> {
+  const fallback = defaults[locale].pages[slug];
 
-  if (!reader) return fallback;
+  if (!reader) return fallback ?? null;
 
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -88,18 +93,36 @@ export async function readPage(
       reader.collections as Record<string, { all: () => Promise<any> }>
     )[`pages-${locale}`].all();
     const match = entries.find((e) => e.slug === slug);
-    if (!match?.entry?.sections?.length) return fallback;
+    if (!match?.entry?.sections?.length) return fallback ?? null;
 
     const cmsSections = match.entry.sections;
-    const sections = cmsSections.map((cms, i) => mergeSection(fallback.sections[i], cms));
+    const sections = cmsSections.map((cms, i) => mergeSection(fallback?.sections[i], cms));
     return {
-      title: match.entry.title || fallback.title,
-      description: match.entry.description || fallback.description,
+      title: match.entry.title || fallback?.title || '',
+      description: match.entry.description || fallback?.description || '',
       sections,
     };
   } catch {
-    return fallback;
+    return fallback ?? null;
   }
+}
+
+/** Every slug a locale can render: the code-default pages plus any Keystatic
+ *  entries (a CMS-only page has no code default to be listed from). Used to
+ *  pre-render routes; the reader still answers for slugs added later. */
+export async function listPageSlugs(reader: AnyReader | null, locale: Locale): Promise<string[]> {
+  const slugs = new Set(Object.keys(defaults[locale].pages));
+  if (reader) {
+    try {
+      const cmsSlugs: string[] = await (
+        reader.collections as Record<string, { list: () => Promise<string[]> }>
+      )[`pages-${locale}`].list();
+      for (const slug of cmsSlugs) slugs.add(slug);
+    } catch {
+      // Unreadable collection: the code defaults still describe every page.
+    }
+  }
+  return [...slugs].sort();
 }
 
 /** Read everything a page render needs, in one call. */
@@ -107,7 +130,7 @@ export async function readPageBundle(
   reader: AnyReader | null,
   locale: Locale = defaultLocale,
   slug: string,
-): Promise<PageBundle> {
+): Promise<PageBundle | null> {
   const [layout, page] = await Promise.all([readLayout(reader, locale), readPage(reader, locale, slug)]);
-  return { layout, page };
+  return page ? { layout, page } : null;
 }

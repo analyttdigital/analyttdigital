@@ -621,6 +621,164 @@ const ctaFields = {
   portalLabel: fields.text({ label: 'Portal label', defaultValue: 'Free · No commitment' }),
 };
 
+/* ---------------- M1 content-page section field groups --------------- */
+
+const pageHeroFields = {
+  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'Analytt Digital' }),
+  headline: fields.text({ label: 'Headline', defaultValue: 'Page headline.', multiline: true }),
+  lede: fields.text({ label: 'Lede', defaultValue: '', multiline: true }),
+  quote: fields.text({ label: 'Pull quote (empty hides it)', defaultValue: '', multiline: true }),
+  cta: fields.text({ label: 'Primary CTA (empty hides it)', defaultValue: '' }),
+  ctaHref: fields.text({ label: 'Primary CTA href', defaultValue: '' }),
+  secondaryCta: fields.text({ label: 'Secondary CTA (empty hides it)', defaultValue: '' }),
+  secondaryCtaHref: fields.text({ label: 'Secondary CTA href', defaultValue: '' }),
+};
+
+const teamGridFields = {
+  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'Team' }),
+  headline: fields.text({ label: 'Headline', defaultValue: 'Meet the team.' }),
+  body: fields.text({ label: 'Body', defaultValue: '', multiline: true }),
+  members: fields.array(
+    fields.object({
+      name: fields.text({ label: 'Name' }),
+      role: fields.text({ label: 'Role' }),
+      body: fields.text({ label: 'Bio', multiline: true }),
+      icon: iconField(),
+      image: imageField('Photo (optional — empty keeps the initial tile)'),
+    }),
+    { label: 'Members', itemLabel: (props) => props.fields.name.value || 'Member' },
+  ),
+};
+
+const contactChannelsFields = {
+  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'Contact' }),
+  headline: fields.text({ label: 'Headline', defaultValue: 'Get in touch.' }),
+  body: fields.text({ label: 'Body', defaultValue: '', multiline: true }),
+  channels: fields.array(
+    fields.object({
+      label: fields.text({ label: 'Label (e.g. Call or WhatsApp)' }),
+      value: fields.text({ label: 'Value (e.g. +254 784 488 542)' }),
+      href: fields.text({ label: 'Href (tel:, mailto:, or URL)' }),
+      note: fields.text({ label: 'Note (empty hides it)', defaultValue: '', multiline: true }),
+      icon: iconField(),
+    }),
+    { label: 'Channels', itemLabel: (props) => props.fields.label.value || 'Channel' },
+  ),
+};
+
+const formShellFields = {
+  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'Message us' }),
+  headline: fields.text({ label: 'Headline', defaultValue: 'General inquiries.' }),
+  body: fields.text({ label: 'Body', defaultValue: '', multiline: true }),
+  submitLabel: fields.text({ label: 'Submit label', defaultValue: 'Send message' }),
+  fallbackHref: fields.text({ label: 'Fallback href', defaultValue: 'mailto:hello@analyttdigital.com' }),
+  fallbackLabel: fields.text({ label: 'Fallback label', defaultValue: 'Or email us directly' }),
+  note: fields.text({ label: 'Note (empty hides it)', defaultValue: '', multiline: true }),
+  fields: fields.array(
+    fields.object({
+      name: fields.text({ label: 'Field name' }),
+      label: fields.text({ label: 'Field label' }),
+      kind: fields.select({
+        label: 'Field kind',
+        options: [
+          { label: 'Text', value: 'text' },
+          { label: 'Email', value: 'email' },
+          { label: 'Textarea', value: 'textarea' },
+        ],
+        defaultValue: 'text',
+      }),
+    }),
+    { label: 'Fields', itemLabel: (props) => props.fields.label.value || 'Field' },
+  ),
+};
+
+const faqFields = {
+  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'FAQ' }),
+  headline: fields.text({ label: 'Headline', defaultValue: 'Questions, answered.' }),
+  body: fields.text({ label: 'Body', defaultValue: '', multiline: true }),
+  items: fields.array(
+    fields.object({
+      question: fields.text({ label: 'Question' }),
+      answer: fields.text({ label: 'Answer', multiline: true }),
+    }),
+    { label: 'Questions', itemLabel: (props) => props.fields.question.value?.slice(0, 48) || 'Question' },
+  ),
+};
+
+const pricingTiersFields = {
+  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'Plans' }),
+  headline: fields.text({ label: 'Headline', defaultValue: 'Plans for every stage.' }),
+  body: fields.text({ label: 'Body', defaultValue: '', multiline: true }),
+  note: fields.text({ label: 'Note (empty hides it)', defaultValue: '', multiline: true }),
+  tiers: fields.array(
+    fields.object({
+      name: fields.text({ label: 'Name' }),
+      tagline: fields.text({ label: 'Tagline' }),
+      body: fields.text({ label: 'Body', multiline: true }),
+      cta: fields.text({ label: 'CTA label', defaultValue: 'Choose plan' }),
+      ctaHref: fields.text({ label: 'CTA href', defaultValue: '/contact/' }),
+      bestFor: fields.text({ label: 'Best for (empty hides it)', defaultValue: '' }),
+      featured: fields.checkbox({ label: 'Featured (most popular)', defaultValue: false }),
+      features: fields.array(fields.text({ label: 'Feature' }), {
+        label: 'Features',
+        itemLabel: (props) => props.value?.slice(0, 48) || 'Feature',
+      }),
+    }),
+    { label: 'Tiers', itemLabel: (props) => props.fields.name.value || 'Tier' },
+  ),
+};
+
+const compareTableFields = {
+  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'Compare' }),
+  headline: fields.text({ label: 'Headline', defaultValue: 'Compare plans at a glance.' }),
+  body: fields.text({ label: 'Body', defaultValue: '', multiline: true }),
+  columns: fields.array(fields.text({ label: 'Column' }), {
+    label: 'Columns (first is the feature column)',
+    itemLabel: (props) => props.value || 'Column',
+  }),
+  rows: fields.array(
+    fields.object({
+      feature: fields.text({ label: 'Feature' }),
+      cells: fields.array(fields.text({ label: 'Cell' }), {
+        label: 'Cells (one per plan column)',
+        itemLabel: (props) => props.value?.slice(0, 32) || 'Cell',
+      }),
+    }),
+    { label: 'Rows', itemLabel: (props) => props.fields.feature.value?.slice(0, 48) || 'Row' },
+  ),
+};
+
+const exclusionsFields = {
+  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'Honest scope' }),
+  headline: fields.text({ label: 'Headline', defaultValue: "What's not included." }),
+  body: fields.text({ label: 'Body', defaultValue: '', multiline: true }),
+  note: fields.text({ label: 'Note (empty hides it)', defaultValue: '', multiline: true }),
+  items: fields.array(
+    fields.object({
+      title: fields.text({ label: 'Title' }),
+      body: fields.text({ label: 'Body', multiline: true }),
+    }),
+    { label: 'Exclusions', itemLabel: (props) => props.fields.title.value?.slice(0, 48) || 'Item' },
+  ),
+};
+
+const planPickerFields = {
+  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'Find your fit' }),
+  headline: fields.text({ label: 'Headline', defaultValue: 'Which plan is right for you?' }),
+  body: fields.text({ label: 'Body', defaultValue: '', multiline: true }),
+  options: fields.array(
+    fields.object({
+      value: fields.text({ label: 'Value (plan key)' }),
+      label: fields.text({ label: 'Label' }),
+      hint: fields.text({ label: 'Hint (empty hides it)', defaultValue: '', multiline: true }),
+    }),
+    { label: 'Options', itemLabel: (props) => props.fields.label.value || 'Option' },
+  ),
+  cta: fields.text({ label: 'CTA label', defaultValue: 'Book a free audit' }),
+  ctaHref: fields.text({ label: 'CTA href', defaultValue: '/digital-audit/' }),
+  note: fields.text({ label: 'Note (empty hides it)', defaultValue: '', multiline: true }),
+};
+
 /* --------------------------- page document --------------------------- */
 
 /**
@@ -647,6 +805,15 @@ export const pageFields = {
         { label: 'CTA', value: 'cta' },
         { label: 'CTA banner', value: 'cta-banner' },
         { label: 'CTA split', value: 'cta-split' },
+        { label: 'Page hero', value: 'page-hero' },
+        { label: 'Team grid', value: 'team-grid' },
+        { label: 'Contact channels', value: 'contact-channels' },
+        { label: 'Form shell', value: 'form-shell' },
+        { label: 'FAQ', value: 'faq' },
+        { label: 'Pricing tiers', value: 'pricing-tiers' },
+        { label: 'Compare table', value: 'compare-table' },
+        { label: 'Exclusions', value: 'exclusions' },
+        { label: 'Plan picker', value: 'plan-picker' },
       ],
       defaultValue: 'hero',
     }), {
@@ -665,6 +832,15 @@ export const pageFields = {
       // different presentation.
       'cta-banner': fields.object(ctaFields, { label: 'CTA banner content' }),
       'cta-split': fields.object(ctaFields, { label: 'CTA split content' }),
+      'page-hero': fields.object(pageHeroFields, { label: 'Page hero content' }),
+      'team-grid': fields.object(teamGridFields, { label: 'Team grid content' }),
+      'contact-channels': fields.object(contactChannelsFields, { label: 'Contact channels content' }),
+      'form-shell': fields.object(formShellFields, { label: 'Form shell content' }),
+      faq: fields.object(faqFields, { label: 'FAQ content' }),
+      'pricing-tiers': fields.object(pricingTiersFields, { label: 'Pricing tiers content' }),
+      'compare-table': fields.object(compareTableFields, { label: 'Compare table content' }),
+      exclusions: fields.object(exclusionsFields, { label: 'Exclusions content' }),
+      'plan-picker': fields.object(planPickerFields, { label: 'Plan picker content' }),
     }),
     {
       label: 'Sections',

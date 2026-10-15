@@ -159,6 +159,10 @@ export function ProcessPlayer({
 
   if (!total) return null;
   const step = steps[index] ?? steps[0];
+  // Content pages compose `process` as a step list with no figures, so the
+  // player drops the figure column (and its transport) and shows the copy
+  // card alone rather than an empty frame.
+  const hasVisuals = steps.some((s) => s.visual);
   const counter = (data.stepOfTemplate || 'Step {n} of {total}')
     .replace('{n}', step.n || String(index + 1).padStart(2, '0'))
     .replace('{total}', String(total).padStart(2, '0'));
@@ -187,16 +191,18 @@ export function ProcessPlayer({
           <h3 className="text-[15px] font-medium text-ink-950">{data.cardTitle}</h3>
           <p className="mt-1 text-[13px] text-ink-500">{data.cardSub}</p>
         </div>
-        <button
-          type="button"
-          className="pillbtn"
-          aria-pressed={!paused}
-          disabled={still}
-          onClick={() => setPaused(!paused)}
-        >
-          <MdiIcon name={paused ? 'play' : 'pause'} size={0.7} />
-          <span>{paused ? data.playLabel : data.pauseLabel}</span>
-        </button>
+        {hasVisuals ? (
+          <button
+            type="button"
+            className="pillbtn"
+            aria-pressed={!paused}
+            disabled={still}
+            onClick={() => setPaused(!paused)}
+          >
+            <MdiIcon name={paused ? 'play' : 'pause'} size={0.7} />
+            <span>{paused ? data.playLabel : data.pauseLabel}</span>
+          </button>
+        ) : null}
       </div>
 
       {/* Stepper */}
@@ -237,7 +243,9 @@ export function ProcessPlayer({
         id={`${id}-panel`}
         aria-labelledby={`${id}-tab-${index}`}
         tabIndex={0}
-        className="mt-8 grid grid-cols-1 items-stretch gap-6 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-accent-500/40 md:grid-cols-2 md:gap-10"
+        className={`mt-8 grid grid-cols-1 items-stretch gap-6 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-accent-500/40 ${
+          hasVisuals ? 'md:grid-cols-2 md:gap-10' : ''
+        }`}
       >
         <div key={`copy-${index}`} className="pv-in flex flex-col justify-center">
           <div className="text-[12px] font-semibold tracking-[0.14em] text-accent-600">{counter}</div>
@@ -253,18 +261,20 @@ export function ProcessPlayer({
             ))}
           </div>
         </div>
-        <div
-          className="relative min-h-[270px] overflow-hidden rounded-xl border border-ink-950/10 bg-gradient-to-b from-paper-50 to-primary-50"
-          style={{
-            backgroundImage: 'radial-gradient(rgb(var(--color-primary-600) / 0.10) 1px, transparent 1px)',
-            backgroundSize: '18px 18px',
-          }}
-        >
-          <div key={`vis-${index}`} className="flex h-full flex-col justify-center p-4 md:p-5">
-            <ProcessVisual visual={step.visual} />
+        {hasVisuals ? (
+          <div
+            className="relative min-h-[270px] overflow-hidden rounded-xl border border-ink-950/10 bg-gradient-to-b from-paper-50 to-primary-50"
+            style={{
+              backgroundImage: 'radial-gradient(rgb(var(--color-primary-600) / 0.10) 1px, transparent 1px)',
+              backgroundSize: '18px 18px',
+            }}
+          >
+            <div key={`vis-${index}`} className="flex h-full flex-col justify-center p-4 md:p-5">
+              {step.visual ? <ProcessVisual visual={step.visual} /> : null}
+            </div>
+            <span className="absolute bottom-2 right-3 text-[10px] text-ink-500">{data.illustrativeNote}</span>
           </div>
-          <span className="absolute bottom-2 right-3 text-[10px] text-ink-500">{data.illustrativeNote}</span>
-        </div>
+        ) : null}
       </div>
     </div>
   );
