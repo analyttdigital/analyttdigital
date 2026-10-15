@@ -953,7 +953,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 								key="panel"
 								id={`${id}-panel`}
 								ref={panelRef}
-								className={`absolute left-6 right-6 top-[calc(100%-4px)] origin-top overflow-hidden border border-primary-700 bg-primary-900 [@container_site-header_(max-width:759px)]:hidden ${classes?.panel ?? ""}`}
+								className={`absolute left-6 right-6 top-[calc(100%-4px)] origin-top overflow-hidden border border-ink-950/10 bg-paper-50 shadow-[0_30px_60px_-30px_rgb(var(--color-primary-800)/0.35)] [@container_site-header_(max-width:759px)]:hidden ${classes?.panel ?? ""}`}
 								role="region"
 								aria-label={openItem.label}
 								onKeyDown={onPanelKeyDown}
@@ -1015,7 +1015,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 													<li key={link.label}>
 														<Destination
 															link={link}
-															className={`flex h-full w-full cursor-pointer items-start gap-3 border-0 bg-transparent p-3 text-left text-primary-100 no-underline transition-colors duration-150 hover:bg-primary-800 focus-visible:bg-primary-800 motion-reduce:transition-none ${classes?.panelLink ?? ""}`}
+															className={`flex h-full w-full cursor-pointer items-start gap-3 border-0 bg-transparent p-3 text-left text-ink-950 no-underline transition-colors duration-150 hover:bg-ink-950/[0.04] focus-visible:bg-ink-950/[0.04] motion-reduce:transition-none ${classes?.panelLink ?? ""}`}
 															data-panel-link=""
 															onChoose={() =>
 																choose(
@@ -1030,7 +1030,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 														>
 															{link.icon && (
 																<span
-																	className={`mt-0.5 flex shrink-0 text-primary-300 ${classes?.panelLinkIcon ?? ""}`}
+																	className={`mt-0.5 flex shrink-0 text-ink-400 ${classes?.panelLinkIcon ?? ""}`}
 																>
 																	{link.icon}
 																</span>
@@ -1043,7 +1043,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 																</span>
 																{link.description && (
 																	<span
-																		className={`text-sm text-primary-400 ${classes?.panelLinkDescription ?? ""}`}
+																		className={`text-sm text-ink-500 ${classes?.panelLinkDescription ?? ""}`}
 																	>
 																		{link.description}
 																	</span>
@@ -1055,14 +1055,14 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 											</ul>
 											{openItem.feature && (
 												<div
-													className={`grid gap-1.5 bg-primary-800 p-2 ${classes?.panelFeature ?? ""}`}
+													className={`grid gap-1.5 bg-primary-100 p-2 ${classes?.panelFeature ?? ""}`}
 												>
 													<Destination
 														link={{
 															label: openItem.feature.title,
 															href: openItem.feature.href,
 														}}
-														className={`group grid w-full cursor-pointer content-start gap-1.5 border-0 bg-transparent p-0 text-left text-primary-100 no-underline ${classes?.panelFeatureLink ?? ""}`}
+														className={`group grid w-full cursor-pointer content-start gap-1.5 border-0 bg-transparent p-0 text-left text-ink-950 no-underline ${classes?.panelFeatureLink ?? ""}`}
 														data-panel-link=""
 														onChoose={() =>
 															choose(
@@ -1077,7 +1077,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 													>
 														{openItem.feature.image && (
 															<span
-																className={`relative mb-1 block aspect-[16/10] overflow-hidden bg-primary-700 [&_img]:object-cover [&_img]:transition-transform [&_img]:duration-500 group-hover:[&_img]:scale-[1.03] motion-reduce:[&_img]:transition-none ${classes?.panelFeatureImage ?? ""}`}
+																className={`relative mb-1 block aspect-[16/10] overflow-hidden bg-primary-200 [&_img]:object-cover [&_img]:transition-transform [&_img]:duration-500 group-hover:[&_img]:scale-[1.03] motion-reduce:[&_img]:transition-none ${classes?.panelFeatureImage ?? ""}`}
 															>
 																<Image
 																	src={openItem.feature.image.src}
@@ -1088,7 +1088,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 															</span>
 														)}
 														<span
-															className={`inline-flex items-center gap-1.5 px-1 text-sm font-medium [&_svg]:text-primary-400 [&_svg]:transition-transform [&_svg]:duration-150 group-hover:[&_svg]:translate-x-0.5 motion-reduce:[&_svg]:transition-none ${classes?.panelFeatureTitle ?? ""}`}
+															className={`inline-flex items-center gap-1.5 px-1 text-sm font-medium [&_svg]:text-ink-400 [&_svg]:transition-transform [&_svg]:duration-150 group-hover:[&_svg]:translate-x-0.5 motion-reduce:[&_svg]:transition-none ${classes?.panelFeatureTitle ?? ""}`}
 														>
 															{openItem.feature.title}
 															<MdiIcon
@@ -1098,7 +1098,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 														</span>
 														{openItem.feature.description && (
 															<span
-																className={`px-1 text-sm text-primary-300 ${classes?.panelFeatureDescription ?? ""}`}
+																className={`px-1 text-sm text-ink-500 ${classes?.panelFeatureDescription ?? ""}`}
 															>
 																{openItem.feature.description}
 															</span>
