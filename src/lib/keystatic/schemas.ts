@@ -611,6 +611,21 @@ const industriesFields = {
   }),
 };
 
+const regionsFields = {
+  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'Where we work' }),
+  headline: fields.text({ label: 'Headline', defaultValue: 'Serving Kenya, East Africa, and beyond.' }),
+  body: fields.text({
+    label: 'Body',
+    defaultValue: 'Clients across Kenya, East Africa, and global brands entering African markets.',
+    multiline: true,
+  }),
+  hint: fields.text({ label: 'Hint line', defaultValue: 'Regions we serve' }),
+  items: fields.array(fields.text({ label: 'Region' }), {
+    label: 'Regions',
+    itemLabel: (props) => props.value?.slice(0, 48) || 'Region',
+  }),
+};
+
 const insightsFields = {
   eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'Insights' }),
   headline: fields.text({ label: 'Headline', defaultValue: 'Notes from the work.' }),
@@ -923,6 +938,7 @@ export const pageFields = {
         { label: 'Belief alt', value: 'belief-alt' },
         { label: 'Process', value: 'process' },
         { label: 'Process alt', value: 'process-alt' },
+        { label: 'How we work', value: 'how-we-work' },
         { label: 'Capabilities', value: 'capabilities' },
         { label: 'Capabilities alt', value: 'capabilities-alt' },
         { label: 'Work', value: 'work' },
@@ -930,6 +946,7 @@ export const pageFields = {
         { label: 'Stats', value: 'stats' },
         { label: 'Stats alt', value: 'stats-alt' },
         { label: 'Industries', value: 'industries' },
+        { label: 'Regions', value: 'regions' },
         { label: 'Industries alt', value: 'industries-alt' },
         { label: 'Insights', value: 'insights' },
         { label: 'Insights alt', value: 'insights-alt' },
@@ -971,6 +988,7 @@ export const pageFields = {
       // The alt variant shares the process content shape — same fields,
       // static card presentation (no scroll-driven stage).
       'process-alt': fields.object(processFields, { label: 'Process alt content' }),
+      'how-we-work': fields.object(processFields, { label: 'How we work content' }),
       capabilities: fields.object(capabilitiesFields, { label: 'Capabilities content' }),
       'capabilities-alt': fields.object(capabilitiesFields, { label: 'Capabilities alt content' }),
       work: fields.object(workFields, { label: 'Work content' }),
@@ -979,6 +997,7 @@ export const pageFields = {
       'stats-alt': fields.object(statsFields, { label: 'Stats alt content' }),
       industries: fields.object(industriesFields, { label: 'Industries content' }),
       'industries-alt': fields.object(industriesFields, { label: 'Industries alt content' }),
+      regions: fields.object(regionsFields, { label: 'Regions content' }),
       insights: fields.object(insightsFields, { label: 'Insights content' }),
       'insights-alt': fields.object(insightsFields, { label: 'Insights alt content' }),
       cta: fields.object(ctaFields, { label: 'CTA content' }),

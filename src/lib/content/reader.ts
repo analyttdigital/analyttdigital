@@ -198,6 +198,39 @@ function normalizePost(raw: Record<string, unknown>): BlogPost {
   };
 }
 
+/** Normalize a slug-or-title string to its bare-segment form for comparison:
+ *  lowercase, apostrophes dropped, runs of other chars to one `-`. Lets a
+ *  CMS entry whose `slug` holds title text (or a filename with slugify
+ *  artifacts like `-t-`) still match its code default. */
+function slugKey(value: unknown): string {
+  if (typeof value !== 'string') return '';
+  return value
+    .toLowerCase()
+    .replace(/[’‘'ʼ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+/** Resolve a CMS entry to its canonical URL slug: the code-default slug
+ *  when the entry matches one (by filename, frontmatter slug, or normalized
+ *  comparison), else the filename itself (URL-safe by construction — never
+ *  frontmatter title text). */
+function canonicalPost(
+  fallbacks: BlogPost[],
+  filename: string,
+  frontmatterSlug: unknown,
+): { slug: string; fallback: BlogPost | undefined } {
+  const front = nonEmptyString(frontmatterSlug) ? (frontmatterSlug as string) : '';
+  const fallback = fallbacks.find(
+    (f) =>
+      f.slug === filename ||
+      (front !== '' && f.slug === front) ||
+      (front !== '' && slugKey(f.slug) === slugKey(front)) ||
+      slugKey(f.slug) === slugKey(filename),
+  );
+  return { slug: fallback ? fallback.slug : filename, fallback };
+}
+
 function mergePost(fallback: BlogPost | undefined, cms: BlogPost): BlogPost {
   if (!fallback || fallback.slug !== cms.slug) return cms;
   return {
@@ -227,13 +260,19 @@ export async function listPosts(reader: AnyReader | null, locale: Locale): Promi
     const entries: { slug: string; entry: Record<string, unknown> }[] = await (
       reader.collections as Record<string, { all: () => Promise<any> }>
     )[`posts-${locale}`].all();
-    const merged = entries.map((e) => {
-      const cms = normalizePost({ ...e.entry, slug: nonEmptyString(e.entry.slug) ? e.entry.slug : e.slug });
-      return mergePost(fallbacks.find((f) => f.slug === cms.slug), cms);
-    });
-    const seen = new Set(merged.map((p) => p.slug));
+    const merged: BlogPost[] = [];
+    const seen = new Set<string>();
+    for (const e of entries) {
+      const { slug, fallback } = canonicalPost(fallbacks, e.slug, e.entry.slug);
+      if (seen.has(slug)) continue;
+      seen.add(slug);
+      merged.push(mergePost(fallback, normalizePost({ ...e.entry, slug })));
+    }
     for (const fallback of fallbacks) {
-      if (!seen.has(fallback.slug)) merged.push(fallback);
+      if (!seen.has(fallback.slug)) {
+        seen.add(fallback.slug);
+        merged.push(fallback);
+      }
     }
     return merged.filter((p) => p.slug).sort(byNewest);
   } catch {

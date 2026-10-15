@@ -394,6 +394,16 @@ export type IndustriesSection = {
   image?: ContentImage;
 };
 
+/** Where-we-work coverage: region cards with pin tiles. Same list shape
+ *  as industries, own presentation (cards, not mosaic or index rows). */
+export type RegionsSection = {
+  eyebrow: string;
+  headline: string;
+  body: string;
+  items: string[];
+  hint?: string;
+};
+
 export type InsightArticle = { index: string; title: string; description: string; href: string };
 
 export type InsightsSection = {
@@ -553,6 +563,7 @@ export type Section =
 	| ({ type: "belief-alt" } & BeliefSection)
 	| ({ type: "process" } & ProcessSection)
 	| ({ type: "process-alt" } & ProcessSection)
+	| ({ type: "how-we-work" } & ProcessSection)
 	| ({ type: "capabilities" } & CapabilitiesSection)
 	| ({ type: "capabilities-alt" } & CapabilitiesSection)
 	| ({ type: "work" } & WorkSection)
@@ -561,6 +572,7 @@ export type Section =
 	| ({ type: "stats-alt" } & StatsSection)
 	| ({ type: "industries" } & IndustriesSection)
 	| ({ type: "industries-alt" } & IndustriesSection)
+	| ({ type: "regions" } & RegionsSection)
 	| ({ type: "insights" } & InsightsSection)
 	| ({ type: "insights-alt" } & InsightsSection)
 	| ({ type: "cta" } & CtaSection)

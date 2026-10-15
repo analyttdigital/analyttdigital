@@ -19,6 +19,7 @@ import { FormShell } from '@/components/sections/form-shell';
 import { FormShellAlt } from '@/components/sections/form-shell-alt';
 import { HeroStage } from '@/components/sections/hero';
 import { Industries } from '@/components/sections/industries';
+import { Regions } from '@/components/sections/regions';
 import { IndustriesAlt } from '@/components/sections/industries-alt';
 import { Insights } from '@/components/sections/insights';
 import { InsightsAlt } from '@/components/sections/insights-alt';
@@ -33,6 +34,7 @@ import { Problem } from '@/components/sections/problem';
 import { ProblemAlt } from '@/components/sections/problem-alt';
 import { ProcessChapter, ProcessClosing, ProcessBridge } from '@/components/sections/process-chapter';
 import { ProcessAlt } from '@/components/sections/process-alt';
+import { HowWeWork } from '@/components/sections/how-we-work';
 import { Stats } from '@/components/sections/stats';
 import { StatsAlt } from '@/components/sections/stats-alt';
 import { TeamGrid } from '@/components/sections/team-grid';
@@ -157,6 +159,13 @@ function SectionBlock({ section, sections, latestPosts }: { section: Section; se
 					<ProcessAlt data={section} />
 			);
 		}
+		case "how-we-work": {
+			return (
+				<ScrollSection variant="fade-up">
+					<HowWeWork data={section} />
+				</ScrollSection>
+			);
+		}
 		case "capabilities":
 			return (
 					<Capabilities capabilities={section} />
@@ -188,6 +197,12 @@ function SectionBlock({ section, sections, latestPosts }: { section: Section; se
 		case "industries-alt":
 			return (
 					<IndustriesAlt data={section} />
+			);
+		case "regions":
+			return (
+				<ScrollSection variant="fade-up">
+					<Regions data={section} />
+				</ScrollSection>
 			);
 		case "insights":
 			return (
