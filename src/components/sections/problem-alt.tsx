@@ -41,7 +41,7 @@ export function ProblemAlt({ data, classes, className, id }: DataProps<ProblemSe
               text={(data?.headline ?? '').replace(/\n/g, ' ')}
               variant="blur"
               as="h2"
-              className="title mt-7 max-w-[16ch] text-[clamp(2.2rem,4.6vw,3.4rem)] text-ink-950"
+              className="title mt-7 max-w-[16ch] text-[clamp(2.2rem,4.6vw,2.4rem)] text-ink-950"
             />
           </div>
           <div className="mt-8 grid gap-6 md:grid-cols-2 md:gap-10">
@@ -71,7 +71,7 @@ export function ProblemAlt({ data, classes, className, id }: DataProps<ProblemSe
                 </p>
               </div>
 
-              <p className="num relative mt-5 text-[clamp(2.6rem,5.4vw,4.2rem)] leading-none text-accent-600">
+              <p className="num relative mt-5 text-[clamp(2.6rem,5.4vw,1.2rem)] font-mono leading-none text-accent-600">
                 {data?.panelAlert ?? 'Wasting −38%'}
               </p>
 

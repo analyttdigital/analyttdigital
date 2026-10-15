@@ -574,22 +574,23 @@ button {
 /* ------------------------------------------------------------------ */
 
 /* A pill group is one inset tray; the pressed pill is the raised plate.
-   Tints come from the paper/primary ramps so the control works on any light
-   band. Ember appears only on focus, pointing at the control that owns it. */
+   Tints come from the ink/paper ramps so the control works on the light
+   instrument. Ember appears only on focus, pointing at the control that
+   owns it. */
 .pillgroup {
   display: inline-flex;
   gap: 2px;
   padding: 4px;
   border-radius: 12px;
-  background-color: rgb(var(--color-primary-900));
-  box-shadow: inset 0 0 0 1px rgb(var(--color-paper-50) / 0.1);
+  background-color: rgb(var(--color-ink-950) / 0.06);
+  box-shadow: inset 0 0 0 1px rgb(var(--color-ink-950) / 0.08);
 }
 .pill {
   padding: 7px 14px;
   border-radius: 9px;
   font-size: 13px;
   font-weight: 500;
-  color: rgb(var(--color-primary-300));
+  color: rgb(var(--color-ink-500));
   transition:
     color 0.15s ease,
     background-color 0.15s ease,
@@ -597,14 +598,14 @@ button {
   white-space: nowrap;
 }
 .pill:hover {
-  color: rgb(var(--color-paper-50));
+  color: rgb(var(--color-ink-950));
 }
 .pill[aria-pressed='true'] {
-  background-color: rgb(var(--color-primary-700));
+  background-color: rgb(var(--color-ink-950));
   color: rgb(var(--color-paper-50));
   box-shadow:
-    0 1px 2px rgb(var(--color-ink-950) / 0.4),
-    inset 0 0 0 1px rgb(var(--color-paper-50) / 0.12);
+    0 1px 2px rgb(var(--color-ink-950) / 0.25),
+    inset 0 0 0 1px rgb(var(--color-ink-950) / 0.1);
 }
 .pill:focus-visible,
 .iconbtn:focus-visible,
@@ -618,16 +619,16 @@ button {
   height: 40px;
   width: 40px;
   border-radius: 12px;
-  background-color: rgb(var(--color-primary-900));
-  box-shadow: inset 0 0 0 1px rgb(var(--color-paper-50) / 0.1);
-  color: rgb(var(--color-primary-300));
+  background-color: rgb(var(--color-ink-950) / 0.06);
+  box-shadow: inset 0 0 0 1px rgb(var(--color-ink-950) / 0.08);
+  color: rgb(var(--color-ink-500));
   transition:
     color 0.15s ease,
     background-color 0.15s ease;
 }
 .iconbtn:hover {
-  color: rgb(var(--color-accent-300));
-  background-color: rgb(var(--color-primary-800));
+  color: rgb(var(--color-accent-600));
+  background-color: rgb(var(--color-ink-950) / 0.1);
 }
 
 /* The orbit canvas owns its cursor: grab at rest, grabbing mid-drag, a

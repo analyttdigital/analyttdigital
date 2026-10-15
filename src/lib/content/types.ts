@@ -400,6 +400,8 @@ export type InsightsSection = {
   eyebrow: string;
   headline: string;
   articles: InsightArticle[];
+  /** Latest posts, injected at render time (never CMS-edited, never defaults). */
+  posts?: BlogPost[];
 };
 
 export type CtaSection = {

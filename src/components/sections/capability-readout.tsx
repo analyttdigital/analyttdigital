@@ -374,7 +374,7 @@ export function CapabilityReadout({ readout }: { readout?: Readout }) {
           {readout.caption}
         </span>
         {readout.tag ? (
-          <span className="inline-flex items-center gap-2 font-mono text-[9px] font-medium capitalize  text-accent-300">
+          <span className="inline-flex items-center gap-2 font-mono text-[9px] font-medium capitalize  text-accent-600">
             <span aria-hidden className="h-2 w-2 bg-accent-500" />
             {readout.tag}
           </span>

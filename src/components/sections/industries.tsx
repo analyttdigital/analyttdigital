@@ -43,7 +43,7 @@ export function Industries({ data, classes, className, id }: DataProps<Industrie
                 text={(data?.headline ?? '').replace(/\n/g, ' ')}
                 variant="blur"
                 as="h2"
-                className="title max-w-[14ch] text-[clamp(2.4rem,5vw,3.8rem)] text-ink-950"
+                className="title max-w-[14ch] text-[clamp(2.4rem,5vw,2.8rem)] text-ink-950"
               />
             </div>
             <div data-rise="1" className="max-w-[42ch]">
@@ -70,7 +70,7 @@ export function Industries({ data, classes, className, id }: DataProps<Industrie
                     {String(i + 1).padStart(2, '0')}
                   </span>
                   <span
-                    className="font-display font-medium tracking-tight text-ink-950 transition-colors duration-200 group-hover:text-accent-600"
+                    className="font-mono tracking-tight text-ink-950 transition-colors duration-200 group-hover:text-accent-600"
                     style={{ fontSize: SCALES[i % SCALES.length] }}
                   >
                     {item}

@@ -52,7 +52,7 @@ export function Capabilities({ capabilities }: { capabilities?: CapabilitiesSect
               text={(capabilities?.headline ?? '').replace(/\n/g, ' ')}
               variant="blur"
               as="h2"
-              className="title max-w-[12em] font-display text-[clamp(2.4rem,5.2vw,3.4rem)] text-ink-950"
+              className="title max-w-[12em] font-display text-[clamp(2.4rem,5.2vw,2.4rem)] text-ink-950"
             />
           </div>
 
@@ -119,7 +119,7 @@ export function Capabilities({ capabilities }: { capabilities?: CapabilitiesSect
                     {item.tag}
                   </span>
                 </div>
-                <h3 className="mt-6 max-w-[11em] font-display text-[1.7rem] font-bold leading-[1.1] tracking-[-.02em] text-ink-950 sm:text-[2rem]">
+                <h3 className="mt-6 max-w-[11em] font-display text-[1.5rem] font-mono leading-[1.1] tracking-[-.02em] text-ink-950 sm:text-[2rem]">
                   {item.title}
                 </h3>
                 <p className="mt-3 max-w-[30em] text-sm leading-relaxed text-ink-500">

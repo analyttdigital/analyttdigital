@@ -514,7 +514,7 @@ const enHome: PageDoc = {
 		},
 
 		{
-			type: "work-alt",
+			type: "work",
 			eyebrow: "Selected Work",
 			headline: "Proof, not promises.",
 			body: "Engagements measured to the shilling — the proof behind the promises.",
@@ -552,8 +552,8 @@ const enHome: PageDoc = {
 					metricLabel: "growth in weekly inquiries",
 				},
 				{
-                    client: "Mabati Yetu",
-                    image: { src: "/media/work/case-4.png", alt: "Mabati Yetu" },
+					client: "Mabati Yetu",
+					image: { src: "/media/work/case-4.png", alt: "Mabati Yetu" },
 					industry: "Logistics",
 					depth: "Case 04",
 					headline: "Page 1 rankings for 47 high-intent keywords in 8 months.",
@@ -662,7 +662,7 @@ const enHome: PageDoc = {
 			},
 		},
 		{
-			type: "stats",
+			type: "stats-alt",
 			eyebrow: "By the Numbers",
 			headline: "How we work,\nin four numbers.",
 			body: "No vanity metrics. Every engagement is tracked to conversion, reviewed weekly, and reported in plain language.",
@@ -696,6 +696,17 @@ const enHome: PageDoc = {
 				"Insurance",
 			],
 		},
+
+		{
+			type: "cta-split",
+			eyebrow: "Start",
+			headline: "Decisions, not dashboards.",
+			body: "Measurement first, always — every report ends in a named action: what to scale, what to cut, what to test.",
+			cta: "Get a free audit",
+			ctaHref: "mailto:hello@analyttdigital.com",
+			note: "No deck. No obligation. Just the findings.",
+			portalLabel: "Free · No commitment",
+		},
 		{
 			type: "insights",
 			eyebrow: "Insights",
@@ -723,16 +734,6 @@ const enHome: PageDoc = {
 					href: "#",
 				},
 			],
-		},
-		{
-			type: "cta-split",
-			eyebrow: "Start",
-			headline: "Decisions, not dashboards.",
-			body: "Measurement first, always — every report ends in a named action: what to scale, what to cut, what to test.",
-			cta: "Get a free audit",
-			ctaHref: "mailto:hello@analyttdigital.com",
-			note: "No deck. No obligation. Just the findings.",
-			portalLabel: "Free · No commitment",
 		},
 		{
 			type: "cta",

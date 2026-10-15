@@ -66,7 +66,7 @@ export function StatsAlt({ data, classes, className, id }: DataProps<StatsSectio
                     <dd className="mt-6">
                       <CountUp
                         value={stat.value}
-                        className="num block text-[clamp(2.4rem,4vw,3.4rem)] leading-none text-paper-50"
+                        className="num block text-[clamp(2.4rem,4vw,3.4rem)] font-mono leading-none text-paper-50"
                       />
                     </dd>
                     <dd className="mt-5 flex items-center gap-2">

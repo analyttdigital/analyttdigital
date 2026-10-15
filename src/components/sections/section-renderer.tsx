@@ -38,7 +38,7 @@ import { TeamGrid } from '@/components/sections/team-grid';
 import { TeamGridAlt } from '@/components/sections/team-grid-alt';
 import { Work } from '@/components/sections/work';
 import { WorkAlt } from '@/components/sections/work-alt';
-import type { AboutSection as AboutContent, CtaSection, Section } from "@/lib/content/types";
+import type { AboutSection as AboutContent, BlogPost, CtaSection, Section } from "@/lib/content/types";
 import {
   PORTAL_BRIDGE_RANGE,
   PORTAL_ORIGIN,
@@ -47,18 +47,26 @@ import {
   PORTAL_RUNWAY_SVH,
 } from '@/lib/motion/portal';
 
-/** Render a page document's ordered section list. */
-export function SectionRenderer({ sections }: { sections: Section[] }) {
+/** Render a page document's ordered section list. `latestPosts`, when
+ *  present, overrides static `insights` articles with the real listing. */
+export function SectionRenderer({ sections, latestPosts }: { sections: Section[]; latestPosts?: BlogPost[] }) {
   return (
     <>
       {sections.map((section, i) => (
-        <SectionBlock key={`${section.type}-${i}`} section={section} sections={sections} />
+        <SectionBlock key={`${section.type}-${i}`} section={section} sections={sections} latestPosts={latestPosts} />
       ))}
     </>
   );
 }
 
-function SectionBlock({ section, sections }: { section: Section; sections: Section[] }) {
+function withPosts<T extends { type: string }>(section: T, latestPosts?: BlogPost[]): T {
+  if ((section.type === 'insights' || section.type === 'insights-alt') && latestPosts?.length) {
+    return { ...section, posts: latestPosts.slice(0, 3) };
+  }
+  return section;
+}
+
+function SectionBlock({ section, sections, latestPosts }: { section: Section; sections: Section[]; latestPosts?: BlogPost[] }) {
   switch (section.type) {
 		case "hero": {
 			// The portal flood carries the full About section as bridge copy;
@@ -182,11 +190,11 @@ function SectionBlock({ section, sections }: { section: Section; sections: Secti
 			);
 		case "insights":
 			return (
-					<Insights insights={section} />
+					<Insights insights={withPosts(section, latestPosts)} />
 			);
 		case "insights-alt":
 			return (
-					<InsightsAlt data={section} />
+					<InsightsAlt data={withPosts(section, latestPosts)} />
 			);
 		case "cta":
 			return <Cta cta={section} />;

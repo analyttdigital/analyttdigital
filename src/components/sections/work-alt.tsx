@@ -8,11 +8,11 @@ import { GsapReveal } from '@/lib/motion/gsap-reveal';
 /**
  * WorkAlt — selected cases as stacked editorial rows.
  *
- * Where `Work` runs a snap-scrolling filmstrip with nudge keys and a meter,
- * the alt lays the same cases out as alternating media/copy rows on paper —
- * no strip, no controls, no client state. Photo first via the shared media
- * resolver (`MediaSlot` placeholder when artless), mono meta, client title,
- * body, and the ember proof figure. Content shape unchanged.
+ * Where `Work` cards lead with a media banner, the alt keeps imagery to a
+ * small thumb beside the copy: mono meta, client title, body, and the
+ * ember proof figure inline. No strip, no controls, no client state.
+ * Photo first via the shared media resolver (`MediaSlot` placeholder when
+ * artless). Content shape unchanged.
  */
 export function WorkAlt({ data, classes, className, id }: DataProps<WorkSection, 'head' | 'rows' | 'row'>) {
   const cases = data?.cases ?? [];
@@ -60,13 +60,13 @@ export function WorkAlt({ data, classes, className, id }: DataProps<WorkSection,
                 <li
                   key={kase.client || i}
                   data-rise={Math.min(i + 1, 3)}
-                  className={`grid overflow-hidden rounded-3xl border border-ink-950/[0.07] bg-paper-50 md:grid-cols-2 ${classes?.row ?? ''}`}
+                  className={`flex gap-5 rounded-3xl border border-ink-950/[0.07] bg-paper-50 p-5 md:p-6 ${classes?.row ?? ''}`}
                 >
-                  <div className={`relative min-h-28 overflow-hidden ${i % 2 === 1 ? 'md:order-2' : ''}`}>
+                  <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-2xl sm:h-32 sm:w-32">
                     {kase.image?.src?.trim() ? (
                       <DynamicImage
                         image={kase.image}
-                        sizes="(max-width: 24rem) 100vw, 50vw"
+                        sizes="256px"
                         className="absolute inset-0 h-full w-full object-cover"
                       />
                     ) : (
@@ -78,38 +78,36 @@ export function WorkAlt({ data, classes, className, id }: DataProps<WorkSection,
                         className="absolute inset-0 h-full w-full"
                       />
                     )}
-                    {kase.tag ? (
-                      <span className="absolute right-5 top-5 rounded-full bg-paper-50/90 px-2.5 py-1 font-mono text-[10px] capitalize text-accent-700 backdrop-blur-sm">
-                        {kase.tag}
-                      </span>
-                    ) : null}
                   </div>
-                  <div className="flex flex-col p-7 md:p-10">
-                    <p className="flex items-center gap-3 font-mono text-[10px] capitalize tracking-[0.16em] text-ink-400">
+                  <div className="min-w-0 flex-1">
+                    <p className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10px] capitalize tracking-[0.16em] text-ink-400">
                       <span className="num text-accent-600">
                         {kase.depth || String(i + 1).padStart(2, '0')}
                       </span>
                       <span aria-hidden className="h-1 w-1 bg-ink-950/20" />
                       <span>{kase.industry}</span>
+                      {kase.tag ? (
+                        <span className="rounded-full bg-paper-50 px-2 py-0.5 text-accent-700 ring-1 ring-ink-950/10">
+                          {kase.tag}
+                        </span>
+                      ) : null}
                     </p>
-                    <h3 className="verb mt-4 text-[clamp(1.4rem,2.4vw,2rem)] leading-snug text-ink-950">
+                    <h3 className="verb mt-2 text-[clamp(1.2rem,2vw,1.5rem)] font-mono leading-snug text-ink-950">
                       {kase.client}
                     </h3>
                     {kase.headline ? (
-                      <p className="mt-2 text-sm font-medium text-ink-700">{kase.headline}</p>
+                      <p className="mt-1 text-sm font-medium text-ink-700">{kase.headline}</p>
                     ) : null}
-                    <p className="mt-3 max-w-[52ch] text-[13px] leading-[1.8] text-ink-500">
+                    <p className="mt-2 max-w-[52ch] text-[13px] leading-[1.8] text-ink-500">
                       {kase.body}
                     </p>
-                    <div className="mt-auto pt-6">
-                      <div className="border-t border-ink-950/10 pt-4">
-                        <p className="num text-[clamp(1.6rem,2.6vw,2.2rem)] leading-none text-accent-600">
-                          {kase.metric}
-                        </p>
-                        <p className="mt-1.5 font-mono text-[9.5px] capitalize leading-relaxed text-ink-500">
-                          {kase.metricLabel}
-                        </p>
-                      </div>
+                    <div className="mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1 border-t border-ink-950/10 pt-3">
+                      <p className="num text-[clamp(1.3rem,2vw,1.7rem)] leading-none text-accent-600">
+                        {kase.metric}
+                      </p>
+                      <p className="font-mono text-[9.5px] capitalize leading-relaxed text-ink-500">
+                        {kase.metricLabel}
+                      </p>
                     </div>
                   </div>
                 </li>

@@ -26,6 +26,8 @@ export type PageProps = {
   slug: string;
   /** Undefined means "render from code defaults" (error routes, first run). */
   bundle?: PageBundle;
+  /** Latest posts for blog-aware sections (e.g. homepage insights). */
+  latestPosts?: BlogPost[];
 };
 
 export type PageStaticProps = { props: PageProps } | { notFound: true };
@@ -56,7 +58,16 @@ export async function getStaticProps({
 
   if (!bundle) return { notFound: true };
 
-  return { props: { locale, slug, bundle } };
+  // Latest posts ride along for blog-aware sections; a failed posts read
+  // never breaks the page (sections fall back to their static articles).
+  let latestPosts: BlogPost[] = [];
+  try {
+    latestPosts = (await listPosts(reader, locale)).slice(0, 3);
+  } catch {
+    latestPosts = [];
+  }
+
+  return { props: { locale, slug, bundle, latestPosts } };
 }
 
 /** One getStaticPaths entry. `locale` is the route's only named segment — for

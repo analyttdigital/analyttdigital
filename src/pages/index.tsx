@@ -7,7 +7,7 @@ import { site } from '@/lib/site';
 
 export { getStaticProps };
 
-export default function HomePage({ bundle, locale }: PageProps) {
+export default function HomePage({ bundle, locale, latestPosts }: PageProps) {
   const page = bundle?.page ?? defaults[locale].pages.home;
 
   return (
@@ -20,7 +20,7 @@ export default function HomePage({ bundle, locale }: PageProps) {
 				<meta property="og:type" content="website" />
 			</Head>
 
-			<SectionRenderer sections={page.sections} />
+			<SectionRenderer sections={page.sections} latestPosts={latestPosts} />
 			
 		</>
   );
