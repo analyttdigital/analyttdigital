@@ -12,10 +12,10 @@ import type { DataProps, LayoutContent } from '@/lib/content/types';
  * The page is light paper: rounded `paper-50` panels with ring + shadow,
  * ink pill CTAs, top-image cards, and one ember panel per page. The old
  * footer was the lone deep violet band; this one follows the page instead.
- * A paper stage holds a closing card (intro left like Work: live eyebrow,
- * display title, direct line, ink pill CTA + back-to-top — index right like
+ * A paper stage holds the ember closing card (intro left like Work: live eyebrow,
+ * display title, direct line, paper pill CTA + back-to-top — index right like
  * Work's case grid: CMS link columns beside a signal list of labeled rows
- * with MDI keys and travel arrows), then the centered ember panel
+ * with MDI keys and travel arrows, both kept light for contrast), then the centered ember panel
  * (headline, audit pill, small print — the cta-banner shape, fed by the
  * footer fields), then the imprint row. Socials come from `socialLinks`
  * (shared MDI resolver) with the contact email appended unless the CMS list
@@ -53,10 +53,11 @@ export function SiteFooter({
     <footer id={id ?? 'contact'} className={`relative overflow-hidden bg-paper py-24 md:py-32 ${className ?? ''}`}>
       <div className="relative mx-auto w-full max-w-7xl px-5 md:px-8">
         <GsapReveal>
-          {/* The closing card — the Work shape: intro left, index right. */}
+          {/* The closing card — the Work shape: intro left, index right. Ember
+              ground with paper ink; the index keeps its light contrast cards. */}
           <div
             className={[
-              'rounded-[2rem] bg-paper-50 px-6 py-12 shadow-[0_40px_100px_-40px_rgb(var(--color-primary-600)/0.35)] ring-1 ring-ink-950/[0.08] md:p-14',
+              'rounded-[2rem] bg-accent px-6 py-12 shadow-[0_40px_100px_-40px_rgb(var(--color-accent-600)/0.6)] ring-1 ring-ink-950/10 md:p-14',
               classes?.panel,
             ]
               .filter(Boolean)
@@ -65,20 +66,20 @@ export function SiteFooter({
             <div className={`grid gap-12 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-14 ${classes?.intro ?? ''}`}>
             <div>
               <div data-rise>
-                <p className="font-mono text-[10.5px] capitalize tracking-[0.16em] text-primary-600">
+                <p className="font-mono text-[10.5px] capitalize tracking-[0.16em] text-paper-50/80">
                   {content?.footnote ?? 'A measurement-first agency, by design.'}
                 </p>
                 <InViewTitle
                   text={(content?.footerHeadline ?? 'Ready to see exactly where your growth is hiding?').replace(/\n/g, ' ')}
                   variant="blur"
                   as="h2"
-                  className="title mt-4 max-w-[16ch] text-[clamp(2rem,3.6vw,2.9rem)] text-ink-950"
+                  className="title mt-4 max-w-[16ch] text-[clamp(2rem,3.6vw,2.9rem)] text-paper-50"
                 />
               </div>
               {contactHref || content?.contactNote ? (
-                <p data-rise="1" className="mt-5 max-w-[38ch] text-sm leading-relaxed text-ink-500">
+                <p data-rise="1" className="mt-5 max-w-[38ch] text-sm leading-relaxed text-paper-50/80">
                   {contactHref ? (
-                    <a href={contactHref} className="font-medium text-ink-950 underline decoration-primary-300 underline-offset-4 transition-colors hover:text-accent-600">
+                    <a href={contactHref} className="font-medium text-paper-50 underline decoration-paper-50/40 underline-offset-4 transition-colors hover:text-white">
                       {contactLabel}
                     </a>
                   ) : null}
@@ -87,19 +88,19 @@ export function SiteFooter({
                 </p>
               ) : null}
               {content?.tagline ? (
-                <p data-rise="1" className="mt-4 max-w-[38ch] text-sm leading-relaxed text-ink-500">
+                <p data-rise="1" className="mt-4 max-w-[38ch] text-sm leading-relaxed text-paper-50/80">
                   {content.tagline}
                 </p>
               ) : null}
               <p data-rise="2" className="mt-8 flex flex-wrap items-center gap-4">
                 <a
                   href={content?.footerCtaHref || '#'}
-                  className="inline-flex items-center gap-2.5 rounded-full bg-ink-950 px-6 py-3.5 text-sm font-medium text-paper-50 transition-colors duration-200 hover:bg-primary-700"
+                  className="inline-flex items-center gap-2.5 rounded-full bg-paper-50 px-6 py-3.5 text-sm font-medium text-ink-950 transition-colors duration-200 hover:bg-paper-100"
                 >
                   {content?.footerCta ?? 'Start with a free audit'}
                   <MdiIcon name="arrowRight" size={0.8} />
                 </a>
-                <a href="#main" className="text-sm font-medium text-ink-500 underline decoration-ink-950/20 underline-offset-4 transition-colors hover:text-accent-600">
+                <a href="#main" className="text-sm font-medium text-paper-50/80 underline decoration-paper-50/30 underline-offset-4 transition-colors hover:text-paper-50">
                   {chrome.backToTop}
                 </a>
               </p>
