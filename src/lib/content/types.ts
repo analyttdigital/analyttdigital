@@ -39,7 +39,7 @@ export function routeFromParams(params?: RouteParams): { locale: Locale; slug: s
 
 /* --------------------------- shared chrome ---------------------------- */
 
-export type NavLink = { label: string; href: string };
+export type NavLink = { label: string; href: string; children?: NavLink[] };
 
 export type FooterColumn = { title: string; links: NavLink[] };
 
@@ -533,28 +533,29 @@ export type PlanPickerSection = {
 /* ------------------------- section union ------------------------------ */
 
 export type Section =
-  | ({ type: 'hero' } & HeroSection)
-  | ({ type: 'about' } & AboutSection)
-  | ({ type: 'problem' } & ProblemSection)
-  | ({ type: 'belief' } & BeliefSection)
-  | ({ type: 'process' } & ProcessSection)
-  | ({ type: 'capabilities' } & CapabilitiesSection)
-  | ({ type: 'work' } & WorkSection)
-  | ({ type: 'stats' } & StatsSection)
-  | ({ type: 'industries' } & IndustriesSection)
-  | ({ type: 'insights' } & InsightsSection)
-  | ({ type: 'cta' } & CtaSection)
-  | ({ type: 'cta-banner' } & CtaSection)
-  | ({ type: 'cta-split' } & CtaSection)
-  | ({ type: 'page-hero' } & PageHeroSection)
-  | ({ type: 'team-grid' } & TeamGridSection)
-  | ({ type: 'contact-channels' } & ContactChannelsSection)
-  | ({ type: 'form-shell' } & FormShellSection)
-  | ({ type: 'faq' } & FaqSection)
-  | ({ type: 'pricing-tiers' } & PricingTiersSection)
-  | ({ type: 'compare-table' } & CompareTableSection)
-  | ({ type: 'exclusions' } & ExclusionsSection)
-  | ({ type: 'plan-picker' } & PlanPickerSection);
+	| ({ type: "hero" } & HeroSection)
+	| ({ type: "about" } & AboutSection)
+	| ({ type: "problem" } & ProblemSection)
+	| ({ type: "belief" } & BeliefSection)
+	| ({ type: "process" } & ProcessSection)
+	| ({ type: "process-alt" } & ProcessSection)
+	| ({ type: "capabilities" } & CapabilitiesSection)
+	| ({ type: "work" } & WorkSection)
+	| ({ type: "stats" } & StatsSection)
+	| ({ type: "industries" } & IndustriesSection)
+	| ({ type: "insights" } & InsightsSection)
+	| ({ type: "cta" } & CtaSection)
+	| ({ type: "cta-banner" } & CtaSection)
+	| ({ type: "cta-split" } & CtaSection)
+	| ({ type: "page-hero" } & PageHeroSection)
+	| ({ type: "team-grid" } & TeamGridSection)
+	| ({ type: "contact-channels" } & ContactChannelsSection)
+	| ({ type: "form-shell" } & FormShellSection)
+	| ({ type: "faq" } & FaqSection)
+	| ({ type: "pricing-tiers" } & PricingTiersSection)
+	| ({ type: "compare-table" } & CompareTableSection)
+	| ({ type: "exclusions" } & ExclusionsSection)
+	| ({ type: "plan-picker" } & PlanPickerSection);
 
 export type SectionType = Section['type'];
 
@@ -573,6 +574,66 @@ export type PageBundle = {
   layout: LayoutContent;
   page: PageDoc;
 };
+
+/* ------------------------------- blog --------------------------------- */
+/* Convention (M8, mirrors `postFields` in schemas.ts):
+ * - `slug` is the bare URL segment (`/blog/<slug>`); source frontmatter
+ *   slashes are stripped when seeding defaults.
+ * - `body` is a Keystatic document (`fields.document`) in its reader shape.
+ *   `DocumentElement` is not exported by `@keystatic/core/renderer`, so this
+ *   structural mirror stands in and the single cast lives in `blog-post.tsx`.
+ * - `excerpt` doubles as the card summary and the post's meta description.
+ * - `featuredImage` reuses the M7 upload object; empty `src` hides the figure.
+ * - Dates are ISO (`publishedAt`); display formatting happens in components. */
+
+export type BlogDocText = { text: string; [key: string]: unknown };
+
+export type BlogDocNode = {
+  type: string;
+  children: (BlogDocNode | BlogDocText)[];
+  [key: string]: unknown;
+};
+
+export type BlogBody = BlogDocNode[];
+
+export type BlogPost = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  category: string;
+  publishedAt: string;
+  author: string;
+  featuredImage?: ContentImage;
+  body: BlogBody;
+};
+
+/** Listing-page copy (per locale, CMS-independent — the index is a standalone
+ *  route, not a section). Posts/page/totalPages are route-derived and ride in
+ *  the same object so the list component takes a single `data` prop. */
+export type BlogListing = {
+  eyebrow: string;
+  headline: string;
+  body: string;
+  readMoreLabel: string;
+  emptyNote: string;
+  prevLabel: string;
+  nextLabel: string;
+  /** Use `{n}` and `{total}` (e.g. `Page {n} of {total}`). */
+  pageOfTemplate: string;
+  posts: BlogPost[];
+  page: number;
+  totalPages: number;
+};
+
+/** Post-page strings that belong to the page, not the post. */
+export type BlogPostCopy = {
+  backLabel: string;
+  /** Use `{date}`, `{author}`, `{category}` — empty parts are dropped. */
+  bylineTemplate: string;
+};
+
+/** Listing copy without the route-derived slice (what lives in defaults). */
+export type BlogListingCopy = Omit<BlogListing, 'posts' | 'page' | 'totalPages'>;
 
 /* ------------------------- component contract -------------------------
  * (M3) Every shared/reusable component accepts:

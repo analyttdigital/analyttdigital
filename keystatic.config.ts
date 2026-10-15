@@ -1,6 +1,6 @@
 import { config, collection, singleton } from '@keystatic/core';
 
-import { layoutFields, pageFields } from './src/lib/keystatic/schemas';
+import { layoutFields, pageFields, postFields } from './src/lib/keystatic/schemas';
 
 /**
  * Keystatic configuration — content model:
@@ -9,7 +9,10 @@ import { layoutFields, pageFields } from './src/lib/keystatic/schemas';
  *   locale and consumed by every page's layout.
  * - `pages-<locale>` collections: page documents (title, meta, ordered
  *   section blocks). Each stored page renders at `/<locale?>/<slug>`.
- * - Storage is local; files land in src/content/<locale>/… as YAML.
+ * - `posts-<locale>` collections (M8): blog posts as markdown (frontmatter +
+ *   document body). Each stored post renders at `/<locale?>/blog/<slug>`.
+ * - Storage is local; files land in src/content/<locale>/… as YAML (pages,
+ *   layout) or Markdown (posts).
  * - List defaults live in code (src/lib/content/defaults.ts) because Keystatic
  *   arrays start empty; the reader merges CMS values over code defaults.
  */
@@ -33,6 +36,20 @@ export default config({
       format: 'yaml',
       schema: pageFields,
     }),
+    'posts-en': collection({
+      label: 'Posts (EN)',
+      slugField: 'slug',
+      path: 'src/content/en/posts/*',
+      format: 'markdown',
+      schema: postFields,
+    }),
+    'posts-sw': collection({
+      label: 'Posts (SW)',
+      slugField: 'slug',
+      path: 'src/content/sw/posts/*',
+      format: 'markdown',
+      schema: postFields,
+    }),
   },
 
   singletons: {
@@ -52,8 +69,8 @@ export default config({
 
   ui: {
     navigation: {
-      'English (en)': ['pages-en', 'layout-en'],
-      'Kiswahili (sw)': ['pages-sw', 'layout-sw'],
+      'English (en)': ['pages-en', 'posts-en', 'layout-en'],
+      'Kiswahili (sw)': ['pages-sw', 'posts-sw', 'layout-sw'],
     },
   },
 });

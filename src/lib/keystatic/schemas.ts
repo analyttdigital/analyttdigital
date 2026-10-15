@@ -1,4 +1,5 @@
-import { fields } from '@keystatic/core';
+import { component, fields } from '@keystatic/core';
+import { createElement } from 'react';
 
 /**
  * Keystatic schema factories.
@@ -40,6 +41,13 @@ export const layoutFields = {
     fields.object({
       label: fields.text({ label: 'Label' }),
       href: fields.text({ label: 'Href' }),
+      children: fields.array(
+        fields.object({
+          label: fields.text({ label: 'Label' }),
+          href: fields.text({ label: 'Href' }),
+        }),
+        { label: 'Submenu links (empty = plain link)', itemLabel: (props) => props.fields.label.value || 'Link' },
+      ),
     }),
     { label: 'Nav links', itemLabel: (props) => props.fields.label.value || 'Link' },
   ),
@@ -88,15 +96,27 @@ export const layoutFields = {
 };
 
 /* ------------------- icon + media field conventions ----------------
- * Single source of truth for field shape (M2). Rules:
+ * Single source of truth for field shape (M2, upload-backed M7). Rules:
  * - `icon` is a plain text field holding a key from the shared MDI map
  *   (`src/lib/icons/resolve-icon.tsx`).
  *   Empty string means "keep the section's positional default", so legacy
  *   entries and code defaults render exactly as before.
- * - `image` is a plain `{ src, alt }` object — never a Keystatic-managed
- *   asset field. Resolution to `<Image>` happens in components through the
- *   shared media resolver (M3), with empty `src` treated as absent.
+ * - `image` is a `{ src, alt }` object where `src` is a Keystatic-managed
+ *   upload (`fields.image` → `public/media/uploads`, served from
+ *   `/media/uploads/`). Resolution to `<Image>` happens in components
+ *   through the shared media resolver (M3), with empty/missing `src`
+ *   treated as absent — so legacy `/img/...` text URLs and remote URLs
+ *   stay render-safe (`MediaSlot` placeholder / `unoptimized`).
  * ---------------------------------------------------------------------- */
+
+/** Upload-backed image asset: file lands in `public/media/uploads`, the
+ *  stored YAML value is the `/media/uploads/...` front-end path. */
+export const uploadImageField = (label = 'Image file') =>
+  fields.image({ label, directory: 'public/media/uploads', publicPath: '/media/uploads/' });
+
+/** Upload-backed generic file asset (M8+ post attachments, etc.). */
+export const uploadFileField = (label = 'File') =>
+  fields.file({ label, directory: 'public/media/uploads', publicPath: '/media/uploads/' });
 
 export const iconField = (label = 'MDI icon name (e.g. chart — empty keeps default)') =>
   fields.text({ label, defaultValue: '' });
@@ -104,7 +124,10 @@ export const iconField = (label = 'MDI icon name (e.g. chart — empty keeps def
 export const imageField = (label = 'Image') =>
   fields.object(
     {
-      src: fields.text({ label: 'Image URL', defaultValue: '' }),
+      // Upload-backed (M7): CMS stores `/media/uploads/...`; legacy text
+      // URLs (`/img/...`, remote) read back as the same string shape, so
+      // `DynamicImage`/`MediaSlot` and the reader merge need no changes.
+      src: uploadImageField('Image file (upload — blank keeps the default)'),
       alt: fields.text({ label: 'Alt text', defaultValue: '' }),
     },
     { label },
@@ -777,6 +800,57 @@ const planPickerFields = {
   cta: fields.text({ label: 'CTA label', defaultValue: 'Book a free audit' }),
   ctaHref: fields.text({ label: 'CTA href', defaultValue: '/digital-audit/' }),
   note: fields.text({ label: 'Note (empty hides it)', defaultValue: '', multiline: true }),
+};
+
+/* ------------------------- M8 blog post fields ------------------------ */
+/* Convention: `slug` is the bare URL segment (`/blog/<slug>`). `body` is a
+ * `fields.document` (deprecated upstream, but `fields.mdx` needs a pipeline
+ * that is not installed): headings/lists/links/dividers/tables plus M7
+ * upload-backed images, and an `embed` block for video/iframe. In
+ * `markdown`-format collections the document is the file body, the rest is
+ * frontmatter. Rendered by `DocumentRenderer` in `blog-post.tsx`. */
+
+/** Video/iframe insert for post bodies. The preview stays dependency-free
+ *  (`createElement`, no JSX — this file is `.ts`); the front-end renderer in
+ *  `blog-post.tsx` normalises YouTube/Vimeo URLs to their player form. */
+const embedBlock = component({
+  label: 'Embed (video / iframe)',
+  schema: {
+    url: fields.text({ label: 'Embed URL (YouTube, Vimeo, or iframe src)' }),
+    caption: fields.text({ label: 'Caption (empty hides it)', defaultValue: '' }),
+  },
+  preview: (props) =>
+    createElement(
+      'div',
+      null,
+      String((props.fields as { url: { value: unknown } }).url.value || 'Embed — no URL yet'),
+    ),
+});
+
+export const postFields = {
+  title: fields.text({ label: 'Title' }),
+  slug: fields.text({ label: 'Slug (bare URL segment, e.g. why-ads-fail-in-kenya)' }),
+  excerpt: fields.text({ label: 'Excerpt (card summary + meta description)', multiline: true }),
+  category: fields.text({ label: 'Category', defaultValue: '' }),
+  publishedAt: fields.date({ label: 'Publish date', defaultValue: { kind: 'today' } }),
+  author: fields.text({ label: 'Author', defaultValue: 'Analytt Digital' }),
+  featuredImage: imageField('Featured image (empty hides the figure)'),
+  body: fields.document({
+    label: 'Body',
+    formatting: {
+      headingLevels: [2, 3, 4],
+      inlineMarks: { bold: true, italic: true },
+      listTypes: { ordered: true, unordered: true },
+    },
+    links: true,
+    dividers: true,
+    tables: true,
+    images: {
+      directory: 'public/media/uploads',
+      publicPath: '/media/uploads/',
+    },
+    componentBlocks: { embed: embedBlock },
+  }),
 };
 
 /* --------------------------- page document --------------------------- */

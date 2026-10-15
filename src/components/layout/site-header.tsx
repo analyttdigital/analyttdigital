@@ -305,6 +305,16 @@ export function siteHeaderPropsFromLayout(
 					value: link.href || link.label,
 					label: link.label,
 					href: link.href || undefined,
+					// Submenu entries become mega-panel links (same shape, no
+					// descriptions); an item without children stays a plain link.
+					...(link.children?.length
+						? {
+								links: link.children.map((child) => ({
+									label: child.label,
+									href: child.href || undefined,
+								})),
+							}
+						: null),
 				}))
 			: (overrides.items ?? siteHeaderExampleItems);
 	const primaryAction = layout
@@ -313,7 +323,8 @@ export function siteHeaderPropsFromLayout(
 			: null
 		: (overrides.primaryAction ?? { label: "Get Quote" });
 	return {
-		variant: overrides.variant ?? "centered",
+		variant:
+			overrides.variant ?? (items.some((item) => item.links?.length) ? "mega" : "centered"),
 		brand: { ...overrides.brand, name: brandName, href: overrides.brand?.href ?? "/" },
 		logo: pickImage(layout?.logo, overrides.logo, siteHeaderDefaultLogo),
 		logoAlt: pickImage(layout?.logoAlt, overrides.logoAlt, siteHeaderDefaultLogoAlt),

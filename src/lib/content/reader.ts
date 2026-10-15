@@ -4,6 +4,9 @@ import keystaticConfig from '../../../keystatic.config';
 import { defaults } from '@/lib/content/defaults';
 import {
   defaultLocale,
+  type BlogBody,
+  type BlogPost,
+  type ContentImage,
   type LayoutContent,
   type Locale,
   type PageBundle,
@@ -27,16 +30,14 @@ import {
 
 type AnyReader = ReturnType<typeof createReader>;
 
-/** Merge helpers: CMS values win; empty arrays and empty `{ src }` image
- *  refs defer to defaults. */
+/** Merge helpers: CMS values win; empty arrays and empty/missing `{ src }`
+ *  image refs defer to defaults. `src` may be `null` when the upload-backed
+ *  `fields.image` (M7) has no file chosen — that counts as empty too, so a
+ *  half-filled Keystatic form still renders complete content. */
 function isEmptyImage(value: unknown): boolean {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    'src' in value &&
-    typeof (value as { src: unknown }).src === 'string' &&
-    (value as { src: string }).src.trim() === ''
-  );
+  if (typeof value !== 'object' || value === null || !('src' in value)) return false;
+  const src = (value as { src: unknown }).src;
+  return src == null || (typeof src === 'string' && src.trim() === '');
 }
 
 /** One CMS value merged over its default: empty lists and empty `{ src }`
@@ -133,4 +134,130 @@ export async function readPageBundle(
 ): Promise<PageBundle | null> {
   const [layout, page] = await Promise.all([readLayout(reader, locale), readPage(reader, locale, slug)]);
   return page ? { layout, page } : null;
+}
+
+/* ------------------------------- blog --------------------------------- */
+/* Posts (M8): `posts-<locale>` markdown collections merged over the code
+ * defaults in `defaults[locale].blog.posts`, newest first. Rules mirror the
+ * page layer: CMS values win, empty bodies defer to defaults, CMS-only posts
+ * pass through, and an unknown slug is `null` (404, never home). While the SW
+ * translations land, a bodyless SW post borrows its EN peer's body so the
+ * `/sw/blog/<slug>` URL stays readable (recorded M8 gap). */
+
+function nonEmptyString(value: unknown): value is string {
+  return typeof value === 'string' && value.trim() !== '';
+}
+
+/** True when a document node carries something the renderer would draw: prose
+ *  (marks beside `text` add nothing on their own), an image with a `src`, or a
+ *  component block with a filled prop (an `embed` with a URL renders). */
+function hasDocContent(node: unknown): boolean {
+  if (typeof node !== 'object' || node === null) {
+    return typeof node === 'string' && node.trim() !== '';
+  }
+  const o = node as Record<string, unknown>;
+  if (o.type === 'image') return nonEmptyString(o.src);
+  if (o.type === 'component-block') {
+    const props = o.props as Record<string, unknown> | undefined;
+    return !!props && Object.values(props).some((v) => hasDocContent(v));
+  }
+  if (typeof o.text === 'string') {
+    if (o.text.trim() !== '') return true;
+    const marks = new Set(['bold', 'italic', 'underline', 'strikethrough', 'code', 'superscript', 'subscript', 'keyboard']);
+    return Object.keys(o).some((k) => k !== 'text' && !marks.has(k) && hasDocContent(o[k]));
+  }
+  return Array.isArray(o.children) && o.children.some(hasDocContent);
+}
+
+function isEmptyDocument(value: unknown): boolean {
+  return !Array.isArray(value) || value.length === 0 || !value.some(hasDocContent);
+}
+
+function asImage(value: unknown): ContentImage {
+  return value !== null &&
+    typeof value === 'object' &&
+    nonEmptyString((value as { src: unknown }).src)
+    ? {
+        src: (value as { src: string }).src,
+        alt: typeof (value as { alt: unknown }).alt === 'string' ? (value as { alt: string }).alt : '',
+      }
+    : { src: '', alt: '' };
+}
+
+/** Fill a CMS post's missing keys so CMS-only posts render a full shape. */
+function normalizePost(raw: Record<string, unknown>): BlogPost {
+  return {
+    slug: nonEmptyString(raw.slug) ? (raw.slug as string) : '',
+    title: nonEmptyString(raw.title) ? (raw.title as string) : '',
+    excerpt: nonEmptyString(raw.excerpt) ? (raw.excerpt as string) : '',
+    category: nonEmptyString(raw.category) ? (raw.category as string) : '',
+    publishedAt: nonEmptyString(raw.publishedAt) ? (raw.publishedAt as string) : '',
+    author: nonEmptyString(raw.author) ? (raw.author as string) : 'Analytt Digital',
+    featuredImage: asImage(raw.featuredImage),
+    body: (Array.isArray(raw.body) ? raw.body : []) as BlogBody,
+  };
+}
+
+function mergePost(fallback: BlogPost | undefined, cms: BlogPost): BlogPost {
+  if (!fallback || fallback.slug !== cms.slug) return cms;
+  return {
+    slug: cms.slug,
+    title: nonEmptyString(cms.title) ? cms.title : fallback.title,
+    excerpt: nonEmptyString(cms.excerpt) ? cms.excerpt : fallback.excerpt,
+    category: nonEmptyString(cms.category) ? cms.category : fallback.category,
+    publishedAt: nonEmptyString(cms.publishedAt) ? cms.publishedAt : fallback.publishedAt,
+    author: nonEmptyString(cms.author) ? cms.author : fallback.author,
+    featuredImage: (mergeValue(fallback.featuredImage ?? { src: '', alt: '' }, cms.featuredImage) as ContentImage) ?? {
+      src: '',
+      alt: '',
+    },
+    body: isEmptyDocument(cms.body) ? fallback.body : cms.body,
+  };
+}
+
+const byNewest = (a: BlogPost, b: BlogPost) => (b.publishedAt || '').localeCompare(a.publishedAt || '');
+
+/** Every post a locale can render, newest first: CMS entries merged over code
+ *  defaults, plus defaults with no CMS entry yet. */
+export async function listPosts(reader: AnyReader | null, locale: Locale): Promise<BlogPost[]> {
+  const fallbacks = defaults[locale].blog.posts;
+  if (!reader) return [...fallbacks].sort(byNewest);
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const entries: { slug: string; entry: Record<string, unknown> }[] = await (
+      reader.collections as Record<string, { all: () => Promise<any> }>
+    )[`posts-${locale}`].all();
+    const merged = entries.map((e) => {
+      const cms = normalizePost({ ...e.entry, slug: nonEmptyString(e.entry.slug) ? e.entry.slug : e.slug });
+      return mergePost(fallbacks.find((f) => f.slug === cms.slug), cms);
+    });
+    const seen = new Set(merged.map((p) => p.slug));
+    for (const fallback of fallbacks) {
+      if (!seen.has(fallback.slug)) merged.push(fallback);
+    }
+    return merged.filter((p) => p.slug).sort(byNewest);
+  } catch {
+    return [...fallbacks].sort(byNewest);
+  }
+}
+
+/** One post by slug, or `null` for an unknown slug (the route answers 404). */
+export async function readPost(
+  reader: AnyReader | null,
+  locale: Locale,
+  slug: string,
+): Promise<BlogPost | null> {
+  const match = (await listPosts(reader, locale)).find((p) => p.slug === slug);
+  if (!match) return null;
+  if (isEmptyDocument(match.body) && locale !== defaultLocale) {
+    const peer = (await listPosts(reader, defaultLocale)).find((p) => p.slug === slug);
+    if (peer && !isEmptyDocument(peer.body)) return { ...match, body: peer.body };
+  }
+  return match;
+}
+
+/** Every post slug a locale can render. Used to pre-render post routes; posts
+ *  added later still render on first request (`fallback: 'blocking'`). */
+export async function listPostSlugs(reader: AnyReader | null, locale: Locale): Promise<string[]> {
+  return (await listPosts(reader, locale)).map((p) => p.slug);
 }

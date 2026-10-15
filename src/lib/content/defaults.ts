@@ -1,4 +1,11 @@
-import type { LayoutContent, Locale, PageDoc } from '@/lib/content/types';
+import type {
+  BlogListingCopy,
+  BlogPost,
+  BlogPostCopy,
+  LayoutContent,
+  Locale,
+  PageDoc,
+} from '@/lib/content/types';
 
 /**
  * Default content per locale.
@@ -14,7 +21,19 @@ const enLayout: LayoutContent = {
 	logo: { src: "/img/logo-alt.svg", alt: "Analytt Digital" },
 	logoAlt: { src: "/img/logo-alt-light.svg", alt: "Analytt Digital" },
 	navLinks: [
-		{ label: "Services", href: "/services" },
+		{
+			label: "Services",
+			href: "/services",
+			children: [
+				{ label: "Paid Media", href: "/services/paid-media" },
+				{ label: "Data & Analytics", href: "/services/data-analytics" },
+				{ label: "Growth Strategy", href: "/services/growth-strategy" },
+				{ label: "SEO", href: "/services/seo" },
+				{ label: "CRO", href: "/services/cro" },
+				{ label: "Email & CRM", href: "/services/email-crm" },
+				{ label: "Industries", href: "/services/industries" },
+			],
+		},
 		{ label: "Digital Audit", href: "/digital-audit" },
 		{ label: "Blog", href: "/blog" },
 		{ label: "Contact", href: "/contact" },
@@ -1713,7 +1732,7 @@ const enServiceDataAnalytics: PageDoc = {
 			],
 		},
 		{
-			type: "process",
+			type: "process-alt",
 			eyebrow: "Our process",
 			headline: "Audit to ongoing analysis,",
 			headlineAccent: "in five steps.",
@@ -3576,7 +3595,388 @@ const swHome: PageDoc = {
 	],
 };
 
-export const defaults: Record<Locale, { layout: LayoutContent; pages: Record<string, PageDoc> }> = {
+/* ------------------------------- blog --------------------------------- */
+/* M8 seeds: EN bodies are the `docs/content/blog-posts` copy with M0 em-dash
+ * rules applied (`, `/`: `/`; per sentence); `---` rules become dividers.
+ * SW ships translated metadata now; bodies follow (until then `readPost`
+ * falls back to the EN body — recorded M8 gap). Internal link hrefs stay
+ * verbatim, including post 3's related-reading link to the blocked 4th post
+ * (resolves when that copy lands). */
+
+const enBlogCopy: BlogListingCopy = {
+  eyebrow: "Blog",
+  headline: "Notes from the work.",
+  body: "Field notes on performance marketing in Kenya and East Africa: attribution, paid media, and the systems that turn spend into measurable growth.",
+  readMoreLabel: "Read the note",
+  emptyNote: "No posts yet. Check back soon.",
+  prevLabel: "Newer",
+  nextLabel: "Older",
+  pageOfTemplate: "Page {n} of {total}",
+};
+
+const swBlogCopy: BlogListingCopy = {
+  eyebrow: "Blogu",
+  headline: "Maelezo kutoka kazini.",
+  body: "Maelezo ya nyanjani kuhusu masoko ya utendaji nchini Kenya na Afrika Mashariki: uainishaji, matangazo ya kulipia, na mifumo inayogeuza matumizi kuwa ukuaji unaopimika.",
+  readMoreLabel: "Soma makala",
+  emptyNote: "Hakuna makala bado. Rudi tena hivi karibuni.",
+  prevLabel: "Iliyotangulia",
+  nextLabel: "Inayofuata",
+  pageOfTemplate: "Ukurasa {n} kati ya {total}",
+};
+
+const enBlogPostCopy: BlogPostCopy = {
+  backLabel: "Back to notes",
+  bylineTemplate: "{date} · {author} · {category}",
+};
+
+const swBlogPostCopy: BlogPostCopy = {
+  backLabel: "Rudi kwenye makala",
+  bylineTemplate: "{date} · {author} · {category}",
+};
+
+const enBlogPosts: BlogPost[] = [
+  {
+    slug: "overcoming-kenyas-top-marketing-challenge-for-smes-in-2025-digital-skills-gaps",
+    title: "Overcoming Kenya's Top Marketing Challenge for SMEs in 2025: Digital Skills Gaps",
+    excerpt:
+      "Limited digital marketing expertise and weak analytics skills are the biggest roadblocks for Kenyan SMEs. Here's how to close the gap: training, tools, and managed support.",
+    category: "SME Growth",
+    publishedAt: "2025-08-01",
+    author: "Analytt Digital",
+    featuredImage: { src: "", alt: "" },
+    body: [
+      { type: "paragraph", children: [{ text: "In 2025, one of the most googled queries by Kenyan SME owners is: " }, { text: "\"Why is digital marketing not working for my small business in Kenya?\"", bold: true }] },
+      { type: "paragraph", children: [{ text: "At the heart of it lies a critical yet fixable issue: " }, { text: "limited digital marketing expertise and poor analytics skills", bold: true }, { text: "." }] },
+      { type: "divider", children: [] },
+      { type: "heading", level: 2, children: [{ text: "Why This Challenge Dominates Searches" }] },
+      { type: "unordered-list", children: [
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "A recent Nairobi-based study revealed that " }, { text: "lack of digital media knowledge is the greatest roadblock to growth in digital marketing", bold: true }, { text: ", followed closely by limited budgets and outdated techniques." }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Businesses capture less traffic and engagement because they don't know how to " }, { text: "interpret analytics", bold: true }, { text: " or convert data into strategy." }] }] },
+      ] },
+      { type: "paragraph", children: [{ text: "The problem isn't effort. It's that most SME owners are being asked to be marketers, analysts, and strategists on top of running the business, usually without formal training in any of the three." }] },
+      { type: "divider", children: [] },
+      { type: "heading", level: 2, children: [{ text: "How Analytt Digital Helps Bridge the Gap" }] },
+      { type: "heading", level: 3, children: [{ text: "1. Digital Training & Workshops" }] },
+      { type: "unordered-list", children: [
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Customised training in analytics tools (e.g. " }, { text: "Google Analytics, Meta Insights", bold: true }, { text: "), SEO fundamentals, content planning, and social media management." }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Hands-on workshops teach owners how to " }, { text: "interpret campaign metrics", bold: true }, { text: " and iteratively improve results." }] }] },
+      ] },
+      { type: "heading", level: 3, children: [{ text: "2. Data-Driven Campaigns & Strategy" }] },
+      { type: "unordered-list", children: [
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Full audit of current digital presence (SEO, mobile experience, listings). " }, { text: "Native mobile-first optimisation is critical", bold: true }, { text: ", as over 90% of Kenyan internet use is mobile." }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "A/B testing and monthly reporting", bold: true }, { text: " ensure that efforts are measurable and ROI-focused." }] }] },
+      ] },
+      { type: "heading", level: 3, children: [{ text: "3. Affordable Tools & Automation" }] },
+      { type: "paragraph", children: [{ text: "We recommend and support tools such as:" }] },
+      { type: "unordered-list", children: [
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Google Analytics and Search Console", bold: true }, { text: " for SEO health and traffic insights" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Canva or Buffer", bold: true }, { text: " for simplified, high-quality content creation" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "CRM platforms", bold: true }, { text: " like HubSpot Free, or " }, { text: "WhatsApp Business API", bold: true }, { text: " for customer engagement" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "SEO automation tools", bold: true }, { text: " (e.g. Ubersuggest) for keyword tracking and backlink audits" }] }] },
+      ] },
+      { type: "heading", level: 3, children: [{ text: "4. Ongoing Coaching & Mentorship" }] },
+      { type: "unordered-list", children: [
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Regular review calls to refine targeting, content, and ad performance." }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Mentorship to ensure business strategies align with growth goals and measurable milestones." }] }] },
+      ] },
+      { type: "divider", children: [] },
+      { type: "heading", level: 2, children: [{ text: "Example Solutions for SMEs" }] },
+      { type: "table", children: [
+        { type: "table-head", children: [{ type: "table-row", children: [
+          { type: "table-header", children: [{ type: "paragraph", children: [{ text: "Challenge" }] }] },
+          { type: "table-header", children: [{ type: "paragraph", children: [{ text: "Analytt Digital Solution" }] }] },
+        ] }] },
+        { type: "table-body", children: [
+          { type: "table-row", children: [
+            { type: "table-cell", children: [{ type: "paragraph", children: [{ text: "You run a Facebook page but never see leads" }] }] },
+            { type: "table-cell", children: [{ type: "paragraph", children: [{ text: "We audit your page analytics, establish posting frequency, define target audience personas, run low-budget paid ads + monthly performance metrics" }] }] },
+          ] },
+          { type: "table-row", children: [
+            { type: "table-cell", children: [{ type: "paragraph", children: [{ text: "No idea which keywords customers use" }] }] },
+            { type: "table-cell", children: [{ type: "paragraph", children: [{ text: "Through SEO keyword research, we optimise your website copy, titles, and meta descriptions so you appear in searches like " }, { text: "\"handmade soap Nairobi\"", italic: true }] }] },
+          ] },
+          { type: "table-row", children: [
+            { type: "table-cell", children: [{ type: "paragraph", children: [{ text: "You want repeat customers" }] }] },
+            { type: "table-cell", children: [{ type: "paragraph", children: [{ text: "Set up WhatsApp Business + CRM to capture contacts, send personalised follow-up messages, and promotions" }] }] },
+          ] },
+        ] },
+      ] },
+      { type: "divider", children: [] },
+      { type: "heading", level: 2, children: [{ text: "Why This Matters for Kenyan SMEs in 2025" }] },
+      { type: "unordered-list", children: [
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "The shift to " }, { text: "mobile-first marketing", bold: true }, { text: " means optimising for phone screens, SMS or WhatsApp campaigns, TikTok ads locally (especially in Nairobi), or SMS outreach in rural counties." }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Developing " }, { text: "digital literacy", bold: true }, { text: " empowers SMEs to adopt digital marketing as a strategic growth lever, not a one-off effort." }] }] },
+      ] },
+      { type: "divider", children: [] },
+      { type: "heading", level: 2, children: [{ text: "A Self-Assessment: Where's Your Gap?" }] },
+      { type: "paragraph", children: [{ text: "Score yourself honestly on each:" }] },
+      { type: "ordered-list", children: [
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "I can explain which channel produced my last 10 sales: " }, { text: "Yes / No", bold: true }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "I know my cost per qualified lead: " }, { text: "Yes / No", bold: true }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "I review my ad performance weekly: " }, { text: "Yes / No", bold: true }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "I have a documented content plan for the next month: " }, { text: "Yes / No", bold: true }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "I know which keywords my customers search for: " }, { text: "Yes / No", bold: true }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "I can pull a report showing spend vs. revenue by channel: " }, { text: "Yes / No", bold: true }] }] },
+      ] },
+      { type: "paragraph", children: [{ text: "Two or more \"No\" answers means a skills or systems gap is costing you money." }] },
+      { type: "divider", children: [] },
+      { type: "heading", level: 2, children: [{ text: "Frequently Asked Questions" }] },
+      { type: "paragraph", children: [{ text: "I don't have budget for an agency, can training alone help?", bold: true }] },
+      { type: "paragraph", children: [{ text: "Often, yes. Many SMEs get significant gains from training plus a one-off audit, then run campaigns themselves." }] },
+      { type: "paragraph", children: [{ text: "How long does training take to show results?", bold: true }] },
+      { type: "paragraph", children: [{ text: "Most owners see clearer decisions within 4–6 weeks of structured training and one audit cycle." }] },
+      { type: "paragraph", children: [{ text: "Is WhatsApp Business really necessary?", bold: true }] },
+      { type: "paragraph", children: [{ text: "For most Kenyan consumer businesses, yes. It's frequently the channel where the sale actually closes." }] },
+      { type: "paragraph", children: [{ text: "What's the single highest-impact thing an SME can fix first?", bold: true }] },
+      { type: "paragraph", children: [{ text: "Tracking. Without it, every other improvement is guesswork. See " }, { type: "link", href: "/services/data-analytics/", children: [{ text: "our Data & Analytics service →" }] }] },
+      { type: "divider", children: [] },
+      { type: "heading", level: 2, children: [{ text: "Partner with Analytt Digital" }] },
+      { type: "unordered-list", children: [
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "For local businesses, we help " }, { text: "claim and optimise your Google Business Profile", bold: true }, { text: " so you appear in searches and maps." }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Ongoing SEO packages", bold: true }, { text: " including content creation, on-page strategy, and backlink building to elevate organic traffic." }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Training and workshops", bold: true }, { text: " for teams that want to build capability in-house." }] }] },
+      ] },
+      { type: "paragraph", children: [{ text: "✅ " }, { text: "Ready to turn confusion into clarity?", bold: true }] },
+      { type: "paragraph", children: [{ type: "link", href: "/digital-audit/", children: [{ text: "Contact Analytt Digital for a free digital health check →" }] }, { text: ": it's the first step in turning your marketing data into real growth. Or WhatsApp " }, { text: "+254 784 488 542", bold: true }, { text: "." }] },
+      { type: "divider", children: [] },
+      { type: "paragraph", children: [{ text: "Sources: Digital 4 Africa; UON Biorepository (Nairobi digital marketing study); diligent technologies.africa (mobile usage)", italic: true }] },
+    ],
+  },
+  {
+    slug: "why-most-kenyan-businesses-cant-answer-is-our-marketing-actually-working",
+    title: "Why Most Kenyan Businesses Can't Answer 'Is Our Marketing Actually Working?'",
+    excerpt:
+      "Most Kenyan business owners judge marketing on feeling, not numbers. Here's why marketing attribution is the country's biggest performance marketing gap, and how to fix it.",
+    category: "Analytics",
+    publishedAt: "2026-07-28",
+    author: "Analytt Digital",
+    featuredImage: { src: "", alt: "" },
+    body: [
+      { type: "paragraph", children: [{ text: "Ask ten business owners in Nairobi whether their marketing is working, and most will answer with a feeling, not a number. " }, { text: "\"Ads seem to be doing okay.\"", italic: true }, { text: " " }, { text: "\"We've noticed more traffic.\"", italic: true }, { text: " " }, { text: "\"Sales have been decent this quarter.\"", italic: true }] },
+      { type: "paragraph", children: [{ text: "Almost none of them can tell you, with any confidence, which specific channel, campaign, or shilling of spend actually produced their last ten sales." }] },
+      { type: "paragraph", children: [{ text: "That's not a knowledge gap on the part of business owners. It's an " }, { text: "infrastructure gap", bold: true }, { text: ", and it's arguably the single biggest performance marketing challenge facing businesses in Kenya today: " }, { text: "marketing attribution", bold: true }, { text: ", or the ability to trace a sale back to the specific channel that caused it." }] },
+      { type: "divider", children: [] },
+      { type: "heading", level: 2, children: [{ text: "A Market That's Ready, But Under-Measured" }] },
+      { type: "paragraph", children: [{ text: "Kenya's digital opportunity is real and growing. By the end of 2025, the country had roughly " }, { text: "23.4 million internet users", bold: true }, { text: ", putting online penetration at " }, { text: "40.5%", bold: true }, { text: " of the population, with mobile connectivity continuing to expand fast." }] },
+      { type: "paragraph", children: [{ text: "Mobile money has gone even further: mobile money subscriptions passed " }, { text: "98% penetration", bold: true }, { text: " by early 2026, with " }, { text: "M-Pesa alone processing payments for 2.4 million registered businesses", bold: true }, { text: " across the country." }] },
+      { type: "paragraph", children: [{ text: "In other words, the audience is online, the payment rails exist, and the infrastructure to reach and convert customers digitally has never been more available." }] },
+      { type: "paragraph", children: [{ text: "Yet a large share of businesses advertising on Google, Meta, and TikTok in Kenya still can't answer a simple question: " }, { text: "which of those platforms is actually paying for itself?", bold: true }] },
+      { type: "divider", children: [] },
+      { type: "heading", level: 2, children: [{ text: "Why the Gap Exists" }] },
+      { type: "paragraph", children: [{ text: "Three things tend to be happening at once, often in the same business." }] },
+      { type: "heading", level: 3, children: [{ text: "1. Tracking was never properly set up" }] },
+      { type: "paragraph", children: [{ text: "A Meta pixel or Google Ads conversion tag gets installed once, at launch, and never revisited. As websites get redesigned or WhatsApp becomes the primary sales channel, that original tracking quietly stops reflecting reality, but the ad spend keeps flowing regardless." }] },
+      { type: "heading", level: 3, children: [{ text: "2. The customer journey is fragmented across platforms that don't talk to each other" }] },
+      { type: "paragraph", children: [{ text: "A typical Kenyan buyer might see an Instagram ad, Google the business a few days later, and finally message on WhatsApp to close the sale. Standard ad-platform reporting only sees the first touchpoint it can track, usually the ad click, and has no visibility into the WhatsApp conversation that actually closed the deal." }] },
+      { type: "paragraph", children: [{ text: "On paper, that sale looks like it came from nowhere." }] },
+      { type: "heading", level: 3, children: [{ text: "3. Reporting optimises for what's easy to show, not what's useful to know" }] },
+      { type: "paragraph", children: [{ text: "Reach, impressions, and engagement rate are simple numbers to put in a monthly report. Cost per qualified lead, customer acquisition cost by channel, and revenue attributed to marketing take more work to calculate, so they often just don't get calculated at all, even though they're the numbers that actually answer " }, { text: "\"is this working.\"", italic: true }] },
+      { type: "divider", children: [] },
+      { type: "heading", level: 2, children: [{ text: "What Flying Blind Actually Costs" }] },
+      { type: "paragraph", children: [{ text: "Here's an illustrative example that reflects a pattern seen repeatedly across Kenyan SMEs, not one specific business." }] },
+      { type: "paragraph", children: [{ text: "A retailer runs Meta ads, Google Search ads, and boosts posts on Instagram simultaneously, spending roughly " }, { text: "KES 150,000 a month", bold: true }, { text: " across all three. Sales are coming in, but with no attribution model in place, there's no way to know that " }, { text: "70% of actual revenue is being driven by Google Search", bold: true }, { text: " (where buyers are actively looking to purchase), while the Meta and Instagram spend is mostly building awareness that rarely converts directly." }] },
+      { type: "paragraph", children: [{ text: "Without visibility into that split, the natural instinct is to keep spending evenly across all three channels, or worse, to cut the Google budget first because " }, { text: "\"the ads aren't getting many clicks,\"", italic: true }, { text: " when in reality that's the channel quietly closing most of the sales." }] },
+      { type: "paragraph", children: [{ text: "The result is a business that could hit the same sales number on " }, { text: "a third of the ad spend", bold: true }, { text: ", simply by knowing where its money is actually working." }] },
+      { type: "paragraph", children: [{ text: "This is the quiet, compounding cost of poor attribution: not one dramatic loss, but a steady leak that never shows up as a single line item, which is exactly why it goes unaddressed for so long." }] },
+      { type: "divider", children: [] },
+      { type: "heading", level: 2, children: [{ text: "What Proper Attribution Looks Like for a Kenyan SME" }] },
+      { type: "paragraph", children: [{ text: "Fixing this doesn't require an enterprise-grade martech stack. It requires a deliberate, fairly simple sequence:" }] },
+      { type: "heading", level: 3, children: [{ text: "1. Audit what's actually being tracked today" }] },
+      { type: "paragraph", children: [{ text: "Before changing anything, confirm whether GA4, Meta Pixel, and Google Ads conversion tracking are installed correctly and firing on the events that matter: form submissions, WhatsApp click-throughs, and completed purchases, not just page views." }] },
+      { type: "heading", level: 3, children: [{ text: "2. Close the WhatsApp visibility gap" }] },
+      { type: "paragraph", children: [{ text: "Since so much of the Kenyan buying journey ends in a WhatsApp conversation, use trackable " }, { text: "\"Click to WhatsApp\"", bold: true }, { text: " ad links and unique tracking codes per campaign, so a closed sale in WhatsApp can be traced back to the ad or post that started the conversation." }] },
+      { type: "heading", level: 3, children: [{ text: "3. Pick an attribution model that matches your business's data volume" }] },
+      { type: "paragraph", children: [{ text: "Smaller businesses with fewer monthly conversions typically get more reliable insight from a " }, { text: "blended first-touch/last-touch view", bold: true }, { text: ". Once there's enough conversion volume, generally a few hundred conversions a month, a " }, { text: "data-driven model", bold: true }, { text: " that weights each touchpoint by its actual contribution becomes worth the added complexity." }] },
+      { type: "heading", level: 3, children: [{ text: "4. Report on cost per qualified lead and revenue by channel: not just spend and reach" }] },
+      { type: "paragraph", children: [{ text: "A monthly report that only shows how much was spent and how many people were reached tells you that " }, { text: "activity", italic: true }, { text: " happened. A report that shows cost per qualified lead and revenue attributed by channel tells you whether it " }, { text: "paid off", italic: true }, { text: "." }] },
+      { type: "heading", level: 3, children: [{ text: "5. Review monthly, and be willing to reallocate" }] },
+      { type: "paragraph", children: [{ text: "Attribution is only useful if it changes decisions. A monthly review that asks " }, { text: "\"what's our lowest cost-per-lead channel, and did we shift budget toward it?\"", italic: true }, { text: " turns tracking data into an actual growth lever, instead of a report that gets filed and forgotten." }] },
+      { type: "divider", children: [] },
+      { type: "heading", level: 2, children: [{ text: "The Takeaway for Business Owners and Marketers" }] },
+      { type: "paragraph", children: [{ text: "Kenya's digital marketing challenge isn't a shortage of channels, audience, or ad budget appetite. It's the absence of a reliable system connecting " }, { text: "spend to outcome", bold: true }, { text: ", which means two businesses can spend identically and get wildly different results, simply based on whether one of them can actually see what's working." }] },
+      { type: "paragraph", children: [{ text: "For business owners:", bold: true }, { text: " before increasing next quarter's marketing budget, it's worth asking whether the current spend is even being measured properly. More budget on top of broken tracking just means a bigger number attached to the same blind spot." }] },
+      { type: "paragraph", children: [{ text: "For marketers and agency partners:", bold: true }, { text: " attribution is one of the highest-leverage, lowest-glamour parts of the job. It rarely makes for exciting creative, but it's usually the difference between a client who trusts the process and one who churns after two quarters of unclear results." }] },
+      { type: "divider", children: [] },
+      { type: "heading", level: 2, children: [{ text: "Frequently Asked Questions" }] },
+      { type: "paragraph", children: [{ text: "How much does proper attribution cost?", bold: true }] },
+      { type: "paragraph", children: [{ text: "Less than most businesses assume. GA4 and Google Tag Manager are free. The main investment is setup time and, for larger businesses, server-side tracking and dashboard work. Our " }, { type: "link", href: "/services/data-analytics/", children: [{ text: "Data & Analytics service" }] }, { text: " covers this end to end." }] },
+      { type: "paragraph", children: [{ text: "Can I do attribution without a big tech stack?", bold: true }] },
+      { type: "paragraph", children: [{ text: "Yes. For most Kenyan SMEs, a correctly configured GA4, accurate ad-platform conversions, and trackable WhatsApp links get you 80% of the way there." }] },
+      { type: "paragraph", children: [{ text: "What if most of my sales happen offline or on WhatsApp?", bold: true }] },
+      { type: "paragraph", children: [{ text: "This is the norm in Kenya, not the exception. Use campaign-specific WhatsApp links, unique promo codes, and CRM integration to bridge offline and conversational sales back to their source." }] },
+      { type: "paragraph", children: [{ text: "How often should I review attribution data?", bold: true }] },
+      { type: "paragraph", children: [{ text: "Monthly at minimum. Weekly once you're spending enough that small shifts matter." }] },
+      { type: "divider", children: [] },
+      { type: "heading", level: 2, children: [{ text: "Want to Know If Your Marketing Is Actually Working?" }] },
+      { type: "paragraph", children: [{ text: "Analytt Digital is a performance marketing agency built on the belief that data is not a dashboard: it's a competitive edge.", bold: true }] },
+      { type: "paragraph", children: [{ text: "If you're not sure your business's marketing is being tracked and attributed properly, we offer a " }, { text: "free 30-minute performance audit", bold: true }, { text: " with no obligation attached." }] },
+      { type: "paragraph", children: [{ type: "link", href: "/digital-audit/", children: [{ text: "Book an audit →" }] }, { text: " or reach us on WhatsApp at " }, { text: "+254 784 488 542", bold: true }, { text: "." }] },
+      { type: "divider", children: [] },
+      { type: "paragraph", children: [{ text: "Sources: DataReportal, Digital 2026: Kenya (internet and social media penetration figures); Communications Authority of Kenya sector statistics via Connecting Africa and Techweez (mobile money penetration and M-Pesa merchant figures), reporting period through Q1 2026.", italic: true }] },
+    ],
+  },
+  {
+    slug: "why-your-digital-ads-arent-working-in-kenya-and-how-to-fix-them-in-90-days",
+    title: "Why Your Digital Ads Aren't Working in Kenya (And How to Fix Them in 90 Days)",
+    excerpt:
+      "If your Google, Meta or TikTok ads aren't delivering in Kenya, the cause is usually one of six fixable problems. Here's the diagnosis, and a 90-day repair plan.",
+    category: "Paid Media",
+    publishedAt: "2026-04-21",
+    author: "Analytt Digital",
+    featuredImage: { src: "", alt: "" },
+    body: [
+      { type: "paragraph", children: [{ text: "You're spending money on Google or Meta. You're getting clicks. Maybe even some leads. But the numbers don't add up to profit, and you can't quite say why." }] },
+      { type: "paragraph", children: [{ text: "You're not alone. Across Kenya and East Africa, we see the same handful of root causes over and over. Almost none of them are about " }, { text: "\"the algorithm.\"", italic: true }, { text: " Almost all of them are fixable within 90 days." }] },
+      { type: "paragraph", children: [{ text: "Here's the diagnosis, and the plan." }] },
+      { type: "divider", children: [] },
+      { type: "heading", level: 2, children: [{ text: "The Six Reasons Ads Fail in Kenya" }] },
+      { type: "heading", level: 3, children: [{ text: "1. Tracking is broken or incomplete" }] },
+      { type: "paragraph", children: [{ text: "This is the most common cause, and the least visible." }] },
+      { type: "paragraph", children: [{ text: "If your conversions aren't firing correctly, or if the only tracked conversion is a page view, then the ad platforms are optimising toward the wrong thing. You're effectively paying Google and Meta to find people who " }, { text: "look", italic: true }, { text: " like your existing data, which is itself unreliable." }] },
+      { type: "paragraph", children: [{ text: "Symptoms:", bold: true }, { text: " Platform-reported conversions don't match your actual sales. ROAS looks good on paper but the bank account disagrees. WhatsApp and phone leads never appear in reports." }] },
+      { type: "heading", level: 3, children: [{ text: "2. You're targeting too broadly" }] },
+      { type: "paragraph", children: [{ text: "A common pattern: a Kenyan business launches with broad targeting, no exclusions, and a generic message, then wonders why cost per lead is high." }] },
+      { type: "paragraph", children: [{ text: "Meta and Google both reward specificity in the early stages. Narrow, well-defined audiences with clear intent signals consistently beat \"everyone in Nairobi aged 25–54.\"" }] },
+      { type: "heading", level: 3, children: [{ text: "3. The creative isn't built for the platform" }] },
+      { type: "paragraph", children: [{ text: "Ads that work in the US or UK often fail here for simple reasons:" }] },
+      { type: "unordered-list", children: [
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Not mobile-first (over 90% of Kenyan internet use is mobile)" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "English-only, when Swahili or code-switched versions would resonate" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Too long, too polished, or too corporate" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "No WhatsApp CTA, when WhatsApp is where the sale actually closes" }] }] },
+      ] },
+      { type: "heading", level: 3, children: [{ text: "4. The funnel ends where the customer doesn't" }] },
+      { type: "paragraph", children: [{ text: "If your ads drive to a page that requires a card payment, or a form that asks for ten fields, or a site that takes eight seconds to load on mobile, you've lost the sale before it started." }] },
+      { type: "paragraph", children: [{ text: "In Kenya, the winning funnel often goes: " }, { text: "ad → landing page or WhatsApp → conversation → M-Pesa", bold: true }, { text: ". Any step that ignores mobile money or WhatsApp is friction." }] },
+      { type: "heading", level: 3, children: [{ text: "5. You're judging the wrong metrics" }] },
+      { type: "paragraph", children: [{ text: "Reach, impressions, CTR, and engagement rate are easy to report. They're also mostly irrelevant to whether ads are making money." }] },
+      { type: "paragraph", children: [{ text: "The metrics that matter: cost per qualified lead, CAC by channel, verified ROAS, and revenue attributed to marketing." }] },
+      { type: "heading", level: 3, children: [{ text: "6. You haven't given it enough time, or you've given it too much" }] },
+      { type: "paragraph", children: [{ text: "Some businesses kill campaigns after four days, before the algorithm has learned. Others keep funding a losing campaign for six months out of habit." }] },
+      { type: "paragraph", children: [{ text: "The right window for a structured test is roughly " }, { text: "2–4 weeks", bold: true }, { text: ", with weekly reviews and a clear kill/scale rule defined upfront." }] },
+      { type: "divider", children: [] },
+      { type: "heading", level: 2, children: [{ text: "The 90-Day Fix" }] },
+      { type: "heading", level: 3, children: [{ text: "Days 1–14: Diagnose" }] },
+      { type: "unordered-list", children: [
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Pull the last 90 days of data from Google, Meta, TikTok, and GA4" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Reconcile platform-reported conversions against actual sales" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Identify which channels, campaigns, and creatives drove revenue, if you can't, that's finding #1" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Interview whoever handles leads: where do WhatsApp and phone inquiries actually come from?" }] }] },
+      ] },
+      { type: "paragraph", children: [{ text: "Deliverable:", bold: true }, { text: " A written diagnosis of what's broken and what's working." }] },
+      { type: "heading", level: 3, children: [{ text: "Days 15–30: Rebuild the Foundation" }] },
+      { type: "unordered-list", children: [
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Fix conversion tracking on the events that matter (purchase, lead, WhatsApp click, call)" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Set up trackable WhatsApp links per campaign" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Rebuild account structure: clear naming, separate campaigns by objective, correct conversion actions" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Define your target CPA and one primary KPI per channel" }] }] },
+      ] },
+      { type: "paragraph", children: [{ text: "Deliverable:", bold: true }, { text: " Clean tracking and a structured account ready to test." }] },
+      { type: "heading", level: 3, children: [{ text: "Days 31–60: Test and Learn" }] },
+      { type: "unordered-list", children: [
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Launch with 3–5 creatives per campaign, including at least one Swahili or code-switched variant" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Narrow audiences: intent-based keywords, lookalikes from real customers, interest stacks with exclusions" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Run retargeting from day one, most Kenyan buyers need multiple touches" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Review weekly, adjust bids and budgets, but don't churn creative too fast" }] }] },
+      ] },
+      { type: "paragraph", children: [{ text: "Deliverable:", bold: true }, { text: " Clear performance data showing which audiences, creatives, and messages win." }] },
+      { type: "heading", level: 3, children: [{ text: "Days 61–90: Cut and Scale" }] },
+      { type: "unordered-list", children: [
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Kill anything above target CPA with no improving trend" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Shift budget toward your lowest cost-per-qualified-lead channel" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Build variations of winning creatives and test against the control" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Produce your first proper report: spend vs. revenue by channel" }] }] },
+      ] },
+      { type: "paragraph", children: [{ text: "Deliverable:", bold: true }, { text: " A working, measurable ad system, and a documented plan for the next quarter." }] },
+      { type: "divider", children: [] },
+      { type: "heading", level: 2, children: [{ text: "What \"Fixed\" Looks Like" }] },
+      { type: "paragraph", children: [{ text: "By day 90, you should be able to answer these questions with numbers:" }] },
+      { type: "unordered-list", children: [
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "What is our cost per qualified lead, by channel?" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Which campaign produced our last 20 sales?" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "What's our verified ROAS on Google vs. Meta?" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Where would the next KES 100,000 of budget go, and why?" }] }] },
+      ] },
+      { type: "paragraph", children: [{ text: "If you can answer those, your ads are working, even if the numbers still have room to improve." }] },
+      { type: "divider", children: [] },
+      { type: "heading", level: 2, children: [{ text: "Quick Wins You Can Do This Week" }] },
+      { type: "ordered-list", children: [
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Install or verify WhatsApp click tracking", bold: true }, { text: " on every campaign" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Add a Swahili version", bold: true }, { text: " of your best-performing ad" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Check your landing page load time", bold: true }, { text: " on a phone with mobile data" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Add M-Pesa", bold: true }, { text: " to any checkout that doesn't have it" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Turn off broad-match keywords", bold: true }, { text: " with no negative keyword list" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Set up one retargeting campaign", bold: true }, { text: " if you don't have one" }] }] },
+        { type: "list-item", children: [{ type: "paragraph", children: [{ text: "Write down your target CPA", bold: true }, { text: ", if you don't have one, you can't know if you're winning" }] }] },
+      ] },
+      { type: "divider", children: [] },
+      { type: "heading", level: 2, children: [{ text: "Frequently Asked Questions" }] },
+      { type: "paragraph", children: [{ text: "How long before ads actually work?", bold: true }] },
+      { type: "paragraph", children: [{ text: "With clean tracking and a structured test, most accounts show clear signal within 30 days and reliable ROI by 90." }] },
+      { type: "paragraph", children: [{ text: "Should I pause everything while fixing tracking?", bold: true }] },
+      { type: "paragraph", children: [{ text: "Usually no: pause only campaigns you know are unprofitable. Keep the rest running so you're not starting from zero." }] },
+      { type: "paragraph", children: [{ text: "What's a realistic ROAS in Kenya?", bold: true }] },
+      { type: "paragraph", children: [{ text: "It depends heavily on margins and category. Rather than chase an industry benchmark, set your ROAS target from your own unit economics: the number that makes the business profitable." }] },
+      { type: "paragraph", children: [{ text: "Do I need to be on TikTok?", bold: true }] },
+      { type: "paragraph", children: [{ text: "Only if your audience is there and you can produce native video consistently. Google and Meta are the right starting point for most." }] },
+      { type: "paragraph", children: [{ text: "Can you fix this for us?", bold: true }] },
+      { type: "paragraph", children: [{ text: "Yes, this is exactly what our " }, { type: "link", href: "/services/paid-media/", children: [{ text: "paid media" }] }, { text: " and " }, { type: "link", href: "/services/data-analytics/", children: [{ text: "data & analytics" }] }, { text: " services are built for." }] },
+      { type: "divider", children: [] },
+      { type: "heading", level: 2, children: [{ text: "Ready to Fix Your Ads?" }] },
+      { type: "paragraph", children: [{ text: "Get a free 30-minute performance audit.", bold: true }, { text: " We'll review your accounts, tracking, and funnel, and tell you exactly what's broken and what to fix first." }] },
+      { type: "paragraph", children: [{ text: "No pitch. No obligation. Just data.", bold: true }] },
+      { type: "paragraph", children: [{ type: "link", href: "/digital-audit/", children: [{ text: "Book your free audit →" }] }, { text: " or WhatsApp " }, { text: "+254 784 488 542", bold: true }, { text: "." }] },
+      { type: "divider", children: [] },
+      { type: "paragraph", children: [{ text: "Related reading: ", italic: true }, { type: "link", href: "/performance-marketing-in-kenya-the-complete-guide-for-business-owners-in-2026/", children: [{ text: "Performance Marketing in Kenya: The Complete Guide for Business Owners in 2026", italic: true }] }, { text: " · ", italic: true }, { type: "link", href: "/why-most-kenyan-businesses-cant-answer-is-our-marketing-actually-working/", children: [{ text: "Why Most Kenyan Businesses Can't Answer \"Is Our Marketing Actually Working?\"", italic: true }] }] },
+    ],
+  },
+];
+
+const swBlogPosts: BlogPost[] = [
+  {
+    slug: "overcoming-kenyas-top-marketing-challenge-for-smes-in-2025-digital-skills-gaps",
+    title: "Kukabiliana na Changamoto Kubwa ya Masoko kwa SME nchini Kenya 2025: Mapengo ya Ujuzi wa Kidijitali",
+    excerpt:
+      "Utaalamu mdogo wa masoko ya kidijitali na ujuzi dhaifu wa uchanganuzi ni vikwazo vikubwa kwa SME za Kenya. Hivi ndivyo kuziba pengo: mafunzo, zana, na usaidizi wa kitaalamu.",
+    category: "Ukuaji wa SME",
+    publishedAt: "2025-08-01",
+    author: "Analytt Digital",
+    featuredImage: { src: "", alt: "" },
+    body: [],
+  },
+  {
+    slug: "why-most-kenyan-businesses-cant-answer-is-our-marketing-actually-working",
+    title: "Kwa Nini Biashara Nyingi za Kenya Haziwezi Kujibu 'Je, Masoko Yetu Yanafanya Kazi Kweli?'",
+    excerpt:
+      "Wamiliki wengi wa biashara nchini Kenya huhukumu masoko kwa hisia, si kwa takwimu. Hivi ndivyo kwa nini uainishaji wa masoko ni pengo kubwa la utendaji nchini, na jinsi ya kulirekebisha.",
+    category: "Uchanganuzi",
+    publishedAt: "2026-07-28",
+    author: "Analytt Digital",
+    featuredImage: { src: "", alt: "" },
+    body: [],
+  },
+  {
+    slug: "why-your-digital-ads-arent-working-in-kenya-and-how-to-fix-them-in-90-days",
+    title: "Kwa Nini Matangazo Yako ya Kidijitali Hayafanyi Kazi Kenya (Na Jinsi ya Kuyarekebisha Siku 90)",
+    excerpt:
+      "Ikiwa matangazo yako ya Google, Meta au TikTok hayaleti matokeo nchini Kenya, sababu huwa mojawapo ya matatizo sita yanayoweza kurekebishwa. Hivi ndivyo utambuzi, na mpango wa siku 90 wa kurekebisha.",
+    category: "Matangazo ya Kulipia",
+    publishedAt: "2026-04-21",
+    author: "Analytt Digital",
+    featuredImage: { src: "", alt: "" },
+    body: [],
+  },
+];
+
+export const defaults: Record<
+  Locale,
+  {
+    layout: LayoutContent;
+    pages: Record<string, PageDoc>;
+    blog: { copy: BlogListingCopy; postCopy: BlogPostCopy; posts: BlogPost[] };
+  }
+> = {
   en: {
     layout: enLayout,
     pages: {
@@ -3594,6 +3994,7 @@ export const defaults: Record<Locale, { layout: LayoutContent; pages: Record<str
       "services/email-crm": enServiceEmailCrm,
       "services/industries": enServiceIndustries,
     },
+    blog: { copy: enBlogCopy, postCopy: enBlogPostCopy, posts: enBlogPosts },
   },
   sw: {
     layout: swLayout,
@@ -3612,5 +4013,6 @@ export const defaults: Record<Locale, { layout: LayoutContent; pages: Record<str
       "services/growth-strategy": swServiceGrowthStrategy,
       "services/industries": swServiceIndustries,
     },
+    blog: { copy: swBlogCopy, postCopy: swBlogPostCopy, posts: swBlogPosts },
   },
 };
