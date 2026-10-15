@@ -802,6 +802,20 @@ const planPickerFields = {
   note: fields.text({ label: 'Note (empty hides it)', defaultValue: '', multiline: true }),
 };
 
+const leakListFields = {
+  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'Common mistakes we fix' }),
+  headline: fields.text({ label: 'Headline', defaultValue: 'Six leaks we plug first.' }),
+  body: fields.text({ label: 'Body', defaultValue: '', multiline: true }),
+  items: fields.array(
+    fields.object({
+      title: fields.text({ label: 'Title' }),
+      body: fields.text({ label: 'Body', multiline: true }),
+    }),
+    { label: 'Leaks', itemLabel: (props) => props.fields.title.value?.slice(0, 48) || 'Leak' },
+  ),
+  closing: fields.text({ label: 'Closing line', defaultValue: '', multiline: true }),
+};
+
 /* ------------------------- M8 blog post fields ------------------------ */
 /* Convention: `slug` is the bare URL segment (`/blog/<slug>`). `body` is a
  * `fields.document` (deprecated upstream, but `fields.mdx` needs a pipeline
@@ -941,6 +955,7 @@ export const pageFields = {
         { label: 'Exclusions alt', value: 'exclusions-alt' },
         { label: 'Plan picker', value: 'plan-picker' },
         { label: 'Plan picker alt', value: 'plan-picker-alt' },
+        { label: 'Leak list', value: 'leak-list' },
       ],
       defaultValue: 'hero',
     }), {
@@ -990,6 +1005,7 @@ export const pageFields = {
       'exclusions-alt': fields.object(exclusionsFields, { label: 'Exclusions alt content' }),
       'plan-picker': fields.object(planPickerFields, { label: 'Plan picker content' }),
       'plan-picker-alt': fields.object(planPickerFields, { label: 'Plan picker alt content' }),
+      'leak-list': fields.object(leakListFields, { label: 'Leak list content' }),
     }),
     {
       label: 'Sections',

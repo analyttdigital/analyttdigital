@@ -25,6 +25,7 @@ import { InsightsAlt } from '@/components/sections/insights-alt';
 import { PageHero } from '@/components/sections/page-hero';
 import { PageHeroAlt } from '@/components/sections/page-hero-alt';
 import { PlanPicker } from '@/components/sections/plan-picker';
+import { LeakList } from '@/components/sections/leak-list';
 import { PlanPickerAlt } from '@/components/sections/plan-picker-alt';
 import { PricingTiers } from '@/components/sections/pricing-tiers';
 import { PricingTiersAlt } from '@/components/sections/pricing-tiers-alt';
@@ -276,6 +277,12 @@ function SectionBlock({ section, sections, latestPosts }: { section: Section; se
 		case "plan-picker-alt":
 			return (
 					<PlanPickerAlt data={section} />
+			);
+		case "leak-list":
+			return (
+				<ScrollSection variant="fade-up">
+					<LeakList data={section} />
+				</ScrollSection>
 			);
 		default:
 			return null;

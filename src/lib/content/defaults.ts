@@ -1632,20 +1632,19 @@ const enServicePaidMedia: PageDoc = {
 			ctaHref: "/digital-audit/",
 		},
 		{
-			type: "problem-alt",
+			type: "leak-list",
 			eyebrow: "Common mistakes we fix",
 			headline: "Six leaks we plug first.",
-			paragraphs: [
-				"Broad targeting with no exclusions bleeds budget on irrelevant audiences. Single-creative campaigns mean no testing, no learning, no scale. Missing conversion tracking optimizes toward vanity metrics. Last-click attribution ignores the true customer journey. No retargeting funnel pays for traffic that never returns. Platform-reported ROAS goes unverified against actual revenue.",
+			body: "The six patterns behind wasted spend.",
+			items: [
+				{ title: "Broad targeting with no exclusions", body: "Bleeding budget on irrelevant audiences." },
+				{ title: "Single-creative campaigns", body: "No testing, no learning, no scale." },
+				{ title: "Missing conversion tracking", body: "Optimizing toward vanity metrics." },
+				{ title: "Last-click attribution only", body: "Ignoring the true customer journey." },
+				{ title: "No retargeting funnel", body: "Paying for traffic that never returns." },
+				{ title: "Platform-reported ROAS", body: "Without verifying actual revenue." },
 			],
 			closing: "We fix all six before scaling spend.",
-			panelTitle: "What we correct",
-			panelAlert: "Six common leaks",
-			panelChips: [
-				{ value: "Targeting", label: "Exclusions first" },
-				{ value: "Creative", label: "Always testing" },
-				{ value: "Attribution", label: "Beyond last-click" },
-			],
 		},
 		{
 			type: "faq",
@@ -3505,20 +3504,19 @@ const swServicePaidMedia: PageDoc = {
 			ctaHref: "/digital-audit/",
 		},
 		{
-			type: "problem-alt",
+			type: "leak-list",
 			eyebrow: "Makosa ya kawaida tunayorekebisha",
 			headline: "Mivujo sita tunayoziba kwanza.",
-			paragraphs: [
-				"Kulenga kwa ujumla bila kuondoa hufanya bajeti ipotee kwa hadhira isiyohusika. Kampeni za ubunifu mmoja humaanisha hakuna majaribio, hakuna kujifunza, hakuna kukua. Ufuatiliaji wa mabadiliko unaokosekana huboresha kwa vipimo vya majivuno. Ugawaji wa mbofyo wa mwisho hupuuza safari halisi ya mteja. Kutokuwa na faneli ya kurudia kulenga hulipia trafiki isiyorudi. ROAS inayoripotiwa na jukwaa haithibitishwi dhidi ya mapato halisi.",
+			body: "Mifumo sita nyuma ya matumizi yaliyopotea.",
+			items: [
+				{ title: "Kulenga kwa ujumla bila kuondoa", body: "Kupoteza bajeti kwa hadhira isiyohusika." },
+				{ title: "Kampeni za ubunifu mmoja", body: "Hakuna majaribio, hakuna kujifunza, hakuna kukua." },
+				{ title: "Ufuatiliaji wa mabadiliko unaokosekana", body: "Kuboresha kwa vipimo vya majivuno." },
+				{ title: "Ugawaji wa mbofyo wa mwisho pekee", body: "Kupuuza safari halisi ya mteja." },
+				{ title: "Kutokuwa na faneli ya kurudia kulenga", body: "Kulipia trafiki isiyorudi." },
+				{ title: "ROAS inayoripotiwa na jukwaa", body: "Bila kuthibitisha mapato halisi." },
 			],
 			closing: "Tunarekebisha zote sita kabla ya kuongeza matumizi.",
-			panelTitle: "Tunachorekebisha",
-			panelAlert: "Mivujo sita ya kawaida",
-			panelChips: [
-				{ value: "Ulengaji", label: "Kuondoa kwanza" },
-				{ value: "Ubunifu", label: "Majaribio kila wakati" },
-				{ value: "Ugawaji", label: "Zaidi ya mbofyo wa mwisho" },
-			],
 		},
 		{
 			type: "faq",

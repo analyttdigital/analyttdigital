@@ -696,7 +696,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 	const brandNode = (
 		<Destination
 			link={{ label: brand.name, href: brand.href }}
-			className={`relative inline-flex cursor-pointer items-center gap-2 border-0 bg-transparent py-2 pr-2 text-base font-medium text-primary no-underline ${scrolled || menuOpen || !!open ? "hover:text-primary-300" : "hover:text-primary-500"} ${classes?.navItem ?? ""}`}
+			className={`relative inline-flex cursor-pointer items-center gap-2 border-0 bg-transparent py-2 pr-2 text-base font-medium text-primary no-underline hover:text-primary-500 ${classes?.navItem ?? ""}`}
 			aria-label={brand.name}
 			onChoose={() => {
 				onNavigate?.({ label: brand.name, href: brand.href });
@@ -705,8 +705,9 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 			}}
 		>
 			{logo?.src?.trim() ? (
-				/* Both marks ride stacked at identical size and crossfade with
-				 * `data-scrolled`, so the swap never shifts layout. */
+				/* Both marks ride stacked at identical size; the bar is light
+				 * in every state, so the dark mark stays up and the alt mark
+				 * never shows — the swap never shifts layout. */
 				<span className="relative flex shrink-0 items-center">
 					<Image
 						src={logo.src}
@@ -714,8 +715,8 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 						width={160}
 						height={40}
 						priority={true}
-						className={`h-7 w-auto transition-opacity duration-300 ${scrolled || menuOpen || !!open ? "opacity-0" : "opacity-100"}`}
-						aria-hidden={scrolled || menuOpen || !!open}
+						className="h-7 w-auto transition-opacity duration-300 opacity-100"
+						aria-hidden={false}
 					/>
 					<Image
 						src={logoAlt?.src?.trim() ? logoAlt.src : logo.src}
@@ -723,8 +724,8 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 						width={160}
 						height={40}
 						priority={true}
-						className={`absolute inset-0 h-7 w-auto transition-opacity duration-300 ${scrolled || menuOpen || !!open ? "opacity-100" : "opacity-0"}`}
-						aria-hidden={!(scrolled || menuOpen || !!open)}
+						className="absolute inset-0 h-7 w-auto transition-opacity duration-300 opacity-0"
+						aria-hidden={true}
 					/>
 				</span>
 			) : (
@@ -740,7 +741,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 		<header
 			ref={setRefs}
 			className={[
-				"relative z-20 [container-type:inline-size] [container-name:site-header] bg-transparent font-sans text-ink transition-colors duration-200 data-[scrolled]:backdrop-blur-lg data-[scrolled]:bg-primary-900 data-[scrolled]:text-paper motion-reduce:transition-none",
+				"relative z-20 [container-type:inline-size] [container-name:site-header] bg-transparent font-sans text-ink transition-colors duration-200 data-[scrolled]:backdrop-blur-lg data-[scrolled]:bg-paper-50/90 data-[scrolled]:shadow-[0_1px_0_0_rgb(var(--color-ink-950)/0.08)] motion-reduce:transition-none",
 				sticky ? "sticky top-0" : "",
 				className,
 				classes?.root,
@@ -775,7 +776,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 									const isOpen = open?.value === item.value;
 									const panelId = `${id}-panel`;
 									const common = {
-										className: `group relative isolate inline-flex h-9 cursor-pointer select-none items-center gap-1 whitespace-nowrap border-0 bg-transparent px-3 text-sm font-medium no-underline transition-colors duration-150 hover:text-paper-500 data-[current]:text-accent data-[open]:text-accent motion-reduce:transition-none ${variant === "centered" ? "h-8 rounded-full px-3.5" : ""} ${classes?.navItem ?? ""}`,
+										className: `group relative isolate inline-flex h-9 cursor-pointer select-none items-center gap-1 whitespace-nowrap border-0 bg-transparent px-3 text-sm font-medium no-underline transition-colors duration-150 hover:text-accent-600 data-[current]:text-accent data-[open]:text-accent motion-reduce:transition-none ${variant === "centered" ? "h-8 rounded-full px-3.5" : ""} ${classes?.navItem ?? ""}`,
 										"data-nav-item": "",
 										"data-current": isCurrent ? "" : undefined,
 										"data-open": isOpen ? "" : undefined,
@@ -798,7 +799,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 												<motion.span
 													key={`hover-${variant}`}
 													layoutId={`hover-${variant}`}
-													className={`absolute inset-0 -z-10 bg-primary-800 ${classes?.navItemHover ?? ""}`}
+													className={`absolute inset-0 -z-10 bg-ink-950/[0.06] ${classes?.navItemHover ?? ""}`}
 													transition={reduced ? { duration: 0 } : GLIDE}
 													aria-hidden="true"
 												/>
@@ -807,7 +808,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 												<motion.span
 													key={`current-${variant}`}
 													layoutId={`current-${variant}`}
-													className={`absolute inset-x-3 bottom-1 h-0.5 bg-accent-500 ${variant === "centered" ? "inset-0 z-[-1] h-auto rounded-full border border-primary-700 bg-primary-800" : withPanel ? "right-[calc(0.75rem+18px)]" : ""} ${classes?.navItemIndicator ?? ""}`}
+													className={`absolute inset-x-3 bottom-1 h-0.5 bg-accent-500 ${variant === "centered" ? "inset-0 z-[-1] h-auto rounded-full border border-ink-950/10 bg-ink-950/[0.06]" : withPanel ? "right-[calc(0.75rem+18px)]" : ""} ${classes?.navItemIndicator ?? ""}`}
 													transition={
 														reduced
 															? { duration: 0 }
@@ -891,7 +892,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 						<button
 							ref={menuButtonRef}
 							type="button"
-							className={`relative hidden h-10 w-10 cursor-pointer place-items-center border-0 bg-transparent active:bg-primary-800 [@container_site-header_(max-width:759px)]:grid ${scrolled ? " text-primary-100" : " text-primary-700"}`}
+							className={`relative hidden h-10 w-10 cursor-pointer place-items-center border-0 bg-transparent active:bg-primary-800 [@container_site-header_(max-width:759px)]:grid text-primary-700`}
 							aria-expanded={menuOpen}
 							aria-controls={`${id}-sheet`}
 							aria-label={menuOpen ? "Close menu" : "Open menu"}

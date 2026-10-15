@@ -520,6 +520,16 @@ export type ExclusionsSection = {
   items: { title: string; body: string }[];
 };
 
+export type LeakItem = { title: string; body: string };
+
+export type LeakListSection = {
+  eyebrow: string;
+  headline: string;
+  body: string;
+  items: LeakItem[];
+  closing: string;
+};
+
 export type PlanOption = { value: string; label: string; hint?: string };
 
 export type PlanPickerSection = {
@@ -574,7 +584,8 @@ export type Section =
 	| ({ type: "exclusions" } & ExclusionsSection)
 	| ({ type: "exclusions-alt" } & ExclusionsSection)
 	| ({ type: "plan-picker" } & PlanPickerSection)
-	| ({ type: "plan-picker-alt" } & PlanPickerSection);
+	| ({ type: "plan-picker-alt" } & PlanPickerSection)
+	| ({ type: "leak-list" } & LeakListSection);
 
 export type SectionType = Section['type'];
 
