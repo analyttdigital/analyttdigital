@@ -939,6 +939,7 @@ export const pageFields = {
         { label: 'Process', value: 'process' },
         { label: 'Process alt', value: 'process-alt' },
         { label: 'How we work', value: 'how-we-work' },
+        { label: 'Next steps', value: 'next-steps' },
         { label: 'Capabilities', value: 'capabilities' },
         { label: 'Capabilities alt', value: 'capabilities-alt' },
         { label: 'Work', value: 'work' },
@@ -989,6 +990,7 @@ export const pageFields = {
       // static card presentation (no scroll-driven stage).
       'process-alt': fields.object(processFields, { label: 'Process alt content' }),
       'how-we-work': fields.object(processFields, { label: 'How we work content' }),
+      'next-steps': fields.object(processFields, { label: 'Next steps content' }),
       capabilities: fields.object(capabilitiesFields, { label: 'Capabilities content' }),
       'capabilities-alt': fields.object(capabilitiesFields, { label: 'Capabilities alt content' }),
       work: fields.object(workFields, { label: 'Work content' }),

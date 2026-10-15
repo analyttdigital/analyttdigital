@@ -564,6 +564,7 @@ export type Section =
 	| ({ type: "process" } & ProcessSection)
 	| ({ type: "process-alt" } & ProcessSection)
 	| ({ type: "how-we-work" } & ProcessSection)
+	| ({ type: "next-steps" } & ProcessSection)
 	| ({ type: "capabilities" } & CapabilitiesSection)
 	| ({ type: "capabilities-alt" } & CapabilitiesSection)
 	| ({ type: "work" } & WorkSection)

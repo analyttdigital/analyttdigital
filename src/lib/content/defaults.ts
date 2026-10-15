@@ -987,7 +987,7 @@ const enContact: PageDoc = {
 			portalLabel: "Free · No commitment",
 		},
 		{
-			type: "process",
+			type: "next-steps",
 			eyebrow: "What happens next",
 			headline: "After you reach out,",
 			headlineAccent: "we move fast.",
@@ -2461,7 +2461,7 @@ const swContact: PageDoc = {
 			portalLabel: "Bure · Bila wajibu",
 		},
 		{
-			type: "process",
+			type: "next-steps",
 			eyebrow: "Kinachofuata",
 			headline: "Baada ya kuwasiliana,",
 			headlineAccent: "tunaharakisha.",

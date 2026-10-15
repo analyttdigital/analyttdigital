@@ -35,6 +35,7 @@ import { ProblemAlt } from '@/components/sections/problem-alt';
 import { ProcessChapter, ProcessClosing, ProcessBridge } from '@/components/sections/process-chapter';
 import { ProcessAlt } from '@/components/sections/process-alt';
 import { HowWeWork } from '@/components/sections/how-we-work';
+import { NextSteps } from '@/components/sections/next-steps';
 import { Stats } from '@/components/sections/stats';
 import { StatsAlt } from '@/components/sections/stats-alt';
 import { TeamGrid } from '@/components/sections/team-grid';
@@ -163,6 +164,13 @@ function SectionBlock({ section, sections, latestPosts }: { section: Section; se
 			return (
 				<ScrollSection variant="fade-up">
 					<HowWeWork data={section} />
+				</ScrollSection>
+			);
+		}
+		case "next-steps": {
+			return (
+				<ScrollSection variant="fade-up">
+					<NextSteps data={section} />
 				</ScrollSection>
 			);
 		}
