@@ -157,7 +157,7 @@ BUILDER_DEV_BYPASS_AUTH=false
 - Names: components PascalCase, files kebab-case, content files kebab-case slugs.
 - Styling via Tailwind utilities and token classes only. No hardcoded hex colors in components.
 - Accessibility: semantic elements, alt text field required for images, keyboard friendly forms.
-- Package manager: pnpm. Scripts required: `dev`, `build`, `typecheck`, `lint`.
+- Package manager: yarn (`yarn.lock` is the lockfile). Scripts required: `dev`, `build`, `typecheck`, `lint` (`lint` currently broken repo-wide — typecheck is the gate).
 
 ## 5. Key risks and decisions
 - Puck API changes between versions: pin the version and note it in TASKS.md Decisions.

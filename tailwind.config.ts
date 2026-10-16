@@ -38,8 +38,7 @@ const config: Config = {
         primary: {
           ...family('primary'),
           DEFAULT: withAlpha('--color-primary-800'),
-        },
-        accent: {
+        },        accent: {
           ...family('accent'),
           DEFAULT: withAlpha('--color-accent-500'),
         },
@@ -55,6 +54,23 @@ const config: Config = {
           ...family('paper'),
           DEFAULT: withAlpha('--color-paper-DEFAULT'),
         },
+        // Visual builder tokens (M1). Scoped `--bld-*` variables set by
+        // `ThemeProvider`, so `bg-bld-primary` etc. follow the builder theme
+        // (light/dark via the wrapper's `.dark` class) without touching the
+        // site's own token families above.
+        bld: {
+          primary: withAlpha('--bld-color-primary'),
+          secondary: withAlpha('--bld-color-secondary'),
+          accent: withAlpha('--bld-color-accent'),
+          background: withAlpha('--bld-color-background'),
+          surface: withAlpha('--bld-color-surface'),
+          text: withAlpha('--bld-color-text'),
+          muted: withAlpha('--bld-color-muted'),
+          border: withAlpha('--bld-color-border'),
+          success: withAlpha('--bld-color-success'),
+          warning: withAlpha('--bld-color-warning'),
+          danger: withAlpha('--bld-color-danger'),
+        },
       },
       fontFamily: {
         // Faces are wired through CSS variables set in `_app.tsx`; never
@@ -62,6 +78,10 @@ const config: Config = {
         display: ['var(--font-display)', 'var(--font-brother)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         sans: ['var(--font-sans)', 'Archivo', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         mono: ['var(--font-mono)', 'IBM Plex Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+        // Builder theme faces, resolved from the curated `next/font` list.
+        bldHeading: ['var(--bld-font-heading)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        bldBody: ['var(--bld-font-body)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        bldMono: ['var(--bld-font-mono)', 'ui-monospace', 'monospace'],
       },
       letterSpacing: {
         tightest: '-0.035em',
@@ -73,6 +93,8 @@ const config: Config = {
         soft: '2px',
         chip: '2px',
         pill: '9999px',
+        // Builder default radius token.
+        bld: 'var(--bld-radius-default)',
       },
       transitionTimingFunction: {
         out: 'cubic-bezier(0.22, 1, 0.36, 1)',
@@ -94,6 +116,11 @@ const config: Config = {
       animation: {
         pulse: 'pulse 3.6s linear infinite',
         settle: 'settle 0.4s cubic-bezier(0.22, 1, 0.36, 1) both',
+      },
+      boxShadow: {
+        bldSm: 'var(--bld-shadow-sm)',
+        bldMd: 'var(--bld-shadow-md)',
+        bldLg: 'var(--bld-shadow-lg)',
       },
     },
   },

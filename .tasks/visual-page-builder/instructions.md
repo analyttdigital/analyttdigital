@@ -37,7 +37,7 @@ After each task, and at least every 30 minutes of work:
 
 ## Status values
 `TODO` | `IN_PROGRESS` | `BLOCKED` | `DONE` | `DROPPED`
-A task is `DONE` only when its acceptance checklist is fully ticked, `pnpm typecheck` and `pnpm lint` pass, and the app builds.
+A task is `DONE` only when its acceptance checklist is fully ticked, `yarn typecheck` passes, and the app builds (`yarn build`). Lint is skipped: `next lint` is broken repo-wide (see TASKS.md Open Questions).
 
 ## Handoff protocol (end of every session)
 1. Leave the repo in a building state, or mark the task `BLOCKED` with the exact error and the file/line.
