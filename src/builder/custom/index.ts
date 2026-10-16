@@ -5,5 +5,8 @@
  * edits. Heavy examples (GSAP reveal, three.js scene) land in M8.
  */
 import "./callout";
+import "./chart";
+import "./gsap-reveal";
+import "./three-scene";
 
 export {};

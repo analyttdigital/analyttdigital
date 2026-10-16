@@ -161,10 +161,15 @@ Update this file continuously. See `instructions.md` for rules.
 ---
 
 ## M8 Advanced components
-**Status:** TODO  **Depends on:** M5
-- [ ] GSAP reveal/scroll wrapper component (uses `gsap.context`, cleanup, editing aware)
-- [ ] three.js scene component (dynamic import, resize and dispose handling)
-- [ ] Chart component (library to be confirmed with user)
+**Status:** DONE  **Depends on:** M5
+- [x] GSAP reveal/scroll wrapper component (uses `gsap.context`, cleanup, editing aware)
+- [x] three.js scene component (dynamic import, resize and dispose handling)
+- [x] Chart component (recharts, per user choice 2026-10-17)
+**Notes:**
+- `GsapReveal` (fade/slide-up/slide-left/scale, duration/delay/distance/once): gsap + ScrollTrigger lazy-import inside the effect, `gsap.context` scoping, `revert()` cleanup, static children while editing. No `client: true` — effect-only browser code keeps SSG HTML intact.
+- `ThreeScene`: raw `three` (NOT @react-three/fiber — fiber v9 requires React 19 via the `Activity` API and broke the build on this React 18 repo; the pre-existing fiber/drei deps are left untouched for the site). Canvas splits via `next/dynamic(ssr:false)`, `three` lazy-imports in the effect, ResizeObserver resizing, full dispose (loop, observer, geometry, material, renderer, DOM node). Never mounts while editing.
+- `Chart` (recharts 3.10.1, bar/line, token color via default-theme hex since SVG attrs can't use CSS vars, fixed dims): recharts 3 paints SVG only on hydration, so the component rides the M5 `client: true` wrapper (placeholder in static HTML, own client chunk).
+- Token colors resolve through `defaultTheme` light values where SVG/three.js need concrete values; documented at each site.
 **Notes:**
 
 ---
@@ -194,6 +199,7 @@ Update this file continuously. See `instructions.md` for rules.
 - 2026-10-16 | Keep yarn (existing `yarn.lock`) instead of PROJECT.md's pnpm; revisit if user wants migration.
 - 2026-10-16 | Test runner: added `vitest@5.0.5` + peer `vite@6.4.4` (dev-only, exact pins, `yarn test` = `vitest run`). Not on the PROJECT.md approved list — added because M2 mandates adapter unit tests and the repo had no runner; dev-only, zero runtime impact. Flagging to user alongside this log.
 - 2026-10-16 | Fonts: added `@fontsource/inter@5.3.0`, `@fontsource/space-grotesk@5.3.0`, `@fontsource/ibm-plex-mono@5.3.0` (exact). PROJECT.md M1 already approves "next/font or Fontsource"; switched because `next/font/google` fails the build where Google is unreachable (proven by the M3 build). Runtime font assets, no code library.
+- 2026-10-17 | Chart: added `recharts@3.10.1` (exact) — user chose recharts over zero-dep SVG or deferral when asked. Runtime dep for the M8 Chart block only.
 
 ## Progress Log
 Format: `YYYY-MM-DD HH:MM | agent | summary | files`
@@ -214,6 +220,8 @@ Format: `YYYY-MM-DD HH:MM | agent | summary | files`
 - 2026-10-16 | HANDOFF | What is done: M0–M6 DONE (shared elements complete; 46/46 tests, typecheck + build green). What is in flight: nothing half-edited. Exact next step: start M7 Auth + production publish flow (deps M2, M3 DONE) — NextAuth GitHub provider, allowlist/repo check, protect /admin + /api/builder, prod editor reads GitHub, branch/PR publish, revalidation, conflict UI. Commands to verify: `yarn test`, `yarn typecheck`, `yarn build`. Visual click-through of /admin + /p pending approved dev session. Note: `.tasks/content/*` untracked files belong to another stream — left alone.
 - 2026-10-17 | session | M7 DONE: NextAuth GitHub + allowlist/permission guard, /admin SSR gate + session UI, draft-branch PR flow, revalidate route + editor wiring, conflict UI with reload; 53/53 tests, typecheck + build green | src/pages/api/auth/*, src/builder/auth/*, src/builder/storage/publish.ts, src/pages/api/builder/*, src/pages/admin/*, src/builder/editor/*, src/pages/_app.tsx, .tasks/visual-page-builder/TASKS.md
 - 2026-10-17 | HANDOFF | What is done: M0–M7 DONE (auth + publish complete; 53/53 tests, typecheck + build green). What is in flight: nothing half-edited. Exact next step: start M8 Advanced components (deps M5 DONE) — GSAP reveal/scroll wrapper, three.js scene (dynamic import, editing-aware), chart library choice (open question to user). Commands to verify: `yarn test`, `yarn typecheck`, `yarn build`. Visual click-through of /admin + /p pending approved dev session. Note: `.tasks/content/*` untracked files belong to another stream — left alone.
+- 2026-10-17 | session | M8 DONE: GsapReveal (lazy gsap + context cleanup), ThreeScene (raw three, dynamic import, resize/dispose, editing placeholder), Chart (recharts, client-wrapped); 57/57 tests, typecheck + build green | src/builder/custom/*, package.json, yarn.lock, .tasks/visual-page-builder/TASKS.md
+- 2026-10-17 | HANDOFF | What is done: M0–M8 DONE (advanced components complete; 57/57 tests, typecheck + build green). What is in flight: nothing half-edited. Exact next step: start M9 Polish, media, docs, tests (deps M4–M7 DONE) — media upload + picker, undo/redo + shortcuts verify, SEO/sitemap, Playwright E2E, README. Big milestone: suggest splitting (M9.1 media, M9.2 SEO/README, M9.3 E2E) or time-boxing. Commands to verify: `yarn test`, `yarn typecheck`, `yarn build`. Visual click-through of /admin + /p pending approved dev session. Note: `.tasks/content/*` untracked files belong to another stream — left alone.
 
 ---
 
