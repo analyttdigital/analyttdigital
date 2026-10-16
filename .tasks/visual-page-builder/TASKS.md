@@ -90,17 +90,24 @@ Update this file continuously. See `instructions.md` for rules.
 ---
 
 ## M4 Built in components
-**Status:** TODO  **Depends on:** M3
-- [ ] Layout: Section, Container, Row, Column, Grid, Spacer, Divider
-- [ ] Typography: Heading, Text, RichText, Quote
-- [ ] Actions: Button, Link
-- [ ] Media: Image, Video, Icon (MDI picker)
-- [ ] Content: List, Table, Card, Accordion, Tabs
-- [ ] Forms: Form, Input, Textarea, Select, Checkbox, Submit (action endpoint configurable)
-- [ ] Dashboard: Stat card, simple chart placeholder
-- [ ] All use tokens; responsive props (per breakpoint where relevant)
+**Status:** DONE  **Depends on:** M3
+- [x] Layout: Section, Container, Row, Column, Grid, Spacer, Divider
+- [x] Typography: Heading, Text, RichText, Quote
+- [x] Actions: Button, Link
+- [x] Media: Image, Video, Icon (MDI picker)
+- [x] Content: List, Table, Card, Accordion, Tabs
+- [x] Forms: Form, Input, Textarea, Select, Checkbox, Submit (action endpoint configurable)
+- [x] Dashboard: Stat card, simple chart placeholder
+- [x] All use tokens; responsive props (per breakpoint where relevant)
 **Acceptance:** each component has schema, defaults, fields, renders identically in editor and public page.
 **Notes:**
+- Layout: `src/builder/components/<group>/<name>/{schema.ts,fields.ts,index.tsx}` + `shared.ts` helpers + `builtins.ts` inventory (29 total) wired via `ensureBuiltInsRegistered()` in `buildConfig()`. Button/Link live under `content/` to match PROJECT.md 3.2 folders; StatCard/ChartPlaceholder under `data/`.
+- `defineComponent()` (registry): authors keep fully inferred prop types; Puck's augmented-props signature is adapted in exactly one place. `fields` stays Puck-loose until M5 derives fields from Zod schemas.
+- Tailwind purge discipline: all token classes resolve through static maps in `shared.ts` (full literals present, never `bld-${token}` interpolation); responsive grid/row classes are static literals too. A test asserts no `#rrggbb` in leaf markup.
+- Editor/public parity: one render fn serves both; leaf components render to static markup in tests (editing flag on); DropZone containers (Section, Container, Row, Column, Grid, Card, Form) are shape-checked (children need a live Puck store).
+- Editing-aware: Image/Video show panel placeholders for empty src and render null publicly; Video never autoplays in the canvas; Form blocks submit while editing with a notice.
+- Forms are uncontrolled (FormData → POST JSON / GET redirect / demo-mode success message). Table rows are nested array fields (headers index the cells). ChartPlaceholder is static SVG until M8 picks a library. Icon picker is a 20-icon curated MDI set.
+- Responsive props: Row `stackOnMobile`, Grid `columnsMobile`, Column desktop widths, Container max-widths.
 
 ---
 
@@ -188,6 +195,8 @@ Format: `YYYY-MM-DD HH:MM | agent | summary | files`
 - 2026-10-16 | HANDOFF | What is done: M0/M1/M2 DONE (storage + validated API complete; tests 19/19, typecheck + build green). What is in flight: nothing half-edited. Exact next step: start M3 Puck editor shell + page rendering (deps M1, M2 DONE) — buildConfig, /admin editor, page CRUD UI, meta editor, public [[...slug]] renderer, editing flag. Commands to verify: `yarn test`, `yarn typecheck`, `yarn build`. Note: `.tasks/content/*` untracked files belong to another stream — left alone.
 - 2026-10-16 | session | M3 DONE: registry + buildConfig, /admin shell (dashboard CRUD, Puck page editor + meta, theme editor with preview), /p public renderer (drafts 404), editing flag, Fontsource switch (Google blocked); tests 26/26, typecheck + build green (all new routes in build output) | src/builder/registry/*, src/builder/config/*, src/builder/editor/*, src/builder/render/*, src/builder/theme/fonts.ts, src/pages/admin/*, src/pages/p/*, src/pages/_app.tsx, package.json, yarn.lock, .tasks/visual-page-builder/TASKS.md
 - 2026-10-16 | HANDOFF | What is done: M0–M3 DONE (editor shell + rendering complete; tests 26/26, typecheck + build green). What is in flight: nothing half-edited; palette empty until M4. Exact next step: start M4 Built-in components (deps M3 DONE) — layout/media/typography/actions/content/forms/dashboard sets, all token-driven via bld-* utilities, editor/public parity. Commands to verify: `yarn test`, `yarn typecheck`, `yarn build`. Visual click-through of /admin + /p pending approved dev session. Note: `.tasks/content/*` untracked files belong to another stream — left alone.
+- 2026-10-16 | session | M4 DONE: 29 built-ins (layout/typography/actions/media/content/forms/dashboard) via defineComponent + registry, static token-class maps, parity tests; 30/30 tests, typecheck + build green | src/builder/components/**, src/builder/registry/*, src/builder/config/*, vitest.config.ts, .tasks/visual-page-builder/TASKS.md
+- 2026-10-16 | HANDOFF | What is done: M0–M4 DONE (29 built-ins live in the palette; 30/30 tests, typecheck + build green). What is in flight: nothing half-edited. Exact next step: start M5 Custom component registry (deps M3 DONE) — Zod→fields derivation, dynamic/ssr:false wrapper, prop validation with fallbacks, palette categories/icons, example custom component, "How to add a component" docs in PROJECT.md. Commands to verify: `yarn test`, `yarn typecheck`, `yarn build`. Visual click-through of /admin + /p pending approved dev session. Note: `.tasks/content/*` untracked files belong to another stream — left alone.
 
 ---
 

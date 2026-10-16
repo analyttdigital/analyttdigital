@@ -2,30 +2,37 @@ import { createElement } from "react";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { buildConfig } from "./build-config";
-import { clearRegistryForTests, getComponent, listComponents, registerComponent } from "@/builder/registry";
+import {
+  clearRegistryForTests,
+  defineComponent,
+  getComponent,
+  listComponents,
+  registerComponent,
+} from "@/builder/registry";
 
 beforeEach(() => {
   clearRegistryForTests();
 });
 
 describe("registry + buildConfig", () => {
-  it("starts empty: no components, no categories", () => {
+  it("always includes built-ins, even after a registry clear", () => {
+    clearRegistryForTests();
     const config = buildConfig();
-    expect(config.components).toEqual({});
-    expect(listComponents()).toEqual([]);
+    expect(Object.keys(config.components)).toHaveLength(29);
+    expect(listComponents()).toHaveLength(29);
   });
 
   it("registers a component once, under its category", () => {
-    registerComponent({
-      name: "Hello",
-      label: "Hello",
-      category: "Basic",
-      config: {
+    registerComponent(
+      defineComponent({
+        name: "Hello",
+        label: "Hello",
+        category: "Basic",
         fields: { title: { type: "text" } },
         defaultProps: { title: "Hi" },
         render: () => createElement("div"),
-      },
-    });
+      }),
+    );
     expect(getComponent("Hello")?.label).toBe("Hello");
     const config = buildConfig();
     expect(Object.keys(config.components)).toEqual(["Hello"]);
@@ -33,20 +40,39 @@ describe("registry + buildConfig", () => {
   });
 
   it("rejects duplicates and non-PascalCase names", () => {
-    const def = {
+    const def = defineComponent({
       name: "Hello",
-      config: { fields: {}, render: () => createElement("div") },
-    } as const;
-    registerComponent({ ...def });
-    expect(() => registerComponent({ ...def })).toThrow(/already registered/);
+      fields: {},
+      defaultProps: {},
+      render: () => createElement("div"),
+    });
+    registerComponent(def);
+    expect(() => registerComponent(def)).toThrow(/already registered/);
     expect(() =>
-      registerComponent({ name: "not-pascal", config: { fields: {}, render: () => createElement("div") } }),
+      registerComponent(
+        defineComponent({
+          name: "not-pascal",
+          fields: {},
+          defaultProps: {},
+          render: () => createElement("div"),
+        }),
+      ),
     ).toThrow(/PascalCase/);
   });
 
   it("never hard wires components: config output equals registry input", () => {
-    registerComponent({ name: "B", config: { fields: {}, render: () => createElement("div") } });
-    registerComponent({ name: "A", category: "Zed", config: { fields: {}, render: () => createElement("div") } });
+    registerComponent(
+      defineComponent({ name: "B", fields: {}, defaultProps: {}, render: () => createElement("div") }),
+    );
+    registerComponent(
+      defineComponent({
+        name: "A",
+        category: "Zed",
+        fields: {},
+        defaultProps: {},
+        render: () => createElement("div"),
+      }),
+    );
     const config = buildConfig();
     expect(Object.keys(config.components).sort()).toEqual(["A", "B"]);
     expect(config.categories?.Zed?.components).toEqual(["A"]);

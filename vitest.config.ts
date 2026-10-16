@@ -7,6 +7,10 @@ export default defineConfig({
       "@": path.resolve(process.cwd(), "src"),
     },
   },
+  // Match Next.js: automatic JSX runtime, so .tsx files need no React import.
+  esbuild: {
+    jsx: "automatic",
+  },
   test: {
     include: ["src/builder/**/*.test.ts"],
     environment: "node",
