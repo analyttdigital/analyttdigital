@@ -14,6 +14,7 @@ import {
 } from "@/builder/schema/shared";
 import { InvalidContentError } from "@/builder/storage/types";
 import { getStore } from "@/builder/storage";
+import { beginDraftPublish, finishDraftPublish } from "@/builder/storage/publish";
 
 function parseSharedDoc(doc: string, data: unknown): SharedDoc | LayoutsFile {
   return isLayoutsDoc(doc) ? LayoutsFileSchema.parse(data) : SharedDocSchema.parse(data);
@@ -30,7 +31,7 @@ function blankFor(doc: string): SharedDoc | LayoutsFile {
  * created from a blank template on first PUT.
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
-  if (!assertBuilderAccess(req, res)) return;
+  if (!(await assertBuilderAccess(req, res))) return;
   const store = getStore();
 
   try {
@@ -73,6 +74,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
       const file = sharedDocFile(body.doc);
       const data = body.data !== undefined ? parseSharedDoc(body.doc, body.data) : blankFor(body.doc);
+      const draft = await beginDraftPublish();
       const result = await store.write(
         [
           {
@@ -83,7 +85,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         ],
         `Save shared doc ${body.doc} via builder`,
       );
-      res.status(200).json({ doc: body.doc, ...result });
+      const pr = await finishDraftPublish(draft);
+      res.status(200).json({ doc: body.doc, ...result, ...pr });
       return;
     }
 

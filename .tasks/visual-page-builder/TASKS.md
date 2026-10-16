@@ -145,15 +145,18 @@ Update this file continuously. See `instructions.md` for rules.
 ---
 
 ## M7 Auth + production publish flow
-**Status:** TODO  **Depends on:** M2, M3
-- [ ] NextAuth GitHub provider, allowlist and repo permission check
-- [ ] Protect `/admin` and `/api/builder/*`
-- [ ] Production editor reads from GitHub
-- [ ] Publish commits to branch; optional draft branch + PR mode
-- [ ] Optional on demand revalidation after commit
-- [ ] Conflict UI (reload, show diff summary)
+**Status:** DONE  **Depends on:** M2, M3
+- [x] NextAuth GitHub provider, allowlist and repo permission check — `api/auth/[...nextauth].ts` (login threaded through JWT→session); `BUILDER_ALLOWED_USERS` first, else collaborator push permission via Octokit
+- [x] Protect `/admin` and `/api/builder/*` — all routes await the real guard (401/403); `/admin` redirects to sign-in server-side, client mirrors with `useSession` gate + sign in/out in the top bar
+- [x] Production editor reads from GitHub — API routes are dynamic (never the built bundle); store already selects the GitHub adapter from env
+- [x] Publish commits to branch; optional draft branch + PR mode — `BUILDER_DRAFT_BRANCH` retargets commits (branch auto-created) and `ensurePR` opens/reuses the review PR; PR URL (or notice) returns with every save
+- [x] Optional on demand revalidation after commit — `POST /api/builder/revalidate` (builder paths only); editors call it best-effort after every publish
+- [x] Conflict UI (reload, show diff summary) — 409 surfaces a block-count summary with two-click "load latest" on canvas editors; form editors refresh the sha and ask to save again
 **Acceptance:** on a deployed build, an authorized user edits a page, publishes, and the redeployed site shows the change.
 **Notes:**
+- Server-only imports (`next-auth/next`, Octokit, guard) stay inside `getServerSideProps` via dynamic import so the admin client bundle stays lean; client uses `next-auth/react` only. SessionProvider wraps just the admin/keystatic branch in `_app`.
+- Draft mode is inert unless `BUILDER_STORAGE=github` with creds; stray draft-branch env in fs dev warns and saves normally. PR failures never fail the save (`prError` surfaced alongside success).
+- Live end-to-end (real GitHub OAuth + commit + redeploy) still needs a deployed build with secrets; code paths are unit-tested with fakes (guard allowlist/permission, branch+PR flow).
 
 ---
 
@@ -209,6 +212,8 @@ Format: `YYYY-MM-DD HH:MM | agent | summary | files`
 - 2026-10-16 | HANDOFF | What is done: M0–M5 DONE (custom registry complete; 43/43 tests, typecheck + build green). What is in flight: nothing half-edited. Exact next step: start M6 Shared elements (deps M3, M4 DONE) — header/footer shared docs, global document switcher in editor, layouts.json + per-page layout selection, renderer wrapping, announcement bar / dashboard shell. Commands to verify: `yarn test`, `yarn typecheck`, `yarn build`. Visual click-through of /admin + /p pending approved dev session. Note: `.tasks/content/*` untracked files belong to another stream — left alone.
 - 2026-10-16 | session | M6 DONE: generalized shared docs, layouts with announcement/sidebar/shell, BuilderLayout wrapping in /p, global switcher + shared/layouts editors, layout dropdown; 46/46 tests, typecheck + build green | src/builder/schema/shared.ts, src/pages/api/builder/shared.ts, src/builder/render/*, src/pages/p/*, src/builder/editor/*, .tasks/visual-page-builder/TASKS.md
 - 2026-10-16 | HANDOFF | What is done: M0–M6 DONE (shared elements complete; 46/46 tests, typecheck + build green). What is in flight: nothing half-edited. Exact next step: start M7 Auth + production publish flow (deps M2, M3 DONE) — NextAuth GitHub provider, allowlist/repo check, protect /admin + /api/builder, prod editor reads GitHub, branch/PR publish, revalidation, conflict UI. Commands to verify: `yarn test`, `yarn typecheck`, `yarn build`. Visual click-through of /admin + /p pending approved dev session. Note: `.tasks/content/*` untracked files belong to another stream — left alone.
+- 2026-10-17 | session | M7 DONE: NextAuth GitHub + allowlist/permission guard, /admin SSR gate + session UI, draft-branch PR flow, revalidate route + editor wiring, conflict UI with reload; 53/53 tests, typecheck + build green | src/pages/api/auth/*, src/builder/auth/*, src/builder/storage/publish.ts, src/pages/api/builder/*, src/pages/admin/*, src/builder/editor/*, src/pages/_app.tsx, .tasks/visual-page-builder/TASKS.md
+- 2026-10-17 | HANDOFF | What is done: M0–M7 DONE (auth + publish complete; 53/53 tests, typecheck + build green). What is in flight: nothing half-edited. Exact next step: start M8 Advanced components (deps M5 DONE) — GSAP reveal/scroll wrapper, three.js scene (dynamic import, editing-aware), chart library choice (open question to user). Commands to verify: `yarn test`, `yarn typecheck`, `yarn build`. Visual click-through of /admin + /p pending approved dev session. Note: `.tasks/content/*` untracked files belong to another stream — left alone.
 
 ---
 

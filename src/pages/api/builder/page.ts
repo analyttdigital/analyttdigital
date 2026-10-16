@@ -5,13 +5,14 @@ import { methodNotAllowed, sendStoreError } from "@/builder/http";
 import { PageSchema, slugToFile } from "@/builder/schema/page";
 import { InvalidContentError } from "@/builder/storage/types";
 import { getStore } from "@/builder/storage";
+import { beginDraftPublish, finishDraftPublish } from "@/builder/storage/publish";
 
 /**
  * GET `?slug=`: read one page (validated). PUT `{ slug, data, sha? }`:
  * validate with Zod, then atomic write. Stale `sha` yields 409.
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
-  if (!assertBuilderAccess(req, res)) return;
+  if (!(await assertBuilderAccess(req, res))) return;
   const store = getStore();
 
   try {
@@ -48,6 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
       const file = slugToFile(body.slug);
       const page = PageSchema.parse(body.data);
+      const draft = await beginDraftPublish();
       const result = await store.write(
         [
           {
@@ -58,7 +60,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         ],
         `Save page ${body.slug} via builder`,
       );
-      res.status(200).json({ slug: body.slug, ...result });
+      const pr = await finishDraftPublish(draft);
+      res.status(200).json({ slug: body.slug, ...result, ...pr });
       return;
     }
 

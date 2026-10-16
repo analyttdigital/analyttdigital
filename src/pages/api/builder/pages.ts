@@ -4,13 +4,14 @@ import { assertBuilderAccess } from "@/builder/auth/guard";
 import { methodNotAllowed, sendStoreError } from "@/builder/http";
 import { PageSchema, blankPage, fileToSlug, slugToFile } from "@/builder/schema/page";
 import { getStore } from "@/builder/storage";
+import { beginDraftPublish, finishDraftPublish } from "@/builder/storage/publish";
 
 /**
  * GET: list page slugs. POST: create a page (`{ slug, data? }`).
  * DELETE `?slug=`: delete a page. Auth: dev bypass (M7 wires NextAuth).
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
-  if (!assertBuilderAccess(req, res)) return;
+  if (!(await assertBuilderAccess(req, res))) return;
   const store = getStore();
 
   try {
@@ -37,11 +38,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return;
       }
       const page = body.data !== undefined ? PageSchema.parse(body.data) : blankPage(body.slug);
+      const draft = await beginDraftPublish();
       const result = await store.write(
         [{ path: file, content: JSON.stringify(page, null, 2) + "\n" }],
         `Create page ${body.slug} via builder`,
       );
-      res.status(201).json({ slug: body.slug, ...result });
+      const pr = await finishDraftPublish(draft);
+      res.status(201).json({ slug: body.slug, ...result, ...pr });
       return;
     }
 
@@ -57,8 +60,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         res.status(404).json({ error: `Page "${slug}" not found`, code: "NOT_FOUND" });
         return;
       }
+      const draft = await beginDraftPublish();
       await store.delete(file, `Delete page ${slug} via builder`);
-      res.status(200).json({ deleted: slug });
+      const pr = await finishDraftPublish(draft);
+      res.status(200).json({ deleted: slug, ...pr });
       return;
     }
 

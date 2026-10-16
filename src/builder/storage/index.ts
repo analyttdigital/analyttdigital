@@ -28,7 +28,8 @@ export function getStore(): ContentStore {
     cached = createGithubStore({
       owner: process.env.GITHUB_OWNER,
       repo: process.env.GITHUB_REPO,
-      branch: process.env.BUILDER_BRANCH || "main",
+      // Draft mode (M7): commits land on the draft branch for PR review.
+      branch: process.env.BUILDER_DRAFT_BRANCH || process.env.BUILDER_BRANCH || "main",
       token: process.env.GITHUB_TOKEN,
     });
   } else {

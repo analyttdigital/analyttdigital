@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import { Puck } from "@measured/puck";
 import type { Data } from "@measured/puck";
@@ -40,6 +41,15 @@ interface Status {
   text: string;
 }
 
+/** Thrown by `api()` on HTTP 409 so editors can offer reload instead of plain text. */
+export class ApiConflictError extends Error {
+  readonly status = 409;
+  constructor(message: string) {
+    super(message);
+    this.name = "ApiConflictError";
+  }
+}
+
 async function api<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(path, {
     headers: { "content-type": "application/json" },
@@ -51,10 +61,42 @@ async function api<T>(path: string, init?: RequestInit): Promise<T> {
       typeof body === "object" && body !== null && "error" in body
         ? String((body as { error: unknown }).error)
         : `Request failed (${res.status})`;
+    if (res.status === 409) throw new ApiConflictError(msg);
     throw new Error(msg);
   }
   return body as T;
 }
+
+/** Best-effort on-demand revalidation after a publish (M7). Never fails the save. */
+async function revalidatePaths(paths: string[]): Promise<string | null> {
+  try {
+    const body = await api<{ results: { path: string; ok: boolean }[] }>("/api/builder/revalidate", {
+      method: "POST",
+      body: JSON.stringify({ paths }),
+    });
+    const failed = body.results.filter((r) => !r.ok);
+    return failed.length > 0 ? `revalidate failed for ${failed.map((r) => r.path).join(", ")}` : null;
+  } catch (err) {
+    return err instanceof Error ? `revalidate failed: ${err.message}` : "revalidate failed";
+  }
+}
+
+/** Revalidate the index plus every known page route (for shared/theme/layout saves). */
+async function revalidateSite(): Promise<string | null> {
+  try {
+    const body = await api<{ pages: string[] }>("/api/builder/pages");
+    const paths = ["/p", ...body.pages.map((s) => slugToRoute(s))];
+    return revalidatePaths([...new Set(paths)]);
+  } catch (err) {
+    return err instanceof Error ? `revalidate failed: ${err.message}` : "revalidate failed";
+  }
+}
+
+/** Session handed down by the admin page (M7). Absent in dev bypass. */
+const BuilderSessionContext = createContext<{ authRequired: boolean; login: string | null }>({
+  authRequired: false,
+  login: null,
+});
 
 const inputStyle: CSSProperties = {
   width: "100%",
@@ -74,6 +116,7 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
 }
 
 function TopBar({ title, status }: { title: string; status: Status | null }) {
+  const session = useContext(BuilderSessionContext);
   return (
     <div
       style={{
@@ -97,10 +140,22 @@ function TopBar({ title, status }: { title: string; status: Status | null }) {
       </nav>
       <span style={{ marginLeft: 8, color: "#94a3b8" }}>{title}</span>
       {status && (
-        <span style={{ marginLeft: "auto", color: status.kind === "ok" ? "#4ade80" : "#f87171" }}>
-          {status.text}
-        </span>
+        <span style={{ color: status.kind === "ok" ? "#4ade80" : "#f87171" }}>{status.text}</span>
       )}
+      <span style={{ marginLeft: "auto" }}>
+        {session.authRequired && session.login ? (
+          <>
+            <span style={{ color: "#94a3b8", marginRight: 8 }}>{session.login}</span>
+            <button type="button" onClick={() => void signOut({ callbackUrl: "/" })}>
+              Sign out
+            </button>
+          </>
+        ) : session.authRequired ? (
+          <button type="button" onClick={() => void signIn("github", { callbackUrl: "/admin" })}>
+            Sign in
+          </button>
+        ) : null}
+      </span>
     </div>
   );
 }
@@ -293,6 +348,10 @@ function PageEditor({ slug }: { slug: string }) {
   const [layoutIds, setLayoutIds] = useState<string[] | null>(null);
   const [dirty, setDirty] = useState(false);
   const [status, setStatus] = useState<Status | null>(null);
+  const [conflict, setConflict] = useState<{ latestBlocks: number; mineBlocks: number } | null>(null);
+  const [confirmLoad, setConfirmLoad] = useState(false);
+  const [reloadCount, setReloadCount] = useState(0);
+  const latestRef = useRef<{ meta: PageMeta; draft: boolean; puck: PuckData; sha?: string } | null>(null);
   const dataRef = useRef<PuckData | null>(null);
   const config = useMemo(() => buildConfig(), []);
 
@@ -333,6 +392,41 @@ function PageEditor({ slug }: { slug: string }) {
     };
   }, [slug]);
 
+  const noteConflict = async () => {
+    try {
+      const latest = await api<{ data: unknown; sha?: string }>(
+        `/api/builder/page?slug=${encodeURIComponent(slug)}`,
+      );
+      const parsed = PageSchema.parse(latest.data);
+      latestRef.current = { meta: parsed.meta, draft: parsed.draft, puck: parsed.puck, sha: latest.sha };
+      setConflict({
+        latestBlocks: parsed.puck.content.length,
+        mineBlocks: dataRef.current?.content.length ?? 0,
+      });
+      setConfirmLoad(false);
+    } catch (err) {
+      setStatus({ kind: "error", text: err instanceof Error ? err.message : "Publish failed" });
+    }
+  };
+
+  const loadLatest = () => {
+    if (!confirmLoad) {
+      setConfirmLoad(true);
+      return;
+    }
+    const latest = latestRef.current;
+    if (!latest) return;
+    setMeta(latest.meta);
+    setDraft(latest.draft);
+    setSha(latest.sha);
+    dataRef.current = latest.puck;
+    setReloadCount((n) => n + 1);
+    setDirty(false);
+    setConflict(null);
+    setConfirmLoad(false);
+    setStatus({ kind: "ok", text: "Loaded the latest published version" });
+  };
+
   const save = async (puck: PuckData, nextMeta: PageMeta, nextDraft: boolean) => {
     const payload = PageSchema.parse({
       schemaVersion: 1,
@@ -340,13 +434,30 @@ function PageEditor({ slug }: { slug: string }) {
       puck,
       draft: nextDraft,
     });
-    const body = await api<{ sha?: string; commitSha?: string }>("/api/builder/page", {
-      method: "PUT",
-      body: JSON.stringify({ slug, data: payload, sha }),
-    });
-    setSha(body.sha);
-    setDirty(false);
-    setStatus({ kind: "ok", text: body.commitSha ? `Published (${body.commitSha.slice(0, 7)})` : "Saved" });
+    try {
+      const body = await api<{ sha?: string; commitSha?: string; prUrl?: string; prError?: string }>(
+        "/api/builder/page",
+        {
+          method: "PUT",
+          body: JSON.stringify({ slug, data: payload, sha }),
+        },
+      );
+      setSha(body.sha);
+      setDirty(false);
+      setConflict(null);
+      setConfirmLoad(false);
+      let text = body.commitSha ? `Published (${body.commitSha.slice(0, 7)})` : "Saved";
+      if (body.prUrl) text += ` — review PR: ${body.prUrl}`;
+      else if (body.prError) text += ` (PR notice: ${body.prError})`;
+      const revalidateError = await revalidatePaths(["/p", slugToRoute(slug)]);
+      setStatus({ kind: "ok", text: revalidateError ? `${text} (${revalidateError})` : text });
+    } catch (err) {
+      if (err instanceof ApiConflictError) {
+        await noteConflict();
+        return;
+      }
+      setStatus({ kind: "error", text: err instanceof Error ? err.message : "Save failed" });
+    }
   };
 
   const handlePublish = async (data: Data) => {
@@ -377,6 +488,27 @@ function PageEditor({ slug }: { slug: string }) {
   return (
     <div>
       <TopBar title={`/admin/page/${slug}${dirty ? " (unsaved)" : ""}`} status={status} />
+      {conflict && (
+        <div
+          role="alert"
+          style={{ background: "#fef3c7", color: "#92400e", padding: "8px 16px", fontSize: 13 }}
+        >
+          Newer version on server ({conflict.latestBlocks} blocks) vs your unsaved canvas (
+          {conflict.mineBlocks} blocks).{" "}
+          <button type="button" onClick={loadLatest}>
+            {confirmLoad ? "Confirm: discard my changes and load latest" : "Load latest"}
+          </button>{" "}
+          <button
+            type="button"
+            onClick={() => {
+              setConflict(null);
+              setConfirmLoad(false);
+            }}
+          >
+            Keep editing
+          </button>
+        </div>
+      )}
       {!page || !meta ? (
         <p style={{ padding: 24 }}>{status ? "Failed to load." : "Loading…"}</p>
       ) : (
@@ -443,7 +575,7 @@ function PageEditor({ slug }: { slug: string }) {
             <EditingProvider editing={true}>
               <ThemeProvider theme={theme}>
                 <Puck
-                  key={slug}
+                  key={`${slug}-${reloadCount}`}
                   config={config}
                   data={page.puck}
                   onChange={(data) => {
@@ -492,13 +624,33 @@ function ThemeEditor() {
   const save = async () => {
     if (!theme) return;
     try {
-      const body = await api<{ sha?: string; commitSha?: string }>("/api/builder/theme", {
-        method: "PUT",
-        body: JSON.stringify({ data: theme, sha }),
-      });
+      const body = await api<{ sha?: string; commitSha?: string; prUrl?: string; prError?: string }>(
+        "/api/builder/theme",
+        {
+          method: "PUT",
+          body: JSON.stringify({ data: theme, sha }),
+        },
+      );
       setSha(body.sha);
-      setStatus({ kind: "ok", text: "Theme saved" });
+      let text = "Theme saved";
+      if (body.prUrl) text += ` — review PR: ${body.prUrl}`;
+      else if (body.prError) text += ` (PR notice: ${body.prError})`;
+      const revalidateError = await revalidateSite();
+      setStatus({ kind: "ok", text: revalidateError ? `${text} (${revalidateError})` : text });
     } catch (err) {
+      if (err instanceof ApiConflictError) {
+        try {
+          const latest = await api<{ sha?: string }>("/api/builder/theme");
+          setSha(latest.sha);
+          setStatus({
+            kind: "error",
+            text: "Newer theme on server — review your edits and save again to overwrite.",
+          });
+        } catch {
+          setStatus({ kind: "error", text: err.message });
+        }
+        return;
+      }
       setStatus({ kind: "error", text: err instanceof Error ? err.message : "Save failed" });
     }
   };
@@ -626,6 +778,10 @@ function SharedEditor({ doc }: { doc: string }) {
   const [puck, setPuck] = useState<PuckData | null>(null);
   const [sha, setSha] = useState<string | undefined>(undefined);
   const [status, setStatus] = useState<Status | null>(null);
+  const [conflict, setConflict] = useState<{ latestBlocks: number; mineBlocks: number } | null>(null);
+  const [confirmLoad, setConfirmLoad] = useState(false);
+  const [reloadCount, setReloadCount] = useState(0);
+  const latestRef = useRef<{ puck: PuckData; sha?: string } | null>(null);
   const dataRef = useRef<PuckData | null>(null);
   const config = useMemo(() => buildConfig(), []);
 
@@ -663,27 +819,94 @@ function SharedEditor({ doc }: { doc: string }) {
     try {
       const puckData = SharedDocSchema.shape.puck.parse(data);
       const payload = SharedDocSchema.parse({ schemaVersion: 1, puck: puckData });
-      const body = await api<{ sha?: string; commitSha?: string }>("/api/builder/shared", {
-        method: "PUT",
-        body: JSON.stringify({ doc, data: payload, sha }),
-      });
+      const body = await api<{ sha?: string; commitSha?: string; prUrl?: string; prError?: string }>(
+        "/api/builder/shared",
+        {
+          method: "PUT",
+          body: JSON.stringify({ doc, data: payload, sha }),
+        },
+      );
       setSha(body.sha);
-      setStatus({ kind: "ok", text: body.commitSha ? `Published (${body.commitSha.slice(0, 7)})` : "Saved" });
+      setConflict(null);
+      setConfirmLoad(false);
+      let text = body.commitSha ? `Published (${body.commitSha.slice(0, 7)})` : "Saved";
+      if (body.prUrl) text += ` — review PR: ${body.prUrl}`;
+      else if (body.prError) text += ` (PR notice: ${body.prError})`;
+      const revalidateError = await revalidateSite();
+      setStatus({ kind: "ok", text: revalidateError ? `${text} (${revalidateError})` : text });
+    } catch (err) {
+      if (err instanceof ApiConflictError) {
+        await noteConflict();
+        return;
+      }
+      setStatus({ kind: "error", text: err instanceof Error ? err.message : "Publish failed" });
+    }
+  };
+
+  const noteConflict = async () => {
+    try {
+      const latest = await api<{ data: unknown; sha?: string }>(
+        `/api/builder/shared?doc=${encodeURIComponent(doc)}`,
+      );
+      const parsed = SharedDocSchema.parse(latest.data);
+      latestRef.current = { puck: parsed.puck, sha: latest.sha };
+      setConflict({
+        latestBlocks: parsed.puck.content.length,
+        mineBlocks: dataRef.current?.content.length ?? 0,
+      });
+      setConfirmLoad(false);
     } catch (err) {
       setStatus({ kind: "error", text: err instanceof Error ? err.message : "Publish failed" });
     }
   };
 
+  const loadLatest = () => {
+    if (!confirmLoad) {
+      setConfirmLoad(true);
+      return;
+    }
+    const latest = latestRef.current;
+    if (!latest) return;
+    setPuck(latest.puck);
+    setSha(latest.sha);
+    dataRef.current = latest.puck;
+    setReloadCount((n) => n + 1);
+    setConflict(null);
+    setConfirmLoad(false);
+    setStatus({ kind: "ok", text: "Loaded the latest published version" });
+  };
+
   return (
     <div>
       <TopBar title={`/admin/shared/${doc}`} status={status} />
+      {conflict && (
+        <div
+          role="alert"
+          style={{ background: "#fef3c7", color: "#92400e", padding: "8px 16px", fontSize: 13 }}
+        >
+          Newer version on server ({conflict.latestBlocks} blocks) vs your unsaved canvas (
+          {conflict.mineBlocks} blocks).{" "}
+          <button type="button" onClick={loadLatest}>
+            {confirmLoad ? "Confirm: discard my changes and load latest" : "Load latest"}
+          </button>{" "}
+          <button
+            type="button"
+            onClick={() => {
+              setConflict(null);
+              setConfirmLoad(false);
+            }}
+          >
+            Keep editing
+          </button>
+        </div>
+      )}
       {!puck ? (
         <p style={{ padding: 24 }}>{status ? "Failed to load." : "Loading…"}</p>
       ) : (
         <div style={{ height: "calc(100vh - 41px)", overflow: "auto" }}>
           <EditingProvider editing={true}>
             <Puck
-              key={doc}
+              key={`${doc}-${reloadCount}`}
               config={config}
               data={puck}
               onChange={(data) => {
@@ -733,13 +956,32 @@ function LayoutsEditor() {
   const save = async () => {
     if (!layouts) return;
     try {
-      const body = await api<{ sha?: string }>("/api/builder/shared", {
+      const body = await api<{ sha?: string; prUrl?: string; prError?: string }>("/api/builder/shared", {
         method: "PUT",
         body: JSON.stringify({ doc: "layouts", data: { schemaVersion: 1, layouts }, sha }),
       });
       setSha(body.sha);
-      setStatus({ kind: "ok", text: "Layouts saved" });
+      let text = "Layouts saved";
+      if (body.prUrl) text += ` — review PR: ${body.prUrl}`;
+      else if (body.prError) text += ` (PR notice: ${body.prError})`;
+      const revalidateError = await revalidateSite();
+      setStatus({ kind: "ok", text: revalidateError ? `${text} (${revalidateError})` : text });
     } catch (err) {
+      if (err instanceof ApiConflictError) {
+        try {
+          const latest = await api<{ data: unknown; sha?: string }>(
+            "/api/builder/shared?doc=layouts",
+          );
+          setSha(latest.sha);
+          setStatus({
+            kind: "error",
+            text: "Newer layouts on server — review your edits and save again to overwrite.",
+          });
+        } catch {
+          setStatus({ kind: "error", text: err.message });
+        }
+        return;
+      }
       setStatus({ kind: "error", text: err instanceof Error ? err.message : "Save failed" });
     }
   };
@@ -817,15 +1059,12 @@ function LayoutsEditor() {
 
 /* ----------------------------------- shell ----------------------------------- */
 
-export default function AdminEditor() {
-  const router = useRouter();
-  const segments = router.query.puckPath;
-  const path = useMemo(
-    () => (Array.isArray(segments) ? segments : segments === undefined ? [] : [segments]),
-    [segments],
-  );
+interface AdminEditorProps {
+  authRequired?: boolean;
+  login?: string | null;
+}
 
-  if (!router.isReady) return <p style={{ padding: 24 }}>Loading editor…</p>;
+function AuthedViews({ path }: { path: string[] }) {
   if (path.length === 0) return <Dashboard />;
   if (path[0] === "theme" && path.length === 1) return <ThemeEditor />;
   if (path[0] === "layouts" && path.length === 1) return <LayoutsEditor />;
@@ -838,5 +1077,33 @@ export default function AdminEditor() {
       <p>Unknown editor path.</p>
       <Link href="/admin">Back to pages</Link>
     </div>
+  );
+}
+
+export default function AdminEditor({ authRequired = false, login = null }: AdminEditorProps) {
+  const router = useRouter();
+  const segments = router.query.puckPath;
+  const path = useMemo(
+    () => (Array.isArray(segments) ? segments : segments === undefined ? [] : [segments]),
+    [segments],
+  );
+  const { status: sessionStatus } = useSession();
+
+  if (!router.isReady) return <p style={{ padding: 24 }}>Loading editor…</p>;
+  return (
+    <BuilderSessionContext.Provider value={{ authRequired, login }}>
+      {authRequired && sessionStatus === "loading" ? (
+        <p style={{ padding: 24 }}>Checking session…</p>
+      ) : authRequired && sessionStatus === "unauthenticated" ? (
+        <div style={{ padding: 24 }}>
+          <p>Your session expired. Sign in again to keep editing.</p>
+          <button type="button" onClick={() => void signIn("github", { callbackUrl: "/admin" })}>
+            Sign in with GitHub
+          </button>
+        </div>
+      ) : (
+        <AuthedViews path={path} />
+      )}
+    </BuilderSessionContext.Provider>
   );
 }

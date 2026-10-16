@@ -1,4 +1,6 @@
 import type { AppProps } from 'next/app';
+import type { Session } from "next-auth";
+import { SessionProvider } from "next-auth/react";
 
 import { SiteLayout } from '@/components/layout/site-layout';
 import { LocaleProvider } from '@/lib/content/chrome';
@@ -54,14 +56,17 @@ export default function App({ Component, pageProps, router }: Props) {
   // page and the admin UI would never mount.
   // /admin (M3 visual builder) likewise needs the bare canvas, free of the
   // site nav/footer, or the Puck shell would render inside the marketing chrome.
+  // (M7) The admin branch additionally gets the NextAuth session provider.
   if (router.pathname.startsWith('/keystatic') || router.pathname.startsWith('/admin')) {
+    const session = (pageProps as { session?: Session }).session;
     return (
-      <div className={fontsClass}>
-        <Component {...pageProps} />
-      </div>
+      <SessionProvider session={session}>
+        <div className={fontsClass}>
+          <Component {...pageProps} />
+        </div>
+      </SessionProvider>
     );
   }
-
   // Typed once: `AppProps` types pageProps as `any`, which cannot index `defaults`.
   const locale: Locale = (pageProps as PageProps).locale ?? defaultLocale;
 

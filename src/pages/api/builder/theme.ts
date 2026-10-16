@@ -4,6 +4,7 @@ import { assertBuilderAccess } from "@/builder/auth/guard";
 import { methodNotAllowed, sendStoreError } from "@/builder/http";
 import { defaultTheme } from "@/builder/theme/defaults";
 import { getStore } from "@/builder/storage";
+import { beginDraftPublish, finishDraftPublish } from "@/builder/storage/publish";
 import { InvalidContentError } from "@/builder/storage/types";
 import { parseThemeFile } from "@/builder/schema/theme-file";
 
@@ -14,7 +15,7 @@ const THEME_FILE = "theme.json";
  * `ThemeSchema`, then atomic write. Stale `sha` yields 409.
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
-  if (!assertBuilderAccess(req, res)) return;
+  if (!(await assertBuilderAccess(req, res))) return;
   const store = getStore();
 
   try {
@@ -40,6 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return;
       }
       const theme = parseThemeFile(body.data);
+      const draft = await beginDraftPublish();
       const result = await store.write(
         [
           {
@@ -50,7 +52,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         ],
         "Save theme via builder",
       );
-      res.status(200).json(result);
+      const pr = await finishDraftPublish(draft);
+      res.status(200).json({ ...result, ...pr });
       return;
     }
 
