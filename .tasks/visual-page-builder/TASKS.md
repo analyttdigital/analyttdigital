@@ -112,15 +112,19 @@ Update this file continuously. See `instructions.md` for rules.
 ---
 
 ## M5 Custom component registry
-**Status:** TODO  **Depends on:** M3
-- [ ] `registerComponent()` API with Zod schema to Puck fields derivation
-- [ ] Dynamic/client only wrapper option (`next/dynamic`, `ssr:false`)
-- [ ] Props validation with fallback to defaults
-- [ ] Categories and icons in the palette
-- [ ] Example registered component in `src/builder/custom`
-- [ ] Docs section "How to add a component" in PROJECT.md
+**Status:** DONE  **Depends on:** M3
+- [x] `registerComponent()` API with Zod schema to Puck fields derivation — overloaded (M3/M4 Puck-native shape still works); `schemaToFields` covers string/number/boolean/enum/literal-skipped/array-of-objects/nested-object/optional-default-nullable, `.describe()` → label, explicit `fields` merge over derived
+- [x] Dynamic/client only wrapper option (`next/dynamic`, `ssr:false`) — `client: true | { loading }`, mount-gated placeholder fallback for static paths
+- [x] Props validation with fallback to defaults — `validateProps` on every render, dev-only warning; defaults derived via `schema.parse({})` or explicit (validated at registration, fail fast)
+- [x] Categories and icons in the palette — categories group the Puck list; mdi `icon` stored on the definition (Puck's list is text-only, icons ride along for custom surfaces)
+- [x] Example registered component in `src/builder/custom` — `Callout` (schema-derived form, editing-aware dismiss, validation-proof) + `registerCallout()` for deterministic tests
+- [x] Docs section "How to add a component" in PROJECT.md — section 6 with copy-paste Badge example and rules
 **Acceptance:** adding one file in `custom/` and one register call makes a component appear in the palette with no core edits.
 **Notes:**
+- `defineComponent` (M4) unchanged; new overload lives beside it. `fromOptions` is the only place that adapts author types to Puck's.
+- Unmappable schema types (unions, dates, string arrays, non-object roots) throw at registration naming the key and the `fields` escape hatch.
+- `editing` arrives as an injected prop on the M5 path (`P & { editing?: boolean }`); hook consumption still works everywhere.
+- Test isolation lesson: module-flag idempotence breaks under `clearRegistryForTests`; built-ins use presence-based ensure, customs expose explicit `registerX()` for tests (import side effects are consume-once per module graph).
 
 ---
 
@@ -197,6 +201,8 @@ Format: `YYYY-MM-DD HH:MM | agent | summary | files`
 - 2026-10-16 | HANDOFF | What is done: M0–M3 DONE (editor shell + rendering complete; tests 26/26, typecheck + build green). What is in flight: nothing half-edited; palette empty until M4. Exact next step: start M4 Built-in components (deps M3 DONE) — layout/media/typography/actions/content/forms/dashboard sets, all token-driven via bld-* utilities, editor/public parity. Commands to verify: `yarn test`, `yarn typecheck`, `yarn build`. Visual click-through of /admin + /p pending approved dev session. Note: `.tasks/content/*` untracked files belong to another stream — left alone.
 - 2026-10-16 | session | M4 DONE: 29 built-ins (layout/typography/actions/media/content/forms/dashboard) via defineComponent + registry, static token-class maps, parity tests; 30/30 tests, typecheck + build green | src/builder/components/**, src/builder/registry/*, src/builder/config/*, vitest.config.ts, .tasks/visual-page-builder/TASKS.md
 - 2026-10-16 | HANDOFF | What is done: M0–M4 DONE (29 built-ins live in the palette; 30/30 tests, typecheck + build green). What is in flight: nothing half-edited. Exact next step: start M5 Custom component registry (deps M3 DONE) — Zod→fields derivation, dynamic/ssr:false wrapper, prop validation with fallbacks, palette categories/icons, example custom component, "How to add a component" docs in PROJECT.md. Commands to verify: `yarn test`, `yarn typecheck`, `yarn build`. Visual click-through of /admin + /p pending approved dev session. Note: `.tasks/content/*` untracked files belong to another stream — left alone.
+- 2026-10-16 | session | M5 DONE: schema-first registerComponent overload (derive/validate/client runtime), Callout example, PROJECT.md how-to; 43/43 tests, typecheck + build green | src/builder/registry/*, src/builder/custom/*, src/builder/config/*, src/builder/components/builtins.ts, .tasks/visual-page-builder/*
+- 2026-10-16 | HANDOFF | What is done: M0–M5 DONE (custom registry complete; 43/43 tests, typecheck + build green). What is in flight: nothing half-edited. Exact next step: start M6 Shared elements (deps M3, M4 DONE) — header/footer shared docs, global document switcher in editor, layouts.json + per-page layout selection, renderer wrapping, announcement bar / dashboard shell. Commands to verify: `yarn test`, `yarn typecheck`, `yarn build`. Visual click-through of /admin + /p pending approved dev session. Note: `.tasks/content/*` untracked files belong to another stream — left alone.
 
 ---
 

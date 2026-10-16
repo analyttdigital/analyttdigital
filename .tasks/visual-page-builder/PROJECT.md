@@ -159,7 +159,59 @@ BUILDER_DEV_BYPASS_AUTH=false
 - Accessibility: semantic elements, alt text field required for images, keyboard friendly forms.
 - Package manager: yarn (`yarn.lock` is the lockfile). Scripts required: `dev`, `build`, `typecheck`, `lint` (`lint` currently broken repo-wide — typecheck is the gate).
 
-## 5. Key risks and decisions
+## 6. How to add a component
+
+One file in `src/builder/custom/`, one `registerComponent` call at its
+bottom — no core edits. Copy `custom/callout.tsx`:
+
+```ts
+import { z } from "zod";
+import { registerComponent } from "@/builder/registry";
+
+export const BadgeSchema = z.object({
+  label: z.string().describe("Label").default("New"),
+  tone: z.enum(["info", "success"]).describe("Tone").default("info"),
+});
+
+export type BadgeProps = z.infer<typeof BadgeSchema>;
+
+export function Badge({ label, editing }: BadgeProps & { editing?: boolean }) {
+  return <span className="bg-bld-surface text-bld-text">{label}</span>;
+}
+
+registerComponent({
+  name: "Badge",          // unique PascalCase
+  label: "Badge",
+  category: "Custom",     // palette group
+  icon: mdiStar,          // optional MDI path (text-only Puck list ignores it)
+  schema: BadgeSchema,    // source of truth: fields derive from it
+  render: Badge,          // receives validated props + { editing }
+});
+```
+
+Rules:
+
+- The schema must be a Zod object. Supported field derivations: string,
+  number, boolean, enum, arrays of objects, nested objects, and
+  optional/default/nullable wrappers; `.describe()` becomes the field label.
+  Anything else throws at registration — pass an explicit `fields` override
+  for that key (it merges over derived fields; M1 custom fields live in
+  `src/builder/fields/`).
+- `defaultProps` is optional: omitted, it derives from `schema.parse({})`,
+  which throws unless every key has a default — then pass it explicitly.
+  Provided defaults validate at registration (fail fast).
+- Saved props validate on every render; invalid props fall back to defaults
+  with a dev-only console warning, so schema evolution never blanks the canvas.
+- Read `editing` (prop or `useEditing()`) to pause animations, video, and
+  submits in the canvas. Heavy libs (gsap, three) must lazy-`import()` inside
+  the component; pass `client: true` (or `{ loading }`) to also skip SSR.
+- Token classes only (`bld-*` via `src/builder/components/shared.ts` maps —
+  never interpolated class names, Tailwind purges those). Arbitrary values go
+  in `style` props through CSS variables.
+- `src/builder/custom/index.ts` is imported once by `build-config.ts`;
+  add `import "./badge";` there. M8 holds the GSAP/three.js examples.
+
+## 7. Key risks and decisions
 - Puck API changes between versions: pin the version and note it in TASKS.md Decisions.
 - Tailwind class generation: dynamic class names are purged. Use token based classes or safelist and prefer style props for arbitrary values.
 - GitHub rate limits and conflicts: batch writes into one commit; surface 409 clearly.

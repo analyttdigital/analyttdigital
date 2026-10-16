@@ -1,6 +1,7 @@
 import type { ComponentConfig, Fields } from "@measured/puck";
 import type { ComponentType } from "react";
-import type { ReactElement } from "react";
+import type { ReactElement, ReactNode } from "react";
+import type { z } from "zod";
 
 /**
  * Registry component definition (M3 plumbing). Stores Puck-native configs;
@@ -16,8 +17,36 @@ export interface BuilderComponentDefinition {
   label?: string;
   /** Palette category. Defaults to `General`. */
   category?: string;
+  /** MDI path for palette surfaces that render icons (Puck's own list is text-only). */
+  icon?: string;
   /** Puck-native component config (fields, render, defaultProps, ...). */
   config: RegisteredComponentConfig;
+}
+
+/**
+ * M5 registration options (PROJECT.md 3.4). The Zod schema is the source of
+ * truth: editor fields derive from it unless `fields` overrides per key, and
+ * saved props validate against it with fallback to defaults.
+ */
+export interface RegisterComponentOptions<P extends Record<string, unknown>> {
+  /** Unique PascalCase name, e.g. `ThreeScene`. */
+  name: string;
+  /** Palette label. Defaults to the name. */
+  label?: string;
+  /** Palette category. Defaults to `Advanced`. */
+  category?: string;
+  /** MDI path shown on palette surfaces that render icons. */
+  icon?: string;
+  /** Source of truth for props, fields, and validation. Must be a Zod object. */
+  schema: z.ZodType<P>;
+  /** Per-key overrides; merged over derived fields. Required for unmappable types. */
+  fields?: Fields;
+  /** Defaults. When omitted, derived via `schema.parse({})` (throws unless every key has a default). */
+  defaultProps?: P;
+  /** Receives validated props + `{ editing }`. */
+  render: ComponentType<P & { editing?: boolean }>;
+  /** `true` (or `{ loading }`) wraps the render client-only (`ssr: false`). Heavy libs must still lazy-import inside. */
+  client?: boolean | { loading?: ReactNode };
 }
 
 /**

@@ -2,11 +2,11 @@ import { createElement } from "react";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { buildConfig } from "./build-config";
+import { builtInComponents } from "@/builder/components/builtins";
 import {
   clearRegistryForTests,
   defineComponent,
   getComponent,
-  listComponents,
   registerComponent,
 } from "@/builder/registry";
 
@@ -18,8 +18,9 @@ describe("registry + buildConfig", () => {
   it("always includes built-ins, even after a registry clear", () => {
     clearRegistryForTests();
     const config = buildConfig();
-    expect(Object.keys(config.components)).toHaveLength(29);
-    expect(listComponents()).toHaveLength(29);
+    for (const def of builtInComponents) {
+      expect(Object.keys(config.components)).toContain(def.name);
+    }
   });
 
   it("registers a component once, under its category", () => {
@@ -35,8 +36,8 @@ describe("registry + buildConfig", () => {
     );
     expect(getComponent("Hello")?.label).toBe("Hello");
     const config = buildConfig();
-    expect(Object.keys(config.components)).toEqual(["Hello"]);
-    expect(config.categories?.Basic?.components).toEqual(["Hello"]);
+    expect(Object.keys(config.components)).toContain("Hello");
+    expect(config.categories?.Basic?.components).toContain("Hello");
   });
 
   it("rejects duplicates and non-PascalCase names", () => {
@@ -74,8 +75,9 @@ describe("registry + buildConfig", () => {
       }),
     );
     const config = buildConfig();
-    expect(Object.keys(config.components).sort()).toEqual(["A", "B"]);
-    expect(config.categories?.Zed?.components).toEqual(["A"]);
-    expect(config.categories?.General?.components).toEqual(["B"]);
+    expect(Object.keys(config.components)).toContain("A");
+    expect(Object.keys(config.components)).toContain("B");
+    expect(config.categories?.Zed?.components).toContain("A");
+    expect(config.categories?.General?.components).toContain("B");
   });
 });

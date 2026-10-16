@@ -1,4 +1,4 @@
-import { registerComponent } from "@/builder/registry";
+import { getComponent, registerComponent } from "@/builder/registry";
 import type { BuilderComponentDefinition } from "@/builder/registry";
 
 import { definition as Section } from "./layout/section";
@@ -70,13 +70,13 @@ export const builtInComponents: BuilderComponentDefinition[] = [
 
 export const BUILT_IN_COUNT = builtInComponents.length;
 
-let registered = false;
-
-/** Idempotent: safe to call from `buildConfig()` on every render. */
+/**
+ * Idempotent: safe to call from `buildConfig()` on every render.
+ * Presence-based (not a module flag) so `clearRegistryForTests` stays honest.
+ */
 export function ensureBuiltInsRegistered(): void {
-  if (registered) return;
+  if (getComponent("Section")) return;
   for (const def of builtInComponents) {
     registerComponent(def);
   }
-  registered = true;
 }

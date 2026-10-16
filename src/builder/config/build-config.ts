@@ -2,6 +2,9 @@ import type { Config } from "@measured/puck";
 
 import { listComponents } from "@/builder/registry";
 import { ensureBuiltInsRegistered } from "@/builder/components/builtins";
+// Project customs self-register on import (M5); the palette is built-ins plus
+// everything registered here, with no other core edits.
+import "@/builder/custom";
 
 /**
  * Assembles the Puck config (M3): every registered component plus an (empty)
