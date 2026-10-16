@@ -175,12 +175,21 @@ Update this file continuously. See `instructions.md` for rules.
 ---
 
 ## M9 Polish, media, docs, tests
-**Status:** TODO  **Depends on:** M4 to M7
-- [ ] Media upload (commit to `public/uploads`) and picker
-- [ ] Undo/redo and keyboard shortcuts verified
-- [ ] SEO fields, sitemap generation from content
-- [ ] E2E smoke tests (Playwright)
-- [ ] README with setup, env, deploy guide
+**Status:** IN_PROGRESS  **Depends on:** M4 to M7
+### M9.1 Media upload + picker — **Status:** DONE
+- [x] `POST /api/builder/media` (base64 JSON, no new deps): ext allowlist, size cap, sanitized filename, fs + GitHub backends, commits to `public/uploads`
+- [x] Upload button + preview inside the Image/Video `src` fields
+**Notes:** repo-rooted media store (content store can't leave `src/content/`); timestamped slug filenames; SVG allowed (safe via `<img>`); base64 JSON avoids a multipart parser dep; 10mb body cap.
+### M9.2 SEO + sitemap — **Status:** DONE
+- [x] Meta fields already in page editor (M3) — renderer `<Head>` covers title/description/og:image
+- [x] `sitemap.xml` generated from builder content (SSR, published pages only, XML-escaped)
+**Notes:** test file may NOT live under `src/pages/` (Next treats every file there as a route — broke the build once); sitemap tests live in `src/builder/render/`.
+### M9.3 E2E smoke tests — **Status:** TODO (spec written, run pending approval)
+- [ ] Playwright E2E (attempt install; sandbox browser download may block — fallback: API smoke tests + BLOCKED note)
+**Notes:** `@playwright/test` + Chromium installed fine; `playwright.config.ts` + `e2e/builder-smoke.spec.ts` written (admin loads, API publish → `/p` render → cleanup, sitemap XML). NOT RUN: executing it boots a dev server, which needs user approval per repo AGENTS.md. Run with `yarn test:e2e` once approved.
+### M9.4 README — **Status:** DONE
+- [x] Builder README: setup, env, content model, routes, deploy guide (`src/builder/README.md`)
+- [x] Undo/redo + keyboard shortcuts: Puck-native, verified by review (visual check pending approved dev session like all editor visuals)
 **Notes:**
 
 ---
@@ -222,6 +231,8 @@ Format: `YYYY-MM-DD HH:MM | agent | summary | files`
 - 2026-10-17 | HANDOFF | What is done: M0–M7 DONE (auth + publish complete; 53/53 tests, typecheck + build green). What is in flight: nothing half-edited. Exact next step: start M8 Advanced components (deps M5 DONE) — GSAP reveal/scroll wrapper, three.js scene (dynamic import, editing-aware), chart library choice (open question to user). Commands to verify: `yarn test`, `yarn typecheck`, `yarn build`. Visual click-through of /admin + /p pending approved dev session. Note: `.tasks/content/*` untracked files belong to another stream — left alone.
 - 2026-10-17 | session | M8 DONE: GsapReveal (lazy gsap + context cleanup), ThreeScene (raw three, dynamic import, resize/dispose, editing placeholder), Chart (recharts, client-wrapped); 57/57 tests, typecheck + build green | src/builder/custom/*, package.json, yarn.lock, .tasks/visual-page-builder/TASKS.md
 - 2026-10-17 | HANDOFF | What is done: M0–M8 DONE (advanced components complete; 57/57 tests, typecheck + build green). What is in flight: nothing half-edited. Exact next step: start M9 Polish, media, docs, tests (deps M4–M7 DONE) — media upload + picker, undo/redo + shortcuts verify, SEO/sitemap, Playwright E2E, README. Big milestone: suggest splitting (M9.1 media, M9.2 SEO/README, M9.3 E2E) or time-boxing. Commands to verify: `yarn test`, `yarn typecheck`, `yarn build`. Visual click-through of /admin + /p pending approved dev session. Note: `.tasks/content/*` untracked files belong to another stream — left alone.
+- 2026-10-17 | session | M9 partial: M9.1 DONE (media API + picker fields), M9.2 DONE (sitemap route), M9.4 DONE (README), M9.3 spec written but NOT RUN (needs dev-server approval); 63/63 unit tests, typecheck + build green | src/builder/storage/media*, src/pages/api/builder/media.ts, src/builder/fields/upload-field.tsx, image/video fields, src/pages/sitemap.xml.ts, playwright.config.ts, e2e/*, vitest.config.ts, package.json, src/builder/README.md
+- 2026-10-17 | HANDOFF | What is done: M0–M8 DONE; M9.1/M9.2/M9.4 DONE (63/63 unit tests, typecheck + build green). What is in flight: M9.3 E2E spec written, run pending — executing `yarn test:e2e` boots a dev server on :3100, which needs user approval per repo AGENTS.md. Exact next step: approve a dev session, run `yarn test:e2e`, then flip M9 (and M9.3) to DONE and commit. Note: `.tasks/content/*` untracked files belong to another stream — left alone.
 
 ---
 

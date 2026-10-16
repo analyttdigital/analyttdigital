@@ -12,7 +12,7 @@ export default defineConfig({
     jsx: "automatic",
   },
   test: {
-    include: ["src/builder/**/*.test.ts"],
+    include: ["src/**/*.test.ts"],
     environment: "node",
   },
 });

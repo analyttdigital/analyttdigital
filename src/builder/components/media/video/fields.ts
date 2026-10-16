@@ -1,6 +1,7 @@
 import type { Fields, RadioField } from "@measured/puck";
 
 import { RadiusFieldConfig } from "@/builder/fields";
+import { MediaUrlField } from "@/builder/fields/upload-field";
 
 const yesNo = (label: string): RadioField => ({
   type: "radio",
@@ -12,7 +13,7 @@ const yesNo = (label: string): RadioField => ({
 });
 
 export const videoFields: Fields = {
-  src: { type: "text", label: "Video URL" },
+  src: MediaUrlField({ accept: "video/*" }),
   poster: { type: "text", label: "Poster image URL (optional)" },
   autoplay: yesNo("Autoplay (muted, public page only)"),
   muted: yesNo("Muted"),
