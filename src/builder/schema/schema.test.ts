@@ -2,7 +2,12 @@ import { describe, expect, it } from "vitest";
 
 import { defaultTheme } from "@/builder/theme/defaults";
 import { PageSchema, blankPage, fileToSlug, slugToFile } from "./page";
-import { LayoutsFileSchema, SharedDocSchema, assertValidSharedDoc } from "./shared";
+import {
+  LayoutsFileSchema,
+  SharedDocSchema,
+  assertValidSharedDocName,
+  blankLayoutsFile,
+} from "./shared";
 import { parseThemeFile } from "./theme-file";
 
 describe("builder schemas", () => {
@@ -36,7 +41,18 @@ describe("builder schemas", () => {
         layouts: [{ id: "default", name: "Default", header: "header", footer: "footer" }],
       }),
     ).not.toThrow();
-    expect(() => assertValidSharedDoc("sidebar")).toThrow();
+    // Layout defaults fill in: only the id is required.
+    const minimal = LayoutsFileSchema.parse({ schemaVersion: 1, layouts: [{ id: "x" }] });
+    expect(minimal.layouts[0]).toMatchObject({
+      header: null,
+      footer: null,
+      announcement: null,
+      sidebar: null,
+      shell: "page",
+    });
+    expect(() => assertValidSharedDocName("Bad Doc")).toThrow();
+    expect(() => assertValidSharedDocName("announcement")).not.toThrow();
+    expect(blankLayoutsFile().layouts[0].id).toBe("default");
   });
 
   it("accepts the default theme file", () => {

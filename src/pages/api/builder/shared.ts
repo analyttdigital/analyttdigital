@@ -6,19 +6,26 @@ import type { LayoutsFile, SharedDoc } from "@/builder/schema/shared";
 import {
   LayoutsFileSchema,
   SharedDocSchema,
-  assertValidSharedDoc,
+  assertValidSharedDocName,
+  blankLayoutsFile,
   blankSharedDoc,
+  isLayoutsDoc,
   sharedDocFile,
 } from "@/builder/schema/shared";
 import { InvalidContentError } from "@/builder/storage/types";
 import { getStore } from "@/builder/storage";
 
-function parseSharedDoc(doc: "header" | "footer" | "layouts", data: unknown): SharedDoc | LayoutsFile {
-  return doc === "layouts" ? LayoutsFileSchema.parse(data) : SharedDocSchema.parse(data);
+function parseSharedDoc(doc: string, data: unknown): SharedDoc | LayoutsFile {
+  return isLayoutsDoc(doc) ? LayoutsFileSchema.parse(data) : SharedDocSchema.parse(data);
+}
+
+function blankFor(doc: string): SharedDoc | LayoutsFile {
+  return isLayoutsDoc(doc) ? blankLayoutsFile() : blankSharedDoc();
 }
 
 /**
- * GET `?doc=header|footer|layouts`: read a shared doc (validated).
+ * GET `?doc=<name>`: read a shared doc (validated). `layouts` falls back to
+ * the built-in default on a fresh repo; other missing docs 404.
  * PUT `{ doc, data, sha? }`: validate, then atomic write. Missing docs are
  * created from a blank template on first PUT.
  */
@@ -30,13 +37,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === "GET") {
       const doc = req.query.doc;
       if (typeof doc !== "string") {
-        res.status(400).json({ error: "Query requires `?doc=header|footer|layouts`", code: "BAD_REQUEST" });
+        res.status(400).json({ error: "Query requires `?doc=<name>`", code: "BAD_REQUEST" });
         return;
       }
-      assertValidSharedDoc(doc);
+      assertValidSharedDocName(doc);
       const file = sharedDocFile(doc);
       const stored = await store.read<unknown>(file);
       if (stored === null) {
+        if (isLayoutsDoc(doc)) {
+          res.status(200).json({ data: blankLayoutsFile(), sha: undefined, default: true });
+          return;
+        }
         res.status(404).json({ error: `Shared doc "${doc}" not found`, code: "NOT_FOUND" });
         return;
       }
@@ -52,17 +63,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === "PUT") {
       const body = req.body as { doc?: unknown; data?: unknown; sha?: unknown };
       if (typeof body.doc !== "string") {
-        res.status(400).json({ error: "Body requires `doc: header|footer|layouts`", code: "BAD_REQUEST" });
+        res.status(400).json({ error: "Body requires a string `doc`", code: "BAD_REQUEST" });
         return;
       }
-      assertValidSharedDoc(body.doc);
+      assertValidSharedDocName(body.doc);
       if (body.sha !== undefined && typeof body.sha !== "string") {
         res.status(400).json({ error: "`sha` must be a string when provided", code: "BAD_REQUEST" });
         return;
       }
       const file = sharedDocFile(body.doc);
-      const data =
-        body.data !== undefined ? parseSharedDoc(body.doc, body.data) : blankSharedDoc();
+      const data = body.data !== undefined ? parseSharedDoc(body.doc, body.data) : blankFor(body.doc);
       const result = await store.write(
         [
           {

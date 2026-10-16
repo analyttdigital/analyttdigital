@@ -129,14 +129,18 @@ Update this file continuously. See `instructions.md` for rules.
 ---
 
 ## M6 Shared elements
-**Status:** TODO  **Depends on:** M3, M4
-- [ ] Header and footer stored as shared docs
-- [ ] Global document switcher in the editor
-- [ ] `layouts.json` and layout selection per page
-- [ ] Renderer wraps pages with chosen layout
-- [ ] Optional announcement bar and dashboard shell layout (sidebar + topbar)
+**Status:** DONE  **Depends on:** M3, M4
+- [x] Header and footer stored as shared docs
+- [x] Global document switcher in the editor
+- [x] `layouts.json` and layout selection per page
+- [x] Renderer wraps pages with chosen layout
+- [x] Optional announcement bar and dashboard shell layout (sidebar + topbar)
 **Acceptance:** editing the header once updates every page using that layout.
 **Notes:**
+- Shared docs generalized (M2 allowlist removed): any kebab-case `shared/<doc>.json` validates against `SharedDocSchema`; only `layouts` has its own shape. `layouts` GET falls back to the built-in default (header+footer, page shell) on fresh repos, mirroring the theme default.
+- `LayoutEntry` grew `announcement`, `sidebar` (nullable doc names) and `shell: page | dashboard`; old files parse unchanged (new keys default).
+- Renderer (`/p`): loads layout + referenced docs (missing/invalid → skipped, never 500s), wraps in `BuilderLayout`; dashboard shell = sidebar doc (or auto nav of published pages) + header topbar + main. `resolveLayout` falls back default → first → blank.
+- Editor: dashboard Globals (header/footer/layouts quick links + arbitrary doc opener), `/admin/shared/<doc>` canvas (missing docs start blank, first publish creates), `/admin/layouts` row editor (add/remove, shell select, doc-name refs), page meta layout is a dropdown fed by `layouts.json` (text fallback when unloadable).
 
 ---
 
@@ -203,6 +207,8 @@ Format: `YYYY-MM-DD HH:MM | agent | summary | files`
 - 2026-10-16 | HANDOFF | What is done: M0–M4 DONE (29 built-ins live in the palette; 30/30 tests, typecheck + build green). What is in flight: nothing half-edited. Exact next step: start M5 Custom component registry (deps M3 DONE) — Zod→fields derivation, dynamic/ssr:false wrapper, prop validation with fallbacks, palette categories/icons, example custom component, "How to add a component" docs in PROJECT.md. Commands to verify: `yarn test`, `yarn typecheck`, `yarn build`. Visual click-through of /admin + /p pending approved dev session. Note: `.tasks/content/*` untracked files belong to another stream — left alone.
 - 2026-10-16 | session | M5 DONE: schema-first registerComponent overload (derive/validate/client runtime), Callout example, PROJECT.md how-to; 43/43 tests, typecheck + build green | src/builder/registry/*, src/builder/custom/*, src/builder/config/*, src/builder/components/builtins.ts, .tasks/visual-page-builder/*
 - 2026-10-16 | HANDOFF | What is done: M0–M5 DONE (custom registry complete; 43/43 tests, typecheck + build green). What is in flight: nothing half-edited. Exact next step: start M6 Shared elements (deps M3, M4 DONE) — header/footer shared docs, global document switcher in editor, layouts.json + per-page layout selection, renderer wrapping, announcement bar / dashboard shell. Commands to verify: `yarn test`, `yarn typecheck`, `yarn build`. Visual click-through of /admin + /p pending approved dev session. Note: `.tasks/content/*` untracked files belong to another stream — left alone.
+- 2026-10-16 | session | M6 DONE: generalized shared docs, layouts with announcement/sidebar/shell, BuilderLayout wrapping in /p, global switcher + shared/layouts editors, layout dropdown; 46/46 tests, typecheck + build green | src/builder/schema/shared.ts, src/pages/api/builder/shared.ts, src/builder/render/*, src/pages/p/*, src/builder/editor/*, .tasks/visual-page-builder/TASKS.md
+- 2026-10-16 | HANDOFF | What is done: M0–M6 DONE (shared elements complete; 46/46 tests, typecheck + build green). What is in flight: nothing half-edited. Exact next step: start M7 Auth + production publish flow (deps M2, M3 DONE) — NextAuth GitHub provider, allowlist/repo check, protect /admin + /api/builder, prod editor reads GitHub, branch/PR publish, revalidation, conflict UI. Commands to verify: `yarn test`, `yarn typecheck`, `yarn build`. Visual click-through of /admin + /p pending approved dev session. Note: `.tasks/content/*` untracked files belong to another stream — left alone.
 
 ---
 

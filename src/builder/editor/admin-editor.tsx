@@ -11,6 +11,13 @@ import { ThemeProvider } from "@/builder/render/theme-provider";
 import { slugToRoute } from "@/builder/render/routes";
 import { PageSchema } from "@/builder/schema/page";
 import type { Page, PageMeta, PuckData } from "@/builder/schema/page";
+import {
+  LayoutsFileSchema,
+  SharedDocSchema,
+  assertValidSharedDocName,
+  blankLayoutsFile,
+} from "@/builder/schema/shared";
+import type { LayoutEntry } from "@/builder/schema/shared";
 import { defaultTheme } from "@/builder/theme/defaults";
 import { CURATED_FONTS } from "@/builder/theme/fonts";
 import { ThemeSchema } from "@/builder/schema/theme-file";
@@ -107,6 +114,7 @@ function Dashboard() {
   const [slug, setSlug] = useState("");
   const [source, setSource] = useState("");
   const [target, setTarget] = useState("");
+  const [customDoc, setCustomDoc] = useState("");
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
@@ -233,6 +241,42 @@ function Dashboard() {
             Rename
           </button>
         </div>
+        <h2 style={{ fontSize: 16, margin: "24px 0 8px" }}>Globals</h2>
+        <p style={{ fontSize: 13, color: "#64748b", marginBottom: 8 }}>
+          Shared docs wrap every page on their layout — edit once, publish everywhere.
+        </p>
+        <ul style={{ marginBottom: 12 }}>
+          <li>
+            <Link href="/admin/shared/header">Header</Link>
+          </li>
+          <li>
+            <Link href="/admin/shared/footer">Footer</Link>
+          </li>
+          <li>
+            <Link href="/admin/layouts">Layouts</Link>
+          </li>
+        </ul>
+        <div style={{ display: "flex", gap: 8 }}>
+          <input
+            value={customDoc}
+            onChange={(e) => setCustomDoc(e.target.value)}
+            placeholder="other doc, e.g. announcement"
+            style={inputStyle}
+          />
+          <button
+            type="button"
+            onClick={() => {
+              try {
+                assertValidSharedDocName(customDoc.trim());
+                void router.push(`/admin/shared/${customDoc.trim()}`);
+              } catch (err) {
+                setStatus({ kind: "error", text: err instanceof Error ? err.message : "Invalid doc" });
+              }
+            }}
+          >
+            Open doc
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -246,6 +290,7 @@ function PageEditor({ slug }: { slug: string }) {
   const [draft, setDraft] = useState(false);
   const [sha, setSha] = useState<string | undefined>(undefined);
   const [theme, setTheme] = useState<Theme>(defaultTheme);
+  const [layoutIds, setLayoutIds] = useState<string[] | null>(null);
   const [dirty, setDirty] = useState(false);
   const [status, setStatus] = useState<Status | null>(null);
   const dataRef = useRef<PuckData | null>(null);
@@ -255,9 +300,10 @@ function PageEditor({ slug }: { slug: string }) {
     let cancelled = false;
     (async () => {
       try {
-        const [pageBody, themeBody] = await Promise.all([
+        const [pageBody, themeBody, layoutsBody] = await Promise.all([
           api<{ data: unknown; sha?: string }>(`/api/builder/page?slug=${encodeURIComponent(slug)}`),
           api<{ data: unknown }>(`/api/builder/theme`),
+          api<{ data: unknown }>(`/api/builder/shared?doc=layouts`).catch(() => null),
         ]);
         if (cancelled) return;
         const loaded = PageSchema.parse(pageBody.data);
@@ -270,6 +316,13 @@ function PageEditor({ slug }: { slug: string }) {
           setTheme(ThemeSchema.parse(themeBody.data));
         } catch {
           setTheme(defaultTheme);
+        }
+        try {
+          setLayoutIds(
+            layoutsBody ? LayoutsFileSchema.parse(layoutsBody.data).layouts.map((l) => l.id) : null,
+          );
+        } catch {
+          setLayoutIds(null);
         }
       } catch (err) {
         if (!cancelled) setStatus({ kind: "error", text: err instanceof Error ? err.message : "Load failed" });
@@ -344,7 +397,22 @@ function PageEditor({ slug }: { slug: string }) {
               <input value={meta.path} onChange={(e) => setMetaField("path", e.target.value)} style={inputStyle} />
             </Field>
             <Field label="Layout">
-              <input value={meta.layout} onChange={(e) => setMetaField("layout", e.target.value)} style={inputStyle} />
+              {layoutIds ? (
+                <select
+                  value={layoutIds.includes(meta.layout) ? meta.layout : ""}
+                  onChange={(e) => setMetaField("layout", e.target.value)}
+                  style={inputStyle}
+                >
+                  {!layoutIds.includes(meta.layout) && <option value="">{meta.layout} (missing)</option>}
+                  {layoutIds.map((id) => (
+                    <option key={id} value={id}>
+                      {id}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input value={meta.layout} onChange={(e) => setMetaField("layout", e.target.value)} style={inputStyle} />
+              )}
             </Field>
             <Field label="OG image">
               <input value={meta.ogImage} onChange={(e) => setMetaField("ogImage", e.target.value)} style={inputStyle} />
@@ -552,6 +620,201 @@ function ThemeEditor() {
   );
 }
 
+/* ------------------------------ shared doc editor ------------------------------ */
+
+function SharedEditor({ doc }: { doc: string }) {
+  const [puck, setPuck] = useState<PuckData | null>(null);
+  const [sha, setSha] = useState<string | undefined>(undefined);
+  const [status, setStatus] = useState<Status | null>(null);
+  const dataRef = useRef<PuckData | null>(null);
+  const config = useMemo(() => buildConfig(), []);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const body = await api<{ data: unknown; sha?: string }>(
+          `/api/builder/shared?doc=${encodeURIComponent(doc)}`,
+        );
+        if (cancelled) return;
+        const loaded = SharedDocSchema.parse(body.data);
+        setPuck(loaded.puck);
+        setSha(body.sha);
+        dataRef.current = loaded.puck;
+      } catch (err) {
+        if (!cancelled) {
+          // Missing docs start blank; the first publish creates them.
+          if (err instanceof Error && /not found/i.test(err.message)) {
+            const blank: PuckData = { content: [], root: { props: {} }, zones: {} };
+            setPuck(blank);
+            dataRef.current = blank;
+          } else {
+            setStatus({ kind: "error", text: err instanceof Error ? err.message : "Load failed" });
+          }
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [doc]);
+
+  const handlePublish = async (data: Data) => {
+    try {
+      const puckData = SharedDocSchema.shape.puck.parse(data);
+      const payload = SharedDocSchema.parse({ schemaVersion: 1, puck: puckData });
+      const body = await api<{ sha?: string; commitSha?: string }>("/api/builder/shared", {
+        method: "PUT",
+        body: JSON.stringify({ doc, data: payload, sha }),
+      });
+      setSha(body.sha);
+      setStatus({ kind: "ok", text: body.commitSha ? `Published (${body.commitSha.slice(0, 7)})` : "Saved" });
+    } catch (err) {
+      setStatus({ kind: "error", text: err instanceof Error ? err.message : "Publish failed" });
+    }
+  };
+
+  return (
+    <div>
+      <TopBar title={`/admin/shared/${doc}`} status={status} />
+      {!puck ? (
+        <p style={{ padding: 24 }}>{status ? "Failed to load." : "Loading…"}</p>
+      ) : (
+        <div style={{ height: "calc(100vh - 41px)", overflow: "auto" }}>
+          <EditingProvider editing={true}>
+            <Puck
+              key={doc}
+              config={config}
+              data={puck}
+              onChange={(data) => {
+                dataRef.current = SharedDocSchema.shape.puck.parse(data);
+              }}
+              onPublish={(data) => void handlePublish(data)}
+            />
+          </EditingProvider>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* -------------------------------- layouts editor -------------------------------- */
+
+function LayoutsEditor() {
+  const [layouts, setLayouts] = useState<LayoutEntry[] | null>(null);
+  const [sha, setSha] = useState<string | undefined>(undefined);
+  const [status, setStatus] = useState<Status | null>(null);
+  const [newId, setNewId] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const body = await api<{ data: unknown; sha?: string }>(`/api/builder/shared?doc=layouts`);
+        if (cancelled) return;
+        setLayouts(LayoutsFileSchema.parse(body.data).layouts);
+        setSha(body.sha);
+      } catch (err) {
+        if (!cancelled) {
+          setLayouts(blankLayoutsFile().layouts);
+          setStatus({ kind: "error", text: err instanceof Error ? err.message : "Load failed" });
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const setRow = (index: number, patch: Partial<LayoutEntry>) => {
+    setLayouts((rows) => (rows ? rows.map((r, i) => (i === index ? { ...r, ...patch } : r)) : rows));
+  };
+
+  const save = async () => {
+    if (!layouts) return;
+    try {
+      const body = await api<{ sha?: string }>("/api/builder/shared", {
+        method: "PUT",
+        body: JSON.stringify({ doc: "layouts", data: { schemaVersion: 1, layouts }, sha }),
+      });
+      setSha(body.sha);
+      setStatus({ kind: "ok", text: "Layouts saved" });
+    } catch (err) {
+      setStatus({ kind: "error", text: err instanceof Error ? err.message : "Save failed" });
+    }
+  };
+
+  if (!layouts) return <p style={{ padding: 24 }}>{status ? "Failed to load." : "Loading…"}</p>;
+
+  return (
+    <div>
+      <TopBar title="/admin/layouts" status={status} />
+      <div style={{ padding: 24, maxWidth: 900 }}>
+        {layouts.map((row, i) => (
+          <fieldset key={row.id} style={{ border: "1px solid #e2e8f0", borderRadius: 8, padding: 16, marginBottom: 16 }}>
+            <legend style={{ fontWeight: 700 }}>{row.id}</legend>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <Field label="Display name">
+                <input value={row.name} onChange={(e) => setRow(i, { name: e.target.value })} style={inputStyle} />
+              </Field>
+              <Field label="Shell">
+                <select
+                  value={row.shell}
+                  onChange={(e) => setRow(i, { shell: e.target.value as LayoutEntry["shell"] })}
+                  style={inputStyle}
+                >
+                  <option value="page">Page (linear)</option>
+                  <option value="dashboard">Dashboard (sidebar + topbar)</option>
+                </select>
+              </Field>
+              {(
+                [
+                  ["header", "Header doc"],
+                  ["footer", "Footer doc"],
+                  ["announcement", "Announcement doc"],
+                  ["sidebar", "Sidebar doc (dashboard shell)"],
+                ] as const
+              ).map(([key, label]) => (
+                <Field key={key} label={`${label} (empty = none)`}>
+                  <input
+                    value={row[key] ?? ""}
+                    onChange={(e) => setRow(i, { [key]: e.target.value.trim() || null } as Partial<LayoutEntry>)}
+                    placeholder="shared doc name"
+                    style={inputStyle}
+                  />
+                </Field>
+              ))}
+            </div>
+            <button type="button" onClick={() => setLayouts((rows) => (rows ? rows.filter((_, j) => j !== i) : rows))}>
+              Remove layout
+            </button>
+          </fieldset>
+        ))}
+        <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+          <input value={newId} onChange={(e) => setNewId(e.target.value)} placeholder="new-layout-id" style={inputStyle} />
+          <button
+            type="button"
+            onClick={() => {
+              const id = newId.trim();
+              if (!id || layouts.some((l) => l.id === id)) return;
+              setLayouts([
+                ...layouts,
+                { id, name: id, header: "header", footer: "footer", announcement: null, sidebar: null, shell: "page" },
+              ]);
+              setNewId("");
+            }}
+          >
+            Add layout
+          </button>
+        </div>
+        <button type="button" onClick={() => void save()}>
+          Save layouts
+        </button>
+      </div>
+    </div>
+  );
+}
+
 /* ----------------------------------- shell ----------------------------------- */
 
 export default function AdminEditor() {
@@ -565,6 +828,10 @@ export default function AdminEditor() {
   if (!router.isReady) return <p style={{ padding: 24 }}>Loading editor…</p>;
   if (path.length === 0) return <Dashboard />;
   if (path[0] === "theme" && path.length === 1) return <ThemeEditor />;
+  if (path[0] === "layouts" && path.length === 1) return <LayoutsEditor />;
+  if (path[0] === "shared" && path.length === 2 && path[1] !== "layouts") {
+    return <SharedEditor doc={path[1]} />;
+  }
   if (path[0] === "page" && path.length === 2) return <PageEditor slug={path[1]} />;
   return (
     <div style={{ padding: 24 }}>
