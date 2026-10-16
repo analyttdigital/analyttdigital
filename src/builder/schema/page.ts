@@ -76,6 +76,9 @@ export function slugToFile(slug: string): string {
 }
 
 export function fileToSlug(file: string): string | null {
-  const m = /^pages\/([a-z0-9][a-z0-9-]*)\.json$/.exec(file);
+  // Accepts both store-relative (`pages/<slug>.json`, as used across the
+  // API routes) and bare dir-listing names (`<slug>.json`, what `readdir`
+  // returns from `ContentStore.list("pages")`).
+  const m = /^(?:pages\/)?([a-z0-9][a-z0-9-]*)\.json$/.exec(file);
   return m ? m[1] : null;
 }

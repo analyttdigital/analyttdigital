@@ -6,16 +6,16 @@ Update this file continuously. See `instructions.md` for rules.
 ## Overview
 | ID | Milestone | Status | Depends on |
 |---|---|---|---|
-| M0 | Project setup | TODO | none |
-| M1 | Theme system | TODO | M0 |
-| M2 | Storage layer (fs + GitHub) | TODO | M0 |
-| M3 | Puck editor shell + page rendering | TODO | M1, M2 |
-| M4 | Built in components | TODO | M3 |
-| M5 | Custom component registry | TODO | M3 |
-| M6 | Shared elements (header, footer, layouts) | TODO | M3, M4 |
-| M7 | Auth + production publish flow | TODO | M2, M3 |
-| M8 | Advanced components (GSAP, three.js examples) | TODO | M5 |
-| M9 | Polish, media, docs, tests | TODO | M4 to M7 |
+| M0 | Project setup | DONE | none |
+| M1 | Theme system | DONE | M0 |
+| M2 | Storage layer (fs + GitHub) | DONE | M0 |
+| M3 | Puck editor shell + page rendering | DONE | M1, M2 |
+| M4 | Built in components | DONE | M3 |
+| M5 | Custom component registry | DONE | M3 |
+| M6 | Shared elements (header, footer, layouts) | DONE | M3, M4 |
+| M7 | Auth + production publish flow | DONE | M2, M3 |
+| M8 | Advanced components (GSAP, three.js examples) | DONE | M5 |
+| M9 | Polish, media, docs, tests | DONE | M4 to M7 |
 
 ---
 
@@ -175,7 +175,7 @@ Update this file continuously. See `instructions.md` for rules.
 ---
 
 ## M9 Polish, media, docs, tests
-**Status:** IN_PROGRESS  **Depends on:** M4 to M7
+**Status:** DONE  **Depends on:** M4 to M7
 ### M9.1 Media upload + picker — **Status:** DONE
 - [x] `POST /api/builder/media` (base64 JSON, no new deps): ext allowlist, size cap, sanitized filename, fs + GitHub backends, commits to `public/uploads`
 - [x] Upload button + preview inside the Image/Video `src` fields
@@ -184,9 +184,9 @@ Update this file continuously. See `instructions.md` for rules.
 - [x] Meta fields already in page editor (M3) — renderer `<Head>` covers title/description/og:image
 - [x] `sitemap.xml` generated from builder content (SSR, published pages only, XML-escaped)
 **Notes:** test file may NOT live under `src/pages/` (Next treats every file there as a route — broke the build once); sitemap tests live in `src/builder/render/`.
-### M9.3 E2E smoke tests — **Status:** TODO (spec written, run pending approval)
-- [ ] Playwright E2E (attempt install; sandbox browser download may block — fallback: API smoke tests + BLOCKED note)
-**Notes:** `@playwright/test` + Chromium installed fine; `playwright.config.ts` + `e2e/builder-smoke.spec.ts` written (admin loads, API publish → `/p` render → cleanup, sitemap XML). NOT RUN: executing it boots a dev server, which needs user approval per repo AGENTS.md. Run with `yarn test:e2e` once approved.
+### M9.3 E2E smoke tests — **Status:** DONE (ran 2026-10-17, 3/3 green)
+- [x] Playwright E2E — `@playwright/test` + Chromium; `e2e/builder-smoke.spec.ts` (admin loads, API publish → `/p` render → cleanup, sitemap XML); `yarn test:e2e` boots dev on :3100
+**Notes:** run approved + executed in the approving session — no BLOCKED fallback needed.
 ### M9.4 README — **Status:** DONE
 - [x] Builder README: setup, env, content model, routes, deploy guide (`src/builder/README.md`)
 - [x] Undo/redo + keyboard shortcuts: Puck-native, verified by review (visual check pending approved dev session like all editor visuals)
@@ -203,6 +203,7 @@ Update this file continuously. See `instructions.md` for rules.
 ## Decisions
 - Puck chosen over Craft.js for faster, config driven registry and built in field system.
 - Zustand excluded; use Puck `usePuck`.
+- 2026-10-17 | Visual checkout (approved dev session) caught two real bugs, both fixed and verified: (1) `fileToSlug` rejected bare `readdir` names, so dashboard/sitemap/nav lists were always empty — now accepts both forms; (2) `/p` rendered inside the Keystatic `SiteLayout` — now bare like `/admin`, chrome comes from layouts.json only. Also silenced a Puck key warning via deterministic position-based ids in `PuckContent`, and confirmed `bld-*` utilities survive in production CSS.
 - 2026-10-16 | Pinned `@measured/puck@0.20.2`, `zod@4.6.7`, `@octokit/rest@22.0.1`, `next-auth@4.24.15` (exact, `yarn add -E`). `next-auth` v4 chosen: matches PROJECT.md Pages-Router `api/auth/[...nextauth].ts` style. `gsap`/`three`/`@mdi/*` already present, not reinstalled.
 - 2026-10-16 | Builder is additive: Keystatic stays wired; builder content namespaced to `src/content/pages|shared|theme.json` (JSON) vs Keystatic `src/content/<locale>/` (YAML/Markdown). No `app/` dir, no changes to Keystatic config/schemas.
 - 2026-10-16 | Keep yarn (existing `yarn.lock`) instead of PROJECT.md's pnpm; revisit if user wants migration.
@@ -231,6 +232,8 @@ Format: `YYYY-MM-DD HH:MM | agent | summary | files`
 - 2026-10-17 | HANDOFF | What is done: M0–M7 DONE (auth + publish complete; 53/53 tests, typecheck + build green). What is in flight: nothing half-edited. Exact next step: start M8 Advanced components (deps M5 DONE) — GSAP reveal/scroll wrapper, three.js scene (dynamic import, editing-aware), chart library choice (open question to user). Commands to verify: `yarn test`, `yarn typecheck`, `yarn build`. Visual click-through of /admin + /p pending approved dev session. Note: `.tasks/content/*` untracked files belong to another stream — left alone.
 - 2026-10-17 | session | M8 DONE: GsapReveal (lazy gsap + context cleanup), ThreeScene (raw three, dynamic import, resize/dispose, editing placeholder), Chart (recharts, client-wrapped); 57/57 tests, typecheck + build green | src/builder/custom/*, package.json, yarn.lock, .tasks/visual-page-builder/TASKS.md
 - 2026-10-17 | HANDOFF | What is done: M0–M8 DONE (advanced components complete; 57/57 tests, typecheck + build green). What is in flight: nothing half-edited. Exact next step: start M9 Polish, media, docs, tests (deps M4–M7 DONE) — media upload + picker, undo/redo + shortcuts verify, SEO/sitemap, Playwright E2E, README. Big milestone: suggest splitting (M9.1 media, M9.2 SEO/README, M9.3 E2E) or time-boxing. Commands to verify: `yarn test`, `yarn typecheck`, `yarn build`. Visual click-through of /admin + /p pending approved dev session. Note: `.tasks/content/*` untracked files belong to another stream — left alone.
+- 2026-10-17 | session | Visual checkout in approved dev session: E2E 3/3 green; screenshots of /admin, editor, theme, /p all render. Found + fixed: fileToSlug bare-name bug (lists always empty), /p SiteLayout wrapping (now bare), Puck key warning (deterministic ids). Full verify after fixes: 63/63 unit, typecheck, build green; bld-* utilities confirmed in production CSS. Cleaned up: visual-check page deleted, temp spec removed, dev server stopped. | src/builder/schema/page.ts, src/pages/_app.tsx, src/builder/render/render.tsx, e2e/*
+- 2026-10-17 | HANDOFF | What is done: ALL MILESTONES M0–M9 DONE (visual builder complete: 63/63 unit tests, 3/3 E2E, typecheck + build green, screenshots verified, fixes committed below). What is in flight: nothing — repo is in a building state, working tree clean except the other stream's `.tasks/content/*` (left alone). Exact next step: none required; natural follow-ups are production deploy (set builder env + secrets, verify M7 live flow) and the Keystatic-blog coexistence review (`/p` vs locale routes). Commands to verify: `yarn test`, `yarn test:e2e` (needs dev-session approval), `yarn typecheck`, `yarn build`.
 - 2026-10-17 | session | M9 partial: M9.1 DONE (media API + picker fields), M9.2 DONE (sitemap route), M9.4 DONE (README), M9.3 spec written but NOT RUN (needs dev-server approval); 63/63 unit tests, typecheck + build green | src/builder/storage/media*, src/pages/api/builder/media.ts, src/builder/fields/upload-field.tsx, image/video fields, src/pages/sitemap.xml.ts, playwright.config.ts, e2e/*, vitest.config.ts, package.json, src/builder/README.md
 - 2026-10-17 | HANDOFF | What is done: M0–M8 DONE; M9.1/M9.2/M9.4 DONE (63/63 unit tests, typecheck + build green). What is in flight: M9.3 E2E spec written, run pending — executing `yarn test:e2e` boots a dev server on :3100, which needs user approval per repo AGENTS.md. Exact next step: approve a dev session, run `yarn test:e2e`, then flip M9 (and M9.3) to DONE and commit. Note: `.tasks/content/*` untracked files belong to another stream — left alone.
 

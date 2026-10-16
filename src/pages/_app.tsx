@@ -56,8 +56,15 @@ export default function App({ Component, pageProps, router }: Props) {
   // page and the admin UI would never mount.
   // /admin (M3 visual builder) likewise needs the bare canvas, free of the
   // site nav/footer, or the Puck shell would render inside the marketing chrome.
+  // (M9 visual check) /p likewise renders bare: builder pages get their chrome
+  // from layouts.json shared docs, never the Keystatic site layout.
   // (M7) The admin branch additionally gets the NextAuth session provider.
-  if (router.pathname.startsWith('/keystatic') || router.pathname.startsWith('/admin')) {
+  if (
+    router.pathname.startsWith('/keystatic') ||
+    router.pathname.startsWith('/admin') ||
+    router.pathname === '/p' ||
+    router.pathname.startsWith('/p/')
+  ) {
     const session = (pageProps as { session?: Session }).session;
     return (
       <SessionProvider session={session}>
