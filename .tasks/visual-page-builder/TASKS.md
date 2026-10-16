@@ -68,17 +68,24 @@ Update this file continuously. See `instructions.md` for rules.
 ---
 
 ## M3 Puck editor shell + page rendering
-**Status:** TODO  **Depends on:** M1, M2
-- [ ] `buildConfig()` assembling components, categories, root config
-- [ ] `/admin/[[...puckPath]]` editor loading and saving through API
-- [ ] Page list, create, rename, delete, duplicate
-- [ ] Page meta editor (title, description, path, layout, og image)
-- [ ] Public renderer `[[...slug]].tsx` with `getStaticPaths/getStaticProps`
-- [ ] Responsive preview (viewports) and editing flag context
-- [ ] Theme editor UI with live preview, saves to `theme.json` (moved from M1: needs the M2 `theme` storage API + this editor shell; M1 acceptance is token flow only)
-- [ ] 404 handling and draft/unpublished flag
-**Acceptance:** create a page in the editor, publish, see it at its URL after rebuild (dev: immediately).
+**Status:** DONE  **Depends on:** M1, M2
+- [x] `buildConfig()` assembling components, categories, root config — `config/build-config.ts`, registry-driven, zero hard wiring
+- [x] `/admin/[[...puckPath]]` editor loading and saving through API — client-only shell (`editor/admin-editor.tsx`): dashboard, page editor (Puck canvas + onPublish→PUT), theme editor
+- [x] Page list, create, rename, delete, duplicate — dashboard with two-click delete confirm
+- [x] Page meta editor (title, description, path, layout, og image) — sidebar form + draft toggle, saved with the same PUT (current canvas data held in a ref so Puck never re-renders)
+- [x] Public renderer `[[...slug]].tsx` with `getStaticPaths/getStaticProps` — as `/p/[[...slug]]` (see Notes), drafts + unknown slugs 404, theme with defaults fallback
+- [x] Responsive preview (viewports) and editing flag context — Puck's built-in viewport controls; `EditingProvider`/`useEditing` (hook, not prop — see Notes)
+- [x] Theme editor UI with live preview, saves to `theme.json` (moved from M1: needs the M2 `theme` storage API + this editor shell; M1 acceptance is token flow only) — token form + `ThemeProvider` preview + PUT with sha conflict surfacing
+- [x] 404 handling and draft/unpublished flag — `notFound` on missing/invalid/draft; `draft` at page level (not inside meta)
+**Acceptance:** create a page in the editor, publish, see it at its URL after rebuild (dev: immediately). Verified to build + typecheck + unit level; the click-through itself needs an approved dev session (Open Questions).
 **Notes:**
+- `/p` namespace deviation: a root `[[...slug]]` would swallow the live site (`/`, `/blog`, `/sw`). Builder pages render at `/p` + meta.path. Mapping helpers in `render/routes.ts`, covered by tests.
+- Registry is Puck-native minimal in M3 (`registerComponent({name,label,category,config})`); M5 adds schema→fields derivation, dynamic wrapper, prop validation. No casts at the boundary (registry stores `Omit<ComponentConfig,"type">`, which `buildConfig` places directly).
+- Editing flag is a `useEditing()` hook. PROJECT.md 3.4's `editing` render prop is deferred to M5's registry work.
+- Fonts switched M1→Fontsource (`@fontsource/*@5.3.0`): `next/font/google` needs build-time Google access; this sandbox blocks it and the M3 build proved it. PROJECT.md already allowed "next/font or Fontsource". Weight CSS imports live in `_app.tsx` (Pages global-CSS rule); `builderFontsClass` kept as a stable (empty) export.
+- `_app.tsx`: imports Puck + Fontsource global CSS; `/admin` renders outside `SiteLayout` (same carve-out as `/keystatic`).
+- Palette is empty until M4 built-ins land — by design; `buildConfig` + `Render` pipeline is proven by unit tests with registered test components.
+- Viewports/motion of the editor itself not yet eyeballed — needs a user-approved dev instance per repo rules.
 
 ---
 
@@ -159,6 +166,7 @@ Update this file continuously. See `instructions.md` for rules.
 - ~~DONE-gate conflict~~ Resolved 2026-10-16: user approved typecheck + build as the gate, lint skipped. `instructions.md` updated.
 - ~~Package manager~~ Resolved 2026-10-16: yarn. `PROJECT.md` updated to yarn.
 - Live GitHub adapter is verified against a fake only (single-commit + conflict semantics asserted, no HTTP). Real production verification belongs to M7's publish flow — OK, or want a dry-run against a scratch repo first?
+- M3 click-through (create → publish → view at `/p/<slug>`, viewport switching, theme live preview) needs a user-approved dev instance per repo AGENTS.md — Visual check at `/admin` and `/p/...` pending.
 
 ## Decisions
 - Puck chosen over Craft.js for faster, config driven registry and built in field system.
@@ -167,6 +175,7 @@ Update this file continuously. See `instructions.md` for rules.
 - 2026-10-16 | Builder is additive: Keystatic stays wired; builder content namespaced to `src/content/pages|shared|theme.json` (JSON) vs Keystatic `src/content/<locale>/` (YAML/Markdown). No `app/` dir, no changes to Keystatic config/schemas.
 - 2026-10-16 | Keep yarn (existing `yarn.lock`) instead of PROJECT.md's pnpm; revisit if user wants migration.
 - 2026-10-16 | Test runner: added `vitest@5.0.5` + peer `vite@6.4.4` (dev-only, exact pins, `yarn test` = `vitest run`). Not on the PROJECT.md approved list — added because M2 mandates adapter unit tests and the repo had no runner; dev-only, zero runtime impact. Flagging to user alongside this log.
+- 2026-10-16 | Fonts: added `@fontsource/inter@5.3.0`, `@fontsource/space-grotesk@5.3.0`, `@fontsource/ibm-plex-mono@5.3.0` (exact). PROJECT.md M1 already approves "next/font or Fontsource"; switched because `next/font/google` fails the build where Google is unreachable (proven by the M3 build). Runtime font assets, no code library.
 
 ## Progress Log
 Format: `YYYY-MM-DD HH:MM | agent | summary | files`
@@ -177,6 +186,8 @@ Format: `YYYY-MM-DD HH:MM | agent | summary | files`
 - 2026-10-16 | HANDOFF | What is done: M0 DONE, M1 DONE (token system complete, typecheck + build green). What is in flight: nothing half-edited. Exact next step: start M2 Storage layer (first TODO: M0 DONE, no other deps) — ContentStore interface, fs + github adapters, env selection, Zod validation, builder API routes, adapter unit tests. Commands to verify: `yarn typecheck`, `yarn build`. Note: `.tasks/content/*` untracked files belong to another stream — left alone.
 - 2026-10-16 | session | M2 DONE: ContentStore + fs/github adapters (atomic Git Data API commits, sha conflicts), env selection, Zod schemas (page/shared/theme/migrations stub), 4 builder API routes with dev-bypass guard, vitest suite 19/19 green, typecheck + build green | src/builder/storage/*, src/builder/schema/*, src/builder/http.ts, src/builder/auth/guard.ts, src/pages/api/builder/*, vitest.config.ts, package.json, yarn.lock, .tasks/visual-page-builder/TASKS.md
 - 2026-10-16 | HANDOFF | What is done: M0/M1/M2 DONE (storage + validated API complete; tests 19/19, typecheck + build green). What is in flight: nothing half-edited. Exact next step: start M3 Puck editor shell + page rendering (deps M1, M2 DONE) — buildConfig, /admin editor, page CRUD UI, meta editor, public [[...slug]] renderer, editing flag. Commands to verify: `yarn test`, `yarn typecheck`, `yarn build`. Note: `.tasks/content/*` untracked files belong to another stream — left alone.
+- 2026-10-16 | session | M3 DONE: registry + buildConfig, /admin shell (dashboard CRUD, Puck page editor + meta, theme editor with preview), /p public renderer (drafts 404), editing flag, Fontsource switch (Google blocked); tests 26/26, typecheck + build green (all new routes in build output) | src/builder/registry/*, src/builder/config/*, src/builder/editor/*, src/builder/render/*, src/builder/theme/fonts.ts, src/pages/admin/*, src/pages/p/*, src/pages/_app.tsx, package.json, yarn.lock, .tasks/visual-page-builder/TASKS.md
+- 2026-10-16 | HANDOFF | What is done: M0–M3 DONE (editor shell + rendering complete; tests 26/26, typecheck + build green). What is in flight: nothing half-edited; palette empty until M4. Exact next step: start M4 Built-in components (deps M3 DONE) — layout/media/typography/actions/content/forms/dashboard sets, all token-driven via bld-* utilities, editor/public parity. Commands to verify: `yarn test`, `yarn typecheck`, `yarn build`. Visual click-through of /admin + /p pending approved dev session. Note: `.tasks/content/*` untracked files belong to another stream — left alone.
 
 ---
 

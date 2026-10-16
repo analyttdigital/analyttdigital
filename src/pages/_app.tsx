@@ -17,6 +17,19 @@ import { cancelFrame, frame } from "framer-motion";
 import { useEffect, useRef } from "react";
 
 import '../styles/globals.css';
+// Puck editor styles (M3). Global CSS must live in `_app` under Pages Router;
+// it loads site-wide but only paints inside `/admin` and builder pages.
+import "@measured/puck/puck.css";
+// Builder curated faces (Fontsource, self-hosted woff2). Same global-CSS rule.
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/500.css";
+import "@fontsource/inter/700.css";
+import "@fontsource/space-grotesk/400.css";
+import "@fontsource/space-grotesk/500.css";
+import "@fontsource/space-grotesk/700.css";
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/500.css";
+import "@fontsource/ibm-plex-mono/700.css";
 
 type Props = AppProps & { pageProps: PageProps };
 
@@ -39,7 +52,9 @@ export default function App({ Component, pageProps, router }: Props) {
   // /keystatic renders the admin UI untouched, outside the site layout.
   // It still goes through `<Component />`: a bare wrapper here would drop the
   // page and the admin UI would never mount.
-  if (router.pathname.startsWith('/keystatic')) {
+  // /admin (M3 visual builder) likewise needs the bare canvas, free of the
+  // site nav/footer, or the Puck shell would render inside the marketing chrome.
+  if (router.pathname.startsWith('/keystatic') || router.pathname.startsWith('/admin')) {
     return (
       <div className={fontsClass}>
         <Component {...pageProps} />

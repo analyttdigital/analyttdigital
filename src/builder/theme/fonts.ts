@@ -1,58 +1,37 @@
-import { IBM_Plex_Mono, Inter, Space_Grotesk } from "next/font/google";
-
 /**
- * Curated builder font list (M1). Loaded once at build time via `next/font`
- * (works in Pages Router); the theme stores a font *name*, and `fontStack`
- * resolves it to the loaded CSS variable. New families must be added here
- * before they can be selected — custom upload is a later milestone.
+ * Curated builder font list (M1). Self-hosted through Fontsource rather than
+ * `next/font/google`: the Google path needs build-time access to Google
+ * Fonts, which sandboxed and offline builds cannot guarantee (M3 build
+ * failure). Fontsource CSS is global, so the weight files are imported once
+ * in `_app.tsx`; this module only maps theme font names to family stacks.
  */
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-bld-inter",
-  display: "swap",
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-bld-space-grotesk",
-  display: "swap",
-});
-
-const ibmPlexMono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  variable: "--font-bld-ibm-plex-mono",
-  display: "swap",
-});
 
 export interface CuratedFont {
   name: string;
-  variable: string;
   stack: string;
 }
 
 export const CURATED_FONTS: CuratedFont[] = [
   {
     name: "Inter",
-    variable: inter.variable,
-    stack: `var(${inter.variable}), ui-sans-serif, system-ui, sans-serif`,
+    stack: `"Inter", ui-sans-serif, system-ui, sans-serif`,
   },
   {
     name: "Space Grotesk",
-    variable: spaceGrotesk.variable,
-    stack: `var(${spaceGrotesk.variable}), ui-sans-serif, system-ui, sans-serif`,
+    stack: `"Space Grotesk", ui-sans-serif, system-ui, sans-serif`,
   },
   {
     name: "IBM Plex Mono",
-    variable: ibmPlexMono.variable,
-    stack: `var(${ibmPlexMono.variable}), ui-monospace, monospace`,
+    stack: `"IBM Plex Mono", ui-monospace, SFMono-Regular, monospace`,
   },
 ];
 
-/** Mount once wherever the builder tree renders (editor shell, renderer). */
-export const builderFontsClass =
-  `${inter.variable} ${spaceGrotesk.variable} ${ibmPlexMono.variable}`;
+/**
+ * Kept for call-site stability: Fontsource needs no variable classes, so
+ * there is nothing to mount. The renderer keeps spreading this on its
+ * wrapper so a future variable-font switch stays a one-line change.
+ */
+export const builderFontsClass = "";
 
 /** Resolve a theme font name to a `font-family` stack; unknown names fall back to Inter. */
 export function fontStack(name: string): string {
