@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "meta": {
+    "title": "hello-world",
+    "description": "",
+    "path": "/hello-world",
+    "layout": "default",
+    "ogImage": ""
+  },
+  "puck": {
+    "content": [],
+    "root": {
+      "props": {}
+    },
+    "zones": {}
+  },
+  "draft": true
+}
