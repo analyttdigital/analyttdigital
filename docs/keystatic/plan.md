@@ -208,7 +208,9 @@ Notes:
   `BlogPost` carries `excerpt` not `description` — pre-existing typecheck
   error (fails on a clean tree too), unrelated to this change.
 
-Commit: —
+Commit: `8e60983` feat(keystatic): complete K7 SEO audit via code-default posts
+(2 files, +70/−11; defaults.ts gains two code-default blog posts with complete
+SEO metadata, plan.md records the audit).
 
 ## K8 — Build-time crawler files (Pages Router)
 
