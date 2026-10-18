@@ -95,6 +95,7 @@ const enLayout: LayoutContent = {
 const enHome: PageDoc = {
 	featuredImage: noImage,
 	title: "home",
+	metaTitle: "Performance Marketing Agency in Kenya | Analytt Digital",
 	description:
 		"A data-driven performance marketing agency in Kenya helping startups and small businesses turn ad spending into measurable growth.",
 	sections: [
@@ -754,6 +755,7 @@ const enHome: PageDoc = {
 const enAboutUs: PageDoc = {
 	featuredImage: noImage,
 	title: "about-us",
+	metaTitle: "About Analytt Digital | Performance Marketing Agency",
 	description:
 		"Analytt Digital is a performance marketing agency that places data at the heart of every marketing endeavour, helping businesses across Kenya and East Africa grow with measurable results.",
 	sections: [
@@ -934,6 +936,7 @@ const enAboutUs: PageDoc = {
 const enContact: PageDoc = {
 	featuredImage: noImage,
 	title: "contact",
+	metaTitle: "Contact Analytt Digital | Free Performance Audit",
 	description:
 		"Get in touch with Analytt Digital. Book a free consultation, request a performance audit, or ask us anything about growing your business across Kenya and East Africa.",
 	sections: [
@@ -1048,6 +1051,7 @@ const enContact: PageDoc = {
 const enDigitalAudit: PageDoc = {
 	featuredImage: noImage,
 	title: "digital-audit",
+	metaTitle: "Free Digital Marketing Audit | Analytt Digital",
 	description:
 		"Book a free 30-minute digital audit with Analytt Digital. We'll review your strategy, paid media, tracking and funnel, and show you where your biggest growth opportunities are.",
 	sections: [
@@ -1201,6 +1205,7 @@ const enDigitalAudit: PageDoc = {
 const enPricingPlans: PageDoc = {
 	featuredImage: noImage,
 	title: "pricing-plans",
+	metaTitle: "Performance Marketing Pricing | Analytt Digital",
 	description:
 		"Transparent performance marketing pricing for Kenyan and East African businesses. Choose from Starter, Growth, Scale, or a fully custom plan.",
 	sections: [
@@ -1372,6 +1377,7 @@ const enPricingPlans: PageDoc = {
 const enServices: PageDoc = {
 	featuredImage: noImage,
 	title: "services",
+	metaTitle: "Performance Marketing Services | Analytt Digital",
 	description:
 		"Paid media that converts, data infrastructure you can trust, and growth strategy that compounds. Explore Analytt Digital's full range of performance marketing services for Kenya and East Africa.",
 	sections: [
@@ -1506,6 +1512,7 @@ const enServices: PageDoc = {
 const enServicePaidMedia: PageDoc = {
 	featuredImage: noImage,
 	title: "services/paid-media",
+	metaTitle: "Paid Media Management in Kenya | Analytt Digital",
 	description:
 		"Performance paid media across Google, Meta, TikTok, LinkedIn and YouTube, built for Kenya and East African conversion journeys. 4.2x average ROAS.",
 	sections: [
@@ -1697,6 +1704,7 @@ const enServicePaidMedia: PageDoc = {
 const enServiceDataAnalytics: PageDoc = {
 	featuredImage: noImage,
 	title: "services/data-analytics",
+	metaTitle: "Marketing Data & Analytics Services | Analytt Digital",
 	description:
 		"GA4, Google Tag Manager, server-side tracking, Looker Studio dashboards and multi-touch attribution for East African businesses. 100% tracking coverage.",
 	sections: [
@@ -1782,6 +1790,7 @@ const enServiceDataAnalytics: PageDoc = {
 const enServiceGrowthStrategy: PageDoc = {
 	featuredImage: noImage,
 	title: "services/growth-strategy",
+	metaTitle: "Growth Strategy Services in Kenya | Analytt Digital",
 	description:
 		"Market research, competitive intelligence, ICP development and 12-month performance marketing blueprints for businesses scaling across Kenya and East Africa.",
 	sections: [
@@ -1886,6 +1895,7 @@ const enServiceGrowthStrategy: PageDoc = {
 const enServiceSeo: PageDoc = {
 	featuredImage: noImage,
 	title: "services/seo",
+	metaTitle: "SEO Services in Kenya | Analytt Digital",
 	description:
 		"Technical SEO, content authority and local search dominance built for English, Swahili and code-switching search behaviour across East Africa.",
 	sections: [
@@ -1991,6 +2001,7 @@ const enServiceSeo: PageDoc = {
 const enServiceCro: PageDoc = {
 	featuredImage: noImage,
 	title: "services/cro",
+	metaTitle: "Conversion Rate Optimisation | Analytt Digital",
 	description:
 		"Heatmaps, session recordings, A/B testing and mobile-first funnel optimisation for Kenyan and East African audiences. 2.8x average conversion lift.",
 	sections: [
@@ -2098,6 +2109,7 @@ const enServiceCro: PageDoc = {
 const enServiceEmailCrm: PageDoc = {
 	featuredImage: noImage,
 	title: "services/email-crm",
+	metaTitle: "Email Marketing & CRM Services | Analytt Digital",
 	description:
 		"Welcome flows, abandoned cart recovery, lead nurture and retention marketing for Kenyan and East African businesses. 3.1x customer LTV.",
 	sections: [
@@ -2217,6 +2229,7 @@ const enServiceEmailCrm: PageDoc = {
 const enServiceIndustries: PageDoc = {
 	featuredImage: noImage,
 	title: "services/industries",
+	metaTitle: "Industry Marketing Solutions | Analytt Digital",
 	description:
 		"Performance marketing for e-commerce, fintech, real estate, healthcare, education, hospitality, SaaS and logistics across Kenya and East Africa.",
 	sections: [
@@ -2301,6 +2314,7 @@ const enBlogPosts: BlogPost[] = [
   {
     slug: "overcoming-kenyas-top-marketing-challenge-for-smes-in-2025-digital-skills-gaps",
     title: "Overcoming Kenya's Top Marketing Challenge for SMEs in 2025: Digital Skills Gaps",
+    metaTitle: "How Kenyan SMEs Can Close Digital Skills Gaps",
     excerpt:
       "Limited digital marketing expertise and weak analytics skills are the biggest roadblocks for Kenyan SMEs. Here's how to close the gap: training, tools, and managed support.",
     category: "SME Growth",
@@ -2408,6 +2422,7 @@ const enBlogPosts: BlogPost[] = [
   {
     slug: "why-most-kenyan-businesses-cant-answer-is-our-marketing-actually-working",
     title: "Why Most Kenyan Businesses Can't Answer 'Is Our Marketing Actually Working?'",
+    metaTitle: "Why Kenyan Businesses Cannot Measure Marketing ROI",
     excerpt:
       "Most Kenyan business owners judge marketing on feeling, not numbers. Here's why marketing attribution is the country's biggest performance marketing gap, and how to fix it.",
     category: "Analytics",
@@ -2481,6 +2496,7 @@ const enBlogPosts: BlogPost[] = [
   {
     slug: "why-your-digital-ads-arent-working-in-kenya-and-how-to-fix-them-in-90-days",
     title: "Why Your Digital Ads Aren't Working in Kenya (And How to Fix Them in 90 Days)",
+    metaTitle: "Fix Digital Ads That Aren't Working in Kenya",
     excerpt:
       "If your Google, Meta or TikTok ads aren't delivering in Kenya, the cause is usually one of six fixable problems. Here's the diagnosis, and a 90-day repair plan.",
     category: "Paid Media",
