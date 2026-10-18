@@ -915,7 +915,7 @@ export function HeroStage({
 			</motion.div>
 
 			{/* Partner marquee — bottom of the hero; rides out as the footer cue */}
-			{/* <motion.div
+			<motion.div
 				className={`relative z-30 mx-auto w-full max-w-7xl overflow-hidden  py-5 px-5 sm:px-[clamp(20px,6vw,96px)] ${dark ? "border-primary-50/15" : "border-primary-900/15"}`}
 				aria-label="Partners"
 				style={
@@ -966,7 +966,7 @@ export function HeroStage({
 						</div>
 					))}
 				</div>
-			</motion.div> */}
+			</motion.div>
 		</div>
 	);
 }

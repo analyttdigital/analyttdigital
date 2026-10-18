@@ -107,7 +107,9 @@ html {
   text-rendering: optimizeLegibility;
   scroll-behavior: smooth;
 }
-
+html, body {
+    overflow-x: clip !important; 
+}
 /* Lenis smooth scroll recommended styles 
 html.lenis,
 html.lenis body {
@@ -125,7 +127,6 @@ html.lenis body {
 */
 body {
   @apply font-sans text-ink-500;
-  overflow-x: hidden;
 }
 
 /* ------------------------------------------------------------------ */
