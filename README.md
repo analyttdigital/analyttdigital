@@ -36,6 +36,37 @@ npm run typecheck  # tsc --noEmit
 npm run lint       # eslint
 ```
 
+## Keystatic storage modes
+
+Storage is local (files under `src/content/`) by default — no env vars needed.
+Set `KEYSTATIC_STORAGE=github` to switch **storage and build-time reads** to a
+GitHub repo. See `.env.example` for the full list:
+
+| Var                              | Used by              | Notes                                                          |
+| -------------------------------- | -------------------- | -------------------------------------------------------------- |
+| `KEYSTATIC_STORAGE`              | config + readers     | `github` selects GitHub storage; anything else = local        |
+| `KEYSTATIC_GITHUB_REPO`          | config + readers     | `owner/name` of the content repo (required in GitHub mode)     |
+| `KEYSTATIC_STATIC_GITHUB_TOKEN`  | build-time readers   | fine-grained token, Contents: read/write on the content repo   |
+| `KEYSTATIC_GITHUB_REF`           | build-time readers   | optional branch (default: repo's default branch)              |
+| `KEYSTATIC_GITHUB_PATH_PREFIX`   | build-time readers   | optional subdirectory inside the repo holding `keystatic.config.ts` paths |
+| `KEYSTATIC_GITHUB_CLIENT_ID/SECRET` | admin login (GitHub app) | only needed for the `/keystatic` UI in GitHub mode   |
+| `KEYSTATIC_SECRET`               | admin login          | random string for signing the login session                   |
+
+Setup for GitHub mode:
+
+1. Create a OAuth app with callback
+   `https://<site>/api/keystatic/created-with-keystatic` (locally:
+   `http://localhost:3000/api/keystatic/created-with-keystatic`) and set
+   `KEYSTATIC_GITHUB_CLIENT_ID` / `KEYSTATIC_GITHUB_CLIENT_SECRET`.
+2. Create a fine-grained personal access token scoped to the content repo
+   (Contents: read/write), set `KEYSTATIC_STATIC_GITHUB_TOKEN`.
+3. Set `KEYSTATIC_GITHUB_REPO` and `KEYSTATIC_STORAGE=github` in the host
+   (e.g. Vercel project → Environment Variables) and rebuild.
+4. Prefer Keystatic Cloud instead of a raw token? Set
+   `storage: { kind: 'github', repo }` plus `cloud: { project: <project> }`
+   in `keystatic.config.ts` (needs `KEYSTATIC_SECRET` only) — see
+   keystatic.com docs.
+
 ## Design system
 
 Five color families, each a full tint ramp (`50`–`950`) as CSS variables (e.g. `--color-paper`, `--color-paper-50`, …), consumed only through Tailwind tokens — no ad-hoc hex in components:

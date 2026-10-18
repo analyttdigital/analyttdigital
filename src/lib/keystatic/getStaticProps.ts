@@ -1,10 +1,7 @@
-import { createReader } from '@keystatic/core/reader';
-
-import keystaticConfig from '../../../keystatic.config';
+import { makeContentReader } from '@/lib/keystatic/make-reader';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const reader: any = createReader(process.cwd(), keystaticConfig);
-
+const reader: any = makeContentReader();
 import { listPageSlugs, readPageBundle } from '@/lib/content/reader';
 import { defaults } from '@/lib/content/defaults';
 import { BLOG_PAGE_SIZE } from '@/lib/content/blog';

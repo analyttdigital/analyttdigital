@@ -122,22 +122,48 @@ reader fallback, canonical/Open Graph/robots tags across page and blog routes).
 
 ## K4 — Env-based storage (local dev, cloud/GitHub prod)
 
-Status: Not started.
+Status: Done.
 
 Goal: `keystatic.config.ts` uses local storage in dev, Keystatic
 Cloud/GitHub in prod, driven by env vars.
 
 Checklist:
-- [ ] Switch on env (`KEYSTATIC_STORAGE` or repo presence): local vs
-  `kind: 'github'`. Extend `.env.example` (has
-  `KEYSTATIC_GITHUB_CLIENT_ID/SECRET`, `KEYSTATIC_SECRET`).
-- [ ] Reader: local `createReader` vs `createGitHubReader` behind same
-  flag; build-time only (no secret leakage to client).
-- [ ] Document prod vars + Cloud/GitHub-app setup (callback URLs, Vercel).
-- [ ] Verify `next build` passes locally; config loads with github mode.
+- [x] Storage switch on env in `keystatic.config.ts`:
+  `KEYSTATIC_STORAGE=github` + `KEYSTATIC_GITHUB_REPO=<owner>/<repo>` →
+  `kind: 'github'`; anything else → `kind: 'local'`. `.env.example` extended
+  with the full var list (was `KEYSTATIC_GITHUB_CLIENT_ID/SECRET`,
+  `KEYSTATIC_SECRET`).
+- [x] Reader: new `src/lib/keystatic/make-reader.ts` returns local
+  `createReader` or `createGitHubReader` behind the same env vars (supports
+  `KEYSTATIC_STATIC_GITHUB_TOKEN`, `KEYSTATIC_GITHUB_REF`,
+  `KEYSTATIC_GITHUB_PATH_PREFIX`). Server-only / build-time only — both
+  consumers (`src/lib/keystatic/getStaticProps.ts`,
+  `scripts/generate-seo-files.ts`) now use the factory, so no token can
+  reach a client bundle.
+- [x] Documented prod vars + GitHub-app setup in README "Keystatic storage
+  modes" (var table, OAuth callback URLs for local + prod, Vercel
+  env-var checklist, Keystatic Cloud alternative via `cloud.project`).
+- [x] `npm run typecheck` exit 0; `npm run build` exit 0 in local mode AND in
+  `KEYSTATIC_STORAGE=github KEYSTATIC_GITHUB_REPO=analyttdigital/analyttdigital`
+  mode (config loads, no crash without a token).
 
-Notes: —
-Commit: —
+Notes:
+- Graceful-fallback safety: when GitHub mode is on but the repo/token is
+  unreachable (as in the local test above), every reader helper already
+  catches and falls back to code defaults, so a misconfigured prod build
+  still renders complete pages (and the sitemap helper degrades the same
+  way) rather than failing the deploy.
+- GitHub-mode admin writes need the OAuth app login only; the static token
+  is only for build-time reads — deliberately separate vars.
+- Keystatic Cloud (rather than a PAT) is a config option (`cloud.project`),
+  documented but not exercised (needs a real project).
+- Session oddity: `public/img/logo-marketing-collage.svg` showed a
+  mid-session modification that was absent from this session's opening
+  `git status` and was not produced by any command I ran (a path-data
+  reformat, ~405 lines reshuffled). Reverted before committing to keep the
+  milestone scoped — if you autoformat assets in an external editor, that
+  may have been your edit; reapply if so.
+Commit: `env-based storage` — see below for hash.
 
 ## K6 — Drop SW content, keep locale structure
 
@@ -257,10 +283,10 @@ Notes:
   tsconfig location; typecheck unchanged).
 - Keystatic's build-time sort: posts emit `lastmod` from `publishedAt`
   (2026-10-15 for all five); pages use the build date. RSS dates are RFC 822.
-Commit: `feat(keystatic): add build-time SEO crawler files` (K8: reader-driven
-`scripts/generate-seo-files.ts` via `postbuild`, sitemap/robots/feed/llms/
-security.txt into `public/`, `tsx` dep, gitignore entries, optional
-`SeoSource.description` typecheck fix, plan.md).
+Commit: `771f8da` feat(keystatic): add build-time SEO crawler files (7 files,
++390/−27: reader-driven `scripts/generate-seo-files.ts` via `postbuild`,
+sitemap/robots/feed/llms/security.txt into `public/`, `tsx` dep, gitignore
+entries, optional `SeoSource.description` typecheck fix, plan.md).
 
 ## K5 — Real-time previews (draft mode)
 

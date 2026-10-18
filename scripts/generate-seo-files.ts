@@ -1,8 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { createReader } from '@keystatic/core/reader';
-import keystaticConfig from '../keystatic.config';
+import { makeContentReader } from '@/lib/keystatic/make-reader';
 
 import { BLOG_PAGE_SIZE } from '@/lib/content/blog';
 import { listPosts, listPageSlugs } from '@/lib/content/reader';
@@ -54,10 +53,10 @@ function buildDate(): string {
 
 async function main() {
   // `any` mirrors `getStaticProps.ts`, which types the config-bound reader
-  // this way because `createReader(cwd, config)` is more specific than the
+  // this way because the concrete factory return is more specific than the
   // generic `ReturnType<typeof createReader>` the readers expect.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const reader: any = createReader(process.cwd(), keystaticConfig);
+  const reader: any = makeContentReader();
   const now = buildDate();
 
   /** Collect canonical URLs (deduped): code-default + CMS pages/posts. */

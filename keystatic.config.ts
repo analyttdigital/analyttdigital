@@ -18,11 +18,27 @@ import { layoutFields, pageFields, postFields } from './src/lib/keystatic/schema
  *
  * Locales: single-locale today (`en`), but the code stays locale-keyed
  * (`locales`, `routeFromParams`, `blogBasePath`) — see README
- * "Adding a locale" to add one back. */
+ * "Adding a locale" to add one back.
+
+ * Storage: local by default. `KEYSTATIC_STORAGE=github` (with
+ * `KEYSTATIC_GITHUB_REPO=<owner>/<repo>`) switches both the admin UI and
+ * the build-time readers to GitHub-backed storage (K4) — see README
+ * "Keystatic storage modes" for the env vars. */
+const GITHUB_REPO = process.env.KEYSTATIC_GITHUB_REPO ?? '';
+const useGithubStorage =
+  process.env.KEYSTATIC_STORAGE === 'github' && GITHUB_REPO.includes('/');
+
 export default config({
-  storage: {
-    kind: 'local',
-  },
+  storage: useGithubStorage
+    ? {
+        kind: 'github',
+        // The env value is free-form so a typo fails validation once,
+        // loudly, instead of silently degrading to local files.
+        repo: GITHUB_REPO as `${string}/${string}`,
+      }
+    : {
+        kind: 'local',
+      },
 
   collections: {
     pages: collection({
