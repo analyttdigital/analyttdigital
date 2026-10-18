@@ -476,5 +476,5 @@ Notes:
   (visible table caption `{title} — {tableCaption}`) and aria-labels in
   `problem.tsx:115`, `work.tsx:26`, `regions.tsx:36`. Those are code,
   not Keystatic content; flag for a future hardware-scope decision.
-Commit: (this commit — hash recorded in the follow-up docs commit, K9
+Commit: `11773f7` content(keystatic): remove em dashes from home page copy
 pattern).
