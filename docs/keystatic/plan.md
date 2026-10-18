@@ -63,7 +63,9 @@ Notes:
   left untouched and uncommitted (not mine to discard).
 - `src/content/pages/` now exists but is empty (probe deleted).
 
-Commit: —
+Commit: `f06e816` feat(keystatic): fix featured-image previews, add page
+featured image (8 files, +91/−12; binary-safe blob bridge, page
+`featuredImage` through schema/types/reader/defaults, og:image heads).
 
 ## K2 — Migrate default content to Keystatic pages
 
