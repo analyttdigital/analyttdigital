@@ -297,7 +297,7 @@ sections:
         - tag: Paid Media
           depth: '03'
           title: Paid Media & Performance Advertising
-          body: Google, YouTube, Meta, TikTok and LinkedIn campaigns engineered for acquisition — every shilling tracked to revenue.
+          body: Google, YouTube, Meta, TikTok and LinkedIn campaigns engineered for acquisition, with every shilling tracked to revenue.
           icon: bullhorn
           readout:
             kind: channels
@@ -401,7 +401,7 @@ sections:
     value:
       eyebrow: Selected Work
       headline: Proof, not promises.
-      body: Engagements measured to the shilling — the proof behind the promises.
+      body: 'Engagements measured to the shilling: the proof behind the promises.'
       cta: ''
       ctaHref: ''
       cases:
@@ -449,7 +449,7 @@ sections:
     value:
       eyebrow: Free Audit
       headline: Know what each shilling returns.
-      body: A free audit of your current setup — where budget is wasted and where the opportunity is.
+      body: A free audit of your current setup, showing where budget is wasted and where the opportunity is.
       cta: Start with a free audit
       ctaHref: mailto:hello@analyttdigital.com
       note: No deck. No obligation. Just the findings.
@@ -458,8 +458,8 @@ sections:
       eyebrow: The Problem
       headline: The spend was never the problem.
       paragraphs:
-        - 'Kenyan businesses already know they should be on Google, Meta and TikTok — the budgets are there. What is scarce is the read: which channels deserve money, which funnels leak, and what each shilling actually returns.'
-        - Most reports stop at reach and impressions. The decision — where the next shilling goes — gets made on gut feel. That gap between reporting and revenue is where growth stalls.
+        - 'Kenyan businesses already know they should be on Google, Meta and TikTok; the budgets are there. What is scarce is the read: which channels deserve money, which funnels leak, and what each shilling actually returns.'
+        - Most reports stop at reach and impressions. The decision of where the next shilling goes is made on gut feel. That gap between reporting and revenue is where growth stalls.
       closing: Analytt exists to close that gap.
       panelTitle: Account snapshot
       panelAlert: Wasting −38%
@@ -561,7 +561,7 @@ sections:
     value:
       eyebrow: Industries
       headline: Sectors we know.
-      body: From e-commerce in Nairobi to logistics across the region — a short index of where we have done the work.
+      body: 'From e-commerce in Nairobi to logistics across the region: a short index of where we have done the work.'
       hint: Selected sectors
       image:
         src: /media/uploads/home/industries-image.png
@@ -584,7 +584,7 @@ sections:
     value:
       eyebrow: Start
       headline: Decisions, not dashboards.
-      body: 'Measurement first, always — every report ends in a named action: what to scale, what to cut, what to test.'
+      body: 'Measurement first, always. Every report ends in a named action: what to scale, what to cut, what to test.'
       cta: Get a free audit
       ctaHref: mailto:hello@analyttdigital.com
       note: No deck. No obligation. Just the findings.
@@ -610,7 +610,7 @@ sections:
     value:
       eyebrow: Start
       headline: Most audits surface KES 50K–200K in recoverable spend.
-      body: A free audit of your current setup — where budget is wasted and where the opportunity is. No obligation.
+      body: A free audit of your current setup, showing where budget is wasted and where the opportunity is. No obligation.
       cta: Request a free audit
       ctaHref: mailto:hello@analyttdigital.com
       note: No deck. No obligation. Just the findings.

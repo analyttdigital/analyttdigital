@@ -425,3 +425,56 @@ Notes:
 Commit: `7357359` feat(keystatic): seed editable layout singleton content
 (3 files, +255/−3: `scripts/seed-layout.mjs` + seeded
 `src/content/layout.yaml`, plan.md; no `src/**` app-code changes).
+
+## K10 — Remove em dashes from Keystatic content
+
+Status: Done.
+
+Goal: every rendered Keystatic content phrase is free of em dashes
+(`—`), with the wording rephrased (not simply deleted) so meaning is
+preserved; no new em or en dashes introduced anywhere.
+
+Scope rule (recorded up front, decides the edits below):
+- **Keystatic content only**: `src/content/**` YAML plus the code
+  defaults in `src/lib/content/defaults.ts` that carry the zero-CMS
+  fallback copy. Both layers must change together (they must stay in
+  sync for the parity gates), with identical replacement strings.
+- Out of scope: existing **en dashes** (stayed untouched) and em dashes
+  in code comments, docs, commit messages, or component-internal
+  templates (logged under Notes as adjacent rot).
+- Verification: parity gates (`seed-pages`, `seed-layout` `--check`)
+  after the edits, plus a grep sweep proving zero `—` remains in the
+  content layer; no typecheck/build (defaults edits are inside string
+  literals only).
+
+Checklist:
+- [x] Locate every `—` in the content layer: 8 phrases, all in
+  `src/content/pages/home.yaml` + their `defaults.ts` counterparts
+  (posts, layout, other pages clean; en dashes are out of scope).
+- [x] Replace all 8 pairs with em dash-free rewordings, both layers
+  carrying identical strings (colon/comma/sentence-split rewrites —
+  per-phrase choices in the commit message).
+- [x] Re-run parity gates: `seed-pages --check` 13/13, 0 failures;
+  `seed-layout --check` ✓ (the gates also prove the rewordings parse
+  as valid YAML in both layers).
+- [x] Sweep: `grep -rn '—'` in the content layer → 0 matches; en
+  dashes unchanged (40 before == 40 after).
+- [x] Confirm the admin surfaces the rephrased copy: the editor's data
+  path (`/api/keystatic/tree` → `/api/keystatic/blob/<sha>/…/home.yaml`)
+  serves the new copy byte-identical to disk with 0 em dashes, and the
+  dev log shows the home entry form fetching exactly that blob.
+  (Caveat: a headless-DOM paint of all 13 section forms wasn't
+  achievable under virtual time — the values are client-hydrated — but
+  form values come solely from that blob, a render path already proven
+  end-to-end in K9's Layout check.)
+
+Notes:
+- No typecheck/build run (edits are inside string literals only; parity
+  gates parse both files). Run with the next user-confirmed check batch.
+- Adjacent rot (logged, not fixed): a few component templates render em
+  dashes outside the content layer — `activity-terrain.tsx:1140`
+  (visible table caption `{title} — {tableCaption}`) and aria-labels in
+  `problem.tsx:115`, `work.tsx:26`, `regions.tsx:36`. Those are code,
+  not Keystatic content; flag for a future hardware-scope decision.
+Commit: (this commit — hash recorded in the follow-up docs commit, K9
+pattern).
