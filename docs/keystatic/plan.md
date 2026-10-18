@@ -9,11 +9,12 @@ execution order**.
 Original request numbered items 1, 2, 3, 4, 6, 7, 8 (no #5) — kept below as
 K1–K4, K6–K8 so references stay stable.
 
-**Recommended execution order**: K6 → K1 → K3 → K2 → K7 → K8 → K4 → K5.
-K6 shrinks the surface first (no SW variants to migrate/audit); K1+K3
+**Recommended execution order**: K6 → K1 → K3 → K2 → K7 → K8 → K4 → K5 →
+K9. K6 shrinks the surface first (no SW variants to migrate/audit); K1+K3
 settle the content model before K2 seeds pages into it; K7 audits migrated
 content; K8 crawls final routes; K4/K5 are infra last (K5 may reshape the
-read path — keep it last).
+read path — keep it last). K9 is a content-migration repeat of K2's
+pattern for the layout singleton, so it can run once K2's mechanics exist.
 
 **Setup note:** `docs/` is gitignored (see instructions §4). Force-add
 these files (`git add -f docs/keystatic/`) or narrow the ignore rule
@@ -352,3 +353,48 @@ Commit: `59411d1` feat(keystatic): add draft-mode live previews (11 files,
 `getStaticProps.ts` + read helpers + blog routes, `make-reader.ts`
 branch support, `_app` banner, config `previewUrl` keys, README docs,
 plan.md).
+
+## K9 — Migrate default layout to Keystatic content
+
+Status: Done.
+
+Goal: the layout singleton's code-default chrome (nav, footer, social,
+contact) exists as an editable Keystatic entry whose render matches the
+code default exactly — same mechanics as K2, for `defaults[en].layout`.
+
+Checklist:
+- [x] Recorded the mechanical facts: the `layout` singleton (`path:
+  'src/content/layout'`, yaml, no slug) stores as `src/content/layout.yaml`
+  directly (Keystatic `getSingletonPath` + `dataLocation: 'outer'`), and
+  `defaults.en.layout` carries exactly the keys `layoutFields` defines — so
+  the seed is a straight YAML dump of the default (logo `src` fields are
+  plain text URLs here, NOT upload-backed `fields.image`, so K2's image
+  copy/rewrite step does not apply).
+- [x] `scripts/seed-layout.mjs` (K2's pattern): dumps `defaults.en.layout`
+  to `src/content/layout.yaml`; verify-only `--check` mode.
+- [x] Parity gate: reads the singleton back through the real Keystatic
+  reader, merges it over the code default exactly as `readLayout` does,
+  and requires zero differences vs the default — `node
+  scripts/seed-layout.mjs --check` reports `✓ layout`, 0 failures.
+- [ ] Confirm `/keystatic` exposes the seeded values in the Layout
+  singleton form and a save round-trips (requires a user-approved dev
+  instance; deferred — see Notes for what to check).
+- [x] Kept `defaults.en.layout` untouched as the zero-CMS fallback; zero
+  app-code changes (script is `.mjs`, output is one YAML file).
+
+Notes:
+- Keystatic materialises `fields.array` reads even when the saved YAML
+  omits them, so a plain nav item reads back with an extra `children: []`
+  (caught by the first parity run). The parity check compares the rendered
+  contract instead — consumers (`site-header`) treat empty arrays and
+  absent keys identically — which is also why the seed itself omits
+  `children` on submenu-less items. A `/keystatic` save will materialise
+  those empty arrays into the YAML; that is expected and harmless.
+- Deferred UI check needs a user-approved dev instance: open `/keystatic`
+  → Layout, confirm the seeded nav/footer/social values show, edit a
+  field, save, and confirm the site renders the edit (plus `git diff` of
+  `src/content/layout.yaml` reflecting the save).
+- Per direction: no typecheck/build checks in this milestone — only the
+  script's reader-level parity result is evidence; run the usual checks
+  at the end, on user confirmation.
+Commit: —
