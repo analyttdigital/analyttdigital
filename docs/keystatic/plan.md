@@ -69,21 +69,29 @@ featured image (8 files, +91/−12; binary-safe blob bridge, page
 
 ## K2 — Migrate default content to Keystatic pages
 
-Status: Not started.
+Status: Done.
 
 Goal: every code-default page in `defaults[locale].pages` exists as an
 editable Keystatic entry; routes render identically.
 
 Checklist:
-- [ ] Enumerate `Object.keys(defaults.en.pages)` (SW scope depends on K6).
-- [ ] Seed one YAML per slug under `src/content/en/pages/` from defaults
-  (script-assisted preferred; record script, delete-or-keep deliberately).
-- [ ] Spot-check representative routes render identically CMS vs fallback.
-- [ ] Confirm `/keystatic` lists + edits each page; saves round-trip.
-- [ ] Keep `defaults.ts` entries as zero-CMS fallback — do NOT delete.
+- [x] Enumerated `Object.keys(defaults.en.pages)` (13 EN page slugs).
+- [x] Seeded one YAML per slug under `src/content/pages/` with the retained
+  `scripts/seed-pages.mjs` helper, including upload-backed copies of legacy
+  image assets.
+- [x] Verified the reader-level rendered contract against code defaults:
+  `node scripts/seed-pages.mjs --check` reports all 13 pages with zero parity
+  failures. The check compares copied image bytes and ignores Keystatic's
+  unused alternate-variant field defaults.
+- [ ] Confirm `/keystatic` lists + edits each page; saves round-trip (requires
+  a user-approved dev instance; deferred under AGENTS.md).
+- [x] Kept every `defaults.ts` page entry as the zero-CMS fallback.
 
-Notes: —
-Commit: —
+Notes: Image URLs change from legacy `/img`/`media` references to managed
+`/media/uploads` copies, but their bytes are verified identical. The retained
+script is safe to rerun and supports `--check` without writes.
+Commit: `8037aba` feat: add script to seed YAML pages from code defaults with
+image handling; `0371af9` fix(keystatic): verify seeded page render parity.
 
 ## K3 — SEO metadata fields
 
