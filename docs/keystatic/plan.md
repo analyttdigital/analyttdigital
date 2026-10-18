@@ -87,22 +87,29 @@ Commit: —
 
 ## K3 — SEO metadata fields
 
-Status: Not started.
+Status: Done.
 
 Goal: editable SEO inputs on all relevant Keystatic content.
 
 Checklist:
-- [ ] Shared `seoFields` group in `schemas.ts` (`metaTitle`,
-  `metaDescription`, `canonical`, `ogImage`, `noindex`); add to
-  `pageFields` + `postFields` (+ layout fallback if agreed).
-- [ ] Extend `PageDoc` / `BlogPost` types, reader merges
-  (empty CMS → fallback), defaults.
-- [ ] Wire into `<Head>` on page routes, blog index, post routes.
-- [ ] Document precedence (CMS → excerpt/description → site default).
-- [ ] Verify view-source on a page + post.
+- [x] Shared `seoFields` group in `schemas.ts` (`metaTitle`,
+  `metaDescription`, `canonical`, `ogImage`, `noindex`); added to
+  `pageFields` + `postFields`.
+- [x] Extended `PageDoc` / `BlogPost` types and reader merges; empty CMS
+  values defer to code fallbacks.
+- [x] Wired `<Head>` on page routes, blog index, pagination, and post routes.
+- [x] Documented precedence (CMS → excerpt/description → site default).
+- [ ] Verify view-source on a page + post (requires a user-approved dev
+  instance; not started under AGENTS.md).
 
-Notes: —
-Commit: —
+Notes: `resolveSeo` is the code-default layer: title uses an explicit CMS
+value or the content title; description uses CMS metadata, then the page
+description/post excerpt, then the site description; social image uses CMS
+`ogImage`, then `featuredImage`; canonical uses CMS or the route URL.
+`noindex` is opt-in. Posts now emit `og:type=article` and
+`article:published_time`.
+Commit: `31a3afe` feat(keystatic): add editable SEO metadata (shared schema,
+reader fallback, canonical/Open Graph/robots tags across page and blog routes).
 
 
 ## K4 — Env-based storage (local dev, cloud/GitHub prod)
