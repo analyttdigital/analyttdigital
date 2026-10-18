@@ -214,33 +214,53 @@ SEO metadata, plan.md records the audit).
 
 ## K8 — Build-time crawler files (Pages Router)
 
-Status: Not started. Pages Router only — NO App Router `sitemap.ts`.
+Status: Done. Pages Router only — NO App Router `sitemap.ts`.
 
 Checklist:
-- [ ] Inspect + record: collections/singletons, API route, next.config,
-  scripts, `src/pages` patterns, draft/date fields. (Pre-gathered:
-  collections `pages-en/sw`, `posts-en/sw`; NO draft/published field;
-  dates via post `publishedAt`; routes `/`, `/blog`, `/blog/[slug]`,
-  `/[locale]`, `/[locale]/[...slug]`, `/sw/blog/*`; site URL in
-  `src/lib/site.ts` (`https://analyttdigital.com`), no
-  `NEXT_PUBLIC_SITE_URL` yet; `.gitignore` already ignores
-  `/public/robots.txt` + `/public/sitemap.xml`.)
-- [ ] `scripts/generate-seo-files.ts` via `createReader`
-  (or `createGitHubReader` if K4 done; reuse shared helper), never HTTP.
-  Skip drafts (add field or record N/A — none exists today).
-- [ ] Emit to `public/`: `sitemap.xml` (absolute URLs, fallback origin,
-  no trailing slash, static routes, `lastmod` from content/build date;
-  index + chunks past 50k), `robots.txt` (allow all; disallow
-  `/keystatic`, `/api`, `/_next`; `Sitemap:` line), `feed.xml` (RSS —
+- [x] Inspected + recorded: single-locale `pages` / `posts` collections +
+  `layout` singleton (K6); routes from the build output are `/`, page slugs
+  (`/about-us` … plus nested `/services/*`), `/blog`, `/blog/[slug]`,
+  `/blog/page/[n]`; site URL + email in `src/lib/site.ts`
+  (`https://analyttdigital.com` / `hello@analyttdigital.com`), no
+  `NEXT_PUBLIC_SITE_URL`; `.gitignore` already ignored `/public/robots.txt` +
+  `/public/sitemap.xml`. No draft field exists — recorded N/A (posts carry
+  `publishedAt` only; `noindex` is the opt-in visibility field, see Notes).
+- [x] `scripts/generate-seo-files.ts` runs via `createReader` (local reader +
+  shared `listPageSlugs` / `listPosts` — no HTTP), reusing the same
+  reader merge rules as pages.
+- [x] Emits to `public/`: `sitemap.xml` (absolute URLs from `site.url`, no
+  trailing slash beyond `/`, page routes + blog index/pagination + posts,
+  `lastmod`), `robots.txt` (allow all; Disallow `/keystatic/`, `/api/`,
+  `/_next/`; `Sitemap:` line), `feed.xml` (RSS 2.0, 20 most recent posts),
+  `llms.txt` (Pages + Posts sections), `.well-known/security.txt`
+  (emitted only when `site.email` is set).
+- [x] Wired `postbuild` (`tsx scripts/generate-seo-files.ts`); added `tsx`
+  devDependency; extended `.gitignore` for `feed.xml`, `llms.txt`,
+  `.well-known/security.txt`.
+- [x] `npm run build` run (explicitly approved per this checklist): exit 0,
+  types valid, postbuild generated all 5 files with verified URLs.
+  `npm run typecheck` exit 0 before it.
 
-  posts exist), `llms.txt`, `.well-known/security.txt` only with
-  contact-email env.
-- [ ] Wire `postbuild`/`prebuild`; add `tsx` devDependency if missing;
-  extend `.gitignore` for `feed.xml`, `llms.txt` (+`security.txt`).
-- [ ] Run `next build` (explicitly approved), verify files + URLs, fix types.
-
-Notes: —
-Commit: —
+Notes:
+- First `npm run build` attempt failed with a stale `.next` incremental-cache
+  error (`ENOENT … rename .next/export/blog.json`); `rm -rf .next` + rebuild
+  passed — environment, not code.
+- Sitemap index + 50k chunking not implemented: the site has 19 URLs, so a
+  single urlset suffices; chunking is dead code until the collection grows.
+- Noindex/draft filtering from `sitemap.xml` is not implemented (everything
+  is currently indexable). Follow-up: when a `noindex` page/post exists, the
+  sitemap should drop it.
+- This commit also carries two pre-existing dirty-tree fixes from the earlier
+  K8 session: `src/lib/content/seo.ts` makes `SeoSource.description` optional
+  (resolves the typecheck error K7 logged as adjacent rot — posts carry
+  `excerpt`) and `tsconfig.json` drops `baseUrl` (paths resolve from the
+  tsconfig location; typecheck unchanged).
+- Keystatic's build-time sort: posts emit `lastmod` from `publishedAt`
+  (2026-10-15 for all five); pages use the build date. RSS dates are RFC 822.
+Commit: `feat(keystatic): add build-time SEO crawler files` (K8: reader-driven
+`scripts/generate-seo-files.ts` via `postbuild`, sitemap/robots/feed/llms/
+security.txt into `public/`, `tsx` dep, gitignore entries, optional
+`SeoSource.description` typecheck fix, plan.md).
 
 ## K5 — Real-time previews (draft mode)
 

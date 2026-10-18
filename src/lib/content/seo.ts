@@ -3,7 +3,9 @@ import { site } from '@/lib/site';
 
 type SeoSource = {
   title: string;
-  description: string;
+  /** Posts carry `excerpt`, not `description`; optional so a post can resolve
+   *  to `site.description` without a type error. Pages still pass `description`. */
+  description?: string;
   metaTitle?: string;
   metaDescription?: string;
   canonical?: string;
