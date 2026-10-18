@@ -25,8 +25,8 @@ export function HeroGatherLite({ progress }: { progress?: MotionValue<number> })
   const src = progress ?? fallback;
   // Idle drift: GPU-only transforms on the wrapper, eased through the same
   // `smooth` windows the full scene uses so both variants park together.
-  const driftY = useTransform(src, (v) => -smooth(0.15, 0.45, v) * 48);
-  const driftScale = useTransform(src, (v) => 1 + smooth(0.15, 0.45, v) * 0.1);
+  const driftY = useTransform(src, (v) => -smooth(0.15, 0.45, v) * 56);
+  const driftScale = useTransform(src, (v) => 1-smooth(0.15, 0.45, v) * 0.95);
   const fade = useTransform(src, (v) => 1 - smooth(0.22, 0.38, v) * 0.55);
 
   return (
@@ -43,7 +43,7 @@ export function HeroGatherLite({ progress }: { progress?: MotionValue<number> })
         src="/img/logo-marketing-collage.svg"
         alt=""
         draggable={false}
-        className="absolute left-1/2 top-[86px] w-[min(72vw,340px)] -translate-x-1/2 motion-safe:animate-[hero-lite-float_7s_ease-in-out_infinite]"
+        className="absolute left-1/2 top-[86px] w-[min(72vw,340px)] -translate-x-1/2"
       />
     </motion.div>
   );
