@@ -45,7 +45,11 @@ export default async function handler(req: any, res: any) {
     const response = await keystaticHandler[method](request);
 
     response.headers.forEach((value, key) => res.setHeader(key, value));
-    res.status(response.status).send(await response.text());
+    // The `blob` endpoint returns raw file bytes (image previews, mdoc
+    // bodies). Reading it as text replaces every invalid UTF-8 byte with
+    // U+FFFD, so the admin preview gets a corrupt image (0×0). Buffer the
+    // arrayBuffer instead — JSON/text responses pass through unchanged.
+    res.status(response.status).send(Buffer.from(await response.arrayBuffer()));
   } catch (error) {
     console.error('[keystatic api]', error);
     res.status(500).json({ error: 'Keystatic API error' });

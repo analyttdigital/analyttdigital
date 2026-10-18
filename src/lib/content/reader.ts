@@ -49,6 +49,14 @@ function mergeValue(defaultValue: unknown, cmsValue: unknown): unknown {
   return cmsValue;
 }
 
+/** Page-level featured image: an empty/absent CMS ref defers to the code
+ *  default; when neither layer has a file the result is `{ src: '', alt: '' }`,
+ *  which the head reads as "no image". */
+function mergeImage(fallback: ContentImage | undefined, cmsValue: unknown): ContentImage {
+  if (cmsValue == null || isEmptyImage(cmsValue)) return fallback ?? { src: '', alt: '' };
+  return cmsValue as ContentImage;
+}
+
 function mergeSection(defaultsSection: Section | undefined, cmsSection: Section): Section {
   if (!defaultsSection || defaultsSection.type !== cmsSection.type) return cmsSection;
   const merged: Record<string, unknown> = { ...(defaultsSection as object) };
@@ -101,6 +109,7 @@ export async function readPage(
     return {
       title: match.entry.title || fallback?.title || '',
       description: match.entry.description || fallback?.description || '',
+      featuredImage: mergeImage(fallback?.featuredImage, match.entry.featuredImage),
       sections,
     };
   } catch {

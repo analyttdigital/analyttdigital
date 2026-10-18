@@ -13,12 +13,21 @@ import { site } from '@/lib/site';
  */
 export function PageView({ bundle, locale, slug, latestPosts }: PageProps) {
   const page = bundle?.page ?? defaults[locale].pages[slug] ?? defaults[locale].pages.home;
+  // Page featured images are upload paths (`/media/uploads/…`); social
+  // scrapers need an absolute URL. Empty `src` means no image at all.
+  const featuredImage = page.featuredImage?.src
+    ? new URL(page.featuredImage.src, site.url).toString()
+    : '';
 
   return (
 		<>
 			<Head>
 				<title>{`${page.title} - ${site.name} `}</title>
 				<meta name="description" content={page.description} />
+				{featuredImage ? <meta property="og:image" content={featuredImage} /> : null}
+				{featuredImage && page.featuredImage?.alt ? (
+					<meta property="og:image:alt" content={page.featuredImage.alt} />
+				) : null}
 			</Head>
 
 			<SectionRenderer sections={page.sections} latestPosts={latestPosts} />

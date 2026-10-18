@@ -23,22 +23,46 @@ before the first milestone commit.
 
 ## K1 — Featured-image previews + page featured image
 
-Status: Not started.
+Status: Done.
 
 Goal: (a) a stored post featured image previews in the Keystatic edit UI
 without re-upload; (b) page documents gain an editable featured image.
 
 Checklist:
-- [ ] Reproduce: post with stored `featuredImage.src` shows blank preview.
-- [ ] Root-cause: suspect `imageField` nesting `fields.image` (upload)
-  under an object — YAML text paths may not resolve to a preview.
-- [ ] Fix preview without breaking reader shape `{ src, alt }`.
-- [ ] Add `featuredImage` to `pageFields`, `PageDoc`, `readPage` merge,
-  defaults (empty = hidden); render (page hero and/or `og:image`).
-- [ ] Verify in `/keystatic` (upload new, keep existing, clear to empty)
-  + on page/post routes.
+- [x] Reproduce: post with stored `featuredImage.src` shows blank preview.
+  Confirmed in `/keystatic` on `kenyas-digital-advertising-landscape-in-2025`:
+  the UI fetched the image blob (200) and created an object URL, but the
+  rendered `<img>` was `naturalWidth: 0`.
+- [x] Root-cause: ingestion pipe, not the nested object. The Pages Router
+  API bridge (`src/pages/api/keystatic/[...params].ts`) read the Keystatic
+  handler response with `response.text()`. The local `blob` endpoint returns
+  raw bytes, so every invalid UTF-8 byte became U+FFFD — the preview blob
+  decoded to a corrupt image. (Nested `fields.image` under `fields.object`
+  resolves fine: directory + slug + filename path matched.)
+- [x] Fix preview without breaking reader shape `{ src, alt }`: send
+  `Buffer.from(await response.arrayBuffer())` from the API bridge; reader
+  shape untouched. Post/story inline images benefit from the same fix.
+- [x] Add `featuredImage` to `pageFields`, `PageDoc`, `readPage` merge,
+  defaults (empty = hidden); render as absolute `og:image` (+`og:image:alt`)
+  in `PageView` and the homepage head. No visible hero image yet.
+- [x] Verify: `/keystatic` post form renders the stored 2560×1709 image
+  (no re-upload); page "Add" form shows the upload field; a temporary CMS
+  page (`src/content/pages/home.yaml`, written/deleted through the Keystatic
+  `update` endpoint — not hand-edited) rendered
+  `<meta property="og:image" content="https://analyttdigital.com/media/uploads/…">`
+  and reverted to no tag once deleted; `/blog/…` + `/about-us` still 200;
+  `npm run typecheck` exit 0.
 
-Notes: —
+Notes:
+- Page merge rule: empty/absent CMS `featuredImage` defers to the code
+  default; every page default is `noImage` (`{ src: "", alt: "" }`), so an
+  empty image hides `og:image`. A page entry with empty `sections` still
+  renders its code-default page wholesale (pre-existing behaviour) — K2's
+  seeded pages always carry sections.
+- Untracked `probe-read.mjs` + `src/content/_probe/` predate this milestone;
+  left untouched and uncommitted (not mine to discard).
+- `src/content/pages/` now exists but is empty (probe deleted).
+
 Commit: —
 
 ## K2 — Migrate default content to Keystatic pages
@@ -122,7 +146,9 @@ Notes: `docs/` is gitignored — force-added (`git add -f`) on this commit.
 note, not a locale reference) — left as-is. K6 commit also carries the
 pre-existing `dev/mobile-first` dirty-tree work (incl. reader lazy-body +
 `stripUndefined` fix) since the user directed K6 on the dirty tree.
-Commit: —
+Commit: `b130b0d` feat(keystatic): drop sw locale, keep locale-keyed structure
+(26 files, +385/−2596; incl. plan.md + instructions.md setup + carried
+dirty-tree work).
 
 ## K7 — SEO readiness audit of current content
 

@@ -940,6 +940,10 @@ export const postFields = {
 export const pageFields = {
   title: fields.text({ label: 'Page title' }),
   description: fields.text({ label: 'Meta description', multiline: true }),
+  // Page-level social/preview image. Same `{ src, alt }` upload object as
+  // posts; empty `src` hides the image (and the reader defers to the code
+  // default, which is empty for every page).
+  featuredImage: imageField('Featured image (empty hides it)'),
   sections: fields.array(
     fields.conditional(fields.select({
       label: 'Section type',

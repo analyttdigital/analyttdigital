@@ -621,6 +621,9 @@ export type SectionType = Section['type'];
 export type PageDoc = {
   title: string;
   description: string;
+  /** Page-level social/preview image; empty `src` means "no image" (omit the
+   *  `og:image` tag). Optional so pre-K1 CMS entries keep reading. */
+  featuredImage?: ContentImage;
   sections: Section[];
 };
 

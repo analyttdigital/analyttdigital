@@ -2,6 +2,7 @@ import type {
   BlogListingCopy,
   BlogPost,
   BlogPostCopy,
+  ContentImage,
   LayoutContent,
   Locale,
   PageDoc,
@@ -14,6 +15,9 @@ import type {
  * page documents used when no Keystatic page exists for a route. A fresh
  * checkout renders complete pages with no CMS content on disk.
  */
+
+/** Page featured image default: no file, so the head omits `og:image`. */
+const noImage: ContentImage = { src: "", alt: "" };
 
 const enLayout: LayoutContent = {
 	brand: "analytt",
@@ -89,6 +93,7 @@ const enLayout: LayoutContent = {
 };
 
 const enHome: PageDoc = {
+	featuredImage: noImage,
 	title: "home",
 	description:
 		"A data-driven performance marketing agency in Kenya helping startups and small businesses turn ad spending into measurable growth.",
@@ -747,6 +752,7 @@ const enHome: PageDoc = {
 };
 
 const enAboutUs: PageDoc = {
+	featuredImage: noImage,
 	title: "about-us",
 	description:
 		"Analytt Digital is a performance marketing agency that places data at the heart of every marketing endeavour, helping businesses across Kenya and East Africa grow with measurable results.",
@@ -926,6 +932,7 @@ const enAboutUs: PageDoc = {
 };
 
 const enContact: PageDoc = {
+	featuredImage: noImage,
 	title: "contact",
 	description:
 		"Get in touch with Analytt Digital. Book a free consultation, request a performance audit, or ask us anything about growing your business across Kenya and East Africa.",
@@ -1039,6 +1046,7 @@ const enContact: PageDoc = {
 	],
 };
 const enDigitalAudit: PageDoc = {
+	featuredImage: noImage,
 	title: "digital-audit",
 	description:
 		"Book a free 30-minute digital audit with Analytt Digital. We'll review your strategy, paid media, tracking and funnel, and show you where your biggest growth opportunities are.",
@@ -1191,6 +1199,7 @@ const enDigitalAudit: PageDoc = {
 	],
 };
 const enPricingPlans: PageDoc = {
+	featuredImage: noImage,
 	title: "pricing-plans",
 	description:
 		"Transparent performance marketing pricing for Kenyan and East African businesses. Choose from Starter, Growth, Scale, or a fully custom plan.",
@@ -1361,6 +1370,7 @@ const enPricingPlans: PageDoc = {
 };
 
 const enServices: PageDoc = {
+	featuredImage: noImage,
 	title: "services",
 	description:
 		"Paid media that converts, data infrastructure you can trust, and growth strategy that compounds. Explore Analytt Digital's full range of performance marketing services for Kenya and East Africa.",
@@ -1494,6 +1504,7 @@ const enServices: PageDoc = {
 };
 
 const enServicePaidMedia: PageDoc = {
+	featuredImage: noImage,
 	title: "services/paid-media",
 	description:
 		"Performance paid media across Google, Meta, TikTok, LinkedIn and YouTube, built for Kenya and East African conversion journeys. 4.2x average ROAS.",
@@ -1684,6 +1695,7 @@ const enServicePaidMedia: PageDoc = {
 };
 
 const enServiceDataAnalytics: PageDoc = {
+	featuredImage: noImage,
 	title: "services/data-analytics",
 	description:
 		"GA4, Google Tag Manager, server-side tracking, Looker Studio dashboards and multi-touch attribution for East African businesses. 100% tracking coverage.",
@@ -1768,6 +1780,7 @@ const enServiceDataAnalytics: PageDoc = {
 };
 
 const enServiceGrowthStrategy: PageDoc = {
+	featuredImage: noImage,
 	title: "services/growth-strategy",
 	description:
 		"Market research, competitive intelligence, ICP development and 12-month performance marketing blueprints for businesses scaling across Kenya and East Africa.",
@@ -1871,6 +1884,7 @@ const enServiceGrowthStrategy: PageDoc = {
 	],
 };
 const enServiceSeo: PageDoc = {
+	featuredImage: noImage,
 	title: "services/seo",
 	description:
 		"Technical SEO, content authority and local search dominance built for English, Swahili and code-switching search behaviour across East Africa.",
@@ -1975,6 +1989,7 @@ const enServiceSeo: PageDoc = {
 };
 
 const enServiceCro: PageDoc = {
+	featuredImage: noImage,
 	title: "services/cro",
 	description:
 		"Heatmaps, session recordings, A/B testing and mobile-first funnel optimisation for Kenyan and East African audiences. 2.8x average conversion lift.",
@@ -2081,6 +2096,7 @@ const enServiceCro: PageDoc = {
 
 
 const enServiceEmailCrm: PageDoc = {
+	featuredImage: noImage,
 	title: "services/email-crm",
 	description:
 		"Welcome flows, abandoned cart recovery, lead nurture and retention marketing for Kenyan and East African businesses. 3.1x customer LTV.",
@@ -2199,6 +2215,7 @@ const enServiceEmailCrm: PageDoc = {
 };
 
 const enServiceIndustries: PageDoc = {
+	featuredImage: noImage,
 	title: "services/industries",
 	description:
 		"Performance marketing for e-commerce, fintech, real estate, healthcare, education, hospitality, SaaS and logistics across Kenya and East Africa.",
