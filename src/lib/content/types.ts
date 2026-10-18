@@ -624,6 +624,13 @@ export type PageDoc = {
   /** Page-level social/preview image; empty `src` means "no image" (omit the
    *  `og:image` tag). Optional so pre-K1 CMS entries keep reading. */
   featuredImage?: ContentImage;
+  /** Optional editor overrides. Empty values defer to the title, summary,
+   * current URL, and featured image in the shared SEO resolver. */
+  metaTitle?: string;
+  metaDescription?: string;
+  canonical?: string;
+  ogImage?: ContentImage;
+  noindex?: boolean;
   sections: Section[];
 };
 
@@ -664,6 +671,11 @@ export type BlogPost = {
   publishedAt: string;
   author: string;
   featuredImage?: ContentImage;
+  metaTitle?: string;
+  metaDescription?: string;
+  canonical?: string;
+  ogImage?: ContentImage;
+  noindex?: boolean;
   body: BlogBody;
 };
 

@@ -128,6 +128,11 @@ export async function readPage(
       title: match.entry.title || fallback?.title || '',
       description: match.entry.description || fallback?.description || '',
       featuredImage: mergeImage(fallback?.featuredImage, match.entry.featuredImage),
+      metaTitle: match.entry.metaTitle || fallback?.metaTitle || '',
+      metaDescription: match.entry.metaDescription || fallback?.metaDescription || '',
+      canonical: match.entry.canonical || fallback?.canonical || '',
+      ogImage: mergeImage(fallback?.ogImage, match.entry.ogImage),
+      noindex: match.entry.noindex ?? fallback?.noindex ?? false,
       sections,
     };
   } catch {
@@ -257,6 +262,11 @@ async function normalizePost(raw: Record<string, unknown>): Promise<BlogPost> {
     publishedAt: nonEmptyString(raw.publishedAt) ? (raw.publishedAt as string) : '',
     author: nonEmptyString(raw.author) ? (raw.author as string) : 'Analytt Digital',
     featuredImage: asImage(raw.featuredImage),
+    metaTitle: nonEmptyString(raw.metaTitle) ? (raw.metaTitle as string) : '',
+    metaDescription: nonEmptyString(raw.metaDescription) ? (raw.metaDescription as string) : '',
+    canonical: nonEmptyString(raw.canonical) ? (raw.canonical as string) : '',
+    ogImage: asImage(raw.ogImage),
+    noindex: raw.noindex === true,
     body: stripUndefined(await resolveBody(raw.body)) as BlogBody,
   };
 }
@@ -307,6 +317,14 @@ function mergePost(fallback: BlogPost | undefined, cms: BlogPost): BlogPost {
       src: '',
       alt: '',
     },
+    metaTitle: nonEmptyString(cms.metaTitle) ? cms.metaTitle : fallback.metaTitle ?? '',
+    metaDescription: nonEmptyString(cms.metaDescription) ? cms.metaDescription : fallback.metaDescription ?? '',
+    canonical: nonEmptyString(cms.canonical) ? cms.canonical : fallback.canonical ?? '',
+    ogImage: (mergeValue(fallback.ogImage ?? { src: '', alt: '' }, cms.ogImage) as ContentImage) ?? {
+      src: '',
+      alt: '',
+    },
+    noindex: cms.noindex ?? fallback.noindex ?? false,
     body: isEmptyDocument(cms.body) ? fallback.body : cms.body,
   };
 }

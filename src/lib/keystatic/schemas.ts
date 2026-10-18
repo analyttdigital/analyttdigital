@@ -133,6 +133,17 @@ export const imageField = (label = 'Image') =>
     { label },
   );
 
+/** Shared, optional search and social metadata. Blank text fields deliberately
+ * defer to the content-layer fallback; this keeps existing entries complete
+ * while letting editors override an individual tag when needed. */
+export const seoFields = {
+  metaTitle: fields.text({ label: 'SEO title (blank uses page/post title)', defaultValue: '' }),
+  metaDescription: fields.text({ label: 'SEO description (blank uses summary)', defaultValue: '', multiline: true }),
+  canonical: fields.text({ label: 'Canonical URL (blank uses this page URL)', defaultValue: '' }),
+  ogImage: imageField('Social share image (blank uses featured image)'),
+  noindex: fields.checkbox({ label: 'Prevent search indexing', defaultValue: false }),
+};
+
 /* ------------------------- section field groups ---------------------- */
 
 /* Shared shape for one floating result panel (the bak tunnel cards). `kind`
@@ -901,6 +912,7 @@ export const postFields = {
   publishedAt: fields.date({ label: 'Publish date', defaultValue: { kind: 'today' } }),
   author: fields.text({ label: 'Author', defaultValue: 'Analytt Digital' }),
   featuredImage: imageField('Featured image (empty hides the figure)'),
+  ...seoFields,
   body: fields.document({
     label: 'Body',
     formatting: {
@@ -944,6 +956,7 @@ export const pageFields = {
   // posts; empty `src` hides the image (and the reader defers to the code
   // default, which is empty for every page).
   featuredImage: imageField('Featured image (empty hides it)'),
+  ...seoFields,
   sections: fields.array(
     fields.conditional(fields.select({
       label: 'Section type',

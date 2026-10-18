@@ -2,12 +2,12 @@ import Head from 'next/head';
 
 import { BlogList } from '@/components/sections/blog-list';
 import { BLOG_PAGE_SIZE, blogBasePath } from '@/lib/content/blog';
+import { resolveSeo } from '@/lib/content/seo';
 import {
   blogPagePaths,
   getBlogIndexStaticProps,
   type BlogIndexProps,
 } from '@/lib/keystatic/getStaticProps';
-import { site } from '@/lib/site';
 
 export async function getStaticPaths() {
   const pages = await blogPagePaths('en');
@@ -26,13 +26,18 @@ export async function getStaticProps({ params }: { params?: { n?: string } }) {
 /** EN blog index, pages 2+. Page 1 redirects to `/blog`. */
 export default function BlogPageN({ blogIndex, locale }: BlogIndexProps) {
   const basePath = blogBasePath(locale);
+  const seo = resolveSeo(
+    { title: `${blogIndex.headline.replace(/\n/g, ' ')} — Page ${blogIndex.page}`, description: blogIndex.body },
+    `${basePath}/page/${blogIndex.page}`,
+  );
   return (
     <>
       <Head>
-        <title>{`${site.name} — ${blogIndex.headline.replace(/\n/g, ' ')}`}</title>
-        <meta name="description" content={blogIndex.body} />
-        <meta property="og:title" content={site.name} />
-        <meta property="og:description" content={blogIndex.body} />
+        <title>{seo.title}</title>
+        <meta name="description" content={seo.description} />
+        <link rel="canonical" href={seo.canonical} />
+        <meta property="og:title" content={seo.title} />
+        <meta property="og:description" content={seo.description} />
         <meta property="og:type" content="website" />
       </Head>
 
