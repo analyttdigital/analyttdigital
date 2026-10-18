@@ -12,8 +12,18 @@ import {
 import { MdiIcon } from "@/lib/icons/resolve-icon";
 import { DynamicImage } from "@/components/media/dynamic-image";
 import type { HeroPartner, HeroPanel, HeroProof, HeroSection } from "@/lib/content/types";
-import { HeroGather } from "@/components/graphics/hero-gather";
+import { HeroGatherLite } from "@/components/graphics/hero-gather-lite";
+import { useLiteScene } from "@/lib/hooks/use-lite-scene";
 import { smooth } from "@/lib/motion/smooth";
+import dynamic from "next/dynamic";
+
+/* The WebGL gather pulls three.js + gsap — code-split so lite devices
+ * (mobile / low-compute / save-data) never download it. SSR off: the
+ * first paint is always the lite mark, desktops upgrade after hydration. */
+const HeroGather = dynamic(
+	() => import("@/components/graphics/hero-gather").then((m) => m.HeroGather),
+	{ ssr: false },
+);
 
 /**
  * Hero — full-screen audit route head (user-approved replica).
@@ -270,7 +280,7 @@ function iconDotClass(panel: HeroPanel, fallback: IconTone) {
  *  type steps up the ramp on dark per the token rule. */
 function panelTones(dark: boolean) {
 	return {
-		title: dark ? "text-primary-50" : "text-primary-900",
+		title: dark ? "text-primary-50" : "text-primary-800",
 		client: dark ? "text-primary-200" : "text-primary-700",
 		sub: dark ? "text-primary-300" : "text-primary-500",
 		rule: dark ? "border-primary-50/10" : "border-primary-900/10",
@@ -663,6 +673,10 @@ export function HeroStage({
 	 *  flip with the variant through `panelTones` + the icon tone helpers. */
 	const dark = (variant ?? hero?.variant ?? "light") === "dark";
 	const reduce = useReducedMotion();
+	/* Lite devices (mobile / low-compute / save-data / reduced-motion) get
+	 * the zero-WebGL scene and never download three.js — see `useLiteScene`.
+	 * SSR-first paint is always lite; capable desktops upgrade on hydrate. */
+	const lite = useLiteScene();
 	/* Static when the wrapper parks motion (or no progress is passed) —
 	 * every animated style below keys off `live`. */
 	const live = !reduce && progress;
@@ -754,13 +768,18 @@ export function HeroStage({
 				style={live ? { opacity: glowOpacity, rotate: orbitTurn } : undefined}
 			/>
 
-			{/* WebGL icon-gather scene — full-bleed layer that drifts + grows into the portal */}
+			{/* Gather scene — lite SVG on mobile / low-compute, full WebGL on
+			    capable desktops (code-split, never downloaded by lite). */}
 			<motion.div
 				aria-hidden
 				className="absolute inset-0"
 				style={live ? { x: canvasX, scale: canvasScale } : undefined}
 			>
-				<HeroGather progress={live ? p : undefined} />
+				{lite ? (
+					<HeroGatherLite progress={live ? p : undefined} />
+				) : (
+					<HeroGather progress={live ? p : undefined} />
+				)}
 			</motion.div>
 
 			{/* Copy block — bottom on mobile, vertically centered on desktop.
@@ -797,7 +816,7 @@ export function HeroStage({
 
 						<h1
 							className={`font-display text-[clamp(1.6rem,4.2vw,3.6rem)] font-bold leading-[1.02] tracking-tightest ${
-								dark ? "text-primary-50" : "text-primary-900"
+								dark ? "text-primary-50" : "text-primary-800"
 							}`}
 						>
 							{lines.map((line, i) => (
@@ -896,7 +915,7 @@ export function HeroStage({
 			</motion.div>
 
 			{/* Partner marquee — bottom of the hero; rides out as the footer cue */}
-			<motion.div
+			{/* <motion.div
 				className={`relative z-30 mx-auto w-full max-w-7xl overflow-hidden  py-5 px-5 sm:px-[clamp(20px,6vw,96px)] ${dark ? "border-primary-50/15" : "border-primary-900/15"}`}
 				aria-label="Partners"
 				style={
@@ -947,7 +966,7 @@ export function HeroStage({
 						</div>
 					))}
 				</div>
-			</motion.div>
+			</motion.div> */}
 		</div>
 	);
 }

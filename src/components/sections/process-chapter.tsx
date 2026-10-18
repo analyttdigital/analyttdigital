@@ -79,7 +79,7 @@ export function ProcessChapter({
 						text={`${process?.headline ?? ""} ${process?.headlineAccent ?? ""}`}
 						variant="blur"
 						as="h2"
-						className="title mt-8 text-[clamp(2rem,4vw,2.4rem)] max-w-[70%] text-primary-900 text-center"
+						className="title mt-8 text-[clamp(2rem,4vw,2.4rem)] max-w-[70%] text-primary-800 text-center"
 					/>
 
 					<p className="text-ink-500 mt-12 max-w-[70%] text-center text-sm md:text-base">
@@ -136,7 +136,7 @@ export function ProcessChapter({
 									size={12}
 									className="pointer-events-none absolute -bottom-8 -right-4 select-none text-ink-950/[0.06]"
 								/>
-								<p className="num font-mono text-[clamp(2.6rem,6vw,4.6rem)] text-ink-300">
+								<p className="num font-display text-[clamp(2.6rem,6vw,4.6rem)] text-ink-300">
 									{current.n}
 								</p>
 								<h3 className="verb font-mono mt-4 text-[clamp(1.6rem,3vw,2.4rem)] text-accent-600">

@@ -15,13 +15,13 @@ export function PageView({ bundle, locale, slug, latestPosts }: PageProps) {
   const page = bundle?.page ?? defaults[locale].pages[slug] ?? defaults[locale].pages.home;
 
   return (
-    <>
-      <Head>
-        <title>{`${site.name} (${locale}) — ${page.title}`}</title>
-        <meta name="description" content={page.description} />
-      </Head>
+		<>
+			<Head>
+				<title>{`${page.title} - ${site.name} `}</title>
+				<meta name="description" content={page.description} />
+			</Head>
 
-      <SectionRenderer sections={page.sections} latestPosts={latestPosts} />
-    </>
+			<SectionRenderer sections={page.sections} latestPosts={latestPosts} />
+		</>
   );
 }

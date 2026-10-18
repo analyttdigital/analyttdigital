@@ -18,7 +18,7 @@ export default function BlogIndexPage({ blogIndex, locale }: BlogIndexProps) {
   return (
     <>
       <Head>
-        <title>{`${site.name} — ${blogIndex.headline.replace(/\n/g, ' ')}`}</title>
+        <title>{`${site.name} - ${blogIndex.headline.replace(/\n/g, ' ')}`}</title>
         <meta name="description" content={blogIndex.body} />
         <meta property="og:title" content={site.name} />
         <meta property="og:description" content={blogIndex.body} />

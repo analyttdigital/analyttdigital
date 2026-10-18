@@ -77,7 +77,8 @@ function SectionBlock({ section, sections, latestPosts }: { section: Section; se
 		case "hero": {
 			// The portal flood carries the full About section as bridge copy;
 			// the circle finishes before the process cover starts. Absent =
-			// the hero renders as a plain static stage and the portal is skipped.
+          // the hero renders as a plain static stage and the portal is skipped.
+            
 			const about: ({ type: "about" } & AboutContent) | undefined = sections.find(
 				(s) => s.type === "about"
 			);
@@ -126,6 +127,7 @@ function SectionBlock({ section, sections, latestPosts }: { section: Section; se
 			const exitStart = 1 - 0.5 / n;
 			// The bridge is the page's cta-banner block: consumed here, hidden
 			// standalone below — the process `image` is its panel background.
+            
 			const banner = sections.find(
 				(s): s is { type: "cta-banner" } & CtaSection => s.type === "cta-banner"
 			);

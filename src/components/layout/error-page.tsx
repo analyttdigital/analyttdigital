@@ -47,7 +47,7 @@ export function ErrorPage({
               {data.eyebrow}
             </span>
 
-            <h1 className="font-display text-[clamp(2rem,5vw,3.4rem)] font-bold leading-[1.02] tracking-tightest text-primary-900">
+            <h1 className="font-display text-[clamp(2rem,5vw,3.4rem)] font-bold leading-[1.02] tracking-tightest text-primary-800">
               {data.headline}
             </h1>
 

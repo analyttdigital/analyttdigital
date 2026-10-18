@@ -184,8 +184,46 @@ function asImage(value: unknown): ContentImage {
     : { src: '', alt: '' };
 }
 
+/** Resolve a `fields.document` value to its node array (Keystatic 0.6.9 hands
+ *  back a lazy loader for the sidecar `<slug>/body.mdoc`; anything else
+ *  passes through when already an array). */
+async function resolveBody(value: unknown): Promise<BlogBody> {
+  // Keystatic 0.6.9 returns `fields.document` from `.all()` as a lazy loader
+  // function (sidecar `<slug>/body.mdoc`); awaiting it yields the node array
+  // the `DocumentRenderer` draws. Passing `{ resolveLinkedFiles: true }`
+  // below eagerly resolves most entries — this covers any stragglers.
+  if (typeof value === 'function') {
+    try {
+      const out = await (value as () => Promise<unknown>)();
+      return (Array.isArray(out) ? out : []) as BlogBody;
+    } catch {
+      return [];
+    }
+  }
+  return (Array.isArray(value) ? value : []) as BlogBody;
+}
+
+/** Deep-strip `undefined` from document nodes (`textAlign: undefined`, …) so
+ *  posts survive Next's `getStaticProps` JSON serialization, which rejects
+ *  `undefined` anywhere in props. Objects drop undefined keys; arrays map
+ *  them to `null` to preserve child positions. */
+function stripUndefined(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map((item) => (item === undefined ? null : stripUndefined(item)));
+  }
+  if (value !== null && typeof value === 'object') {
+    const out: Record<string, unknown> = {};
+    for (const [key, entry] of Object.entries(value as Record<string, unknown>)) {
+      if (entry === undefined) continue;
+      out[key] = stripUndefined(entry);
+    }
+    return out;
+  }
+  return value;
+}
+
 /** Fill a CMS post's missing keys so CMS-only posts render a full shape. */
-function normalizePost(raw: Record<string, unknown>): BlogPost {
+async function normalizePost(raw: Record<string, unknown>): Promise<BlogPost> {
   return {
     slug: nonEmptyString(raw.slug) ? (raw.slug as string) : '',
     title: nonEmptyString(raw.title) ? (raw.title as string) : '',
@@ -194,7 +232,7 @@ function normalizePost(raw: Record<string, unknown>): BlogPost {
     publishedAt: nonEmptyString(raw.publishedAt) ? (raw.publishedAt as string) : '',
     author: nonEmptyString(raw.author) ? (raw.author as string) : 'Analytt Digital',
     featuredImage: asImage(raw.featuredImage),
-    body: (Array.isArray(raw.body) ? raw.body : []) as BlogBody,
+    body: stripUndefined(await resolveBody(raw.body)) as BlogBody,
   };
 }
 
@@ -256,17 +294,21 @@ export async function listPosts(reader: AnyReader | null, locale: Locale): Promi
   const fallbacks = defaults[locale].blog.posts;
   if (!reader) return [...fallbacks].sort(byNewest);
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // `resolveLinkedFiles: true` eagerly reads the sidecar `<slug>/body.mdoc`
+    // content-form fields (`fields.document`) into node arrays; without it
+    // the reader returns a lazy loader function and the post page renders an
+    // empty `<div class="max-w-[68ch]">` (caught on
+    // `/blog/kenyas-digital-advertising-landscape-in-2025`).
     const entries: { slug: string; entry: Record<string, unknown> }[] = await (
-      reader.collections as Record<string, { all: () => Promise<any> }>
-    )[`posts-${locale}`].all();
+      reader.collections as Record<string, { all: (opts?: unknown) => Promise<any> }>
+    )[`posts-${locale}`].all({ resolveLinkedFiles: true });
     const merged: BlogPost[] = [];
     const seen = new Set<string>();
     for (const e of entries) {
       const { slug, fallback } = canonicalPost(fallbacks, e.slug, e.entry.slug);
       if (seen.has(slug)) continue;
       seen.add(slug);
-      merged.push(mergePost(fallback, normalizePost({ ...e.entry, slug })));
+      merged.push(mergePost(fallback, await normalizePost({ ...e.entry, slug })));
     }
     for (const fallback of fallbacks) {
       if (!seen.has(fallback.slug)) {
