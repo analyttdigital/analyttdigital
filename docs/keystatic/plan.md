@@ -169,7 +169,7 @@ dirty-tree work).
 
 ## K7 — SEO readiness audit of current content
 
-Status: Not started. Depends on K2+K3 (audit migrated content, real fields).
+Status: In progress. Depends on K2+K3 (audit migrated content, real fields).
 
 Goal: every page/post ships complete, valid SEO metadata.
 
@@ -180,7 +180,11 @@ Checklist:
   list every composed value in Notes for review.
 - [ ] Confirm noindex only where intended; `og:type article` + dates on posts.
 
-Notes: —
+Notes: Added unique code-default SEO titles for all 13 pages and the three
+code-default posts in `0a3ec08`. Existing descriptions/excerpts remain the
+metadata fallback. The two CMS-only posts still need editorial title-length,
+description, heading, canonical, and image-alt review; complete that audit
+through Keystatic rather than hand-editing YAML. No dev instance was started.
 Commit: —
 
 ## K8 — Build-time crawler files (Pages Router)
