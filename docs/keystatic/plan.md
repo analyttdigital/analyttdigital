@@ -80,12 +80,14 @@ Checklist:
 - [x] Seeded one YAML per slug under `src/content/pages/` with the retained
   `scripts/seed-pages.mjs` helper, including upload-backed copies of legacy
   image assets.
-- [x] Verified the reader-level rendered contract against code defaults:
-  `node scripts/seed-pages.mjs --check` reports all 13 pages with zero parity
-  failures. The check compares copied image bytes and ignores Keystatic's
-  unused alternate-variant field defaults.
-- [ ] Confirm `/keystatic` lists + edits each page; saves round-trip (requires
-  a user-approved dev instance; deferred under AGENTS.md).
+- [x] `seed-pages.mjs --check` reported all 13 pages with zero parity
+  failures (re-verified after K3/K5/K9 work).
+- [x] `/keystatic` lists + save round-trips (confirmed with a
+  user-approved dev instance): the admin UI lists Pages/Posts/Layout
+  nav items (headless-Chrome DOM check); the `tree` endpoint lists all
+  page/post files + `layout.yaml`; every stored page/post YAML (13
+  pages incl. nested `services/*` + 5 posts) round-tripped through the
+  admin `update` bridge byte-identically (18/18 `200`).
 - [x] Kept every `defaults.ts` page entry as the zero-CMS fallback.
 
 Notes: Image URLs change from legacy `/img`/`media` references to managed
@@ -108,8 +110,11 @@ Checklist:
   values defer to code fallbacks.
 - [x] Wired `<Head>` on page routes, blog index, pagination, and post routes.
 - [x] Documented precedence (CMS → excerpt/description → site default).
-- [ ] Verify view-source on a page + post (requires a user-approved dev
-  instance; not started under AGENTS.md).
+- [x] Verify view-source on a page + post (done on the **built** HTML in
+  `.next/server/pages`): `<title>`, `meta name="description"`, absolute
+  `canonical`, `og:*` tags, `og:type=article` + `article:published_time`
+  on posts, no stray noindex; titles and descriptions unique site-wide
+  (0 duplicates).
 
 Notes: `resolveSeo` is the code-default layer: title uses an explicit CMS
 value or the content title; description uses CMS metadata, then the page
@@ -237,6 +242,13 @@ Notes:
   `BlogPost` to `resolveSeo`, whose `SeoSource.description` is required but
   `BlogPost` carries `excerpt` not `description` — pre-existing typecheck
   error (fails on a clean tree too), unrelated to this change.
+- **Resolved during the deferred checks** (user-approved session): the
+  optional `description` (K8 commit) still left posts resolving to
+  `site.description` because `resolveSeo` never consulted a post's
+  `excerpt` — three CMS posts shipped the agency-default description.
+  `resolveSeo` now falls through `metaDescription` → `description` →
+  `excerpt` → site default (documented precedence), and built HTML shows
+  unique per-post descriptions with 0 site-wide duplicates.
 
 Commit: `8e60983` feat(keystatic): complete K7 SEO audit via code-default posts
 (2 files, +70/−11; defaults.ts gains two code-default blog posts with complete
@@ -376,9 +388,14 @@ Checklist:
   reader, merges it over the code default exactly as `readLayout` does,
   and requires zero differences vs the default — `node
   scripts/seed-layout.mjs --check` reports `✓ layout`, 0 failures.
-- [ ] Confirm `/keystatic` exposes the seeded values in the Layout
-  singleton form and a save round-trips (requires a user-approved dev
-  instance; deferred — see Notes for what to check).
+- [x] Confirm `/keystatic` exposes the seeded values in the Layout
+  singleton form and a save round-trips (done with a user-approved dev
+  instance): the singleton form renders every seeded value (brand,
+  tagline, social links, contact, legal — headless-Chrome DOM check on
+  `/keystatic/singleton/layout`) and shows a Save button; a simulated
+  no-op save through the admin `update` bridge (the UI-materialised
+  shape, plain nav items carrying `children: []`) stays 200 and the
+  parity check still passes, then the seeded bytes were restored.
 - [x] Kept `defaults.en.layout` untouched as the zero-CMS fallback; zero
   app-code changes (script is `.mjs`, output is one YAML file).
 
@@ -397,6 +414,14 @@ Notes:
 - Per direction: no typecheck/build checks in this milestone — only the
   script's reader-level parity result is evidence; run the usual checks
   at the end, on user confirmation.
+- Post-check note (user-approved session): `seed-pages.mjs`'s parity gate
+  went red (`metaTitle: missing in CMS` on all 13 pages) because its
+  `mergePage` still modelled the K2 shape, pre-dating K3's SEO fields;
+  fixed the checker to mirror `readPage`'s full merge (CMS wins,
+  empty strings/booleans/arrays/images defer), back to 0 failures. The
+  final gate also proved the CMS entries render: typecheck + full build
+  green with the layout singleton and all seeded pages publishing from
+  the CMS layer.
 Commit: `7357359` feat(keystatic): seed editable layout singleton content
 (3 files, +255/−3: `scripts/seed-layout.mjs` + seeded
 `src/content/layout.yaml`, plan.md; no `src/**` app-code changes).
