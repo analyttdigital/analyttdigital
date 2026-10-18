@@ -107,8 +107,10 @@ html {
   text-rendering: optimizeLegibility;
   scroll-behavior: smooth;
 }
-
-/* Lenis smooth scroll recommended styles */
+html, body {
+    overflow-x: clip !important; 
+}
+/* Lenis smooth scroll recommended styles 
 html.lenis,
 html.lenis body {
   height: auto;
@@ -122,10 +124,9 @@ html.lenis body {
 .lenis.lenis-stopped {
   overflow: hidden;
 }
-
+*/
 body {
   @apply font-sans text-ink-500;
-  overflow-x: hidden;
 }
 
 /* ------------------------------------------------------------------ */
@@ -1259,6 +1260,14 @@ button {
 @keyframes marquee {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
+}
+/* Lite gather — the mobile-first hero scene's idle float. Transform-only
+   (compositor thread), gentle 8px bob so low-refresh phones stay smooth.
+   `motion-reduce` is handled in JSX (`motion-safe:` prefix); the global
+   reduced-motion rule above collapses it to nothing for AT-safe readers. */
+@keyframes hero-lite-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 }
 @layer utilities {
   .animate-marquee {

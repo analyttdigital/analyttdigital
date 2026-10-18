@@ -49,12 +49,36 @@ function mergeValue(defaultValue: unknown, cmsValue: unknown): unknown {
   return cmsValue;
 }
 
+/** Page-level featured image: an empty/absent CMS ref defers to the code
+ *  default; when neither layer has a file the result is `{ src: '', alt: '' }`,
+ *  which the head reads as "no image". */
+function mergeImage(fallback: ContentImage | undefined, cmsValue: unknown): ContentImage {
+  if (cmsValue == null || isEmptyImage(cmsValue)) return fallback ?? { src: '', alt: '' };
+  return cmsValue as ContentImage;
+}
+
+/** Keystatic stores a conditional block as `{ discriminant, value }`; the
+ *  renderer's contract is a flat `{ type, ...fields }` section. Normalize
+ *  before merging, otherwise every CMS page section looks like an unknown
+ *  `type` and never reaches its component. */
+function normalizeSection(raw: unknown): Section {
+  if (raw !== null && typeof raw === 'object' && 'discriminant' in raw && 'value' in raw) {
+    const block = raw as { discriminant: string; value: Record<string, unknown> };
+    return { ...(block.value ?? {}), type: block.discriminant } as Section;
+  }
+  return raw as Section;
+}
+
 function mergeSection(defaultsSection: Section | undefined, cmsSection: Section): Section {
   if (!defaultsSection || defaultsSection.type !== cmsSection.type) return cmsSection;
   const merged: Record<string, unknown> = { ...(defaultsSection as object) };
   for (const [k, v] of Object.entries(cmsSection as Record<string, unknown>)) {
     if (k === 'type') continue;
-    merged[k] = mergeValue(merged[k], v);
+    const mergedValue = mergeValue(merged[k], v);
+    // An empty CMS image/array with no code default merges to `undefined`;
+    // drop the key instead — Next rejects `undefined` in getStaticProps props.
+    if (mergedValue === undefined) delete merged[k];
+    else merged[k] = mergedValue;
   }
   return merged as Section;
 }
@@ -63,12 +87,14 @@ export async function readLayout(reader: AnyReader | null, locale: Locale): Prom
   if (!reader) return defaults[locale].layout;
   try {
     const entry = await (reader.singletons as Record<string, { read: () => Promise<LayoutContent | null> }>)[
-      `layout-${locale}`
+      'layout'
     ].read();
     if (!entry) return defaults[locale].layout;
     const merged: Record<string, unknown> = { ...(defaults[locale].layout as object) };
     for (const [k, v] of Object.entries(entry as Record<string, unknown>)) {
-      merged[k] = mergeValue(merged[k], v);
+      const mergedValue = mergeValue(merged[k], v);
+      if (mergedValue === undefined) delete merged[k];
+      else merged[k] = mergedValue;
     }
     return merged as LayoutContent;
   } catch {
@@ -92,15 +118,21 @@ export async function readPage(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const entries: { slug: string; entry: PageDoc }[] = await (
       reader.collections as Record<string, { all: () => Promise<any> }>
-    )[`pages-${locale}`].all();
+    ).pages.all();
     const match = entries.find((e) => e.slug === slug);
     if (!match?.entry?.sections?.length) return fallback ?? null;
 
-    const cmsSections = match.entry.sections;
+    const cmsSections = (match.entry.sections as unknown[]).map(normalizeSection);
     const sections = cmsSections.map((cms, i) => mergeSection(fallback?.sections[i], cms));
     return {
       title: match.entry.title || fallback?.title || '',
       description: match.entry.description || fallback?.description || '',
+      featuredImage: mergeImage(fallback?.featuredImage, match.entry.featuredImage),
+      metaTitle: match.entry.metaTitle || fallback?.metaTitle || '',
+      metaDescription: match.entry.metaDescription || fallback?.metaDescription || '',
+      canonical: match.entry.canonical || fallback?.canonical || '',
+      ogImage: mergeImage(fallback?.ogImage, match.entry.ogImage),
+      noindex: match.entry.noindex ?? fallback?.noindex ?? false,
       sections,
     };
   } catch {
@@ -117,7 +149,7 @@ export async function listPageSlugs(reader: AnyReader | null, locale: Locale): P
     try {
       const cmsSlugs: string[] = await (
         reader.collections as Record<string, { list: () => Promise<string[]> }>
-      )[`pages-${locale}`].list();
+      ).pages.list();
       for (const slug of cmsSlugs) slugs.add(slug);
     } catch {
       // Unreadable collection: the code defaults still describe every page.
@@ -137,12 +169,10 @@ export async function readPageBundle(
 }
 
 /* ------------------------------- blog --------------------------------- */
-/* Posts (M8): `posts-<locale>` markdown collections merged over the code
+/* Posts: the `posts` collection merged over the code
  * defaults in `defaults[locale].blog.posts`, newest first. Rules mirror the
  * page layer: CMS values win, empty bodies defer to defaults, CMS-only posts
- * pass through, and an unknown slug is `null` (404, never home). While the SW
- * translations land, a bodyless SW post borrows its EN peer's body so the
- * `/sw/blog/<slug>` URL stays readable (recorded M8 gap). */
+ * pass through, and an unknown slug is `null` (404, never home). */
 
 function nonEmptyString(value: unknown): value is string {
   return typeof value === 'string' && value.trim() !== '';
@@ -184,8 +214,46 @@ function asImage(value: unknown): ContentImage {
     : { src: '', alt: '' };
 }
 
+/** Resolve a `fields.document` value to its node array (Keystatic 0.6.9 hands
+ *  back a lazy loader for the sidecar `<slug>/body.mdoc`; anything else
+ *  passes through when already an array). */
+async function resolveBody(value: unknown): Promise<BlogBody> {
+  // Keystatic 0.6.9 returns `fields.document` from `.all()` as a lazy loader
+  // function (sidecar `<slug>/body.mdoc`); awaiting it yields the node array
+  // the `DocumentRenderer` draws. Passing `{ resolveLinkedFiles: true }`
+  // below eagerly resolves most entries — this covers any stragglers.
+  if (typeof value === 'function') {
+    try {
+      const out = await (value as () => Promise<unknown>)();
+      return (Array.isArray(out) ? out : []) as BlogBody;
+    } catch {
+      return [];
+    }
+  }
+  return (Array.isArray(value) ? value : []) as BlogBody;
+}
+
+/** Deep-strip `undefined` from document nodes (`textAlign: undefined`, …) so
+ *  posts survive Next's `getStaticProps` JSON serialization, which rejects
+ *  `undefined` anywhere in props. Objects drop undefined keys; arrays map
+ *  them to `null` to preserve child positions. */
+function stripUndefined(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map((item) => (item === undefined ? null : stripUndefined(item)));
+  }
+  if (value !== null && typeof value === 'object') {
+    const out: Record<string, unknown> = {};
+    for (const [key, entry] of Object.entries(value as Record<string, unknown>)) {
+      if (entry === undefined) continue;
+      out[key] = stripUndefined(entry);
+    }
+    return out;
+  }
+  return value;
+}
+
 /** Fill a CMS post's missing keys so CMS-only posts render a full shape. */
-function normalizePost(raw: Record<string, unknown>): BlogPost {
+async function normalizePost(raw: Record<string, unknown>): Promise<BlogPost> {
   return {
     slug: nonEmptyString(raw.slug) ? (raw.slug as string) : '',
     title: nonEmptyString(raw.title) ? (raw.title as string) : '',
@@ -194,7 +262,12 @@ function normalizePost(raw: Record<string, unknown>): BlogPost {
     publishedAt: nonEmptyString(raw.publishedAt) ? (raw.publishedAt as string) : '',
     author: nonEmptyString(raw.author) ? (raw.author as string) : 'Analytt Digital',
     featuredImage: asImage(raw.featuredImage),
-    body: (Array.isArray(raw.body) ? raw.body : []) as BlogBody,
+    metaTitle: nonEmptyString(raw.metaTitle) ? (raw.metaTitle as string) : '',
+    metaDescription: nonEmptyString(raw.metaDescription) ? (raw.metaDescription as string) : '',
+    canonical: nonEmptyString(raw.canonical) ? (raw.canonical as string) : '',
+    ogImage: asImage(raw.ogImage),
+    noindex: raw.noindex === true,
+    body: stripUndefined(await resolveBody(raw.body)) as BlogBody,
   };
 }
 
@@ -244,6 +317,14 @@ function mergePost(fallback: BlogPost | undefined, cms: BlogPost): BlogPost {
       src: '',
       alt: '',
     },
+    metaTitle: nonEmptyString(cms.metaTitle) ? cms.metaTitle : fallback.metaTitle ?? '',
+    metaDescription: nonEmptyString(cms.metaDescription) ? cms.metaDescription : fallback.metaDescription ?? '',
+    canonical: nonEmptyString(cms.canonical) ? cms.canonical : fallback.canonical ?? '',
+    ogImage: (mergeValue(fallback.ogImage ?? { src: '', alt: '' }, cms.ogImage) as ContentImage) ?? {
+      src: '',
+      alt: '',
+    },
+    noindex: cms.noindex ?? fallback.noindex ?? false,
     body: isEmptyDocument(cms.body) ? fallback.body : cms.body,
   };
 }
@@ -256,17 +337,21 @@ export async function listPosts(reader: AnyReader | null, locale: Locale): Promi
   const fallbacks = defaults[locale].blog.posts;
   if (!reader) return [...fallbacks].sort(byNewest);
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // `resolveLinkedFiles: true` eagerly reads the sidecar `<slug>/body.mdoc`
+    // content-form fields (`fields.document`) into node arrays; without it
+    // the reader returns a lazy loader function and the post page renders an
+    // empty `<div class="max-w-[68ch]">` (caught on
+    // `/blog/kenyas-digital-advertising-landscape-in-2025`).
     const entries: { slug: string; entry: Record<string, unknown> }[] = await (
-      reader.collections as Record<string, { all: () => Promise<any> }>
-    )[`posts-${locale}`].all();
+      reader.collections as Record<string, { all: (opts?: unknown) => Promise<any> }>
+    ).posts.all({ resolveLinkedFiles: true });
     const merged: BlogPost[] = [];
     const seen = new Set<string>();
     for (const e of entries) {
       const { slug, fallback } = canonicalPost(fallbacks, e.slug, e.entry.slug);
       if (seen.has(slug)) continue;
       seen.add(slug);
-      merged.push(mergePost(fallback, normalizePost({ ...e.entry, slug })));
+      merged.push(mergePost(fallback, await normalizePost({ ...e.entry, slug })));
     }
     for (const fallback of fallbacks) {
       if (!seen.has(fallback.slug)) {
@@ -288,10 +373,6 @@ export async function readPost(
 ): Promise<BlogPost | null> {
   const match = (await listPosts(reader, locale)).find((p) => p.slug === slug);
   if (!match) return null;
-  if (isEmptyDocument(match.body) && locale !== defaultLocale) {
-    const peer = (await listPosts(reader, defaultLocale)).find((p) => p.slug === slug);
-    if (peer && !isEmptyDocument(peer.body)) return { ...match, body: peer.body };
-  }
   return match;
 }
 

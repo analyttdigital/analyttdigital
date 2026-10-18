@@ -1,0 +1,120 @@
+description: Market research, competitive intelligence, ICP development and 12-month performance marketing blueprints for businesses scaling across Kenya and East Africa.
+featuredImage:
+  alt: ''
+sections:
+  - discriminant: page-hero-alt
+    value:
+      eyebrow: Growth Strategy
+      headline: Win before you spend a single coin.
+      lede: 'Before you spend on ads or content: who is your ideal customer, what does the competitive landscape look like, and which channels return best? Strategy answers with data, not gut feel.'
+      quote: Strategy is what separates the businesses that scale from the ones that stall.
+      cta: Request Your Free Consultation
+      ctaHref: /contact/
+      secondaryCta: ''
+      secondaryCtaHref: ''
+  - discriminant: problem-alt
+    value:
+      eyebrow: The problem we solve
+      headline: Are you targeting the right audience?
+      paragraphs:
+        - Are you targeting the right audience, or the one that's easiest to reach?
+        - Do you know what your competitors are actually spending and where?
+        - Is your budget split across channels based on evidence or habit?
+        - If you're entering a new African market, do you have a realistic launch plan?
+        - Can you articulate your 12-month growth roadmap with milestones and KPIs?
+      closing: Without clear answers, every marketing shilling is a gamble.
+  - discriminant: capabilities-alt
+    value:
+      eyebrow: What's included
+      headline: Eight deliverables, one roadmap.
+      lede: Research, intelligence, and a 12-month plan.
+      orderLabel: Order
+      orderServices: Scope
+      orderSequence: Sequence
+      items:
+        - title: Market Opportunity Analysis
+          tag: Scope 01
+          depth: '01'
+          icon: chart
+          body: Demand sizing, keyword landscape and category analysis for your Kenya and Africa market.
+        - title: Competitive Intelligence Report
+          tag: Scope 02
+          depth: '02'
+          icon: crosshairs
+          body: Full breakdown of competitor strategy, spend estimation and positioning gaps.
+        - title: Ideal Customer Profile (ICP)
+          tag: Scope 03
+          depth: '03'
+          icon: target
+          body: Data-driven audience personas built on Kenyan and African consumer insight.
+        - title: Channel Mix Modelling
+          tag: Scope 04
+          depth: '04'
+          icon: route
+          body: Evidence-based channel prioritisation matched to your goals and budget.
+        - title: Performance Marketing Blueprint
+          tag: Scope 05
+          depth: '05'
+          icon: document
+          body: 12-month roadmap with milestones, KPIs, budget allocation and channel strategy.
+        - title: Go-To-Market Strategy
+          tag: Scope 06
+          depth: '06'
+          icon: rocket
+          body: 'For businesses entering new African markets: launch strategy and growth model.'
+        - title: Messaging & Positioning Audit
+          tag: Scope 07
+          depth: '07'
+          icon: bullhorn
+          body: Review and recommendations on brand positioning in the Kenyan market.
+        - title: Quarterly Strategy Reviews
+          tag: Scope 08
+          depth: '08'
+          icon: refresh
+          body: Ongoing strategy refinement as market conditions and data evolve.
+  - discriminant: stats-alt
+    value:
+      eyebrow: Results we deliver
+      headline: Plans that pay for themselves.
+      body: Strategy outcomes we aim for.
+      stats:
+        - value: 2x
+          label: Faster go-to-market
+          icon: rocket
+        - value: 35%
+          label: Average budget saved
+          icon: chart
+        - value: '12'
+          label: Month roadmap
+          icon: route
+  - discriminant: industries-alt
+    value:
+      eyebrow: Who this is for
+      headline: Built for businesses like yours.
+      body: Five profiles that fit this service best.
+      hint: Five fit profiles
+      items:
+        - Startups entering Kenya or East Africa for the first time
+        - Established businesses expanding into new regional markets
+        - Funded companies who need to deploy budget with a clear plan
+        - Founders and CMOs who need a data-driven second opinion on strategy
+        - International brands localising for African consumers
+  - discriminant: process-alt
+    value:
+      eyebrow: Our process
+      headline: Discovery to refinement,
+      headlineAccent: in five steps.
+      lede: Research first, blueprint next, refinement every quarter.
+      cardTitle: Our process
+      closing: Build a real plan before you spend.
+      cta: Request Your Free Consultation
+      ctaHref: /contact/
+  - discriminant: cta-split
+    value:
+      eyebrow: Ready for a real growth plan?
+      headline: Get a free 30-minute strategy consultation.
+      body: We'll discuss your growth goals and outline where the biggest opportunities are in your market. No pitch. No obligation. Just data.
+      cta: Request Your Free Consultation
+      ctaHref: /contact/
+      note: No pitch. No obligation. Just data.
+      portalLabel: Free · No commitment

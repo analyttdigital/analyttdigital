@@ -1,0 +1,209 @@
+description: Transparent performance marketing pricing for Kenyan and East African businesses. Choose from Starter, Growth, Scale, or a fully custom plan.
+featuredImage:
+  alt: ''
+sections:
+  - discriminant: page-hero-alt
+    value:
+      eyebrow: Pricing plans
+      headline: Clear plans for every stage.
+      lede: Clear, tiered plans for businesses at every stage of growth. Whether you're a local SME getting started or an enterprise scaling across Africa, there's a plan built for you. Not sure which fits? Book a free digital audit and we'll recommend the right one.
+      quote: ''
+      cta: Book a free digital audit
+      ctaHref: /digital-audit/
+      secondaryCta: ''
+      secondaryCtaHref: ''
+  - discriminant: pricing-tiers-alt
+    value:
+      eyebrow: Plans
+      headline: Four ways to work with us.
+      body: Custom for unique scopes; Starter, Growth, and Scale for staged growth.
+      note: Ad spend is separate from management fees in every plan.
+      tiers:
+        - name: Custom
+          tagline: Tailor it for you
+          body: For unique needs, in-house teams needing support, or projects that don't fit a tier. Let us know what assistance you need, and we'll build a scope around it.
+          cta: Request a Custom Quote
+          ctaHref: /contact/
+          bestFor: Specific needs, in-house teams
+          featured: false
+          features:
+            - Media Buying (Meta, TikTok, 2 platforms)
+            - Content Creation and Posting on channels
+            - Monthly Report
+            - 1x Strategy Session / month
+        - name: Starter
+          tagline: Ideal for SMEs and Early-Stage Brands
+          body: Everything you need to get a structured, data-driven marketing foundation in place.
+          cta: Choose Starter
+          ctaHref: /contact/
+          bestFor: Local businesses, entry-level growth
+          featured: false
+          features:
+            - Media Buying (Meta, Google, 2 platforms)
+            - SEO Starter Pack (On-page + Technical Audit)
+            - Monthly Report
+            - 1x Strategy Session / month
+            - 4 Custom Creatives / month
+            - Basic Analytics Setup
+            - Conversion Rate Optimization (CRO)
+            - Dedicated Strategist
+            - Landing Page Design
+        - name: Growth
+          tagline: For Brands Ready to Scale ROI and Reach
+          body: Our most popular plan. Built for businesses with product-market fit who are ready to accelerate.
+          cta: Choose Growth
+          ctaHref: /contact/
+          bestFor: E-commerce, funded startups, regional brands
+          featured: true
+          features:
+            - Media Buying (Meta, Google, TikTok, LinkedIn, 4 platforms)
+            - SEO Growth Plan (Content + Backlinks)
+            - Bi-weekly Strategy Sessions
+            - 8 Custom Creatives / month
+            - Advanced Analytics and Pixel Setup
+            - CRO (A/B testing + Landing Audits)
+            - Bi-weekly Reports
+            - Shared Strategist
+            - Full Funnel Design
+        - name: Scale
+          tagline: Engineered for Aggressive Scaling and Global Brands
+          body: Full-service, high-touch performance marketing for businesses operating at scale.
+          cta: Choose Scale
+          ctaHref: /contact/
+          bestFor: High-growth, Pan-African, enterprise brands
+          featured: false
+          features:
+            - All Platforms + Programmatic / Display / YouTube
+            - International SEO + Schema + AI Segmentation
+            - 24 Creatives / month
+            - Full Funnel CRO and Custom Landing Pages
+            - Weekly Executive Dashboard Reports
+            - Weekly Strategy + Dedicated Lead
+            - Predictive Targeting and Deep Insights
+  - discriminant: compare-table-alt
+    value:
+      eyebrow: Compare
+      headline: Compare plans at a glance.
+      body: Nine rows, four plans, zero fine print.
+      columns:
+        - Feature
+        - Custom
+        - Starter
+        - Growth
+        - Scale
+      rows:
+        - feature: Media Buying Platforms
+          cells:
+            - '2'
+            - '2'
+            - '4'
+            - All + Programmatic
+        - feature: SEO
+          cells:
+            - Not included
+            - Starter Pack
+            - Growth Plan
+            - International + AI
+        - feature: Strategy Sessions
+          cells:
+            - Monthly
+            - Monthly
+            - Bi-weekly
+            - Weekly
+        - feature: Creatives / Month
+          cells:
+            - Not included
+            - '4'
+            - '8'
+            - '24'
+        - feature: Analytics Setup
+          cells:
+            - Not included
+            - Basic
+            - Advanced + Pixel
+            - Predictive + Deep
+        - feature: CRO
+          cells:
+            - Not included
+            - Basic
+            - A/B + Audits
+            - Full Funnel
+        - feature: Reporting
+          cells:
+            - Monthly
+            - Monthly
+            - Bi-weekly
+            - Weekly Executive
+        - feature: Landing Pages
+          cells:
+            - Not included
+            - Design
+            - Full Funnel
+            - Custom
+        - feature: Dedicated Lead
+          cells:
+            - Not included
+            - Strategist
+            - Shared
+            - Dedicated Lead
+  - discriminant: exclusions-alt
+    value:
+      eyebrow: Honest scope
+      headline: What's not included.
+      body: 'To keep things honest and transparent:'
+      note: We'll always be upfront about what's included before you sign anything.
+      items:
+        - title: Ad spend
+          body: Ad spend is separate from management fees.
+        - title: Third-party tools
+          body: Third-party tools (e.g. Hotjar, Klaviyo, premium SEO tools) are billed at cost.
+        - title: Extra content production
+          body: Content production beyond the included creative count is quoted separately.
+        - title: Scale content production
+          body: International SEO at Scale includes localized content strategy; content production is scoped separately.
+  - discriminant: plan-picker-alt
+    value:
+      eyebrow: Find your fit
+      headline: Which plan is right for you?
+      body: Pick the closest fit; we'll confirm it on a free call.
+      options:
+        - value: starter
+          label: Choose Starter
+          hint: You're an SME or early-stage brand getting your first structured marketing system in place.
+        - value: growth
+          label: Choose Growth
+          hint: You have product-market fit and want to scale ROI across multiple channels.
+        - value: scale
+          label: Choose Scale
+          hint: You're operating at significant scale, expanding across Africa or globally, and need a dedicated growth partner.
+        - value: custom
+          label: Choose Custom
+          hint: You have specific needs, an in-house team, or a scope that doesn't fit a standard tier.
+      cta: Book a free audit
+      ctaHref: /digital-audit/
+      note: Not sure yet? Book a free session and we'll recommend the right plan.
+  - discriminant: cta-split
+    value:
+      eyebrow: Get a free 30-minute consultation
+      headline: We'll recommend the right plan.
+      body: Not sure yet? Book a free session and we'll recommend the right plan based on your goals, budget, and current marketing. No pitch. No obligation. Just data.
+      cta: Book Your Free Digital Audit
+      ctaHref: /digital-audit/
+      note: No pitch. No obligation. Just data.
+      portalLabel: Free · No commitment
+  - discriminant: faq
+    value:
+      eyebrow: FAQ
+      headline: Questions, answered.
+      body: Contracts, spend, upgrades, and single-service scopes.
+      items:
+        - question: Do you require long contracts?
+          answer: We recommend a 90-day initial engagement to gather data and prove the model, then move to rolling monthly terms.
+        - question: Is ad spend included in the plan price?
+          answer: No, ad spend is paid directly to the platforms (Google, Meta, etc.). Our fees cover strategy, management, creative, and reporting.
+        - question: Can I upgrade or downgrade later?
+          answer: Yes. Plans are flexible. Most clients start on Starter or Growth and scale up as results compound.
+        - question: Do you offer one-off projects?
+          answer: Sometimes. Contact us to discuss. We'll tell you honestly if a one-off engagement makes sense or if you'd be better served by a retainer.
+        - question: What if I only need one service (e.g. SEO)?
+          answer: We can scope single-service engagements. Reach out and we'll quote accordingly.

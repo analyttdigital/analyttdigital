@@ -13,12 +13,12 @@ import { defaultLocale, type Locale } from '@/lib/content/types';
 /** Posts per listing page (M8 decision). */
 export const BLOG_PAGE_SIZE = 9;
 
-/** Public base for a locale's blog (`/blog`, `/sw/blog`). */
+/** Public base for a locale's blog (`/blog`). */
 export function blogBasePath(locale: Locale): string {
   return locale === defaultLocale ? '/blog' : `/${locale}/blog`;
 }
 
-/** Public URL for a post (`/blog/<slug>`, `/sw/blog/<slug>`). */
+/** Public URL for a post (`/blog/<slug>`). */
 export function postHref(locale: Locale, slug: string): string {
   return `${locale === defaultLocale ? '/blog' : `/${locale}/blog`}/${slug}`;
 }

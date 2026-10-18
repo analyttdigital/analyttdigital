@@ -1,8 +1,11 @@
 /* ------------------------------ locale -------------------------------- */
+/* Single-locale today (`en`); the shape stays locale-keyed (`locales`,
+ * `routeFromParams`, `blogBasePath`) so a future locale slots back in —
+ * see README "Adding a locale". */
 
-export type Locale = 'en' | 'sw';
+export type Locale = 'en';
 
-export const locales: Locale[] = ['en', 'sw'];
+export const locales: Locale[] = ['en'];
 export const defaultLocale: Locale = 'en';
 
 export function isLocale(value: string | undefined): value is Locale {
@@ -32,7 +35,7 @@ export function routeFromParams(params?: RouteParams): { locale: Locale; slug: s
   const slugSegments = prefixed ? tail : segments;
   return {
     locale: prefixed ? first : defaultLocale,
-    // The route's base is home: `/` for the default locale, `/sw` for others.
+    // The route's base is home: `/` for the default locale.
     slug: slugSegments.join('/') || 'home',
   };
 }
@@ -618,6 +621,16 @@ export type SectionType = Section['type'];
 export type PageDoc = {
   title: string;
   description: string;
+  /** Page-level social/preview image; empty `src` means "no image" (omit the
+   *  `og:image` tag). Optional so pre-K1 CMS entries keep reading. */
+  featuredImage?: ContentImage;
+  /** Optional editor overrides. Empty values defer to the title, summary,
+   * current URL, and featured image in the shared SEO resolver. */
+  metaTitle?: string;
+  metaDescription?: string;
+  canonical?: string;
+  ogImage?: ContentImage;
+  noindex?: boolean;
   sections: Section[];
 };
 
@@ -658,6 +671,11 @@ export type BlogPost = {
   publishedAt: string;
   author: string;
   featuredImage?: ContentImage;
+  metaTitle?: string;
+  metaDescription?: string;
+  canonical?: string;
+  ogImage?: ContentImage;
+  noindex?: boolean;
   body: BlogBody;
 };
 

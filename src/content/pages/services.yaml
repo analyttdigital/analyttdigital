@@ -1,0 +1,129 @@
+description: Paid media that converts, data infrastructure you can trust, and growth strategy that compounds. Explore Analytt Digital's full range of performance marketing services for Kenya and East Africa.
+featuredImage:
+  alt: ''
+sections:
+  - discriminant: page-hero-alt
+    value:
+      eyebrow: Our services
+      headline: Performance marketing for Africa.
+      lede: 'We focus on three things: paid media that converts, data infrastructure you can actually trust, and growth strategy that compounds. Everything else we offer exists to support those three pillars.'
+      quote: ''
+      cta: Request Your Free Audit
+      ctaHref: /digital-audit/
+      secondaryCta: ''
+      secondaryCtaHref: ''
+  - discriminant: belief-alt
+    value:
+      eyebrow: Who we serve
+      headline: Built for ambitious brands
+      headlineAccent: across East Africa.
+      lede: 'Whether you''re a Nairobi-based e-commerce brand scaling past your first 1,000 orders, a fintech startup acquiring app users across East Africa, or an established business tired of guessing where your marketing budget goes, our services are built around one outcome: measurable, compounding revenue growth.'
+  - discriminant: capabilities-alt
+    value:
+      eyebrow: What we do
+      headline: Six services, one outcome.
+      lede: These services aren't sold in isolation, they compound. Most clients start with one or two, then expand as results build.
+      orderLabel: Order
+      orderServices: Services
+      orderSequence: Sequence
+      items:
+        - title: Google Ads and Paid Social That Converts
+          tag: Service 01
+          depth: '01'
+          icon: bullhorn
+          body: 'Stop paying for attention. Start paying for customers. Campaigns across Google, YouTube, Meta, TikTok, LinkedIn, and programmatic, localised for M-Pesa journeys and Swahili-English creative testing. Typical results: 4.2x average ROAS, 68% lower CPL, ROI within 90 days. Explore Paid Media Services.'
+        - title: See Exactly What's Making You Money
+          tag: Service 02
+          depth: '02'
+          icon: database
+          body: 'You can''t optimise what you can''t measure. GA4, Tag Manager, server-side tracking, CRM integration, Looker Studio dashboards, and multi-touch attribution. Typical results: 100% tracking coverage, 24-hour live data refresh, zero blind spots. Explore Data and Analytics Services.'
+        - title: Win Before You Spend a Single Coin
+          tag: Service 03
+          depth: '03'
+          icon: compass
+          body: 'Strategy is what separates the businesses that scale from the ones that stall. Market research, competitive intelligence, and a 12-month performance blueprint grounded in data. Typical results: 2x faster go-to-market, 35% budget saved, 12-month roadmap. Explore Growth Strategy Services.'
+        - title: 'Rank #1 for Searches That Drive Revenue'
+          tag: Service 04
+          depth: '04'
+          icon: layers
+          body: 'The best sales channel is the one your competitor doesn''t own yet. Technical foundations, content authority, and local search dominance in English, Swahili, and code-switching behaviour. Typical results: 300% organic growth, 47 page-1 rankings, results in 8 months. Explore SEO Services.'
+        - title: More Revenue from Your Existing Traffic
+          tag: Service 05
+          depth: '05'
+          icon: chart
+          body: 'Doubling your conversion rate costs less than doubling your ad spend. Heatmaps, session recordings, and systematic A/B testing to lift conversion without more traffic. Typical results: 2.8x average CVR lift, 40% lower CPA, first wins in 30 days. Explore CRO Services.'
+        - title: Turn Leads into Loyal, Repeat Customers
+          tag: Service 06
+          depth: '06'
+          icon: mail
+          body: 'Your email list is the only audience you actually own. Welcome flows, cart recovery, nurture, and retention marketing. Typical results: 45% average open rate, 3.1x customer LTV, 7% click rate. Explore Email and CRM Services.'
+  - discriminant: compare-table-alt
+    value:
+      eyebrow: How services fit
+      headline: How our services fit together.
+      body: Most clients start with one or two services, then expand as results build.
+      columns:
+        - Stage
+        - Primary Service
+        - Supporting Service
+      rows:
+        - feature: Getting Started
+          cells:
+            - Growth Strategy
+            - Data and Analytics
+        - feature: Driving Traffic
+          cells:
+            - Paid Media
+            - SEO
+        - feature: Converting Traffic
+          cells:
+            - CRO
+            - Email and CRM
+        - feature: Retaining Customers
+          cells:
+            - Email and CRM
+            - Data and Analytics
+        - feature: Scaling
+          cells:
+            - Paid Media
+            - Growth Strategy
+  - discriminant: industries-alt
+    value:
+      eyebrow: Industries we serve
+      headline: Playbooks for East Africa's digital economy.
+      body: We've built deep playbooks for the sectors driving East Africa's digital economy. E-commerce and retail, financial services and fintech, real estate and property, healthcare and wellness, education and edtech, hospitality and tourism, SaaS and technology, logistics and supply chain.
+      hint: Eight sector playbooks
+      items:
+        - E-Commerce and Retail
+        - Financial Services and Fintech
+        - Real Estate and Property
+        - Healthcare and Wellness
+        - Education and EdTech
+        - Hospitality and Tourism
+        - SaaS and Technology
+        - Logistics and Supply Chain
+  - discriminant: faq
+    value:
+      eyebrow: FAQ
+      headline: Questions, answered.
+      body: Scope, timing, contracts, and cost.
+      items:
+        - question: Do you work with businesses outside Kenya?
+          answer: Yes. We work across Kenya, Uganda, Tanzania, Rwanda, and the wider East African region, as well as international businesses entering African markets.
+        - question: Can I buy just one service?
+          answer: Absolutely. Many clients start with a single engagement, often Paid Media or Data and Analytics, then expand as results compound.
+        - question: How quickly will I see results?
+          answer: Paid media and CRO typically show measurable movement within 30-90 days. SEO compounds over 6-12 months. Strategy engagements deliver value immediately through better budget allocation.
+        - question: Do you require long contracts?
+          answer: We recommend a 90-day initial engagement to gather data and prove the model, then move to rolling monthly terms.
+        - question: How much do your services cost?
+          answer: Pricing depends on scope. See our pricing plans for tiered options, or book an audit for a custom quote.
+  - discriminant: cta-split
+    value:
+      eyebrow: Not sure where to start?
+      headline: Get a free 30-minute performance audit.
+      body: We'll analyse your current marketing wherever you operate across Kenya and East Africa, and tell you exactly where your biggest growth opportunities are. No pitch. No obligation. Just data.
+      cta: Request Your Free Audit
+      ctaHref: /digital-audit/
+      note: Most businesses need one or two services to unlock the next stage.
+      portalLabel: Free · No commitment

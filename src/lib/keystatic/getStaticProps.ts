@@ -1,10 +1,7 @@
-import { createReader } from '@keystatic/core/reader';
-
-import keystaticConfig from '../../../keystatic.config';
+import { makeContentReader } from '@/lib/keystatic/make-reader';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const reader: any = createReader(process.cwd(), keystaticConfig);
-
+const reader: any = makeContentReader();
 import { listPageSlugs, readPageBundle } from '@/lib/content/reader';
 import { defaults } from '@/lib/content/defaults';
 import { BLOG_PAGE_SIZE } from '@/lib/content/blog';
@@ -28,7 +25,28 @@ export type PageProps = {
   bundle?: PageBundle;
   /** Latest posts for blog-aware sections (e.g. homepage insights). */
   latestPosts?: BlogPost[];
+  /** K5: set only when Next draft mode is active (page view is uncached). */
+  preview?: PreviewInfo;
 };
+
+/** K5 — the state `/api/preview/start` puts into Next's preview data and the
+ *  page props surface as the draft banner. `branch: null` = local-mode
+ *  preview (read the working tree); non-null names the GitHub ref to read. */
+export type PreviewInfo = { branch: string | null };
+
+/** Next hands `preview` + `previewData` to `getStaticProps` context when
+ *  draft mode is on. Keystatic's own preview flow may attach other shapes to
+ *  `previewData`, so only a string `branch` of ours is honoured. */
+export function resolvePreview(ctx: {
+  preview?: boolean;
+  previewData?: unknown;
+}): PreviewInfo | null {
+  if (!ctx.preview) return null;
+  if (typeof ctx.previewData !== 'object' || ctx.previewData === null) return null;
+  const branch = (ctx.previewData as { branch?: unknown }).branch;
+  if (typeof branch !== 'string' || branch === '') return { branch: null };
+  return { branch };
+}
 
 export type PageStaticProps = { props: PageProps } | { notFound: true };
 
@@ -44,10 +62,19 @@ export type PageStaticProps = { props: PageProps } | { notFound: true };
  */
 export async function getStaticProps({
   params,
+  preview,
+  previewData,
 }: {
   params?: RouteParams;
+  preview?: boolean;
+  previewData?: unknown;
 }): Promise<PageStaticProps> {
   const { locale, slug } = routeFromParams(params);
+  const previewInfo = resolvePreview({ preview, previewData });
+  // A preview request reads fresh content (local working tree or, with a
+  // branch cookie, that GitHub ref) instead of the build-time checkout.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const reader: any = makeContentReader({ branch: previewInfo?.branch });
 
   let bundle: PageBundle | null;
   try {
@@ -67,7 +94,16 @@ export async function getStaticProps({
     latestPosts = [];
   }
 
-  return { props: { locale, slug, bundle, latestPosts } };
+  return {
+    props: {
+      locale,
+      slug,
+      bundle,
+      latestPosts,
+      // Omitted (never `undefined`) so the build path is unaffected.
+      ...(previewInfo ? { preview: previewInfo } : {}),
+    },
+  };
 }
 
 /** One getStaticPaths entry. `locale` is the route's only named segment — for
@@ -84,9 +120,8 @@ function entryForSlug(slug: string, prefix: Locale | null): StaticPath {
 }
 
 /**
- * Paths for the one-segment route (`/[locale]`): every URL segment that stands
- * alone — the locale bases (`/sw`) and, for the default locale whose URLs are
- * unprefixed, the single-segment page slugs (`/about-us`). An optional
+ * Paths for the one-segment route (`/[locale]`): the default locale's
+ * unprefixed single-segment page slugs (`/about-us`). An optional
  * catch-all cannot express this shape, because Next validates a pre-rendered
  * path against the required-catch-all variant of the route and rejects a
  * one-segment path (see `export/helpers/get-params`).
@@ -106,11 +141,10 @@ export async function baseStaticPaths(): Promise<StaticPath[]> {
 
 /**
  * Paths for the nested catch-all (`/[locale]/[...slug]`): every page URL with
- * two or more segments — `/sw/about-us`, `/sw/services/seo` (prefixed) and
- * `/services/paid-media` (default locale, its first slug segment in the
- * `locale` slot). Slugs come from the code defaults plus any Keystatic
- * entries; a page added after a build still renders on first request, because
- * the route keeps `fallback: 'blocking'`.
+ * two or more segments — `/services/paid-media` (default locale, its first
+ * slug segment in the `locale` slot). Slugs come from the code defaults
+ * plus any Keystatic entries; a page added after a build still renders on
+ * first request, because the route keeps `fallback: 'blocking'`.
  */
 export async function nestedStaticPaths(): Promise<StaticPath[]> {
   const slugsByLocale = await Promise.all(locales.map((locale) => listPageSlugs(reader, locale)));
@@ -124,7 +158,7 @@ export async function nestedStaticPaths(): Promise<StaticPath[]> {
 }
 
 /* ------------------------------- blog --------------------------------- */
-/* Standalone routes (`src/pages/blog/…`, `src/pages/sw/blog/…`), Pages Router
+/* Standalone routes (`src/pages/blog/…`), Pages Router
  * `getStaticProps` only. The index is not a CMS section: listing copy lives in
  * `defaults[locale].blog`, posts in `listPosts`/`readPost`. `bundle.page`
  * carries the listing/post title + excerpt as metadata only (empty sections);
@@ -142,7 +176,12 @@ export type BlogPostProps = PageProps & { blogPost: BlogPost; blogCopy: BlogPost
 export async function getBlogIndexStaticProps(
   locale: Locale,
   page: number,
+  preview?: boolean,
+  previewData?: unknown,
 ): Promise<{ props: BlogIndexProps } | { notFound: true }> {
+  const previewInfo = resolvePreview({ preview, previewData });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const reader: any = makeContentReader({ branch: previewInfo?.branch });
   const [layout, posts] = await Promise.all([readLayout(reader, locale), listPosts(reader, locale)]);
   const copy = defaults[locale].blog.copy;
   const totalPages = Math.max(1, Math.ceil(posts.length / BLOG_PAGE_SIZE));
@@ -160,6 +199,7 @@ export async function getBlogIndexStaticProps(
       slug: 'blog',
       bundle: { layout, page: { title: 'Blog', description: copy.body, sections: [] } },
       blogIndex,
+      ...(previewInfo ? { preview: previewInfo } : {}),
     },
   };
 }
@@ -168,7 +208,12 @@ export async function getBlogIndexStaticProps(
 export async function getBlogPostStaticProps(
   locale: Locale,
   slug: string,
+  preview?: boolean,
+  previewData?: unknown,
 ): Promise<{ props: BlogPostProps } | { notFound: true }> {
+  const previewInfo = resolvePreview({ preview, previewData });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const reader: any = makeContentReader({ branch: previewInfo?.branch });
   const [layout, post] = await Promise.all([readLayout(reader, locale), readPost(reader, locale, slug)]);
   if (!post) return { notFound: true };
 
@@ -179,6 +224,7 @@ export async function getBlogPostStaticProps(
       bundle: { layout, page: { title: post.title, description: post.excerpt, sections: [] } },
       blogPost: post,
       blogCopy: defaults[locale].blog.postCopy,
+      ...(previewInfo ? { preview: previewInfo } : {}),
     },
   };
 }

@@ -1,0 +1,86 @@
+brand: analytt
+brandEmphasis: digital
+logo:
+  src: /img/logo-alt.svg
+  alt: Analytt Digital
+logoAlt:
+  src: /img/logo-alt-light.svg
+  alt: Analytt Digital
+navLinks:
+  - label: Services
+    href: /services
+    children:
+      - label: Paid Media
+        href: /services/paid-media
+      - label: Data & Analytics
+        href: /services/data-analytics
+      - label: Growth Strategy
+        href: /services/growth-strategy
+      - label: SEO
+        href: /services/seo
+      - label: CRO
+        href: /services/cro
+      - label: Email & CRM
+        href: /services/email-crm
+      - label: Industries
+        href: /services/industries
+  - label: Digital Audit
+    href: /digital-audit
+  - label: Blog
+    href: /blog
+  - label: About Us
+    href: /about-us
+  - label: Contact
+    href: /contact
+navCta: Get a free audit
+navCtaHref: /pricing-plans
+footerHeadline: Ready to see exactly where your growth is hiding?
+footerCta: Start with a free audit
+footerCtaHref: /contact
+socialTitle: Follow the signal
+socialLinks:
+  - label: LinkedIn
+    href: https://www.linkedin.com/company/94839128/admin/page-posts/published/
+    icon: linkedin
+  - label: Facebook
+    href: https://www.facebook.com/AnalyttDigital
+    icon: facebook
+  - label: X
+    href: https://x.com/AnalyttDigital
+    icon: twitter
+  - label: Instagram
+    href: https://www.instagram.com/
+    icon: instagram
+  - label: YouTube
+    href: https://youtube.com/@analyttdigital?si=-4E8UHpHcPT32s30
+    icon: youtube
+  - label: TikTok
+    href: https://www.tiktok.com/@analyttdigital
+    icon: musicNote
+  - label: Phone
+    href: tel:+254784488542
+    icon: phone
+tagline: Performance marketing & growth infrastructure, from Nairobi.
+footnote: A measurement-first agency, by design.
+footerColumns:
+  - title: Navigate
+    links:
+      - label: Services
+        href: /services
+      - label: About Us
+        href: /about-us
+      - label: Digital Audit
+        href: /digital-audit
+      - label: Blog
+        href: /blog
+      - label: Contact
+        href: /contact
+  - title: Contact
+    links:
+      - label: hello@analyttdigital.com
+        href: mailto:hello@analyttdigital.com
+      - label: +254 784 488 542
+        href: tel:+254784488542
+contactEmail: hello@analyttdigital.com
+contactNote: Nairobi · across East Africa
+legal: © 2026 Analytt Digital. All rights reserved.

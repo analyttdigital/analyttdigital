@@ -1,0 +1,148 @@
+description: Analytt Digital is a performance marketing agency that places data at the heart of every marketing endeavour, helping businesses across Kenya and East Africa grow with measurable results.
+featuredImage:
+  alt: ''
+sections:
+  - discriminant: page-hero-alt
+    value:
+      eyebrow: About Us
+      headline: About Us
+      lede: Analytt Digital is a cutting-edge performance marketing digital agency that redefines the digital landscape by placing data at the heart of every marketing endeavor.
+      quote: ''
+      cta: Request Your Free Audit
+      ctaHref: /digital-audit/
+      secondaryCta: ''
+      secondaryCtaHref: ''
+  - discriminant: belief-alt
+    value:
+      eyebrow: Who we are
+      headline: Data at the heart of
+      headlineAccent: every marketing endeavor.
+      lede: We specialize in leveraging data-driven strategies to propel businesses forward in the highly competitive online realm. From Nairobi to Kampala, Dar es Salaam to Kigali, we help ambitious brands turn marketing spend into measurable, compounding revenue.
+  - discriminant: problem-alt
+    value:
+      eyebrow: Our story
+      headline: Built for the opposite of gut feel.
+      paragraphs:
+        - We started Analytt Digital because we saw too many businesses across East Africa making marketing decisions on gut feel, outdated playbooks, and reports they couldn't trust.
+        - Agencies were reporting clicks while clients needed customers. Budgets were being spent, but nobody could confidently say what was working.
+      closing: A data-first performance marketing partner.
+      panelTitle: The gap we close
+      panelAlert: Clicks reported, customers needed
+      panelChips:
+        - value: Every shilling
+          label: Treated like our own
+        - value: Every report
+          label: Board-meeting standard
+  - discriminant: capabilities-alt
+    value:
+      eyebrow: Our main pillars
+      headline: Four principles behind every engagement.
+      lede: Four principles shape every engagement, from first audit to scale.
+      orderLabel: Order
+      orderServices: Pillars
+      orderSequence: Sequence
+      items:
+        - title: Data-First Principle
+          tag: Pillar 01
+          depth: '01'
+          icon: database
+          body: All strategies and decisions are rooted in a deep understanding of the data landscape. No opinions without evidence. No campaigns without proper tracking.
+        - title: Innovation and Technology
+          tag: Pillar 02
+          depth: '02'
+          icon: compass
+          body: We bring clients the latest tools and methodologies, from server-side tracking and GA4 to AI-assisted segmentation and predictive targeting.
+        - title: Collaborative Partnership
+          tag: Pillar 03
+          depth: '03'
+          icon: layers
+          body: We align strategies with business goals. We're not a vendor; we're an extension of your team.
+        - title: Measurable Results
+          tag: Pillar 04
+          depth: '04'
+          icon: chart
+          body: We refine and optimize based on performance metrics. If it can't be measured, we don't claim it.
+  - discriminant: team-grid
+    value:
+      eyebrow: Meet our team
+      headline: The people behind the performance.
+      body: Operators, buyers, and creatives who treat your budget like their own.
+      members:
+        - name: Christine Riungu
+          role: Founder / Operations
+          body: Christine leads operations and client partnerships, ensuring every engagement is aligned with client goals and delivered to the highest standard.
+          icon: compass
+          image:
+            src: /media/uploads/about-us/team-grid-members-0-image.webp
+            alt: Christine Riungu
+        - name: Justin Nyambane
+          role: Digital Media Buyer / Planner
+          body: Justin plans and manages paid media across Google, Meta, TikTok, and LinkedIn, focused on conversion-driven buying and continuous optimization.
+          icon: bullhorn
+          image:
+            src: /media/uploads/about-us/team-grid-members-1-image.webp
+            alt: Justin Nyambane
+        - name: Virginia Kamande
+          role: Digital Media Buyer / Planner
+          body: Virginia specializes in audience research, campaign structuring, and bid strategy, helping clients get more from every shilling.
+          icon: crosshairs
+          image:
+            src: /media/uploads/about-us/team-grid-members-2-image.webp
+            alt: Virginia Kamande
+        - name: Johnson Kinyanjui
+          role: Digital Media Buyer / Planner
+          body: Johnson manages performance campaigns focused on e-commerce, lead generation, and retargeting funnels.
+          icon: chart
+          image:
+            src: /media/uploads/about-us/team-grid-members-3-image.webp
+            alt: Johnson Kinyanjui
+        - name: Allen Mwema
+          role: Creative Strategist
+          body: Allen develops creative concepts and testing frameworks that resonate with Kenyan and East African audiences.
+          icon: palette
+          image:
+            src: /media/uploads/about-us/team-grid-members-4-image.webp
+            alt: Allen Mwema
+        - name: Peter Karagu
+          role: Motion and Video Graphic Designer
+          body: Peter produces motion graphics, video ads, and design assets that stop the scroll and drive performance.
+          icon: image
+          image:
+            src: /media/uploads/about-us/team-grid-members-5-image.webp
+            alt: Peter Karagu
+  - discriminant: belief-alt
+    value:
+      eyebrow: What our customers say
+      headline: Real ROI,
+      headlineAccent: clear and honest reporting.
+      lede: We finally started seeing real ROI from our ads. Leads became more consistent, costs went down, and reporting was clear and honest. Analytt Digital Client
+  - discriminant: how-we-work
+    value:
+      eyebrow: How we work
+      headline: Understand, audit, strategize,
+      headlineAccent: execute, optimize.
+      lede: Five steps from first call to compounding growth, with transparent reporting every step of the way.
+      cardTitle: How we work
+      closing: Transparent reporting every step of the way.
+      cta: Request a free audit
+      ctaHref: /digital-audit/
+  - discriminant: regions
+    value:
+      eyebrow: Where we work
+      headline: Serving Kenya, East Africa, and beyond.
+      body: Clients across Kenya, East Africa, Pan-African expansion, and global brands entering African markets.
+      hint: Regions we serve
+      items:
+        - 'Kenya: Nairobi, Mombasa, Kisumu, Nakuru'
+        - 'East Africa: Uganda, Tanzania, Rwanda'
+        - 'Pan-African: expanding across the continent'
+        - 'International: entering African markets'
+  - discriminant: cta-split
+    value:
+      eyebrow: Ready to work with us?
+      headline: Get a free 30-minute performance audit.
+      body: We'll review your current marketing and show you exactly where your biggest growth opportunities are. No pitch. No obligation. Just data.
+      cta: Request Your Free Audit
+      ctaHref: /digital-audit/
+      note: No pitch. No obligation. Just data.
+      portalLabel: Free · No commitment

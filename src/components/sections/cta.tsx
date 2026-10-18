@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 import { useReducedMotion } from 'framer-motion';
 
-import { GlowButton } from '@/components/layout/glow-button';
+import { GlowButton } from '@/components/graphics/glow-button';
 import { InViewTitle } from '@/components/graphics/in-view-title';
 import { GsapReveal, Magnetic } from '@/lib/motion/gsap-reveal';
 import type { CtaSection } from '@/lib/content/types';

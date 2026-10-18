@@ -1,0 +1,87 @@
+description: Performance marketing for e-commerce, fintech, real estate, healthcare, education, hospitality, SaaS and logistics across Kenya and East Africa.
+featuredImage:
+  alt: ''
+sections:
+  - discriminant: page-hero-alt
+    value:
+      eyebrow: Industries
+      headline: Industries we serve.
+      lede: Deep playbooks for the sectors driving East Africa's digital economy. Different buying behaviour, compliance, and channel economics, learned over years.
+      quote: ''
+      cta: Request Your Free Consultation
+      ctaHref: /contact/
+      secondaryCta: ''
+      secondaryCtaHref: ''
+  - discriminant: industries-alt
+    value:
+      eyebrow: Sectors
+      headline: Eight playbooks, one standard.
+      body: E-commerce and retail. Financial services and fintech. Real estate and property. Healthcare and wellness. Education and edtech. Hospitality and tourism. SaaS and technology. Logistics and supply chain.
+      hint: Eight sector playbooks
+      items:
+        - E-Commerce and Retail
+        - Financial Services and Fintech
+        - Real Estate and Property
+        - Healthcare and Wellness
+        - Education and EdTech
+        - Hospitality and Tourism
+        - SaaS and Technology
+        - Logistics and Supply Chain
+  - discriminant: capabilities-alt
+    value:
+      eyebrow: What we do
+      headline: Eight playbooks, one standard.
+      lede: Per-sector tactics, learned over years.
+      orderLabel: Order
+      orderServices: Sectors
+      orderSequence: Sequence
+      items:
+        - title: E-Commerce & Retail
+          tag: Sector 01
+          depth: '01'
+          icon: grid
+          body: Scaling Kenyan and African online stores from side hustle to category leader with full-funnel paid media, SEO, and retention marketing.
+        - title: Financial Services & Fintech
+          tag: Sector 02
+          depth: '02'
+          icon: chart
+          body: Lead generation, app acquisition, and customer education campaigns for banks, SACCOs, MFIs, insurance companies, and fintech startups.
+        - title: Real Estate & Property
+          tag: Sector 03
+          depth: '03'
+          icon: pin
+          body: Property inquiries, development launches, and off-plan sales campaigns for Kenyan and East African real estate developers.
+        - title: Healthcare & Wellness
+          tag: Sector 04
+          depth: '04'
+          icon: crosshairs
+          body: Patient acquisition, appointment booking, and healthcare brand awareness for hospitals, clinics, pharmacies, and wellness brands in Kenya.
+        - title: Education & EdTech
+          tag: Sector 05
+          depth: '05'
+          icon: book
+          body: Student enrolment campaigns, course marketing, and EdTech growth for universities, training institutes, and online learning platforms in Africa.
+        - title: Hospitality & Tourism
+          tag: Sector 06
+          depth: '06'
+          icon: waves
+          body: Direct bookings, destination marketing, and hotel revenue optimisation for Kenyan safari lodges, hotels, and travel brands serving Africa.
+        - title: SaaS & Technology
+          tag: Sector 07
+          depth: '07'
+          icon: rocket
+          body: User acquisition, trial-to-paid conversion, and B2B pipeline generation for African tech startups and global SaaS companies entering Africa.
+        - title: Logistics & Supply Chain
+          tag: Sector 08
+          depth: '08'
+          icon: route
+          body: B2B lead generation and brand growth campaigns for logistics companies, freight operators, and supply chain businesses across East Africa.
+  - discriminant: cta-split
+    value:
+      eyebrow: Don't see your industry?
+      headline: Get a free 30-minute consultation.
+      body: Tell us about your business and goals. We'll show you exactly where the biggest opportunities are in your specific market. No pitch. No obligation. Just data.
+      cta: Request Your Free Consultation
+      ctaHref: /contact/
+      note: If you're driving growth in East Africa, we can help.
+      portalLabel: Free · No commitment

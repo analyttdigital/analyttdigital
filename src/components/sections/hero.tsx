@@ -12,8 +12,19 @@ import {
 import { MdiIcon } from "@/lib/icons/resolve-icon";
 import { DynamicImage } from "@/components/media/dynamic-image";
 import type { HeroPartner, HeroPanel, HeroProof, HeroSection } from "@/lib/content/types";
-import { HeroGather } from "@/components/graphics/hero-gather";
+import { HeroGatherLite } from "@/components/graphics/hero-gather-lite";
+import { useLiteScene } from "@/lib/hooks/use-lite-scene";
 import { smooth } from "@/lib/motion/smooth";
+import dynamic from "next/dynamic";
+import { TextReveal } from "../graphics/text-reveal";
+
+/* The WebGL gather pulls three.js + gsap — code-split so lite devices
+ * (mobile / low-compute / save-data) never download it. SSR off: the
+ * first paint is always the lite mark, desktops upgrade after hydration. */
+const HeroGather = dynamic(
+	() => import("@/components/graphics/hero-gather").then((m) => m.HeroGather),
+	{ ssr: false },
+);
 
 /**
  * Hero — full-screen audit route head (user-approved replica).
@@ -270,7 +281,7 @@ function iconDotClass(panel: HeroPanel, fallback: IconTone) {
  *  type steps up the ramp on dark per the token rule. */
 function panelTones(dark: boolean) {
 	return {
-		title: dark ? "text-primary-50" : "text-primary-900",
+		title: dark ? "text-primary-50" : "text-primary-800",
 		client: dark ? "text-primary-200" : "text-primary-700",
 		sub: dark ? "text-primary-300" : "text-primary-500",
 		rule: dark ? "border-primary-50/10" : "border-primary-900/10",
@@ -285,8 +296,7 @@ const FALLBACK = {
 	eyebrow: "Free digital audit: find where your budget is leaking",
 	headline: "Performance marketing &\ngrowth infrastructure.",
 	sub: "We are a specialist performance marketing partner in paid media, measurement infrastructure, and growth strategy. Trusted by SMEs, startups, and B2B/B2C companies scaling across Africa.",
-	cta: "Get Started",
-	secondary: "Request Digital Audit",
+	cta: "Get Started"
 } as const;
 
 /** Fallback proof strip (legacy CMS entries without one). */
@@ -654,15 +664,18 @@ export function HeroStage({
 	const eyebrow = hero?.eyebrow || FALLBACK.eyebrow;
 	const lines = (hero?.headline || FALLBACK.headline).split("\n");
 	const sub = hero?.sub || FALLBACK.sub;
-	const ctaHref = hero?.ctaHref ?? "/#contact";
+	const ctaHref = hero?.ctaHref ?? "";
 	const cta = hero?.cta || FALLBACK.cta;
-	const secondary = hero?.scrollHint || FALLBACK.secondary;
 	const proof = hero?.proof?.length ? hero.proof : FALLBACK_PROOF;
 	const partners = hero?.marquee?.length ? hero.marquee : FALLBACK_PARTNERS;
 	/** Explicit prop wins, then content, then the light stage. Tunnel panels
 	 *  flip with the variant through `panelTones` + the icon tone helpers. */
 	const dark = (variant ?? hero?.variant ?? "light") === "dark";
 	const reduce = useReducedMotion();
+	/* Lite devices (mobile / low-compute / save-data / reduced-motion) get
+	 * the zero-WebGL scene and never download three.js — see `useLiteScene`.
+	 * SSR-first paint is always lite; capable desktops upgrade on hydrate. */
+	const lite = useLiteScene();
 	/* Static when the wrapper parks motion (or no progress is passed) —
 	 * every animated style below keys off `live`. */
 	const live = !reduce && progress;
@@ -754,14 +767,20 @@ export function HeroStage({
 				style={live ? { opacity: glowOpacity, rotate: orbitTurn } : undefined}
 			/>
 
-			{/* WebGL icon-gather scene — full-bleed layer that drifts + grows into the portal */}
+			{/* Gather scene — lite SVG on mobile / low-compute, full WebGL on
+			    capable desktops (code-split, never downloaded by lite). */}
 			<motion.div
 				aria-hidden
 				className="absolute inset-0"
 				style={live ? { x: canvasX, scale: canvasScale } : undefined}
 			>
-				<HeroGather progress={live ? p : undefined} />
+				{lite ? (
+					<HeroGatherLite progress={live ? p : undefined} />
+				) : (
+					<HeroGather progress={live ? p : undefined} />
+				)}
 			</motion.div>
+
 
 			{/* Copy block — bottom on mobile, vertically centered on desktop.
 			    Rides out on `chapterOut`, then leaves the tab order once fully
@@ -797,58 +816,58 @@ export function HeroStage({
 
 						<h1
 							className={`font-display text-[clamp(1.6rem,4.2vw,3.6rem)] font-bold leading-[1.02] tracking-tightest ${
-								dark ? "text-primary-50" : "text-primary-900"
+								dark ? "text-primary-50" : "text-primary-800"
 							}`}
 						>
-							{lines.map((line, i) => (
-								<span
-									key={`${line}-${i}`}
-									className={`block whitespace-nowrap ${i === lines.length - 1 ? (dark ? "text-accent-400" : "text-accent-600") : ""}`}
-								>
-									{line || " "}
-								</span>
-							))}
+							{lines.map(
+								(line, i) =>
+									line && (
+										<TextReveal
+											as="span"
+											className={`block whitespace-nowrap ${i === lines.length - 1 ? (dark ? "text-accent-400" : "text-accent-600") : ""}`}
+											text={line}
+											delay={i * 0.1}
+											key={`${line}-${i}`}
+										/>
+									)
+							)}
 						</h1>
 
-						<p
-							className={`mt-[18px] max-w-[30em]  leading-relaxed sm:mt-6 ${dark ? "text-primary-200" : "text-ink-500"}`}
+						{sub && (
+							<TextReveal
+								as="p"
+								className={`mt-[18px] max-w-[30em]  leading-relaxed sm:mt-6 ${dark ? "text-primary-200" : "text-ink-500"}`}
+								text={sub}
+								delay={0.1 + lines.length * 0.1}
+							/>
+						)}
 
-							// delay={0.1 + lines.length * 0.1}
-						>
-							{sub || " "}
-						</p>
-
-						<motion.div
-							data-rise
-							className="mt-[26px] flex flex-wrap items-center gap-4 sm:mt-[34px] sm:gap-[22px]"
-							style={live ? { opacity: toolbarOpacity } : undefined}
-						>
-							<a
-								href={ctaHref}
-								className="group/btn inline-flex items-center gap-3 rounded-full bg-accent px-7 py-4 text-[.95rem] font-semibold text-white shadow-[0_10px_30px_-10px_rgba(240,79,38,.6)] transition hover:bg-accent-600"
+						{ctaHref && (
+							<motion.div
+								data-rise
+								className="mt-[26px] flex flex-wrap items-center gap-4 sm:mt-[34px] sm:gap-[22px]"
+								style={live ? { opacity: toolbarOpacity } : undefined}
 							>
-								{cta}
-								<svg
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									strokeWidth="2.2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									aria-hidden="true"
-									className="h-4 w-4 transition-transform group-hover/btn:translate-x-1"
+								<a
+									href={ctaHref}
+									className="group/btn inline-flex items-center gap-3 rounded-full bg-accent px-7 py-4 text-[.95rem] font-semibold text-white shadow-[0_10px_30px_-10px_rgba(240,79,38,.6)] transition hover:bg-accent-600"
 								>
-									<path d="M5 12h14M13 6l6 6-6 6" />
-								</svg>
-							</a>
-							<a
-								href={ctaHref}
-								className={`inline-flex items-center gap-3 rounded-full border px-7 py-4 text-[.95rem] font-semibold transition ${dark ? "border-primary-50/25 text-primary-100 hover:border-accent-500 hover:text-accent-300" : "border-ink-950/20 text-ink-800 hover:border-accent-500 hover:text-accent-600"}`}
-							>
-								{secondary}
-								<MdiIcon name="document" size={0.85} />
-							</a>
-						</motion.div>
+									{cta}
+									<svg
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										strokeWidth="2.2"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										aria-hidden="true"
+										className="h-4 w-4 transition-transform group-hover/btn:translate-x-1"
+									>
+										<path d="M5 12h14M13 6l6 6-6 6" />
+									</svg>
+								</a>
+							</motion.div>
+						)}
 
 						<motion.div
 							className="mt-[30px] sm:mt-11"

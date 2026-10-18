@@ -11,6 +11,7 @@ import { defaultLocale, type Locale } from '@/lib/content/types';
 // can see them); this import is what makes the CSS exist at all.
 import { fontsClass } from '@/fonts/fonts';
 import type { PageProps } from '@/lib/keystatic/getStaticProps';
+import { site } from '@/lib/site';
 import { ReactLenis } from "lenis/react";
 import type { LenisRef } from "lenis/react";
 import { cancelFrame, frame } from "framer-motion";
@@ -62,6 +63,30 @@ export default function App({ Component, pageProps, router }: Props) {
 				</SiteLayout>
               </LocaleProvider>
             </ReactLenis>
+			{/* Draft-mode banner (K5): `preview` in page props means draft mode
+			 * turned this view into a fresh (uncached) render, so offer the
+			 * way out. A plain form POST keeps the banner JS-free. */}
+			{(pageProps as PageProps).preview ? (
+				<form
+					action="/api/preview/end"
+					method="POST"
+					className="fixed bottom-0 inset-x-0 z-50 flex items-center justify-center gap-3 px-4 py-2 text-xs font-medium"
+					style={{ backgroundColor: site.themeColor, color: '#ffffff' }}
+				>
+					<span>
+						Preview mode
+						{typeof (pageProps as PageProps).preview?.branch === 'string'
+							? ` · branch ${(pageProps as PageProps).preview?.branch}`
+							: ' · local'}
+					</span>
+					<button
+						type="submit"
+						className="rounded px-2 py-1 border border-white/40 hover:bg-white/10"
+					>
+						End preview
+					</button>
+				</form>
+			) : null}
 		</div>
 	);
 }

@@ -5,74 +5,88 @@ import { layoutFields, pageFields, postFields } from './src/lib/keystatic/schema
 /**
  * Keystatic configuration — content model:
  *
- * - `layout-<locale>` singletons: shared chrome (nav, footer) edited once per
- *   locale and consumed by every page's layout.
- * - `pages-<locale>` collections: page documents (title, meta, ordered
- *   section blocks). Each stored page renders at `/<locale?>/<slug>`.
- * - `posts-<locale>` collections (M8): blog posts as markdown (frontmatter +
- *   document body). Each stored post renders at `/<locale?>/blog/<slug>`.
- * - Storage is local; files land in src/content/<locale>/… as YAML (pages,
+ * - `layout` singleton: shared chrome (nav, footer), consumed by every
+ *   page's layout.
+ * - `pages` collection: page documents (title, meta, ordered section
+ *   blocks). Each stored page renders at `/<slug>`.
+ * - `posts` collection: blog posts as markdown (frontmatter + document
+ *   body). Each stored post renders at `/blog/<slug>`.
+ * - Storage is local; files land in `src/content/…` as YAML (pages,
  *   layout) or Markdown (posts).
  * - List defaults live in code (src/lib/content/defaults.ts) because Keystatic
  *   arrays start empty; the reader merges CMS values over code defaults.
- */
+ *
+ * Locales: single-locale today (`en`), but the code stays locale-keyed
+ * (`locales`, `routeFromParams`, `blogBasePath`) — see README
+ * "Adding a locale" to add one back.
+
+ * Storage: local by default. `KEYSTATIC_STORAGE=github` (with
+ * `KEYSTATIC_GITHUB_REPO=<owner>/<repo>`) switches both the admin UI and
+ * the build-time readers to GitHub-backed storage (K4) — see README
+ * "Keystatic storage modes" for the env vars.
+
+ * Preview (K5): `previewUrl` makes the admin UI show a preview button that
+ * arms Next draft mode through `/api/preview/start` (Pages Router
+ * adaptation of Keystatic's real-time-previews recipe). `{branch}` is ''
+ * in local mode — that previews saved-but-not-built local content; in
+ * GitHub mode it names the branch the editor is saving to. */
+const GITHUB_REPO = process.env.KEYSTATIC_GITHUB_REPO ?? '';
+const PAGE_PREVIEW_URL = '/api/preview/start?branch={branch}&to=/{slug}';
+
+const useGithubStorage =
+  process.env.KEYSTATIC_STORAGE === 'github' && GITHUB_REPO.includes('/');
+
 export default config({
-  storage: {
-    kind: 'local',
-  },
+  storage: useGithubStorage
+    ? {
+        kind: 'github',
+        // The env value is free-form so a typo fails validation once,
+        // loudly, instead of silently degrading to local files.
+        repo: GITHUB_REPO as `${string}/${string}`,
+      }
+    : {
+        kind: 'local',
+      },
 
   collections: {
-    'pages-en': collection({
-      label: 'Pages (EN)',
+    pages: collection({
+      label: 'Pages',
       slugField: 'title',
-      path: 'src/content/en/pages/*',
+      // `**` (not `*`) so nested slugs such as `services/paid-media` — URLs
+      // the code defaults already publish — are listed and readable. The
+      // trailing `/*` spelling adds a `*` slug suffix in Keystatic 0.6.9 and
+      // makes every read miss its data file; bare `/**` is the working form.
+      path: 'src/content/pages/**',
       format: 'yaml',
       schema: pageFields,
+      previewUrl: PAGE_PREVIEW_URL,
     }),
-    'pages-sw': collection({
-      label: 'Pages (SW)',
-      slugField: 'title',
-      path: 'src/content/sw/pages/*',
-      format: 'yaml',
-      schema: pageFields,
-    }),
-    'posts-en': collection({
-      label: 'Posts (EN)',
+    posts: collection({
+      label: 'Posts',
       slugField: 'slug',
-      path: 'src/content/en/posts/*',
+      path: 'src/content/posts/*',
       // 0.6.9 collections only offer `json`/`yaml` — no markdown format,
       // so post documents serialize as YAML like pages.
       format: 'yaml',
       schema: postFields,
-    }),
-    'posts-sw': collection({
-      label: 'Posts (SW)',
-      slugField: 'slug',
-      path: 'src/content/sw/posts/*',
-      format: 'yaml',
-      schema: postFields,
+      previewUrl: '/api/preview/start?branch={branch}&to=/blog/{slug}',
     }),
   },
 
   singletons: {
-    'layout-en': singleton({
-      label: 'Layout (EN)',
-      path: 'src/content/en/layout',
+    layout: singleton({
+      label: 'Layout',
+      path: 'src/content/layout',
       format: 'yaml',
       schema: layoutFields,
-    }),
-    'layout-sw': singleton({
-      label: 'Layout (SW)',
-      path: 'src/content/sw/layout',
-      format: 'yaml',
-      schema: layoutFields,
+      // The layout chrome is shared by every page; preview it on `/`.
+      previewUrl: '/api/preview/start?branch={branch}&to=/',
     }),
   },
 
   ui: {
     navigation: {
-      'English (en)': ['pages-en', 'posts-en', 'layout-en'],
-      'Kiswahili (sw)': ['pages-sw', 'posts-sw', 'layout-sw'],
+      Content: ['pages', 'posts', 'layout'],
     },
   },
 });

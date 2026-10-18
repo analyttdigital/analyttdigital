@@ -9,8 +9,8 @@ import { defaultLocale, type Locale } from '@/lib/content/types';
  * editable). The handful of words that belong to the *interface* rather than to
  * the agency — what the menu button opens, what the trace's state is, the
  * honest note under a demonstration, the note on a media slot awaiting an
- * image — live here so both locales ship as peers. Nothing in this file is a
- * claim about the product.
+ * image — live here so a future locale slots back in as a peer. Nothing in
+ * this file is a claim about the product.
  */
 export type Chrome = {
   skip: string;
@@ -52,27 +52,7 @@ const en: Chrome = {
   backToTop: 'Back to top',
 };
 
-const sw: Chrome = {
-  skip: 'Rukia yaliyomo',
-  menu: 'Menyu',
-  close: 'Funga',
-  mediaSlot: 'Sehemu ya picha — inasubiri kazi',
-  channels: 'Vipindi tunavyotumia',
-  signal: 'Saili · mabadiliko',
-  trackingLive: 'Inafuatiliwa',
-  illustration: 'Mchoro — mfano wa akaunti, si matokeo ya mteja.',
-  everyHundred: 'Kila shilingi 100 ya matumizi',
-  attributed: 'Zilizofuatiliwa',
-  workNote: 'Takwimu ni halisi; majina ya wateja yamefichwa hadi kibali.',
-  workPrev: 'Kesi iliyotangulia',
-  workNext: 'Kesi inayofuata',
-  workDrag: 'Buruta au tumia vitufe',
-  inPreparation: 'Inaandikwa',
-  imprint: 'Kilipimwa Nairobi. Tunahudumia Afrika Mashariki.',
-  backToTop: 'Rudi juu',
-};
-
-const strings: Record<Locale, Chrome> = { en, sw };
+const strings: Record<Locale, Chrome> = { en };
 
 const LocaleContext = createContext<Locale>(defaultLocale);
 

@@ -1,0 +1,103 @@
+description: GA4, Google Tag Manager, server-side tracking, Looker Studio dashboards and multi-touch attribution for East African businesses. 100% tracking coverage.
+featuredImage:
+  alt: ''
+sections:
+  - discriminant: page-hero-alt
+    value:
+      eyebrow: Data and Analytics
+      headline: See exactly what's making you money.
+      lede: The biggest problem we see isn't poor marketing, it's invisible marketing. When you can't see which channels or creatives generate revenue, every decision is a guess.
+      quote: You can't optimise what you can't measure.
+      cta: Request Your Free Audit
+      ctaHref: /digital-audit/
+      secondaryCta: ''
+      secondaryCtaHref: ''
+  - discriminant: stats-alt
+    value:
+      eyebrow: Results we deliver
+      headline: Coverage you can trust.
+      body: Targets for every data engagement.
+      stats:
+        - value: 100%
+          label: Tracking coverage
+          icon: crosshairs
+        - value: 24h
+          label: Live data refresh
+          icon: refresh
+        - value: Zero
+          label: Data blind spots
+          icon: chart
+  - discriminant: capabilities-alt
+    value:
+      eyebrow: What's included
+      headline: Eight deliverables, one source of truth.
+      lede: Implementation, integration, dashboards, and ongoing briefings.
+      orderLabel: Order
+      orderServices: Scope
+      orderSequence: Sequence
+      items:
+        - title: GA4 Full Implementation
+          tag: Scope 01
+          depth: '01'
+          icon: database
+          body: Event tracking, e-commerce, goals, audience segments and funnel configuration.
+        - title: Tag Manager Setup
+          tag: Scope 02
+          depth: '02'
+          icon: layers
+          body: Container build, tag audit, conversion actions and server-side tracking.
+        - title: Looker Studio Dashboards
+          tag: Scope 03
+          depth: '03'
+          icon: panels
+          body: Live dashboards pulling every marketing channel into one view.
+        - title: Multi-Touch Attribution
+          tag: Scope 04
+          depth: '04'
+          icon: route
+          body: The full customer journey, not just the last click.
+        - title: CRM and Sales Integration
+          tag: Scope 05
+          depth: '05'
+          icon: grid
+          body: Marketing data connected to CRM, M-Pesa, and sales pipeline.
+        - title: Cohort and LTV Analysis
+          tag: Scope 06
+          depth: '06'
+          icon: chart
+          body: Retention, lifetime value, and repeat purchase rates.
+        - title: Weekly Data Briefing
+          tag: Scope 07
+          depth: '07'
+          icon: document
+          body: Plain-English summary of what the numbers mean.
+        - title: Data Quality Audits
+          tag: Scope 08
+          depth: '08'
+          icon: check
+          body: Monthly integrity checks so tracking stays accurate.
+  - discriminant: process-alt
+    value:
+      eyebrow: Our process
+      headline: Audit to ongoing analysis,
+      headlineAccent: in five steps.
+      lede: Foundation first, validation always, briefings weekly.
+      cardTitle: Our process
+      closing: Fix tracking before scaling spend.
+      cta: Request a free audit
+      ctaHref: /digital-audit/
+  - discriminant: belief-alt
+    value:
+      eyebrow: Why this comes first
+      headline: Fix tracking
+      headlineAccent: before scaling spend.
+      lede: Wrong data scales the wrong campaigns. Double-counted conversions overpay winners. Untracked M-Pesa sales hide true ROAS. Without revenue attribution, every optimisation is a guess.
+  - discriminant: cta-split
+    value:
+      eyebrow: Ready for trustworthy data?
+      headline: Get a free 30-minute data audit.
+      body: We'll review your tracking setup and show you what's broken, and what fixing it unlocks. No pitch. No obligation. Just data.
+      cta: Request Your Free Audit
+      ctaHref: /contact/
+      note: No pitch. No obligation. Just data.
+      portalLabel: Free · No commitment
