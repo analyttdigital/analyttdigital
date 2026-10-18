@@ -84,9 +84,8 @@ function entryForSlug(slug: string, prefix: Locale | null): StaticPath {
 }
 
 /**
- * Paths for the one-segment route (`/[locale]`): every URL segment that stands
- * alone — the locale bases (`/sw`) and, for the default locale whose URLs are
- * unprefixed, the single-segment page slugs (`/about-us`). An optional
+ * Paths for the one-segment route (`/[locale]`): the default locale's
+ * unprefixed single-segment page slugs (`/about-us`). An optional
  * catch-all cannot express this shape, because Next validates a pre-rendered
  * path against the required-catch-all variant of the route and rejects a
  * one-segment path (see `export/helpers/get-params`).
@@ -106,11 +105,10 @@ export async function baseStaticPaths(): Promise<StaticPath[]> {
 
 /**
  * Paths for the nested catch-all (`/[locale]/[...slug]`): every page URL with
- * two or more segments — `/sw/about-us`, `/sw/services/seo` (prefixed) and
- * `/services/paid-media` (default locale, its first slug segment in the
- * `locale` slot). Slugs come from the code defaults plus any Keystatic
- * entries; a page added after a build still renders on first request, because
- * the route keeps `fallback: 'blocking'`.
+ * two or more segments — `/services/paid-media` (default locale, its first
+ * slug segment in the `locale` slot). Slugs come from the code defaults
+ * plus any Keystatic entries; a page added after a build still renders on
+ * first request, because the route keeps `fallback: 'blocking'`.
  */
 export async function nestedStaticPaths(): Promise<StaticPath[]> {
   const slugsByLocale = await Promise.all(locales.map((locale) => listPageSlugs(reader, locale)));
@@ -124,7 +122,7 @@ export async function nestedStaticPaths(): Promise<StaticPath[]> {
 }
 
 /* ------------------------------- blog --------------------------------- */
-/* Standalone routes (`src/pages/blog/…`, `src/pages/sw/blog/…`), Pages Router
+/* Standalone routes (`src/pages/blog/…`), Pages Router
  * `getStaticProps` only. The index is not a CMS section: listing copy lives in
  * `defaults[locale].blog`, posts in `listPosts`/`readPost`. `bundle.page`
  * carries the listing/post title + excerpt as metadata only (empty sections);

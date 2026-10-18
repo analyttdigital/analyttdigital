@@ -1,8 +1,11 @@
 /* ------------------------------ locale -------------------------------- */
+/* Single-locale today (`en`); the shape stays locale-keyed (`locales`,
+ * `routeFromParams`, `blogBasePath`) so a future locale slots back in —
+ * see README "Adding a locale". */
 
-export type Locale = 'en' | 'sw';
+export type Locale = 'en';
 
-export const locales: Locale[] = ['en', 'sw'];
+export const locales: Locale[] = ['en'];
 export const defaultLocale: Locale = 'en';
 
 export function isLocale(value: string | undefined): value is Locale {
@@ -32,7 +35,7 @@ export function routeFromParams(params?: RouteParams): { locale: Locale; slug: s
   const slugSegments = prefixed ? tail : segments;
   return {
     locale: prefixed ? first : defaultLocale,
-    // The route's base is home: `/` for the default locale, `/sw` for others.
+    // The route's base is home: `/` for the default locale.
     slug: slugSegments.join('/') || 'home',
   };
 }

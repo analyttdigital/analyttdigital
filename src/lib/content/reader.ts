@@ -63,7 +63,7 @@ export async function readLayout(reader: AnyReader | null, locale: Locale): Prom
   if (!reader) return defaults[locale].layout;
   try {
     const entry = await (reader.singletons as Record<string, { read: () => Promise<LayoutContent | null> }>)[
-      `layout-${locale}`
+      'layout'
     ].read();
     if (!entry) return defaults[locale].layout;
     const merged: Record<string, unknown> = { ...(defaults[locale].layout as object) };
@@ -92,7 +92,7 @@ export async function readPage(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const entries: { slug: string; entry: PageDoc }[] = await (
       reader.collections as Record<string, { all: () => Promise<any> }>
-    )[`pages-${locale}`].all();
+    ).pages.all();
     const match = entries.find((e) => e.slug === slug);
     if (!match?.entry?.sections?.length) return fallback ?? null;
 
@@ -117,7 +117,7 @@ export async function listPageSlugs(reader: AnyReader | null, locale: Locale): P
     try {
       const cmsSlugs: string[] = await (
         reader.collections as Record<string, { list: () => Promise<string[]> }>
-      )[`pages-${locale}`].list();
+      ).pages.list();
       for (const slug of cmsSlugs) slugs.add(slug);
     } catch {
       // Unreadable collection: the code defaults still describe every page.
@@ -137,12 +137,10 @@ export async function readPageBundle(
 }
 
 /* ------------------------------- blog --------------------------------- */
-/* Posts (M8): `posts-<locale>` markdown collections merged over the code
+/* Posts: the `posts` collection merged over the code
  * defaults in `defaults[locale].blog.posts`, newest first. Rules mirror the
  * page layer: CMS values win, empty bodies defer to defaults, CMS-only posts
- * pass through, and an unknown slug is `null` (404, never home). While the SW
- * translations land, a bodyless SW post borrows its EN peer's body so the
- * `/sw/blog/<slug>` URL stays readable (recorded M8 gap). */
+ * pass through, and an unknown slug is `null` (404, never home). */
 
 function nonEmptyString(value: unknown): value is string {
   return typeof value === 'string' && value.trim() !== '';
@@ -301,7 +299,7 @@ export async function listPosts(reader: AnyReader | null, locale: Locale): Promi
     // `/blog/kenyas-digital-advertising-landscape-in-2025`).
     const entries: { slug: string; entry: Record<string, unknown> }[] = await (
       reader.collections as Record<string, { all: (opts?: unknown) => Promise<any> }>
-    )[`posts-${locale}`].all({ resolveLinkedFiles: true });
+    ).posts.all({ resolveLinkedFiles: true });
     const merged: BlogPost[] = [];
     const seen = new Set<string>();
     for (const e of entries) {
@@ -330,10 +328,6 @@ export async function readPost(
 ): Promise<BlogPost | null> {
   const match = (await listPosts(reader, locale)).find((p) => p.slug === slug);
   if (!match) return null;
-  if (isEmptyDocument(match.body) && locale !== defaultLocale) {
-    const peer = (await listPosts(reader, defaultLocale)).find((p) => p.slug === slug);
-    if (peer && !isEmptyDocument(peer.body)) return { ...match, body: peer.body };
-  }
   return match;
 }
 

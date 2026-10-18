@@ -6,7 +6,7 @@ export { getStaticProps };
 export default PageView;
 
 /**
- * The one-segment route: `/sw` (a locale base) and the default locale's
+ * The one-segment route: the default locale's
  * unprefixed pages (`/about-us`, `/contact`, `/pricing-plans`, `/services`).
  * Which one a segment is depends on whether it names a locale — see
  * `routeFromParams`. Deeper URLs live in `[...slug].tsx`.

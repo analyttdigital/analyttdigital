@@ -17,7 +17,7 @@ The visual language is a **fluid, continuous-scroll "product explorer" system**:
 | Motion     | Framer Motion (reveals, scroll-linked transforms, morph transitions) + Lenis smooth scroll |
 | 3D         | Three.js (ambient hero/background scenes, lazy-mounted, static fallback) |
 | Icons      | MDI, resolved at render time from content icon-name strings             |
-| Content    | Keystatic (local storage, per-locale singletons)                        |
+| Content    | Keystatic (local storage)                                            |
 
 ## Quick start
 
@@ -74,8 +74,8 @@ Content and copy for the following sections are unchanged from the prior pass; o
 
 ## Content model (Keystatic)
 
-- `layout-<locale>` **singletons**: shared chrome (nav, footer) — see `keystatic.config.ts`.
-- `pages-<locale>` **collections**: page documents (title, meta, ordered section blocks; one block type per section). Sections render via `section-renderer.tsx`, which maps each block's `type` to a component.
+- `layout` **singleton**: shared chrome (nav, footer) — see `keystatic.config.ts`.
+- `pages` **collection**: page documents (title, meta, ordered section blocks; one block type per section). Sections render via `section-renderer.tsx`, which maps each block's `type` to a component.
 - Schema factories live in `src/lib/keystatic/schemas.ts`.
 - **Defaults live in code** (`src/lib/content/defaults.ts`): Keystatic arrays start empty, so the reader (`src/lib/content/reader.ts`) falls back to code defaults when a CMS list is empty or the entry is missing. A fresh checkout renders a complete page with zero CMS edits.
 - The shared `getStaticProps` (`src/lib/keystatic/getStaticProps.ts`) reads Keystatic content at build time and passes a `bundle` prop (layout + page) to `_app`, which feeds the layout chrome; the page renders its section list.
@@ -84,22 +84,22 @@ Content and copy for the following sections are unchanged from the prior pass; o
 
 1. Run `npm run dev`
 2. Open `/keystatic`
-3. Pick a locale group (English / Kiswahili), edit a page's section blocks or the layout, save — YAML appears under `src/content/<locale>/` (`pages/` for page documents, `layout` for chrome), committed to git like code.
+3. Edit a page's section blocks or the layout, save — YAML appears under `src/content/` (`pages/` for page documents, `layout` for chrome), committed to git like code.
 
 ### Adding a locale
 
 1. Add the code to `locales` in `src/lib/content/types.ts` and defaults in `src/lib/content/defaults.ts`.
-2. Register a `pages-<code>` collection and a `layout-<code>` singleton in `keystatic.config.ts` (copy the `sw` entries).
+2. Register a `pages-<code>` collection, a `posts-<code>` collection, and a `layout-<code>` singleton in `keystatic.config.ts` (copy the unprefixed entries and add the locale suffix + path).
 3. Add a nav entry in the Keystatic `ui.navigation` config.
-4. Nothing else — `getStaticPaths` in `src/pages/[locale]/[...slug].tsx` enumerates every locale's pages from `listPageSlugs`, and the reader falls back to code defaults until the new locale has CMS content.
+4. Add prefixed routes (`src/pages/<code>/...`) mirroring `src/pages/blog/...` if the locale needs its own URL prefix, and extend the `Chrome` strings in `src/lib/content/chrome.tsx`.
+5. Nothing else — `getStaticPaths` enumerates every locale's pages from `listPageSlugs`, and the reader falls back to code defaults until the new locale has CMS content.
 
 ## Routing & locales
 
-One catch-all route (`src/pages/[locale]/[...slug].tsx`) serves every page document, in both published URL shapes:
+One catch-all route (`src/pages/[locale]/[...slug].tsx`) serves every page document:
 
-- `/` — English homepage (default locale, `src/pages/index.tsx`)
-- `/<slug>` — every other English page, e.g. `/about-us`, `/pricing-plans`, `/services/paid-media`
-- `/sw` — Kiswahili homepage, and `/sw/<slug>` for its other pages (e.g. `/sw/about-us`)
+- `/` — homepage (default locale, `src/pages/index.tsx`)
+- `/<slug>` — every other page, e.g. `/about-us`, `/pricing-plans`, `/services/paid-media`
 
 The default locale is unprefixed, so a first URL segment only counts as a locale when it names one; otherwise it is the page's first slug segment (`routeFromParams` in `src/lib/content/types.ts`). Slugs missing from the build still render through the `blocking` fallback, and a slug that exists in neither Keystatic nor the code defaults answers 404.
 

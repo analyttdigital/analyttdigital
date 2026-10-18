@@ -12,7 +12,7 @@ import { GsapReveal } from '@/lib/motion/gsap-reveal';
  * BlogList — the listing page. Head pattern from `page-hero` (eyebrow +
  * display headline, lede right), plates from `blog-card` in the insights grid
  * rhythm, server-rendered pagination beneath (plain links, no client state).
- * `basePath` is route-derived (`/blog`, `/sw/blog`); everything editorial
+ * `basePath` is route-derived (`/blog`); everything editorial
  * rides in `data`.
  */
 export function BlogList({

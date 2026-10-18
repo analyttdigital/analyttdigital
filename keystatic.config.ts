@@ -5,65 +5,48 @@ import { layoutFields, pageFields, postFields } from './src/lib/keystatic/schema
 /**
  * Keystatic configuration — content model:
  *
- * - `layout-<locale>` singletons: shared chrome (nav, footer) edited once per
- *   locale and consumed by every page's layout.
- * - `pages-<locale>` collections: page documents (title, meta, ordered
- *   section blocks). Each stored page renders at `/<locale?>/<slug>`.
- * - `posts-<locale>` collections (M8): blog posts as markdown (frontmatter +
- *   document body). Each stored post renders at `/<locale?>/blog/<slug>`.
- * - Storage is local; files land in src/content/<locale>/… as YAML (pages,
+ * - `layout` singleton: shared chrome (nav, footer), consumed by every
+ *   page's layout.
+ * - `pages` collection: page documents (title, meta, ordered section
+ *   blocks). Each stored page renders at `/<slug>`.
+ * - `posts` collection: blog posts as markdown (frontmatter + document
+ *   body). Each stored post renders at `/blog/<slug>`.
+ * - Storage is local; files land in `src/content/…` as YAML (pages,
  *   layout) or Markdown (posts).
  * - List defaults live in code (src/lib/content/defaults.ts) because Keystatic
  *   arrays start empty; the reader merges CMS values over code defaults.
- */
+ *
+ * Locales: single-locale today (`en`), but the code stays locale-keyed
+ * (`locales`, `routeFromParams`, `blogBasePath`) — see README
+ * "Adding a locale" to add one back. */
 export default config({
   storage: {
     kind: 'local',
   },
 
   collections: {
-    'pages-en': collection({
-      label: 'Pages (EN)',
+    pages: collection({
+      label: 'Pages',
       slugField: 'title',
-      path: 'src/content/en/pages/*',
+      path: 'src/content/pages/*',
       format: 'yaml',
       schema: pageFields,
     }),
-    'pages-sw': collection({
-      label: 'Pages (SW)',
-      slugField: 'title',
-      path: 'src/content/sw/pages/*',
-      format: 'yaml',
-      schema: pageFields,
-    }),
-    'posts-en': collection({
-      label: 'Posts (EN)',
+    posts: collection({
+      label: 'Posts',
       slugField: 'slug',
-      path: 'src/content/en/posts/*',
+      path: 'src/content/posts/*',
       // 0.6.9 collections only offer `json`/`yaml` — no markdown format,
       // so post documents serialize as YAML like pages.
-      format: 'yaml',
-      schema: postFields,
-    }),
-    'posts-sw': collection({
-      label: 'Posts (SW)',
-      slugField: 'slug',
-      path: 'src/content/sw/posts/*',
       format: 'yaml',
       schema: postFields,
     }),
   },
 
   singletons: {
-    'layout-en': singleton({
-      label: 'Layout (EN)',
-      path: 'src/content/en/layout',
-      format: 'yaml',
-      schema: layoutFields,
-    }),
-    'layout-sw': singleton({
-      label: 'Layout (SW)',
-      path: 'src/content/sw/layout',
+    layout: singleton({
+      label: 'Layout',
+      path: 'src/content/layout',
       format: 'yaml',
       schema: layoutFields,
     }),
@@ -71,8 +54,7 @@ export default config({
 
   ui: {
     navigation: {
-      'English (en)': ['pages-en', 'posts-en', 'layout-en'],
-      'Kiswahili (sw)': ['pages-sw', 'posts-sw', 'layout-sw'],
+      Content: ['pages', 'posts', 'layout'],
     },
   },
 });
