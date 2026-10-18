@@ -397,4 +397,6 @@ Notes:
 - Per direction: no typecheck/build checks in this milestone — only the
   script's reader-level parity result is evidence; run the usual checks
   at the end, on user confirmation.
-Commit: —
+Commit: `7357359` feat(keystatic): seed editable layout singleton content
+(3 files, +255/−3: `scripts/seed-layout.mjs` + seeded
+`src/content/layout.yaml`, plan.md; no `src/**` app-code changes).
