@@ -8,8 +8,8 @@ import {
   type BlogIndexProps,
 } from '@/lib/keystatic/getStaticProps';
 
-export async function getStaticProps() {
-  return getBlogIndexStaticProps('en', 1);
+export async function getStaticProps(ctx: { preview?: boolean, previewData?: unknown }) {
+  return getBlogIndexStaticProps('en', 1, ctx.preview, ctx.previewData);
 }
 
 /** EN blog index (page 1). Later pages live under `/blog/page/[n]`. */

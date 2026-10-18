@@ -36,6 +36,25 @@ npm run typecheck  # tsc --noEmit
 npm run lint       # eslint
 ```
 
+## Live preview (draft mode)
+
+Keystatic entries with a `previewUrl` (pages, posts, and the layout
+singleton — see `keystatic.config.ts`) show a preview button in the admin
+UI. It goes to `/api/preview/start?branch={branch}&to=<page>`, which turns
+on Next.js draft mode and redirects to the page; draft mode makes Next
+re-run `getStaticProps` for that request, so what you see reflects content
+saved after the last build (local storage: the working tree; GitHub mode:
+the preview branch, keyed off `KEYSTATIC_STATIC_GITHUB_TOKEN` when set).
+
+A fixed "Preview mode" banner with an **End preview** button appears on
+every page the editor browses; ending it (`POST /api/preview/end`) restores
+normal caching. Preview state is per-browser (cookies) — static builds and
+other visitors are never affected.
+
+Limits: Keystatic 0.6.9 previews **saved** content (the recipe model).
+Unsaved in-form edits are not sent to the front end — save first (locally:
+just save; GitHub mode: save to your branch), then preview.
+
 ## Keystatic storage modes
 
 Storage is local (files under `src/content/`) by default — no env vars needed.

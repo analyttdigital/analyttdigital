@@ -23,8 +23,16 @@ import { layoutFields, pageFields, postFields } from './src/lib/keystatic/schema
  * Storage: local by default. `KEYSTATIC_STORAGE=github` (with
  * `KEYSTATIC_GITHUB_REPO=<owner>/<repo>`) switches both the admin UI and
  * the build-time readers to GitHub-backed storage (K4) — see README
- * "Keystatic storage modes" for the env vars. */
+ * "Keystatic storage modes" for the env vars.
+
+ * Preview (K5): `previewUrl` makes the admin UI show a preview button that
+ * arms Next draft mode through `/api/preview/start` (Pages Router
+ * adaptation of Keystatic's real-time-previews recipe). `{branch}` is ''
+ * in local mode — that previews saved-but-not-built local content; in
+ * GitHub mode it names the branch the editor is saving to. */
 const GITHUB_REPO = process.env.KEYSTATIC_GITHUB_REPO ?? '';
+const PAGE_PREVIEW_URL = '/api/preview/start?branch={branch}&to=/{slug}';
+
 const useGithubStorage =
   process.env.KEYSTATIC_STORAGE === 'github' && GITHUB_REPO.includes('/');
 
@@ -51,6 +59,7 @@ export default config({
       path: 'src/content/pages/**',
       format: 'yaml',
       schema: pageFields,
+      previewUrl: PAGE_PREVIEW_URL,
     }),
     posts: collection({
       label: 'Posts',
@@ -60,6 +69,7 @@ export default config({
       // so post documents serialize as YAML like pages.
       format: 'yaml',
       schema: postFields,
+      previewUrl: '/api/preview/start?branch={branch}&to=/blog/{slug}',
     }),
   },
 
@@ -69,6 +79,8 @@ export default config({
       path: 'src/content/layout',
       format: 'yaml',
       schema: layoutFields,
+      // The layout chrome is shared by every page; preview it on `/`.
+      previewUrl: '/api/preview/start?branch={branch}&to=/',
     }),
   },
 

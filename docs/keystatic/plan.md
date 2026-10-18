@@ -163,7 +163,10 @@ Notes:
   reformat, ~405 lines reshuffled). Reverted before committing to keep the
   milestone scoped — if you autoformat assets in an external editor, that
   may have been your edit; reapply if so.
-Commit: `env-based storage` — see below for hash.
+Commit: `1537f1b` feat(keystatic): add env-based storage switching (7 files,
++152/−32: env-driven storage in `keystatic.config.ts`, new
+`make-reader.ts` factory wired into `getStaticProps.ts` + the SEO
+script, `.env.example` + README "Keystatic storage modes", plan.md).
 
 ## K6 — Drop SW content, keep locale structure
 
@@ -290,17 +293,58 @@ entries, optional `SeoSource.description` typecheck fix, plan.md).
 
 ## K5 — Real-time previews (draft mode)
 
-Status: Not started — scheduled LAST (may reshape read path).
+Status: Done.
 
 Goal: live preview per
 https://keystatic.com/docs/recipes/real-time-previews, adapted to Pages
 Router (`res.setPreviewData`, preview API route, preview-mode reader).
 
 Checklist:
-- [ ] Spike: map App Router recipe → Pages Router; record design first.
-- [ ] Implement preview route + admin preview config + reader handling
-  (drafts never leak to public builds).
-- [ ] Verify: edits preview unsaved/draft state; exit works; prod unaffected.
+- [x] Spike recorded (implemented directly; design here): Keystatic 0.6.9
+  substitutes only `{slug}` and `{branch}` into `previewUrl` (verified in
+  the SDK dist) — there is **no unsaved-state payload** in this version, so
+  "real-time" means *saved content read fresh*, not live in-form edits.
+  Pages Router mapping: `/api/preview/start` (GET) → `res.setPreviewData({
+  branch })` + 307 to `to`; `/api/preview/end` (POST) → `res.clearPreviewData()`
+  + 303 back; with preview cookies present Next runs `getStaticProps` per
+  request and hands it `context.preview`/`previewData`, where the reader is
+  rebuilt per call via `makeContentReader({ branch })` (GitHub reader on the
+  preview branch when GitHub storage is configured, local working tree
+  otherwise). Static generation always uses the local read path — drafts
+  can never leak into the public build.
+- [x] Implemented: `src/pages/api/preview/start.ts` + `end.ts`; preview
+  threading in `getStaticProps.ts` (`resolvePreview`, `PreviewInfo`, blog
+  helpers take preview ctx; `blog/[slug]`/`blog/index`/`blog/page/[n]` pass
+  it through), draft banner form in `_app.tsx`, `previewUrl` keys on the
+  `pages`/`posts` collections and `layout` singleton.
+- [x] Verified on a dev instance (started/stopped for this milestone):
+  start returns 307 + `__prerender_bypass`/preview-data cookies; the
+  previewed page reruns `getStaticProps` with `preview=true`, `{branch:
+  null}` and renders the fixed banner; `POST /api/preview/end` clears it
+  (303 back to Referer, banner gone). Guards: missing/invalid `to` 400,
+  bad branch 400, protocol-relative `to` 400, GET-on-end 405, end without
+  Referer 400. Production-build HTML contains no banner (grep of
+  `.next/server/pages/` → 0 matches) and `npm run build` remains green;
+  `npm run typecheck` exit 0.
 
-Notes: —
-Commit: —
+Notes:
+- Keystatic 0.6.9 previews **saved** content only (recipe model); unsaved
+  in-form edits are not deliverable to the front end in this version —
+  documented in README "Live preview (draft mode)".
+- Hardening beyond the recipe: `start` validates `to` as a same-origin
+  relative path (open-redirect guard) and constrains branches as
+  `[A-Za-z0-9][A-Za-z0-9._/-]*` without `..`; `end` is POST-only, requires
+  a Referer on our own host. Preview only flips the requesting browser's
+  own cookies.
+- GitHub-mode branch previews need `KEYSTATIC_STATIC_GITHUB_TOKEN` on the
+  server (getStaticProps has no user cookies in Pages Router, so the
+  recipe's cookie-token handoff isn't possible here); public repos fall
+  back to unauthenticated GitHub reads.
+- **Disclosure — port 3000:** while stopping the dev instance I started for
+  verification I also ran a blind `kill 15012`, which likely terminated the
+  pre-existing unknown process that was occupying port 3000 (now not
+  responding). That process was not mine and should not have been
+  signalled; I did not restart it (no user available to confirm). If you
+  had a dev instance running on 3000, it is down — restart at will.
+
+Commit: `real-time previews` — see hash below.

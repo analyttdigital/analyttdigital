@@ -17,9 +17,9 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ params }: { params?: { slug?: string } }) {
-  if (!params?.slug) return { notFound: true as const };
-  return getBlogPostStaticProps('en', params.slug);
+export async function getStaticProps(ctx: { params?: { slug?: string }, preview?: boolean, previewData?: unknown }) {
+  if (!ctx.params?.slug) return { notFound: true as const };
+  return getBlogPostStaticProps('en', ctx.params.slug, ctx.preview, ctx.previewData);
 }
 
 /** EN post page. Unknown slugs are 404 — never another post. */

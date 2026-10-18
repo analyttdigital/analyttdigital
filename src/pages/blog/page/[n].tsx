@@ -17,10 +17,10 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ params }: { params?: { n?: string } }) {
-  const n = Number(params?.n);
+export async function getStaticProps(ctx: { params?: { n?: string }, preview?: boolean, previewData?: unknown }) {
+  const n = Number(ctx.params?.n);
   if (n === 1) return { redirect: { destination: '/blog', permanent: false } };
-  return getBlogIndexStaticProps('en', n);
+  return getBlogIndexStaticProps('en', n, ctx.preview, ctx.previewData);
 }
 
 /** EN blog index, pages 2+. Page 1 redirects to `/blog`. */
