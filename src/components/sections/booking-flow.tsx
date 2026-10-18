@@ -1,5 +1,5 @@
 import { InViewTitle } from '@/components/graphics/in-view-title';
-import { GlowButton } from '@/components/layout/glow-button';
+import { GlowButton } from '@/components/graphics/glow-button';
 import { MdiIcon } from '@/lib/icons/resolve-icon';
 import type { DataProps, ProcessSection } from '@/lib/content/types';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';

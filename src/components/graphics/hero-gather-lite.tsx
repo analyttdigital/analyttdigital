@@ -30,21 +30,21 @@ export function HeroGatherLite({ progress }: { progress?: MotionValue<number> })
   const fade = useTransform(src, (v) => 1 - smooth(0.22, 0.38, v) * 0.55);
 
   return (
-    <motion.div
-      aria-hidden="true"
-      className="absolute inset-0 z-0 overflow-hidden"
-      style={{ y: driftY, scale: driftScale, opacity: fade }}
-    >
-      {/* Static glows — plain CSS gradients, no blur filter (fill-rate safe). */}
-      <div className="absolute inset-0 bg-[radial-gradient(60%_45%_at_50%_22%,rgba(240,79,38,.14),transparent_70%),radial-gradient(50%_40%_at_50%_30%,rgba(79,75,99,.18),transparent_70%)]" />
-      {/* The collage — static asset, no animation at all under
+		<motion.div
+			aria-hidden="true"
+			className="absolute inset-0 z-0 overflow-hidden"
+			style={{ y: driftY, scale: driftScale, opacity: fade }}
+		>
+			{/* Static glows — plain CSS gradients, no blur filter (fill-rate safe). */}
+			<div className="absolute inset-0 bg-[radial-gradient(60%_45%_at_50%_22%,rgba(240,79,38,.14),transparent_70%),radial-gradient(50%_40%_at_50%_30%,rgba(79,75,99,.18),transparent_70%)]" />
+			{/* The collage — static asset, no animation at all under
           `motion-reduce` (the float carries `motion-safe:`). */}
-      <img
-        src="/img/logo-marketing-collage.svg"
-        alt=""
-        draggable={false}
-        className="absolute left-1/2 top-[86px] w-[min(72vw,340px)] -translate-x-1/2"
-      />
-    </motion.div>
+			<img
+				src="/img/logo-marketing-collage.svg"
+				alt=""
+				draggable={false}
+				className="absolute right-1/2 top-1/4 -translate-y-1/2 w-[min(72dvw,25dvh)] md:w-[min(72vw,25%)] translate-x-1/2 md:right-0 md:-translate-x-1/2 md:top-1/2 md:-translate-y-1/2"
+			/>
+		</motion.div>
   );
 }

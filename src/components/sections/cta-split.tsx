@@ -1,6 +1,6 @@
 'use client';
 
-import { GlowButton } from '@/components/layout/glow-button';
+import { GlowButton } from '@/components/graphics/glow-button';
 import { InViewTitle } from '@/components/graphics/in-view-title';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
 import type { CtaSection, DataProps } from '@/lib/content/types';

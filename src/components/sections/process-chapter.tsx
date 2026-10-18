@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { MdiIcon, processStepIcons } from '@/lib/icons/resolve-icon';
 import { CtaBanner } from '@/components/sections/cta-banner';
-import { GlowButton } from '@/components/layout/glow-button';
+import { GlowButton } from '@/components/graphics/glow-button';
 import { InViewTitle } from '@/components/graphics/in-view-title';
 import { Reveal } from '@/lib/motion/reveal';
 import type { ContentImage, CtaSection, ProcessSection } from '@/lib/content/types';

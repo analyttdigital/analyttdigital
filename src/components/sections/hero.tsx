@@ -781,6 +781,7 @@ export function HeroStage({
 				)}
 			</motion.div>
 
+
 			{/* Copy block — bottom on mobile, vertically centered on desktop.
 			    Rides out on `chapterOut`, then leaves the tab order once fully
 			    transparent so the portal owns the stage. */}
