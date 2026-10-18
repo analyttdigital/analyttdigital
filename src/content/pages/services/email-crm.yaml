@@ -1,0 +1,132 @@
+description: Welcome flows, abandoned cart recovery, lead nurture and retention marketing for Kenyan and East African businesses. 3.1x customer LTV.
+featuredImage:
+  alt: ''
+sections:
+  - discriminant: page-hero-alt
+    value:
+      eyebrow: Email and CRM
+      headline: Turn leads into loyal, repeat customers.
+      lede: Acquiring a new customer costs 5-7x more than retaining one. Yet most businesses spend 90% of budget on acquisition, and almost nothing on customers already won.
+      quote: Your email list is the only audience you actually own.
+      cta: Request Your Free Audit
+      ctaHref: /contact/
+      secondaryCta: ''
+      secondaryCtaHref: ''
+  - discriminant: problem-alt
+    value:
+      eyebrow: The problem we solve
+      headline: Is your list earning its keep?
+      paragraphs:
+        - Do you have a welcome sequence that converts new subscribers?
+        - Are you recovering abandoned carts (15–25% of them are recoverable)?
+        - Is your email list engaged, or slowly dying from neglect?
+        - Do you know the revenue each email flow generates?
+        - Are you treating every subscriber the same, or segmenting by behaviour?
+      closing: If you're only sending the occasional newsletter, you're leaving substantial revenue on the table.
+  - discriminant: capabilities-alt
+    value:
+      eyebrow: What's included
+      headline: Eight deliverables, one system.
+      lede: From welcome to win-back, every flow built out.
+      orderLabel: Order
+      orderServices: Scope
+      orderSequence: Sequence
+      items:
+        - title: CRM Setup & Integration
+          tag: Scope 01
+          depth: '01'
+          icon: database
+          body: Platform configuration, list segmentation and contact data architecture.
+        - title: Welcome & Onboarding Flows
+          tag: Scope 02
+          depth: '02'
+          icon: mail
+          body: First-impression sequences that convert new subscribers into customers.
+        - title: Abandoned Cart Recovery
+          tag: Scope 03
+          depth: '03'
+          icon: tag
+          body: Multi-step sequences that recover 15–25% of abandoned carts.
+        - title: Lead Nurture Sequences
+          tag: Scope 04
+          depth: '04'
+          icon: route
+          body: Value-first nurture journeys that move leads to purchase-ready.
+        - title: Post-Purchase & Upsell Flows
+          tag: Scope 05
+          depth: '05'
+          icon: rocket
+          body: Maximise lifetime value with timely upsell and cross-sell sequences.
+        - title: Re-Engagement Campaigns
+          tag: Scope 06
+          depth: '06'
+          icon: refresh
+          body: Win back dormant subscribers with tested reactivation campaigns.
+        - title: Promotional Calendar Management
+          tag: Scope 07
+          depth: '07'
+          icon: panels
+          body: Monthly broadcast campaigns around Kenyan and African calendar events.
+        - title: List Health & Deliverability
+          tag: Scope 08
+          depth: '08'
+          icon: check
+          body: Ongoing list hygiene, spam score monitoring and inbox rate optimisation.
+  - discriminant: stats-alt
+    value:
+      eyebrow: Results we deliver
+      headline: A list that pays for itself.
+      body: Targets for every email engagement.
+      stats:
+        - value: 45%
+          label: Average open rate
+          icon: mail
+        - value: 3.1x
+          label: Customer lifetime value
+          icon: chart
+        - value: 7%
+          label: Click rate
+          icon: check
+  - discriminant: industries-alt
+    value:
+      eyebrow: Who this is for
+      headline: Built for businesses like yours.
+      body: Five profiles that fit this service best.
+      hint: Five fit profiles
+      items:
+        - E-commerce brands with repeat-purchase potential
+        - Service businesses nurturing long sales cycles
+        - SaaS and apps running onboarding and trial sequences
+        - B2B companies building pipeline through nurture
+        - Any business with a list they're not monetising
+  - discriminant: industries-alt
+    value:
+      eyebrow: Platforms we work with
+      headline: Plays well with your stack.
+      body: Five platforms we integrate and report on.
+      hint: Supported platforms
+      items:
+        - 'Klaviyo: best for e-commerce'
+        - 'Mailchimp: accessible for small businesses'
+        - 'HubSpot: full CRM and automation'
+        - 'ActiveCampaign: powerful automation at scale'
+        - 'Salesforce: enterprise CRM integration'
+  - discriminant: process-alt
+    value:
+      eyebrow: Our process
+      headline: Audit to optimisation,
+      headlineAccent: in five steps.
+      lede: Segments, flows, and lifecycle stages, in order.
+      cardTitle: Our process
+      closing: Unlock revenue from the list you already own.
+      cta: Request Your Free Audit
+      ctaHref: /contact/
+  - discriminant: cta-split
+    value:
+      eyebrow: Ready to unlock list revenue?
+      headline: Get a free 30-minute email and CRM audit.
+      body: We'll review your setup and show you the missing flows that could be generating revenue today. No pitch. No obligation. Just data.
+      cta: Request Your Free Audit
+      ctaHref: /contact/
+      note: No pitch. No obligation. Just data.
+      portalLabel: Free · No commitment

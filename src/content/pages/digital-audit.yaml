@@ -1,0 +1,126 @@
+description: Book a free 30-minute digital audit with Analytt Digital. We'll review your strategy, paid media, tracking and funnel, and show you where your biggest growth opportunities are.
+featuredImage:
+  alt: ''
+sections:
+  - discriminant: page-hero-alt
+    value:
+      eyebrow: Free 30-minute digital audit
+      headline: Book your free session today.
+      lede: Book a brief session with our team to discuss your challenges and the support you require. Whether it's strategy, paid media, or creative direction, we are here to listen, understand, and tailor solutions that work for your brand.
+      quote: ''
+      cta: Book Your 30-Minute Digital Audit
+      ctaHref: '#book'
+      secondaryCta: ''
+      secondaryCtaHref: ''
+  - discriminant: belief-alt
+    value:
+      eyebrow: What is a digital audit?
+      headline: A working session,
+      headlineAccent: not a sales call.
+      lede: A Digital Audit is a free, no-obligation 30-minute session with our team. It's not a sales call, it's a working session where we look at your current marketing and give you honest, actionable feedback. You'll leave with clarity on what's working, what's leaking budget, where your biggest growth opportunities are, and what the right next step looks like, whether or not you work with us.
+  - discriminant: capabilities-alt
+    value:
+      eyebrow: What we review
+      headline: Five lenses on your marketing.
+      lede: Depending on your business, we'll look at some or all of the following.
+      orderLabel: Order
+      orderServices: Scope
+      orderSequence: Sequence
+      items:
+        - title: Strategy
+          tag: Scope 01
+          depth: '01'
+          icon: compass
+          body: Target audience and positioning. Channel mix and budget allocation. Competitive landscape in your market.
+        - title: Paid Media
+          tag: Scope 02
+          depth: '02'
+          icon: bullhorn
+          body: Google Ads, Meta, TikTok, LinkedIn account structure. Audience targeting and creative performance. Bid strategy and cost-per-acquisition.
+        - title: Tracking and Analytics
+          tag: Scope 03
+          depth: '03'
+          icon: database
+          body: GA4 and Google Tag Manager setup. Conversion tracking accuracy. Attribution and reporting.
+        - title: Conversion Funnel
+          tag: Scope 04
+          depth: '04'
+          icon: chart
+          body: Website and landing page performance. Mobile experience for Kenyan audiences. Forms, WhatsApp, and M-Pesa integration.
+        - title: SEO and Organic
+          tag: Scope 05
+          depth: '05'
+          icon: layers
+          body: Technical health and current rankings. Content gaps and keyword opportunities. Local SEO and Google Business Profile.
+  - discriminant: belief-alt
+    value:
+      eyebrow: Who this is for
+      headline: Built for owners,
+      headlineAccent: managers, and challengers.
+      lede: Business owners who want an honest second opinion. Marketing managers who need external expertise to validate their plan. Startups preparing to invest seriously in growth. Established brands who feel their current agency isn't delivering. Anyone spending money on ads and unsure if it's working.
+  - discriminant: problem-alt
+    value:
+      eyebrow: What you'll get
+      headline: Leave with a diagnosis.
+      paragraphs:
+        - 'A clear diagnosis of your current marketing performance. Prioritized recommendations: what to fix first. A realistic view of what''s achievable with your budget. A clear next step: audit report, proposal, or DIY guidance.'
+      closing: No pitch. No obligation. Just data.
+      panelTitle: Your takeaways
+      panelAlert: Clarity in 30 minutes
+      panelChips:
+        - value: Diagnosis
+          label: Current performance
+        - value: Priorities
+          label: What to fix first
+        - value: Next step
+          label: Report, proposal, DIY
+  - discriminant: booking-flow
+    value:
+      eyebrow: How it works
+      headline: Book, share, meet,
+      headlineAccent: decide.
+      lede: Five steps from booking to decision, with zero pressure at the end.
+      cardTitle: How it works
+      closing: Work with us, or take the recommendations and run with them yourself.
+      cta: Book your session
+      ctaHref: '#book'
+  - discriminant: belief-alt
+    value:
+      eyebrow: Why we offer this free
+      headline: We'd rather earn trust
+      headlineAccent: than sell to you.
+      lede: A free audit shows you how we think before you commit a shilling. Most businesses aren't ready for us yet, and that's okay. Sometimes the best advice is fix your tracking first or come back when you're spending more. We'd rather tell you that honestly now.
+  - discriminant: cta-split
+    value:
+      eyebrow: Book your free session
+      headline: WhatsApp or email, your call.
+      body: WhatsApp +254 784 488 542. Email hello@analyttdigital.com. Thirty minutes, honest feedback, no obligation.
+      cta: Book Your 30-Minute Digital Audit
+      ctaHref: '#book'
+      note: Or reach us directly any time.
+      portalLabel: Free · No commitment
+  - discriminant: faq
+    value:
+      eyebrow: FAQ
+      headline: Questions, answered.
+      body: Everything teams ask before booking.
+      items:
+        - question: Is it really free?
+          answer: Yes, completely free, no obligation.
+        - question: Will you try to sell me something?
+          answer: We'll tell you what we do and whether we think we can help. But there's no pressure and no hard sell. If we're not a fit, we'll say so.
+        - question: What if I'm not currently running any marketing?
+          answer: That's fine. We'll focus on strategy, positioning, and where to start.
+        - question: How do I prepare?
+          answer: Have your website URL, current channels, budget range, and main goal ready. That's it.
+        - question: Can I bring my team?
+          answer: Absolutely. Bring whoever needs to be part of the conversation.
+  - discriminant: cta
+    value:
+      eyebrow: Ready to see what's possible?
+      headline: Book your free audit now.
+      body: Thirty minutes, honest feedback, clear next steps. No obligation.
+      cta: Book your free audit now
+      ctaHref: '#book'
+      note: No pitch. No obligation. Just data.
+      portalLabel: Free · No commitment

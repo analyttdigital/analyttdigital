@@ -57,12 +57,28 @@ function mergeImage(fallback: ContentImage | undefined, cmsValue: unknown): Cont
   return cmsValue as ContentImage;
 }
 
+/** Keystatic stores a conditional block as `{ discriminant, value }`; the
+ *  renderer's contract is a flat `{ type, ...fields }` section. Normalize
+ *  before merging, otherwise every CMS page section looks like an unknown
+ *  `type` and never reaches its component. */
+function normalizeSection(raw: unknown): Section {
+  if (raw !== null && typeof raw === 'object' && 'discriminant' in raw && 'value' in raw) {
+    const block = raw as { discriminant: string; value: Record<string, unknown> };
+    return { ...(block.value ?? {}), type: block.discriminant } as Section;
+  }
+  return raw as Section;
+}
+
 function mergeSection(defaultsSection: Section | undefined, cmsSection: Section): Section {
   if (!defaultsSection || defaultsSection.type !== cmsSection.type) return cmsSection;
   const merged: Record<string, unknown> = { ...(defaultsSection as object) };
   for (const [k, v] of Object.entries(cmsSection as Record<string, unknown>)) {
     if (k === 'type') continue;
-    merged[k] = mergeValue(merged[k], v);
+    const mergedValue = mergeValue(merged[k], v);
+    // An empty CMS image/array with no code default merges to `undefined`;
+    // drop the key instead — Next rejects `undefined` in getStaticProps props.
+    if (mergedValue === undefined) delete merged[k];
+    else merged[k] = mergedValue;
   }
   return merged as Section;
 }
@@ -76,7 +92,9 @@ export async function readLayout(reader: AnyReader | null, locale: Locale): Prom
     if (!entry) return defaults[locale].layout;
     const merged: Record<string, unknown> = { ...(defaults[locale].layout as object) };
     for (const [k, v] of Object.entries(entry as Record<string, unknown>)) {
-      merged[k] = mergeValue(merged[k], v);
+      const mergedValue = mergeValue(merged[k], v);
+      if (mergedValue === undefined) delete merged[k];
+      else merged[k] = mergedValue;
     }
     return merged as LayoutContent;
   } catch {
@@ -104,7 +122,7 @@ export async function readPage(
     const match = entries.find((e) => e.slug === slug);
     if (!match?.entry?.sections?.length) return fallback ?? null;
 
-    const cmsSections = match.entry.sections;
+    const cmsSections = (match.entry.sections as unknown[]).map(normalizeSection);
     const sections = cmsSections.map((cms, i) => mergeSection(fallback?.sections[i], cms));
     return {
       title: match.entry.title || fallback?.title || '',

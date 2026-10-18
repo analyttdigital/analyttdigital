@@ -1,0 +1,102 @@
+description: Get in touch with Analytt Digital. Book a free consultation, request a performance audit, or ask us anything about growing your business across Kenya and East Africa.
+featuredImage:
+  alt: ''
+sections:
+  - discriminant: page-hero-alt
+    value:
+      eyebrow: Contact Us
+      headline: We're here to help.
+      lede: Whether you're ready to start a project, need a second opinion on your marketing, or just want to explore what's possible, reach out. We respond fast, and we don't do hard sells.
+      quote: ''
+      cta: Book Your Free Digital Audit
+      ctaHref: /digital-audit/
+      secondaryCta: ''
+      secondaryCtaHref: ''
+  - discriminant: contact-channels-alt
+    value:
+      eyebrow: Get in touch
+      headline: Three ways to reach us.
+      body: WhatsApp is fastest. Email works for detail. Nairobi is home; East Africa is the field.
+      channels:
+        - label: Call or WhatsApp
+          value: +254 784 488 542
+          href: https://wa.me/254784488542
+          note: Message us on WhatsApp for a quick response, or call Mon-Fri, 9am-6pm EAT.
+          icon: phone
+        - label: Email us
+          value: hello@analyttdigital.com
+          href: mailto:hello@analyttdigital.com
+          note: For detailed inquiries, proposals, or partnership requests.
+          icon: mail
+        - label: Location
+          value: Nairobi, Kenya
+          href: /contact/
+          note: Serving clients across Kenya, East Africa, and internationally.
+          icon: pin
+  - discriminant: form-shell-alt
+    value:
+      eyebrow: General inquiries
+      headline: Send us a message.
+      body: Fill out the form below and our team will get back to you within one business day.
+      submitLabel: Submit form
+      fallbackHref: mailto:hello@analyttdigital.com
+      fallbackLabel: Or email us directly
+      note: We reply within one business day.
+      fields:
+        - name: firstName
+          label: First Name
+          kind: text
+        - name: lastName
+          label: Last Name
+          kind: text
+        - name: email
+          label: Email
+          kind: email
+        - name: subject
+          label: Subject
+          kind: text
+        - name: message
+          label: Your Message
+          kind: textarea
+  - discriminant: cta-split
+    value:
+      eyebrow: Prefer to talk first?
+      headline: Book a free 30-minute digital audit.
+      body: Book a direct session with our team. We'll discuss your challenges and the support you require, whether it's strategy, paid media, or creative direction.
+      cta: Book Your Free Digital Audit
+      ctaHref: /digital-audit/
+      note: We're here to listen, understand, and tailor solutions.
+      portalLabel: Free · No commitment
+  - discriminant: next-steps
+    value:
+      eyebrow: What happens next
+      headline: After you reach out,
+      headlineAccent: we move fast.
+      lede: Four steps from first message to delivery, with honesty at each gate.
+      cardTitle: What happens next
+      closing: If we're not a fit, we'll point you in the right direction.
+      cta: Book a free audit
+      ctaHref: /digital-audit/
+  - discriminant: faq
+    value:
+      eyebrow: FAQ
+      headline: Questions, answered.
+      body: Fast answers before you reach out.
+      items:
+        - question: Do you work with businesses outside Kenya?
+          answer: Yes, we work across East Africa and with international brands entering African markets.
+        - question: How quickly do you respond?
+          answer: Within a few hours on business days. WhatsApp is fastest.
+        - question: Do you charge for the initial consultation?
+          answer: No. The 30-minute digital audit is completely free, with no obligation.
+        - question: What information should I have ready?
+          answer: 'Ideally: your website, current marketing channels, monthly budget range, and your main growth goal.'
+  - discriminant: cta
+    value:
+      eyebrow: Ready to grow?
+      headline: Book your free audit.
+      body: Thirty minutes on your marketing, with honest and actionable feedback. No obligation.
+      cta: Book your free audit
+      ctaHref: /digital-audit/
+      note: No pitch. No obligation. Just data.
+      portalLabel: Free · No commitment

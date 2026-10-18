@@ -1,0 +1,120 @@
+description: Heatmaps, session recordings, A/B testing and mobile-first funnel optimisation for Kenyan and East African audiences. 2.8x average conversion lift.
+featuredImage:
+  alt: ''
+sections:
+  - discriminant: page-hero-alt
+    value:
+      eyebrow: CRO
+      headline: More revenue from your existing traffic.
+      lede: The average Kenyan business website converts less than 1.5% of its visitors. CRO fixes that, without spending more on traffic.
+      quote: Doubling your conversion rate costs less than doubling your ad spend.
+      cta: Request Your Free Audit
+      ctaHref: /contact/
+      secondaryCta: ''
+      secondaryCtaHref: ''
+  - discriminant: problem-alt
+    value:
+      eyebrow: The problem we solve
+      headline: Do you know where visitors drop off?
+      paragraphs:
+        - Do you know where visitors drop off in your funnel?
+        - Have you tested what actually converts, or just what looks nice?
+        - Is your mobile experience built for how Kenyans actually browse?
+        - Are your forms, CTAs, and checkout flows frictionless?
+        - Does your WhatsApp and M-Pesa integration help or hinder conversion?
+      closing: Most businesses improve their websites based on opinion. We improve them based on evidence.
+  - discriminant: capabilities-alt
+    value:
+      eyebrow: What's included
+      headline: Eight deliverables, one testing programme.
+      lede: Evidence over opinion, at every step.
+      orderLabel: Order
+      orderServices: Scope
+      orderSequence: Sequence
+      items:
+        - title: Full Funnel Audit
+          tag: Scope 01
+          depth: '01'
+          icon: crosshairs
+          body: End-to-end analysis of your website, landing pages, forms and checkout.
+        - title: Heatmap & Session Analysis
+          tag: Scope 02
+          depth: '02'
+          icon: chartBox
+          body: 'Hotjar and Microsoft Clarity setup: see exactly where users drop off.'
+        - title: Landing Page Redesign
+          tag: Scope 03
+          depth: '03'
+          icon: layers
+          body: High-converting landing pages built specifically for Kenyan audiences.
+        - title: A/B & Multivariate Testing
+          tag: Scope 04
+          depth: '04'
+          icon: target
+          body: Structured tests on headlines, CTAs, layouts, pricing and social proof.
+        - title: Mobile UX Optimisation
+          tag: Scope 05
+          depth: '05'
+          icon: phone
+          body: Mobile-first redesign for Kenya's predominantly mobile audience.
+        - title: WhatsApp & M-Pesa Integration
+          tag: Scope 06
+          depth: '06'
+          icon: anchor
+          body: Frictionless local payment and contact journeys built into your funnel.
+        - title: Copy & Messaging Optimisation
+          tag: Scope 07
+          depth: '07'
+          icon: document
+          body: Persuasion-led copywriting tested against control variants.
+        - title: Form & Checkout Optimisation
+          tag: Scope 08
+          depth: '08'
+          icon: check
+          body: Reduce abandonment at the most critical conversion steps.
+  - discriminant: stats-alt
+    value:
+      eyebrow: Results we deliver
+      headline: Small changes, big revenue.
+      body: Targets for every CRO engagement.
+      stats:
+        - value: 2.8x
+          label: Average CVR lift
+          icon: chart
+        - value: 40%
+          label: Lower acquisition cost
+          icon: percent
+        - value: '30'
+          label: Day first win
+          icon: refresh
+  - discriminant: industries-alt
+    value:
+      eyebrow: Who this is for
+      headline: Built for businesses like yours.
+      body: Five profiles that fit this service best.
+      hint: Five fit profiles
+      items:
+        - E-commerce stores with traffic but low purchase rates
+        - Lead-gen businesses with form abandonment problems
+        - Service businesses losing inquiries to friction
+        - SaaS and apps struggling with trial-to-paid conversion
+        - Any business spending on ads but not converting the traffic
+  - discriminant: process-alt
+    value:
+      eyebrow: Our process
+      headline: Audit to scale,
+      headlineAccent: in five steps.
+      lede: Hypotheses from evidence, winners rolled out.
+      cardTitle: Our process
+      closing: Roll out winners and keep iterating.
+      cta: Request Your Free Audit
+      ctaHref: /contact/
+  - discriminant: cta-split
+    value:
+      eyebrow: Ready to convert more traffic?
+      headline: Get a free 30-minute CRO audit.
+      body: We'll review your funnel, identify the biggest drop-off points, and show you where the fastest wins are. No pitch. No obligation. Just data.
+      cta: Request Your Free Audit
+      ctaHref: /contact/
+      note: No pitch. No obligation. Just data.
+      portalLabel: Free · No commitment

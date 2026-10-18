@@ -1,0 +1,120 @@
+description: Technical SEO, content authority and local search dominance built for English, Swahili and code-switching search behaviour across East Africa.
+featuredImage:
+  alt: ''
+sections:
+  - discriminant: page-hero-alt
+    value:
+      eyebrow: SEO
+      headline: 'Rank #1 for searches that drive revenue.'
+      lede: Most businesses across Kenya and East Africa still have no structured SEO strategy, leaving high-intent customers to find competitors first.
+      quote: The best sales channel is the one your competitor doesn't own yet.
+      cta: Request Your Free Audit
+      ctaHref: /contact/
+      secondaryCta: ''
+      secondaryCtaHref: ''
+  - discriminant: problem-alt
+    value:
+      eyebrow: The problem we solve
+      headline: Are you ranking for the searches your customers make?
+      paragraphs:
+        - Are you ranking for the searches your actual customers make?
+        - 'Is your site technically healthy: fast, crawlable, mobile-first?'
+        - Do you have content that answers buyer questions at every stage?
+        - Is your Google Business Profile optimised for local discovery?
+        - Are you building authority through backlinks and digital PR?
+      closing: If you're not showing up when customers search, you're paying for traffic you could be earning.
+  - discriminant: capabilities-alt
+    value:
+      eyebrow: What's included
+      headline: Eight deliverables, one source of truth.
+      lede: Technical foundation, content authority, and local dominance.
+      orderLabel: Order
+      orderServices: Scope
+      orderSequence: Sequence
+      items:
+        - title: Technical SEO Audit & Fix
+          tag: Scope 01
+          depth: '01'
+          icon: crosshairs
+          body: Core Web Vitals, crawlability, indexation, schema markup and site speed.
+        - title: Kenya & Africa Keyword Research
+          tag: Scope 02
+          depth: '02'
+          icon: target
+          body: High-intent keyword mapping for local and regional search behaviour.
+        - title: Content Strategy & Production
+          tag: Scope 03
+          depth: '03'
+          icon: document
+          body: SEO articles, landing pages and pillar content written for Kenyan audiences.
+        - title: On-Page Optimisation
+          tag: Scope 04
+          depth: '04'
+          icon: layers
+          body: Title tags, meta descriptions, header structure, internal linking and schema.
+        - title: Local SEO (Google Business Profile)
+          tag: Scope 05
+          depth: '05'
+          icon: pin
+          body: GBP optimisation, local citations, NAP consistency across Kenya.
+        - title: Link Building & Digital PR
+          tag: Scope 06
+          depth: '06'
+          icon: anchor
+          body: High-authority African and international backlink acquisition.
+        - title: Competitor Gap Analysis
+          tag: Scope 07
+          depth: '07'
+          icon: chart
+          body: Monthly competitive landscape review to identify ranking opportunities.
+        - title: Rank Tracking & Reporting
+          tag: Scope 08
+          depth: '08'
+          icon: refresh
+          body: Weekly ranking reports across target keywords in Kenya and Africa.
+  - discriminant: stats-alt
+    value:
+      eyebrow: Results we deliver
+      headline: Rankings that pay for themselves.
+      body: Targets for every SEO engagement.
+      stats:
+        - value: 300%
+          label: Organic traffic growth
+          icon: chart
+        - value: '47'
+          label: Page-one rankings
+          icon: target
+        - value: '8'
+          label: Months to results
+          icon: refresh
+  - discriminant: industries-alt
+    value:
+      eyebrow: Who this is for
+      headline: Built for businesses like yours.
+      body: Five profiles that fit this service best.
+      hint: Five fit profiles
+      items:
+        - E-commerce brands competing for high-intent product searches
+        - Service businesses in competitive local markets
+        - SaaS and tech companies building organic pipeline
+        - Tourism and hospitality brands targeting destination searches
+        - Multi-country businesses needing regional SEO infrastructure
+  - discriminant: process-alt
+    value:
+      eyebrow: Our process
+      headline: Audit to rankings,
+      headlineAccent: in five steps.
+      lede: Technical, content, and authority, in order.
+      cardTitle: Our process
+      closing: Rankings compound. Start with the audit.
+      cta: Request Your Free Audit
+      ctaHref: /contact/
+  - discriminant: cta-split
+    value:
+      eyebrow: Ready to own your search category?
+      headline: Get a free 30-minute SEO audit.
+      body: We'll review your site's technical health, current rankings, and content gaps, and show you where the fastest wins are. No pitch. No obligation. Just data.
+      cta: Request Your Free Audit
+      ctaHref: /contact/
+      note: No pitch. No obligation. Just data.
+      portalLabel: Free · No commitment

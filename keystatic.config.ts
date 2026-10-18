@@ -28,7 +28,11 @@ export default config({
     pages: collection({
       label: 'Pages',
       slugField: 'title',
-      path: 'src/content/pages/*',
+      // `**` (not `*`) so nested slugs such as `services/paid-media` — URLs
+      // the code defaults already publish — are listed and readable. The
+      // trailing `/*` spelling adds a `*` slug suffix in Keystatic 0.6.9 and
+      // makes every read miss its data file; bare `/**` is the working form.
+      path: 'src/content/pages/**',
       format: 'yaml',
       schema: pageFields,
     }),

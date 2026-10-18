@@ -1,0 +1,166 @@
+description: Performance paid media across Google, Meta, TikTok, LinkedIn and YouTube, built for Kenya and East African conversion journeys. 4.2x average ROAS.
+featuredImage:
+  alt: ''
+sections:
+  - discriminant: page-hero-alt
+    value:
+      eyebrow: Paid Media
+      headline: Google Ads and Paid Social That Converts.
+      lede: Most businesses across Kenya and East Africa are wasting 30-60% of their ad spend targeting the wrong audiences, running untested creatives, and operating without proper conversion tracking. We fix all three, before we spend a single shilling of your budget.
+      quote: Stop paying for attention. Start paying for customers.
+      cta: Request Your Free Audit
+      ctaHref: /digital-audit/
+      secondaryCta: ''
+      secondaryCtaHref: ''
+  - discriminant: problem-alt
+    value:
+      eyebrow: The problem we solve
+      headline: Five questions for your ad accounts.
+      paragraphs:
+        - Do you know your actual cost per acquisition, or just what the platform reports? Are you retargeting the 97% of visitors who don't convert on the first visit? Have you tested Swahili vs. English creative? Is your tracking catching every conversion, including WhatsApp and phone-call leads? Do you know which campaigns are profitable and which are quietly bleeding budget? If you hesitated on any of these, you're almost certainly leaving money on the table.
+      closing: Leaving money on the table is optional.
+      panelTitle: Where budget leaks
+      panelAlert: 30-60% waste is typical
+      panelChips:
+        - value: Actual CPA
+          label: Not platform CPA
+        - value: Retargeting
+          label: The 97% who leave
+        - value: Tracking
+          label: Every conversion
+  - discriminant: belief-alt
+    value:
+      eyebrow: Our approach
+      headline: Localised paid media,
+      headlineAccent: built around your goal.
+      lede: 'Our paid media team manages campaigns across Google Search, Google Display, YouTube, Meta, TikTok, LinkedIn, and programmatic channels, built around your business goal: lead generation, e-commerce sales, app installs, or direct response. Every campaign is localised: M-Pesa and mobile money journeys in the funnel, Swahili-English creative testing, mobile-first formats, and peak-time bid strategies tuned across Kenya, Uganda, Tanzania, and Rwanda.'
+  - discriminant: stats-alt
+    value:
+      eyebrow: Results we deliver
+      headline: Paid media that pays back.
+      body: Average outcomes across managed accounts.
+      stats:
+        - value: 4.2x
+          label: Average ROAS
+          icon: chart
+        - value: 68%
+          label: Lower cost per lead
+          icon: crosshairs
+        - value: 90 days
+          label: To positive ROI
+          icon: rocket
+  - discriminant: capabilities-alt
+    value:
+      eyebrow: What's included
+      headline: Eight deliverables, zero guesswork.
+      lede: Rebuild or audit first, then tracking, audiences, creative, and weekly optimisation.
+      orderLabel: Order
+      orderServices: Scope
+      orderSequence: Sequence
+      items:
+        - title: Account Architecture and Audit
+          tag: Scope 01
+          depth: '01'
+          icon: layers
+          body: Full rebuild or audit of existing ad accounts before any spend.
+        - title: Conversion Tracking Setup
+          tag: Scope 02
+          depth: '02'
+          icon: database
+          body: Google Tag Manager, Meta Pixel, server-side tracking and attribution.
+        - title: Audience Research and Segmentation
+          tag: Scope 03
+          depth: '03'
+          icon: crosshairs
+          body: 'Kenya-specific targeting: demographics, interests, intent and lookalikes.'
+        - title: Creative Strategy and Testing
+          tag: Scope 04
+          depth: '04'
+          icon: palette
+          body: Structured creative testing frameworks across formats and languages.
+        - title: Weekly Bid Optimization
+          tag: Scope 05
+          depth: '05'
+          icon: refresh
+          body: 7-day review cycles with data-driven adjustments to targeting and bidding.
+        - title: Live Performance Dashboard
+          tag: Scope 06
+          depth: '06'
+          icon: panels
+          body: Real-time spend, ROAS, CPL and revenue dashboard always accessible.
+        - title: Retargeting and Funnel Sequences
+          tag: Scope 07
+          depth: '07'
+          icon: route
+          body: Multi-touch retargeting across platforms to recapture lost leads.
+        - title: Monthly Strategy Report
+          tag: Scope 08
+          depth: '08'
+          icon: document
+          body: Plain-English results report with insights, wins and next-month roadmap.
+  - discriminant: belief-alt
+    value:
+      eyebrow: Platforms we manage
+      headline: Every major platform,
+      headlineAccent: one strategy.
+      lede: 'Google: Search, Display, Performance Max, YouTube, Shopping. Meta: Facebook and Instagram, catalogue ads, lead gen forms, Advantage+. TikTok: Spark Ads, in-feed, creative testing. LinkedIn: B2B lead gen, ABM, sponsored content. Programmatic: display and native networks for reach and retargeting.'
+  - discriminant: belief-alt
+    value:
+      eyebrow: Who this is for
+      headline: Built for scalers,
+      headlineAccent: not click-counters.
+      lede: E-commerce brands scaling beyond word-of-mouth. Fintechs and financial services acquiring app users and qualified leads. Real estate developers driving property inquiries and launch interest. B2B and SaaS generating pipeline across East Africa and beyond. Local businesses tired of agencies that report clicks instead of revenue.
+  - discriminant: process
+    value:
+      eyebrow: Our process
+      headline: Discovery to iteration,
+      headlineAccent: in five steps.
+      lede: Audit first, then foundation, testing, scale, and monthly iteration.
+      cardTitle: Our process
+      closing: Monthly strategy sessions with clear next steps.
+      cta: Request a free audit
+      ctaHref: /digital-audit/
+  - discriminant: leak-list
+    value:
+      eyebrow: Common mistakes we fix
+      headline: Six leaks we plug first.
+      body: The six patterns behind wasted spend.
+      items:
+        - title: Broad targeting with no exclusions
+          body: Bleeding budget on irrelevant audiences.
+        - title: Single-creative campaigns
+          body: No testing, no learning, no scale.
+        - title: Missing conversion tracking
+          body: Optimizing toward vanity metrics.
+        - title: Last-click attribution only
+          body: Ignoring the true customer journey.
+        - title: No retargeting funnel
+          body: Paying for traffic that never returns.
+        - title: Platform-reported ROAS
+          body: Without verifying actual revenue.
+      closing: We fix all six before scaling spend.
+  - discriminant: faq
+    value:
+      eyebrow: FAQ
+      headline: Questions, answered.
+      body: Spend, fees, timelines, and platforms.
+      items:
+        - question: How much should I spend on ads?
+          answer: 'It depends on your goals and margins. As a rough guide: enough to gather statistically meaningful data within 90 days. We''ll recommend a realistic figure during your audit.'
+        - question: Do you charge a percentage of ad spend?
+          answer: Our fees are based on scope (see pricing plans), not a percentage of spend. This aligns our incentives with your results.
+        - question: How long before I see results?
+          answer: Most accounts show measurable improvement within 30 days, with clear ROI within 90 days.
+        - question: Can you work with my existing ad accounts?
+          answer: Yes. We'll audit them first, sometimes the fastest win is a rebuild, sometimes it's optimisation.
+        - question: Do you manage TikTok ads?
+          answer: Yes, TikTok is one of our core platforms, especially for consumer brands targeting younger Kenyan audiences.
+  - discriminant: cta-split
+    value:
+      eyebrow: Ready to stop wasting ad spend?
+      headline: Get a free 30-minute paid media audit.
+      body: We'll review your current ad accounts and tell you exactly where your biggest opportunities, and biggest leaks, are. No pitch. No obligation. Just data.
+      cta: Request Your Free Audit
+      ctaHref: /digital-audit/
+      note: No pitch. No obligation. Just data.
+      portalLabel: Free · No commitment
