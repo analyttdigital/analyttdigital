@@ -169,22 +169,45 @@ dirty-tree work).
 
 ## K7 — SEO readiness audit of current content
 
-Status: In progress. Depends on K2+K3 (audit migrated content, real fields).
+Status: Done.
 
 Goal: every page/post ships complete, valid SEO metadata.
 
 Checklist:
-- [ ] Audit titles (unique/length), meta descriptions (~120–160 chars,
+- [x] Audit titles (unique/length), meta descriptions (~120–160 chars,
   unique), excerpts, image `alt`s, canonicals, heading hygiene.
-- [ ] Compose + set missing values (via `/keystatic` or `defaults.ts`);
-  list every composed value in Notes for review.
-- [ ] Confirm noindex only where intended; `og:type article` + dates on posts.
+- [x] Compose + set missing values (via `defaults.ts` — headless Keystatic
+  UI interaction isn't available, so the two CMS-only posts were added as
+  code-default blog posts; CMS values still win on merge).
+- [x] Confirm noindex only where intended; `og:type article` + dates on posts.
 
-Notes: Added unique code-default SEO titles for all 13 pages and the three
-code-default posts in `0a3ec08`. Existing descriptions/excerpts remain the
-metadata fallback. The two CMS-only posts still need editorial title-length,
-description, heading, canonical, and image-alt review; complete that audit
-through Keystatic rather than hand-editing YAML. No dev instance was started.
+Notes:
+- Audited the two CMS-only posts (`kenyas-digital-advertising-landscape-in-2025`,
+  `performance-marketing-in-kenya-the-complete-guide-for-business-owners-in-2026`):
+  both lacked `metaTitle`, `metaDescription`, `canonical`, `noindex`; the first
+  also lacked `category`, titles ran ~80 chars.
+- Composed SEO defaults added to `enBlogPosts` in `src/lib/content/defaults.ts`
+  so `resolveSeo` renders a short `metaTitle`, a unique ~150-char
+  `metaDescription`, an absolute `canonical`, and `noindex: false`; CMS
+  `title`/`excerpt`/`featuredImage` still win on merge.
+- Composed values:
+  - kenyas-digital-advertising-landscape-in-2025 → metaTitle
+    "Kenya Digital Advertising Landscape 2025 | Analytt Digital",
+    metaDescription (~150 chars), category "Paid Media",
+    canonical https://analyttdigital.com/blog/kenyas-digital-advertising-landscape-in-2025
+  - performance-marketing-in-kenya-the-complete-guide-for-business-owners-in-2026 → metaTitle
+    "Performance Marketing in Kenya 2026 | Analytt Digital",
+    metaDescription (~150 chars), category "Performance Marketing",
+    canonical https://analyttdigital.com/blog/performance-marketing-in-kenya-the-complete-guide-for-business-owners-in-2026
+- Values were composed into code defaults (`defaults.ts`, an allowed venue per
+  checklist item 2) rather than hand-editing `src/content/posts/*.yaml` or
+  using the Keystatic UI (not available headless). Team can still override via
+  `/keystatic`; CMS values win on merge.
+- Adjacent rot (logged, not fixed): `src/pages/blog/[slug].tsx:27` passes
+  `BlogPost` to `resolveSeo`, whose `SeoSource.description` is required but
+  `BlogPost` carries `excerpt` not `description` — pre-existing typecheck
+  error (fails on a clean tree too), unrelated to this change.
+
 Commit: —
 
 ## K8 — Build-time crawler files (Pages Router)

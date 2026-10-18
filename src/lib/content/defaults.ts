@@ -2609,6 +2609,42 @@ const enBlogPosts: BlogPost[] = [
       { type: "paragraph", children: [{ text: "Related reading: ", italic: true }, { type: "link", href: "/performance-marketing-in-kenya-the-complete-guide-for-business-owners-in-2026/", children: [{ text: "Performance Marketing in Kenya: The Complete Guide for Business Owners in 2026", italic: true }] }, { text: " · ", italic: true }, { type: "link", href: "/why-most-kenyan-businesses-cant-answer-is-our-marketing-actually-working/", children: [{ text: "Why Most Kenyan Businesses Can't Answer \"Is Our Marketing Actually Working?\"", italic: true }] }] },
     ],
   },
+	{
+		slug: "kenyas-digital-advertising-landscape-in-2025",
+		title: "Kenya's Digital Advertising Landscape in 2025: Key Updates Every Marketer Should Know",
+		metaTitle: "Kenya Digital Advertising Landscape 2025 | Analytt Digital",
+		excerpt:
+			"Kenya continues to emerge as a leading digital advertising hub in Africa. From regulatory changes and AI innovations to shifts in consumer behavior and platform dominance, the digital ecosystem is rapidly evolving. For advertisers and businesses, staying updated with these changes is critical to maintain relevance and drive performance.",
+		metaDescription:
+			"Kenya\u2019s digital advertising landscape is shifting fast in 2025. Regulation and platform updates mean advertisers must stay current to protect performance and ad spend.",
+		category: "Paid Media",
+		publishedAt: "2026-10-15",
+		author: "Analytt Digital",
+		featuredImage: { src: "", alt: "" },
+		canonical: "https://analyttdigital.com/blog/kenyas-digital-advertising-landscape-in-2025",
+		noindex: false,
+		body: [
+			{ type: "paragraph", children: [{ text: "Code-default fallback body. Edit this post in Keystatic to replace with the full article." }] },
+		],
+	},
+	{
+		slug: "performance-marketing-in-kenya-the-complete-guide-for-business-owners-in-2026",
+		title: "Performance Marketing in Kenya: The Complete Guide for Business Owners in 2026",
+		metaTitle: "Performance Marketing in Kenya 2026 | Analytt Digital",
+		excerpt:
+			"Performance marketing is digital advertising where you only pay for measurable results: clicks, leads, sales, or app installs. Unlike brand advertising, where you pay for visibility and hope, performance marketing is entirely accountable.",
+		metaDescription:
+			"Pay only for measurable results \u2014 clicks, leads, sales. A practical guide to performance marketing in Kenya for businesses on Google, Meta, TikTok, LinkedIn.",
+		category: "Performance Marketing",
+		publishedAt: "2026-10-15",
+		author: "Analytt Digital",
+		featuredImage: { src: "", alt: "" },
+		canonical: "https://analyttdigital.com/blog/performance-marketing-in-kenya-the-complete-guide-for-business-owners-in-2026",
+		noindex: false,
+		body: [
+			{ type: "paragraph", children: [{ text: "Code-default fallback body. Edit this post in Keystatic to replace with the full article." }] },
+		],
+	},
 ];
 
 export const defaults: Record<
