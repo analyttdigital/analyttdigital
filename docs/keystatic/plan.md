@@ -347,4 +347,8 @@ Notes:
   signalled; I did not restart it (no user available to confirm). If you
   had a dev instance running on 3000, it is down — restart at will.
 
-Commit: `real-time previews` — see hash below.
+Commit: `59411d1` feat(keystatic): add draft-mode live previews (11 files,
++297/−21: preview start/end API routes, preview threading through
+`getStaticProps.ts` + read helpers + blog routes, `make-reader.ts`
+branch support, `_app` banner, config `previewUrl` keys, README docs,
+plan.md).
