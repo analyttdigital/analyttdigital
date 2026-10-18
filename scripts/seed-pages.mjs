@@ -200,14 +200,25 @@ function normalizeSection(raw) {
 }
 
 function mergePage(fallback, entry) {
-  return {
-    title: entry.title || fallback.title,
-    description: entry.description || fallback.description,
-    featuredImage: mergeImage(fallback.featuredImage, entry.featuredImage),
-    sections: entry.sections
-      .map(normalizeSection)
-      .map((section, index) => mergeSection(fallback.sections[index], section)),
-  };
+  const { title, description, featuredImage, sections, ...other } = entry;
+  /** Merged doc mirrors `readPage`'s merge surface (including the K3 SEO
+   *  keys): CMS wins, empty strings/lists/images defers to the code
+   *  default — unlike the strict `mergeValue`, which only defers arrays
+   *  and images. */
+  const merged = { ...fallback };
+  merged.title = title || fallback.title;
+  merged.description = description || fallback.description;
+  merged.featuredImage = mergeImage(fallback.featuredImage, featuredImage);
+  merged.sections = sections
+    .map(normalizeSection)
+    .map((section, index) => mergeSection(fallback.sections[index], section));
+  for (const [key, value] of Object.entries(other)) {
+    if (value === undefined) continue;
+    if (typeof value === 'string') merged[key] = value || merged[key] || '';
+    else if (typeof value === 'boolean') merged[key] = value ?? merged[key] ?? false;
+    else merged[key] = mergeValue(merged[key], value);
+  }
+  return merged;
 }
 
 /** `fields.object` materialises its child defaults when it is read back, even
