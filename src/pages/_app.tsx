@@ -20,7 +20,6 @@ import PageTransitionLoader from "@/components/layout/PageTransitionLoader";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
-// @ts-expect-error
 import '../styles/globals.css';
 
 type Props = AppProps & { pageProps: PageProps };
