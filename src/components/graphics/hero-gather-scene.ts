@@ -549,6 +549,7 @@ export function runHeroGather(
 		// entries; this keeps each tile's authored scale/rotation/colour but
 		// lets the brand and utility marks coexist in the collage.
 		var type = (t[4] + i * 3) % ICON_COUNT;
+		var colorIndex = (t[5] < 2 ? 0 : 2) + (x < 0 ? 0 : 1);
 		put(
 			i,
 			x,
@@ -557,7 +558,7 @@ export function runHeroGather(
 			(-t[2] * Math.PI) / 180,
 			t[3],
 			type,
-			t[5],
+			colorIndex,
 			t[6],
 			order[i],
 			1
