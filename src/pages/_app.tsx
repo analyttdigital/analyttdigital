@@ -19,7 +19,6 @@ import { useEffect, useRef } from "react";
 import PageTransitionLoader from "@/components/layout/PageTransitionLoader";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-
 import '../styles/globals.css';
 
 type Props = AppProps & { pageProps: PageProps };
