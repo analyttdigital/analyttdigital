@@ -777,7 +777,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 									const isOpen = open?.value === item.value;
 									const panelId = `${id}-panel`;
 									const common = {
-										className: `group relative isolate inline-flex h-9 cursor-pointer select-none items-center gap-1 whitespace-nowrap border-0 bg-transparent px-3 text-sm font-medium no-underline transition-colors duration-150 hover:text-accent-600 data-[current]:text-accent data-[open]:text-accent motion-reduce:transition-none ${variant === "centered" ? "h-8 rounded-full px-3.5" : ""} ${classes?.navItem ?? ""}`,
+										className: `group relative isolate inline-flex h-9 cursor-pointer select-none items-center gap-1 whitespace-nowrap border-0 bg-transparent px-3 text-sm font-medium no-underline transition-colors duration-150 hover:text-accent-600 data-[current]:text-accent data-[open]:text-accent motion-reduce:transition-none ${variant === "centered" ? "h-8 rounded-full px-3.5" : "rounded-full"} ${classes?.navItem ?? ""}`,
 										"data-nav-item": "",
 										"data-current": isCurrent ? "" : undefined,
 										"data-open": isOpen ? "" : undefined,
