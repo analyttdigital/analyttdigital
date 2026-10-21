@@ -780,7 +780,7 @@ export function HeroStage({
 					visibility: parked ? "hidden" : "visible",
 				}}
 			>
-				<div className="mx-auto w-full max-w-7xl pb-16 md:pb-1">
+				<div className="mx-auto w-full max-w-7xl pb-3 md:pb-1">
 					<div className="w-full max-w-[760px]">
 						<a
 							href={ctaHref}

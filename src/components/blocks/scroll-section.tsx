@@ -491,15 +491,22 @@ export function ScrollSection({
 								willChange: live ? "clip-path" : undefined,
 							}}
 						>
-							<div className="flex h-full w-full items-center justify-center px-5 sm:px-[clamp(20px,6vw,96px)]">
-								{bridge ? (
-									<motion.div
-										className="w-full"
-										style={{ opacity: bridgeIn, y: bridgeY }}
-									>
-										{bridge}
-									</motion.div>
-								) : null}
+							{/* Mobile: the flood copy is taller than 100svh, so it
+							    scrolls inside the pin instead of being clipped by
+							    the stage. Desktop keeps the centred, fixed copy. */}
+							<div
+								className="h-full w-full overflow-y-auto px-5 max-md:pointer-events-auto md:overflow-y-visible sm:px-[clamp(20px,6vw,96px)]"
+							>
+								<div className="flex min-h-full items-center justify-center max-md:pt-12">
+									{bridge ? (
+										<motion.div
+											className="w-full"
+											style={{ opacity: bridgeIn, y: bridgeY }}
+										>
+											{bridge}
+										</motion.div>
+									) : null}
+								</div>
 							</div>
 						</motion.div>
 					)}
@@ -507,13 +514,15 @@ export function ScrollSection({
 					{/* The bridge on every other pinned variant: held on the
 					    stage, above the effect, arriving with its window. */}
 					{variant !== "portal" && bridge && bridgeOn ? (
-						<div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center px-5">
-							<motion.div
-								className="pointer-events-auto w-full"
-								style={{ opacity: bridgeIn, y: bridgeY }}
-							>
-								{bridge}
-							</motion.div>
+						<div className="pointer-events-none absolute inset-0 z-30 overflow-y-auto px-5 max-md:pointer-events-auto md:overflow-y-visible">
+							<div className="flex min-h-full items-center justify-center max-md:pt-16">
+								<motion.div
+									className="pointer-events-auto w-full"
+									style={{ opacity: bridgeIn, y: bridgeY }}
+								>
+									{bridge}
+								</motion.div>
+							</div>
 						</div>
 					) : null}
 				</div>

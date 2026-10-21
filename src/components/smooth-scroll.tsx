@@ -23,6 +23,10 @@ export function SmoothScroll() {
       smoothWheel: true,
       wheelMultiplier: 0.9,
       touchMultiplier: 1.5,
+      /* Pinned stages scroll their overflowing copy inside the pin (the
+         About bridge and the process story). Let those containers consume
+         the wheel while they can, then hand the page back at their edge. */
+      allowNestedScroll: true,
     });
 
     let raf = 0;

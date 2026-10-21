@@ -71,9 +71,9 @@ export function BridgeAbout({ data, live }: { data: AboutSection; live: boolean 
   }, []);
 
   return (
-		<div className="max-h-full w-full max-w-7xl overflow-hidden px-1 py-8">
+		<div className="max-h-full w-full max-w-7xl overflow-hidden px-1 py-3 sm:py-8">
 			{/* Head: headline left, copy right, bottoms aligned. */}
-			<div className="grid gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end lg:gap-12">
+			<div className="grid gap-4 md:gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end lg:gap-12">
 				<div>
 					{data.tag ? <p className="label text-primary-300">{data.tag}</p> : null}
 					{data.title ? (
@@ -82,7 +82,7 @@ export function BridgeAbout({ data, live }: { data: AboutSection; live: boolean 
 							as="h2"
 							text={data.title}
 							once={false}
-							className="title mt-4 text-[clamp(1.9rem,3.4vw,3.4rem)] text-primary-50"
+							className="title mt-3 text-[clamp(1.9rem,3.4vw,3.4rem)] text-primary-50 md:mt-4"
 						/>
 					) : null}
 				</div>
@@ -98,8 +98,8 @@ export function BridgeAbout({ data, live }: { data: AboutSection; live: boolean 
 
 			{/* Plot: raw signals resolve into measured growth. */}
 			{moves.length || data.axisLeft || data.axisRight ? (
-				<div className="mt-8 lg:mt-10">
-					<div className="relative h-44 sm:h-56 xl:h-64">
+				<div className="mt-5 md:mt-8 lg:mt-10">
+					<div className="relative h-36 sm:h-56 xl:h-64">
 						<svg
 							viewBox={`0 0 ${W} ${H}`}
 							preserveAspectRatio="none"
@@ -214,7 +214,7 @@ export function BridgeAbout({ data, live }: { data: AboutSection; live: boolean 
 					{current && (
 						<div
 							aria-live="polite"
-							className="mt-5 grid gap-5 border-t border-primary-50/15 pt-4 sm:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] sm:gap-10"
+							className="mt-4 grid gap-4 border-t border-primary-50/15 pt-4 sm:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] sm:gap-10 md:mt-5"
 						>
 							<div>
 								{data.moveLabel ? (
@@ -240,7 +240,7 @@ export function BridgeAbout({ data, live }: { data: AboutSection; live: boolean 
 					)}
 
 					{data.hint && moves.length ? (
-						<p className="mt-4 text-sm text-primary-300 font-mono">{data.hint}</p>
+						<p className="mt-3 text-sm text-primary-300 font-mono md:mt-4">{data.hint}</p>
 					) : null}
 				</div>
 			) : null}
