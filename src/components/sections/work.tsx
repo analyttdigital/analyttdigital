@@ -72,7 +72,7 @@ function ProofCard({ kase, index, total }: { kase: WorkCase; index: number; tota
         
           <CountUp
             value={kase.metric}
-            className="num block font-display text-[2.7rem] font-bold leading-none tracking-[-.04em] text-accent-600"
+            className="num block font-display text-[1.7rem] font-bold leading-none tracking-[-.04em] text-accent-600"
           />
           <span className="mt-2 block text-[11px] leading-snug text-ink-500">
             {kase.metricLabel}

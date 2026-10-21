@@ -762,7 +762,7 @@ export function runHeroGather(
 	var resizeRaf = 0;
 
 	function layout() {
-		var desk = W >= 1080,
+		var desk = W >= 768,
 			size,
 			cx,
 			cy;

@@ -881,7 +881,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 						</nav>
 					</LayoutGroup>
 					<div
-						className={`flex items-center gap-2 ${variant === "centered" ? "justify-self-end" : ""}`}
+						className={`flex items-center gap-2 ${variant === "centered" ? "justify-self-end" : "ml-auto md:ml-2"}`}
 					>
 						{secondaryAction &&
 							actionNode(
