@@ -27,7 +27,7 @@ import { motionTokens } from "@/lib/motion/motion-tokens";
 import { aboutRevealDistance } from "@/lib/motion/portal";
 import { useScrolled } from "@/lib/hooks";
 import type { ContentImage, LayoutContent } from "@/lib/content/types";
-import { s } from "framer-motion/client";
+import { useRouter } from "next/router";
 
 export type SiteHeaderVariant = "simple" | "centered" | "mega";
 
@@ -438,6 +438,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 	},
 	ref
 ) {
+    const router = useRouter(); 
 	const id = useId();
 	const reduced = !!useReducedMotion();
 	/* Without an explicit threshold, the header turns solid once the About
@@ -448,7 +449,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 	useEffect(() => {
 		if (scrollThreshold != null) return;
         const measure = () => {
-            const distance = aboutRevealDistance();
+            const distance = router.pathname === '/'? aboutRevealDistance() : 1;
             setBridgeAt(distance || 0 + 25);
         };
 		measure();
@@ -762,7 +763,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 					<div className="flex min-w-0">{brandNode}</div>
 					<LayoutGroup id={id}>
 						<nav
-							className={`min-w-0 [@container_site-header_(max-width:759px)]:hidden ${variant === "centered" ? "mx-auto" : "ml-4 "} ${classes?.nav ?? ""}`}
+							className={`min-w-0 [@container_site-header_(max-width:759px)]:hidden ${variant === "centered" ? "mx-auto" : "ml-auto "} ${classes?.nav ?? ""}`}
 							aria-label={label}
 							onKeyDown={onNavKeyDown}
 							onPointerLeave={() => setHovered(null)}
@@ -776,7 +777,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 									const isOpen = open?.value === item.value;
 									const panelId = `${id}-panel`;
 									const common = {
-										className: `group relative isolate inline-flex h-9 cursor-pointer select-none items-center gap-1 whitespace-nowrap border-0 bg-transparent px-3 text-sm font-medium no-underline transition-colors duration-150 hover:text-accent-600 data-[current]:text-accent data-[open]:text-accent motion-reduce:transition-none ${variant === "centered" ? "h-8 rounded-full px-3.5" : ""} ${classes?.navItem ?? ""}`,
+										className: `group relative isolate inline-flex h-9 cursor-pointer select-none items-center gap-1 whitespace-nowrap border-0 bg-transparent px-3 text-sm font-medium no-underline transition-colors duration-150 hover:text-accent-600 data-[current]:text-accent data-[open]:text-accent motion-reduce:transition-none ${variant === "centered" ? "h-8 rounded-full px-3.5" : "rounded-full"} ${classes?.navItem ?? ""}`,
 										"data-nav-item": "",
 										"data-current": isCurrent ? "" : undefined,
 										"data-open": isOpen ? "" : undefined,
@@ -880,7 +881,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 						</nav>
 					</LayoutGroup>
 					<div
-						className={`ml-auto flex items-center gap-2 ${variant === "centered" ? "justify-self-end" : ""}`}
+						className={`flex items-center gap-2 ${variant === "centered" ? "justify-self-end" : ""}`}
 					>
 						{secondaryAction &&
 							actionNode(

@@ -1,6 +1,9 @@
-description: A data-driven performance marketing agency in Kenya helping startups and small businesses turn ad spending into measurable growth.
-featuredImage:
-  alt: ''
+description: >-
+  A data-driven performance marketing agency in Kenya helping startups and small
+  businesses turn ad spending into measurable growth.
+featuredImage: {}
+ogImage: {}
+noindex: false
 sections:
   - discriminant: hero
     value:
@@ -8,11 +11,14 @@ sections:
       headline: |-
         Performance marketing &
         growth infrastructure.
-      sub: We are a specialist performance marketing partner in paid media, measurement infrastructure, and growth strategy. Trusted by SMEs, startups, and B2B/B2C companies scaling across Africa.
+      sub: >-
+        We are a specialist performance marketing partner in paid media,
+        measurement infrastructure, and growth strategy. Trusted by SMEs,
+        startups, and B2B/B2C companies scaling across Africa.
       cta: Get Started
       ctaHref: /contact
-      scrollHint: Request Digital Audit
       variant: light
+      scrollHint: Request Digital Audit
       dashboardTitle: Campaign / Live
       dashboardMetric: ROAS 4.2×
       statA_label: CPL this month
@@ -23,45 +29,45 @@ sections:
       marquee:
         - label: Google Ads Partner
           logo:
-            src: /media/uploads/home/hero-marquee-0-logo.svg
+            src: /media/uploads/home/sections/0/value/marquee/0/logo/src.svg
             alt: Google
           logoDark:
-            src: /media/uploads/home/hero-marquee-0-logodark.svg
+            src: /media/uploads/home/sections/0/value/marquee/0/logoDark/src.svg
             alt: Google
         - label: Meta Business Partner
           logo:
-            src: /media/uploads/home/hero-marquee-1-logo.svg
+            src: /media/uploads/home/sections/0/value/marquee/1/logo/src.svg
             alt: Meta
           logoDark:
-            src: /media/uploads/home/hero-marquee-1-logodark.svg
+            src: /media/uploads/home/sections/0/value/marquee/1/logoDark/src.svg
             alt: Meta
         - label: TikTok Marketing Partner
           logo:
-            src: /media/uploads/home/hero-marquee-2-logo.svg
+            src: /media/uploads/home/sections/0/value/marquee/2/logo/src.svg
             alt: TikTok
           logoDark:
-            src: /media/uploads/home/hero-marquee-2-logodark.svg
+            src: /media/uploads/home/sections/0/value/marquee/2/logoDark/src.svg
             alt: TikTok
         - label: LinkedIn Marketing Partner
           logo:
-            src: /media/uploads/home/hero-marquee-3-logo.svg
+            src: /media/uploads/home/sections/0/value/marquee/3/logo/src.svg
             alt: LinkedIn
           logoDark:
-            src: /media/uploads/home/hero-marquee-3-logodark.svg
+            src: /media/uploads/home/sections/0/value/marquee/3/logoDark/src.svg
             alt: LinkedIn
         - label: HubSpot Solutions Partner
           logo:
-            src: /media/uploads/home/hero-marquee-4-logo.svg
+            src: /media/uploads/home/sections/0/value/marquee/4/logo/src.svg
             alt: HubSpot
           logoDark:
-            src: /media/uploads/home/hero-marquee-4-logodark.svg
+            src: /media/uploads/home/sections/0/value/marquee/4/logoDark/src.svg
             alt: HubSpot
         - label: Google Analytics 4 Certified
           logo:
-            src: /media/uploads/home/hero-marquee-5-logo.svg
+            src: /media/uploads/home/sections/0/value/marquee/5/logo/src.svg
             alt: Google Analytics
           logoDark:
-            src: /media/uploads/home/hero-marquee-5-logodark.svg
+            src: /media/uploads/home/sections/0/value/marquee/5/logoDark/src.svg
             alt: Google Analytics
       panels:
         - kind: cpl
@@ -70,6 +76,10 @@ sections:
           footer: KES 1,800 → KES 280
           delta: '-84% in 60 days'
           icon: chartBox
+          iconTone: default
+          logo: {}
+          logoDark: {}
+          tone: default
           bars:
             - 100
             - 82
@@ -79,27 +89,60 @@ sections:
             - 22
             - 17
             - 15
+          metrics: []
+          steps: []
+          codeLines: []
         - kind: leads
           title: Kings Bliss Developers
           value: '37'
           valueLabel: property inquiries per week
           footer: 9x growth from a KES 150K budget
           icon: pin
+          iconTone: default
+          logo: {}
+          logoDark: {}
+          tone: default
+          bars: []
+          metrics: []
+          steps: []
+          codeLines: []
         - kind: revenue
           title: Mandevu BeardCare
           value: KES 2.4M
           valueLabel: monthly revenue in 90 days
           footer: Up from a 1.1x ROAS
           icon: tag
+          iconTone: default
+          logo: {}
+          logoDark: {}
+          tone: default
+          bars: []
+          metrics: []
+          steps: []
+          codeLines: []
         - kind: seo
           title: Page 1 rankings
           subtitle: Mabati Yetu · 8 months
           value: '47'
           valueLabel: high-intent keywords
+          iconTone: default
+          logo: {}
+          logoDark: {}
+          tone: default
+          bars: []
           progress: 85
+          metrics: []
+          steps: []
+          codeLines: []
         - kind: process
           title: Your 90-day plan
           icon: rocket
+          iconTone: default
+          logo: {}
+          logoDark: {}
+          tone: default
+          bars: []
+          metrics: []
           steps:
             - label: Diagnose
               state: done
@@ -111,9 +154,17 @@ sections:
               state: todo
             - label: Scale
               state: todo
+          codeLines: []
         - kind: code
           title: server-side tracking
           icon: document
+          iconTone: default
+          logo: {}
+          logoDark: {}
+          tone: default
+          bars: []
+          metrics: []
+          steps: []
           codeLines:
             - gtag('event', 'generate_lead',
             - '{ value: 280, currency: ''KES'' }'
@@ -122,25 +173,51 @@ sections:
           title: Budget leak found
           subtitle: Most audits uncover KES 50K–200K in recoverable spend.
           icon: asterisk
+          iconTone: default
+          logo: {}
+          logoDark: {}
           tone: alert
+          bars: []
+          metrics: []
+          steps: []
+          codeLines: []
         - kind: whatsapp
           title: New lead · WhatsApp
           subtitle: Instant follow-up from a retargeted virtual tour.
           icon: whatsapp
+          iconTone: default
+          logo: {}
+          logoDark: {}
+          tone: default
+          bars: []
+          metrics: []
+          steps: []
+          codeLines: []
         - kind: simkar
           title: Simkar Group
           icon: chart
+          iconTone: default
+          logo: {}
+          logoDark: {}
+          tone: default
+          bars: []
           metrics:
             - value: +45%
               label: lead generation
             - value: +80%
               label: content engagement
+          steps: []
+          codeLines: []
         - kind: roas
           title: Blended ROAS
           subtitle: Mandevu · Meta + Google
           footer: Up from 1.1× in 90 days
           delta: +282%
           icon: chart
+          iconTone: default
+          logo: {}
+          logoDark: {}
+          tone: default
           bars:
             - 18
             - 26
@@ -150,25 +227,48 @@ sections:
             - 77
             - 89
             - 100
+          metrics: []
+          steps: []
+          codeLines: []
         - kind: attribution
           title: GA4 + GTM + server-side
           value: 100%
           valueLabel: campaigns tracked to conversion
           footer: No vanity metrics reported
           icon: database
+          iconTone: default
+          logo: {}
+          logoDark: {}
+          tone: default
+          bars: []
+          metrics: []
+          steps: []
+          codeLines: []
         - kind: audit
           title: Measurement health
           subtitle: New account · 27 leaks fixed
           value: 38 → 92
           valueLabel: audit score
           delta: +54 pts
+          iconTone: default
+          logo: {}
+          logoDark: {}
+          tone: default
+          bars: []
           progress: 92
+          metrics: []
+          steps: []
+          codeLines: []
         - kind: ctr
           title: Prospecting CTR
           subtitle: TikTok + Meta · Nairobi
           footer: Benchmark 1.1%
           delta: 3.8% · +2.7pts
           icon: bullhorn
+          iconTone: default
+          logo: {}
+          logoDark: {}
+          tone: default
           bars:
             - 30
             - 42
@@ -178,6 +278,9 @@ sections:
             - 74
             - 88
             - 95
+          metrics: []
+          steps: []
+          codeLines: []
         - kind: funnel
           title: Intent pages + lead scoring
           value: 6.8%
@@ -185,56 +288,96 @@ sections:
           footer: Up from 2.1%
           delta: +224%
           icon: layers
+          iconTone: default
+          logo: {}
+          logoDark: {}
+          tone: default
+          bars: []
+          metrics: []
+          steps: []
+          codeLines: []
         - kind: partner
           title: Google
           subtitle: Search · YouTube · Analytics
+          iconTone: default
           logo:
-            src: /media/uploads/home/hero-panels-14-logo.svg
+            src: /media/uploads/home/sections/0/value/panels/14/logo/src.svg
             alt: Google
           logoDark:
-            src: /media/uploads/home/hero-panels-14-logodark.svg
+            src: /media/uploads/home/sections/0/value/panels/14/logoDark/src.svg
             alt: Google
+          tone: default
+          bars: []
+          metrics: []
+          steps: []
+          codeLines: []
         - kind: partner
           title: Meta
           subtitle: Facebook · Instagram · WhatsApp
+          iconTone: default
           logo:
-            src: /media/uploads/home/hero-panels-15-logo.svg
+            src: /media/uploads/home/sections/0/value/panels/15/logo/src.svg
             alt: Meta
           logoDark:
-            src: /media/uploads/home/hero-panels-15-logodark.svg
+            src: /media/uploads/home/sections/0/value/panels/15/logoDark/src.svg
             alt: Meta
+          tone: default
+          bars: []
+          metrics: []
+          steps: []
+          codeLines: []
         - kind: partner
           title: HubSpot
           subtitle: CRM & attribution
+          iconTone: default
           logo:
-            src: /media/uploads/home/hero-panels-16-logo.svg
+            src: /media/uploads/home/sections/0/value/panels/16/logo/src.svg
             alt: HubSpot
           logoDark:
-            src: /media/uploads/home/hero-panels-16-logodark.svg
+            src: /media/uploads/home/sections/0/value/panels/16/logoDark/src.svg
             alt: HubSpot
+          tone: default
+          bars: []
+          metrics: []
+          steps: []
+          codeLines: []
         - kind: partner
           title: TikTok
           subtitle: Discovery & prospecting
+          iconTone: default
           logo:
-            src: /media/uploads/home/hero-panels-17-logo.svg
+            src: /media/uploads/home/sections/0/value/panels/17/logo/src.svg
             alt: TikTok
           logoDark:
-            src: /media/uploads/home/hero-panels-17-logodark.svg
+            src: /media/uploads/home/sections/0/value/panels/17/logoDark/src.svg
             alt: TikTok
+          tone: default
+          bars: []
+          metrics: []
+          steps: []
+          codeLines: []
         - kind: partner
           title: LinkedIn
           subtitle: B2B demand
+          iconTone: default
           logo:
-            src: /media/uploads/home/hero-panels-18-logo.svg
+            src: /media/uploads/home/sections/0/value/panels/18/logo/src.svg
             alt: LinkedIn
           logoDark:
-            src: /media/uploads/home/hero-panels-18-logodark.svg
+            src: /media/uploads/home/sections/0/value/panels/18/logoDark/src.svg
             alt: LinkedIn
+          tone: default
+          bars: []
+          metrics: []
+          steps: []
+          codeLines: []
       proof:
         - value: 100%
           label: campaigns tracked to conversion
+          ember: false
         - value: 7-day
           label: optimization cycle
+          ember: false
         - value: Zero
           label: vanity metrics reported
           ember: true
@@ -243,7 +386,9 @@ sections:
       tag: About Us
       title: Data at the heart of every move.
       introLead: Analytt Digital is a performance marketing agency.
-      description: We put data at the heart of every move, turning data-driven strategy into measurable growth in a competitive online realm.
+      description: >-
+        We put data at the heart of every move, turning data-driven strategy
+        into measurable growth in a competitive online realm.
       baseLabel: Where we started
       axisLeft: Raw signals
       axisRight: Measured growth
@@ -268,20 +413,20 @@ sections:
       eyebrow: Our Process
       headline: A rigorous, data-driven process,
       headlineAccent: from day one to compounding growth.
-      lede: 'Applied to every client engagement across East African markets: five steps that take you from a deep audit to growth that is predictable, not accidental.'
-      image:
-        src: /media/uploads/home/process-image.png
-        alt: ''
+      lede: >-
+        Applied to every client engagement across East African markets: five
+        steps that take you from a deep audit to growth that is predictable, not
+        accidental.
       cardTitle: Five steps, one system
       cardSub: Pick a step, or let it play through.
       playLabel: Play
       pauseLabel: Pause
       stepOfTemplate: Step {n} of {total}
       illustrativeNote: Illustrative
+      image:
+        src: /media/uploads/home/sections/2/value/image/src.png
       dwellMs: 7000
-      closing: ''
-      cta: ''
-      ctaHref: ''
+      steps: []
   - discriminant: capabilities
     value:
       eyebrow: Our Services
@@ -292,25 +437,23 @@ sections:
       orderLabel: Reading order
       orderServices: By service
       orderSequence: By engagement
-      illustrativeNote: Figures are illustrative samples of a measured account, not client results.
+      illustrativeNote: >-
+        Figures are illustrative samples of a measured account, not client
+        results.
       items:
         - tag: Paid Media
           depth: '03'
           title: Paid Media & Performance Advertising
-          body: Google, YouTube, Meta, TikTok and LinkedIn campaigns engineered for acquisition, with every shilling tracked to revenue.
+          body: >-
+            Google, YouTube, Meta, TikTok and LinkedIn campaigns engineered for
+            acquisition, with every shilling tracked to revenue.
           icon: bullhorn
           readout:
             kind: channels
             caption: SPEND vs ATTRIBUTED RETURN
-            tag: Live Tracking
             value: 1.6×
             valueLabel: Return on measured spend · 30 days
-            labels:
-              - Meta
-              - Google
-              - TikTok
-              - YouTube
-              - LinkedIn
+            tag: Live Tracking
             values:
               - 62
               - 54
@@ -323,21 +466,25 @@ sections:
               - 58
               - 44
               - 26
+            labels:
+              - Meta
+              - Google
+              - TikTok
+              - YouTube
+              - LinkedIn
         - tag: Measurement
           depth: '01'
           title: Data, Analytics & Attribution
-          body: GA4, Tag Manager, server-side tracking and multi-touch attribution, set up and audited by hand.
+          body: >-
+            GA4, Tag Manager, server-side tracking and multi-touch attribution,
+            set up and audited by hand.
           icon: radar
           readout:
             kind: attribution
             caption: Share of Spend Attributed
-            tag: Set Up First
             value: 78%
             valueLabel: of spend attributed once tracking is set up
-            labels:
-              - Attributed
-              - Modelled
-              - Unknown
+            tag: Set Up First
             values:
               - 78
               - 16
@@ -346,17 +493,23 @@ sections:
               - 31
               - 31
               - 38
+            labels:
+              - Attributed
+              - Modelled
+              - Unknown
         - tag: Strategy
           depth: '02'
           title: Growth & Demand Strategy
-          body: Market sizing, channel-mix modelling and clear 90-day plans that fix funnels and lower cost-per-lead.
+          body: >-
+            Market sizing, channel-mix modelling and clear 90-day plans that fix
+            funnels and lower cost-per-lead.
           icon: compass
           readout:
             kind: descent
             caption: Cost per Lead by Week
-            tag: On Target
             value: KES 280
             valueLabel: Cost per lead · eight-week descent
+            tag: On Target
             values:
               - 980
               - 840
@@ -366,19 +519,23 @@ sections:
               - 390
               - 330
               - 280
+            prior: []
+            labels: []
             targetLabel: Target KES 300
             target: 300
         - tag: Content
           depth: '04'
           title: Content, SEO & Reporting
-          body: Content, posting calendars, organic growth and monthly reports your whole team can act on.
+          body: >-
+            Content, posting calendars, organic growth and monthly reports your
+            whole team can act on.
           icon: radio
           readout:
             kind: organic
             caption: Organic Sessions by Month
-            tag: Compounding
             value: 6.2×
             valueLabel: Organic sessions against the prior year
+            tag: Compounding
             values:
               - 22
               - 30
@@ -397,59 +554,117 @@ sections:
               - 26
               - 30
               - 34
+            labels: []
   - discriminant: work
     value:
       eyebrow: Selected Work
       headline: Proof, not promises.
       body: 'Engagements measured to the shilling: the proof behind the promises.'
-      cta: ''
-      ctaHref: ''
       cases:
         - client: Mandevu BeardCare
-          image:
-            src: /media/uploads/home/work-cases-0-image.png
-            alt: Mandevu BeardCare
           industry: Retail · Nairobi
           depth: Case 01
           headline: From KES 80K/mo in losses to KES 2.4M in monthly revenue.
-          body: A Nairobi retailer spending KES 200K/month on Meta Ads with zero attribution and a 1.1x ROAS. We rebuilt tracking, restructured the account and launched Kenya-specific creative. Profitable within 90 days.
+          body: >-
+            A Nairobi retailer spending KES 200K/month on Meta Ads with zero
+            attribution and a 1.1x ROAS. We rebuilt tracking, restructured the
+            account and launched Kenya-specific creative. Profitable within 90
+            days.
           metric: 2.4M
           metricLabel: KES monthly revenue within 90 days
-        - client: ZoomTech Ke
           image:
-            src: /media/uploads/home/work-cases-1-image.png
-            alt: ZoomTech Ke
+            src: /media/uploads/home/sections/4/value/cases/0/image/src.png
+            alt: Mandevu BeardCare
+        - client: ZoomTech Ke
           industry: Technology
           depth: Case 02
           headline: 1,200+ qualified leads per month at KES 280 CPL.
-          body: A tech company paying over KES 1,800 per unqualified lead through Google Search. New keyword structure, intent-segmented landing pages and lead scoring. CPL down 84% in 60 days.
+          body: >-
+            A tech company paying over KES 1,800 per unqualified lead through
+            Google Search. New keyword structure, intent-segmented landing pages
+            and lead scoring. CPL down 84% in 60 days.
           metric: '-84%'
           metricLabel: cost per lead in 60 days
-        - client: Kings Bliss Developers
           image:
-            src: /media/uploads/home/work-cases-2-image.png
-            alt: Kings Bliss Developers
+            src: /media/uploads/home/sections/4/value/cases/1/image/src.png
+            alt: ZoomTech Ke
+        - client: Kings Bliss Developers
           industry: Real Estate
           depth: Case 03
           headline: 37 property inquiries per week from a KES 150K budget.
-          body: A developer generating 3–4 leads a week from boosted posts. Full-funnel campaign with virtual tours, retargeting and WhatsApp follow-up. Inquiries up 9x.
+          body: >-
+            A developer generating 3–4 leads a week from boosted posts.
+            Full-funnel campaign with virtual tours, retargeting and WhatsApp
+            follow-up. Inquiries up 9x.
           metric: 9×
           metricLabel: growth in weekly inquiries
-        - client: Mabati Yetu
           image:
-            src: /media/uploads/home/work-cases-3-image.png
-            alt: Mabati Yetu
+            src: /media/uploads/home/sections/4/value/cases/2/image/src.png
+            alt: Kings Bliss Developers
+        - client: Mabati Yetu
           industry: Logistics
           depth: Case 04
           headline: Page 1 rankings for 47 high-intent keywords in 8 months.
-          body: A logistics company with zero organic presence. Kenyan-search content strategy, technical SEO foundation and product landing pages. Organic became the highest-converting channel.
+          body: >-
+            A logistics company with zero organic presence. Kenyan-search
+            content strategy, technical SEO foundation and product landing
+            pages. Organic became the highest-converting channel.
           metric: '47'
           metricLabel: page-1 keywords in 8 months
+          image:
+            src: /media/uploads/home/sections/4/value/cases/3/image/src.png
+            alt: Mabati Yetu
+        - client: Simkar Group
+          industry: Property
+          depth: Case 05
+          headline: 45% increase in lead generation for a property agency.
+          body: >-
+            A property agent with strong inventory but inconsistent inbound
+            interest. We paired a lead-focused campaign with a content engine,
+            driving an 80% increase in content engagement alongside the lift in
+            qualified leads.
+          metric: 45%
+          metricLabel: increase in lead generation
+          image:
+            src: /media/uploads/home/sections/4/value/cases/4/image/src.png
+            alt: Simkar Group
+        - client: GreenBay.market
+          industry: E-commerce
+          depth: Case 06
+          headline: From scattered listings to a unified marketplace presence.
+          body: >-
+            A marketplace platform (greenbay.market) with strong seller
+            onboarding but no demand-side engine. We built category landing
+            pages, a merchant content programme and paid acquisition focused on
+            high-intent shopping queries. Seller listings and buyer traffic grew
+            together.
+          metric: E-commerce
+          metricLabel: marketplace growth across sellers and buyers
+          image:
+            src: /media/uploads/home/sections/4/value/cases/5/image/src.jpg
+            alt: Greenbay-market
+        - client: ShipShap
+          industry: Logistics · SaaS
+          depth: Case 07
+          headline: Acquisition engine for a platform trusted by 5,000+ merchants.
+          body: >-
+            A sell-pay-ship platform (shipshap.com) serving merchants across 10
+            countries. We ran intent-led search campaigns around shipping and
+            payments keywords, tightened signup funnels and built a merchant
+            testimonial pipeline. Merchant acquisition became predictable and
+            repeatable.
+          metric: 5,000+
+          metricLabel: merchants served on the platform
+          image:
+            src: /media/uploads/home/sections/4/value/cases/6/image/src.png
+            alt: ShipShap
   - discriminant: cta-banner
     value:
       eyebrow: Free Audit
       headline: Know what each shilling returns.
-      body: A free audit of your current setup, showing where budget is wasted and where the opportunity is.
+      body: >-
+        A free audit of your current setup, showing where budget is wasted and
+        where the opportunity is.
       cta: Start with a free audit
       ctaHref: mailto:hello@analyttdigital.com
       note: No deck. No obligation. Just the findings.
@@ -458,8 +673,15 @@ sections:
       eyebrow: The Problem
       headline: The spend was never the problem.
       paragraphs:
-        - 'Kenyan businesses already know they should be on Google, Meta and TikTok; the budgets are there. What is scarce is the read: which channels deserve money, which funnels leak, and what each shilling actually returns.'
-        - Most reports stop at reach and impressions. The decision of where the next shilling goes is made on gut feel. That gap between reporting and revenue is where growth stalls.
+        - >-
+          Kenyan businesses already know they should be on Google, Meta and
+          TikTok; the budgets are there. What is scarce is the read: which
+          channels deserve money, which funnels leak, and what each shilling
+          actually returns.
+        - >-
+          Most reports stop at reach and impressions. The decision of where the
+          next shilling goes is made on gut feel. That gap between reporting and
+          revenue is where growth stalls.
       closing: Analytt exists to close that gap.
       panelTitle: Account snapshot
       panelAlert: Wasting −38%
@@ -475,17 +697,26 @@ sections:
       eyebrow: Our Philosophy
       headline: Data is not a dashboard, it's your
       headlineAccent: competitive edge.
-      lede: We harness the power of data to inform and optimise every aspect of our clients' marketing across Kenya and East Africa. In a market where most agencies still report reach and impressions, we treat data as a strategic asset, the thing that separates agencies who guess from agencies who know.
+      lede: >-
+        We harness the power of data to inform and optimise every aspect of our
+        clients' marketing across Kenya and East Africa. In a market where most
+        agencies still report reach and impressions, we treat data as a
+        strategic asset, the thing that separates agencies who guess from
+        agencies who know.
       terrain:
         title: When your customers actually convert
-        caption: Hourly leads, ad clicks and cost per lead for a sample campaign, Sep 21 to 27, 2026, East Africa Time. Illustrative data.
+        caption: >-
+          Hourly leads, ad clicks and cost per lead for a sample campaign, Sep
+          21 to 27, 2026, East Africa Time. Illustrative data.
         metricGroupLabel: Metric
         viewGroupLabel: Camera view
         perspectiveLabel: Perspective
         topLabel: Top view
         resetLabel: Reset view
         clearLabel: Clear selection
-        canvasLabel: Interactive 3D terrain of hourly activity by day of week. A data table follows for screen readers.
+        canvasLabel: >-
+          Interactive 3D terrain of hourly activity by day of week. A data table
+          follows for screen readers.
         hintTouch: Swipe sideways to orbit, pinch to zoom, tap a bar to fly in.
         hintDesktop: Drag to orbit, pinch or Ctrl+scroll to zoom, click a bar to fly in.
         statsNote: vs last week
@@ -543,7 +774,9 @@ sections:
       headline: |-
         How we work,
         in four numbers.
-      body: No vanity metrics. Every engagement is tracked to conversion, reviewed weekly, and reported in plain language.
+      body: >-
+        No vanity metrics. Every engagement is tracked to conversion, reviewed
+        weekly, and reported in plain language.
       stats:
         - value: 100%
           label: Campaigns tracked to conversion
@@ -561,11 +794,12 @@ sections:
     value:
       eyebrow: Industries
       headline: Sectors we know.
-      body: 'From e-commerce in Nairobi to logistics across the region: a short index of where we have done the work.'
+      body: >-
+        From e-commerce in Nairobi to logistics across the region: a short index
+        of where we have done the work.
       hint: Selected sectors
       image:
-        src: /media/uploads/home/industries-image.png
-        alt: ''
+        src: /media/uploads/home/sections/9/value/image/src.png
       items:
         - Real Estate
         - E-commerce
@@ -584,7 +818,9 @@ sections:
     value:
       eyebrow: Start
       headline: Decisions, not dashboards.
-      body: 'Measurement first, always. Every report ends in a named action: what to scale, what to cut, what to test.'
+      body: >-
+        Measurement first, always. Every report ends in a named action: what to
+        scale, what to cut, what to test.
       cta: Get a free audit
       ctaHref: mailto:hello@analyttdigital.com
       note: No deck. No obligation. Just the findings.
@@ -600,17 +836,27 @@ sections:
       headline: Results our clients feel.
       body: One engagement at a time, measured to the shilling.
       items:
-        - quote: We finally started seeing real ROI from our ads. Leads became more consistent, costs went down, and reporting was clear and honest.
+        - quote: >-
+            We finally started seeing real ROI from our ads. Leads became more
+            consistent, costs went down, and reporting was clear and honest.
           name: Analytt Digital Client
-        - quote: Our cost per lead was dominating every board meeting. They cut the junk keywords and built pages by intent. The weekly review is the most useful meeting on my calendar.
+        - quote: >-
+            Our cost per lead was dominating every board meeting. They cut the
+            junk keywords and built pages by intent. The weekly review is the
+            most useful meeting on my calendar.
           name: Analytt Digital Client
-        - quote: 'The report is one page I can read without a translator: spend, bookings, and what changes next week. I have stopped dreading the agency call.'
+        - quote: >-
+            The report is one page I can read without a translator: spend,
+            bookings, and what changes next week. I have stopped dreading the
+            agency call.
           name: Analytt Digital Client
   - discriminant: cta
     value:
       eyebrow: Start
       headline: Most audits surface KES 50K–200K in recoverable spend.
-      body: A free audit of your current setup, showing where budget is wasted and where the opportunity is. No obligation.
+      body: >-
+        A free audit of your current setup, showing where budget is wasted and
+        where the opportunity is. No obligation.
       cta: Request a free audit
       ctaHref: mailto:hello@analyttdigital.com
       note: No deck. No obligation. Just the findings.

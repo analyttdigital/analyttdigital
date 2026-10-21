@@ -1,4 +1,5 @@
 import type { MouseEventHandler } from 'react';
+import Link from 'next/link';
 
 import { MdiIcon } from '@/lib/icons/resolve-icon';
 import type { DataProps } from '@/lib/content/types';
@@ -90,9 +91,9 @@ export function GlowButton({ data, classes, className, id, tone = 'ember', type 
         className={`absolute -inset-1 rounded-full bg-gradient-to-r opacity-20 blur transition duration-500 group-hover:opacity-50 group-hover:duration-200 will-change-transform ${t.glow} ${classes?.glow ?? ''}`}
       />
       {data.href ? (
-        <a href={data.href} className={bodyClass}>
+        <Link href={data.href} className={bodyClass}>
           {inner}
-        </a>
+        </Link>
       ) : (
         <button type={type} onClick={onClick} className={bodyClass}>
           {inner}

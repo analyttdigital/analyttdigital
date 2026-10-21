@@ -16,7 +16,11 @@ import { ReactLenis } from "lenis/react";
 import type { LenisRef } from "lenis/react";
 import { cancelFrame, frame } from "framer-motion";
 import { useEffect, useRef } from "react";
+import PageTransitionLoader from "@/components/layout/PageTransitionLoader";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
+// @ts-expect-error
 import '../styles/globals.css';
 
 type Props = AppProps & { pageProps: PageProps };
@@ -53,16 +57,22 @@ export default function App({ Component, pageProps, router }: Props) {
 
 	return (
 		<div className={fontsClass}>
-			<ReactLenis root options={{ autoRaf: false }} ref={lenisRef} >
-			{/* Error pages (404/500) carry no bundle, so they render from code
-			 * defaults instead of the header's demo fallback. The cast recovers
-			 * the `PageProps` type `AppProps`'s `any` pageProps swallows. */}
-			<LocaleProvider locale={(pageProps as PageProps).locale ?? defaultLocale}>
-				<SiteLayout layout={(pageProps as PageProps).bundle?.layout ?? defaults[locale].layout}>
-					<Component {...pageProps} />
-				</SiteLayout>
-              </LocaleProvider>
-            </ReactLenis>
+			<ReactLenis root options={{ autoRaf: false }} ref={lenisRef}>
+				{/* Error pages (404/500) carry no bundle, so they render from code
+				 * defaults instead of the header's demo fallback. The cast recovers
+				 * the `PageProps` type `AppProps`'s `any` pageProps swallows. */}
+				<LocaleProvider locale={(pageProps as PageProps).locale ?? defaultLocale}>
+					<PageTransitionLoader
+						img={{ src: "/img/logo-alt.svg" }}
+						message="Loading"
+					/>
+					<SiteLayout
+						layout={(pageProps as PageProps).bundle?.layout ?? defaults[locale].layout}
+					>
+						<Component {...pageProps} />
+					</SiteLayout>
+				</LocaleProvider>
+			</ReactLenis>
 			{/* Draft-mode banner (K5): `preview` in page props means draft mode
 			 * turned this view into a fresh (uncached) render, so offer the
 			 * way out. A plain form POST keeps the banner JS-free. */}
@@ -71,13 +81,13 @@ export default function App({ Component, pageProps, router }: Props) {
 					action="/api/preview/end"
 					method="POST"
 					className="fixed bottom-0 inset-x-0 z-50 flex items-center justify-center gap-3 px-4 py-2 text-xs font-medium"
-					style={{ backgroundColor: site.themeColor, color: '#ffffff' }}
+					style={{ backgroundColor: site.themeColor, color: "#ffffff" }}
 				>
 					<span>
 						Preview mode
-						{typeof (pageProps as PageProps).preview?.branch === 'string'
+						{typeof (pageProps as PageProps).preview?.branch === "string"
 							? ` · branch ${(pageProps as PageProps).preview?.branch}`
-							: ' · local'}
+							: " · local"}
 					</span>
 					<button
 						type="submit"
@@ -87,6 +97,8 @@ export default function App({ Component, pageProps, router }: Props) {
 					</button>
 				</form>
 			) : null}
+			<Analytics />
+			<SpeedInsights />
 		</div>
 	);
 }

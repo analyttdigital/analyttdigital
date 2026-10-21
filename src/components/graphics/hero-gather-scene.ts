@@ -358,6 +358,7 @@ export function runHeroGather(
 	var hero = heroEl;
 	var canvas = canvasEl;
 	var hasGsap = !!gsap;
+	var disposed = false;
 
 	function hexRGB(h) {
 		return [
@@ -375,7 +376,13 @@ export function runHeroGather(
 		renderer = new THREE.WebGLRenderer({
 			canvas: canvas,
 			alpha: true,
-			antialias: true,
+			// Every glyph edge comes from the atlas alpha channel, not from
+			// geometry edges, so MSAA buys nothing here and costs fill-rate
+			// and bandwidth. The scene is also a single blended layer with
+			// depth test disabled, so neither depth nor stencil is needed.
+			antialias: false,
+			depth: false,
+			stencil: false,
 			powerPreference: "high-performance",
 		});
 	} catch (err) {
@@ -383,6 +390,7 @@ export function runHeroGather(
 		return;
 	}
 	renderer.setClearColor(0x000000, 0);
+	renderer.sortObjects = false;
 
 	var FOV = 35;
 	var scene = new THREE.Scene();
@@ -390,147 +398,98 @@ export function runHeroGather(
 	var group = new THREE.Group();
 	scene.add(group);
 
-	// ---- icon atlas (4x4 cells, 128px each), drawn white so the shader can tint it ----
-	var CELL = 128,
-		K = 5.2;
-	function rr(g, x, y, w, h, r) {
-		g.beginPath();
-		g.moveTo(x + r, y);
-		g.arcTo(x + w, y, x + w, y + h, r);
-		g.arcTo(x + w, y + h, x, y + h, r);
-		g.arcTo(x, y + h, x, y, r);
-		g.arcTo(x, y, x + w, y, r);
-		g.closePath();
-		g.fill();
-	}
-	function P(g, d, a) {
-		g.globalAlpha = a == null ? 1 : a;
-		g.fill(new Path2D(d));
-		g.globalAlpha = 1;
-	}
-	function L(g, pts) {
-		g.beginPath();
-		g.moveTo(pts[0], pts[1]);
-		for (var i = 2; i < pts.length; i += 2) g.lineTo(pts[i], pts[i + 1]);
-		g.stroke();
-	}
-	function C(g, x, y, r, a) {
-		g.globalAlpha = a == null ? 1 : a;
-		g.beginPath();
-		g.arc(x, y, r, 0, Math.PI * 2);
-		g.fill();
-		g.globalAlpha = 1;
-	}
-	function cut(g, fn) {
-		g.save();
-		g.globalCompositeOperation = "destination-out";
-		fn();
-		g.restore();
-	}
-
-	var ICONS = [
-		function megaphone(g) {
-			P(g, "M-9,-3 L-1,-7 L7,-9 L7,9 L-1,7 L-9,3 Z");
-			rr(g, -10, -3, 2.2, 6, 1);
-			P(g, "M-3,7.5 L0,9.5 L1,6.5 L-2,5 Z");
-		},
-		function chart(g) {
-			rr(g, -8, 0, 3.2, 8, 0.6);
-			rr(g, -3, -4, 3.2, 12, 0.6);
-			rr(g, 2, -8, 3.2, 16, 0.6);
-		},
-		function heart(g) {
-			P(
-				g,
-				"M0,8 C-6,3 -9,-1 -9,-4.5 C-9,-7.5 -6.8,-9.5 -4.2,-9.5 C-2.3,-9.5 -0.8,-8.3 0,-6.7 C0.8,-8.3 2.3,-9.5 4.2,-9.5 C6.8,-9.5 9,-7.5 9,-4.5 C9,-1 6,3 0,8 Z"
-			);
-		},
-		function cursor(g) {
-			P(g, "M-7,-9 L6,-1.5 L0.5,0.5 L4,8.5 L0.8,10 L-2.7,2 L-7,5.5 Z");
-		},
-		function play(g) {
-			C(g, 0, 0, 9.5, 0.28);
-			P(g, "M-3.2,-5.6 L6.4,0 L-3.2,5.6 Z");
-		},
-		function chat(g) {
-			rr(g, -9, -7, 18, 12, 4);
-			P(g, "M-4,5 L-6,10 L0,5.5 Z");
-		},
-		function phone(g) {
-			rr(g, -5.5, -10, 11, 20, 2.4);
-			cut(g, function () {
-				rr(g, -3.6, -6.5, 7.2, 4, 0.8);
-				C(g, 0, 6.8, 1.3);
-			});
-		},
-		function envelope(g) {
-			rr(g, -10, -6.5, 20, 13, 1.6);
-			cut(g, function () {
-				g.lineWidth = 1.6;
-				L(g, [-10, -6.5, 0, 1, 10, -6.5]);
-			});
-		},
-		function hashtag(g) {
-			g.lineWidth = 2;
-			L(g, [-7, -8, -9.5, 8]);
-			L(g, [1, -8, -1.5, 8]);
-			L(g, [-9.5, -2.5, 2, -2.5]);
-			L(g, [-10.5, 3, 1, 3]);
-		},
-		function target(g) {
-			g.lineWidth = 1.8;
-			g.beginPath();
-			g.arc(0, 0, 9, 0, Math.PI * 2);
-			g.stroke();
-			g.beginPath();
-			g.arc(0, 0, 5.2, 0, Math.PI * 2);
-			g.stroke();
-			C(g, 0, 0, 1.4);
-		},
-		function bell(g) {
-			P(
-				g,
-				"M0,-9 C4.5,-9 6.5,-5.7 6.5,-1.8 L6.5,3.5 L9,6.5 L-9,6.5 L-6.5,3.5 L-6.5,-1.8 C-6.5,-5.7 -4.5,-9 0,-9 Z"
-			);
-			C(g, 0, 9, 2.1);
-		},
-		function share(g) {
-			C(g, -7, -6, 2.3);
-			C(g, -7, 6, 2.3);
-			C(g, 7, 0, 2.6);
-			g.lineWidth = 1.6;
-			g.globalAlpha = 0.8;
-			L(g, [-7, -6, 7, 0]);
-			L(g, [-7, 6, 7, 0]);
-			g.globalAlpha = 1;
-		},
-		function thumb(g) {
-			P(g, "M-7,-1 L-4,-1 L-4,9 L-7,9 Z");
-			P(
-				g,
-				"M-3,-1 L2.5,-9 C4,-9.5 5.3,-8.2 4.8,-6.7 L3.2,-1.5 L8,-1.5 C9.4,-1.5 10.3,0 9.6,1.2 L6.3,8 C5.9,8.8 5,9.3 4.1,9.3 L-3,9.3 Z"
-			);
-		},
+	// ---- icon atlas, rebuilt from the SVG glyph set ----
+	// All icons below are the path data of the 17 SVGs that ship beside
+	// this module (bell, bullhorn, bullseye, cellphone, email, google,
+	// heart, hubspot, message, meta, play-circle, play, pound, share,
+	// share-variant, thumb-up, tiktok). They are drawn white on a 5x4
+	// atlas so the shader can tint every instance with PAL. The glyphs are
+	// authored on a 24x24 grid; ICON_UNITS keeps the same 20-unit visual
+	// footprint the previous hand-drawn set used.
+	var ATLAS_COLS = 5,
+		ATLAS_ROWS = 4,
+		CELL = 128,
+		K = 5.2,
+		ICON_VIEWBOX = 24,
+		ICON_UNITS = 20,
+		ICON_S = ICON_UNITS / ICON_VIEWBOX;
+	var ICON_PATHS = [
+		// 0 - bullhorn
+		"M12,8H4A2,2 0 0,0 2,10V14A2,2 0 0,0 4,16H5V20A1,1 0 0,0 6,21H8A1,1 0 0,0 9,20V16H12L17,20V4L12,8M21.5,12C21.5,13.71 20.54,15.26 19,16V8C20.53,8.75 21.5,10.3 21.5,12Z",
+		// 1 - bullseye
+		"M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12A2,2 0 0,0 12,10Z",
+		// 2 - heart
+		"M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z",
+		// 3 - share
+		"M21,12L14,5V9C7,10 4,15 3,20C5.5,16.5 9,14.9 14,14.9V19L21,12Z",
+		// 4 - play-circle
+		"M10,16.5V7.5L16,12M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z",
+		// 5 - message
+		"M20,2H4A2,2 0 0,0 2,4V22L6,18H20A2,2 0 0,0 22,16V4C22,2.89 21.1,2 20,2Z",
+		// 6 - cellphone
+		"M17,19H7V5H17M17,1H7C5.89,1 5,1.89 5,3V21A2,2 0 0,0 7,23H17A2,2 0 0,0 19,21V3C19,1.89 18.1,1 17,1Z",
+		// 7 - email
+		"M20,8L12,13L4,8V6L12,11L20,6M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z",
+		// 8 - pound / hash
+		"M5.41,21L6.12,17H2.12L2.47,15H6.47L7.53,9H3.53L3.88,7H7.88L8.59,3H10.59L9.88,7H15.88L16.59,3H18.59L17.88,7H21.88L21.53,9H17.53L16.47,15H20.47L20.12,17H16.12L15.41,21H13.41L14.12,17H8.12L7.41,21H5.41M9.53,9L8.47,15H14.47L15.53,9H9.53Z",
+		// 9 - bell
+		"M21,19V20H3V19L5,17V11C5,7.9 7.03,5.17 10,4.29C10,4.19 10,4.1 10,4A2,2 0 0,1 12,2A2,2 0 0,1 14,4C14,4.1 14,4.19 14,4.29C16.97,5.17 19,7.9 19,11V17L21,19M14,21A2,2 0 0,1 12,23A2,2 0 0,1 10,21",
+		// 10 - share-variant
+		"M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.61 20.92,19A2.92,2.92 0 0,0 18,16.08Z",
+		// 11 - thumb-up
+		"M23,10C23,8.89 22.1,8 21,8H14.68L15.64,3.43C15.66,3.33 15.67,3.22 15.67,3.11C15.67,2.7 15.5,2.32 15.23,2.05L14.17,1L7.59,7.58C7.22,7.95 7,8.45 7,9V19A2,2 0 0,0 9,21H18C18.83,21 19.54,20.5 19.84,19.78L22.86,12.73C22.95,12.5 23,12.26 23,12V10M1,21H5V9H1V21Z",
+		// 12 - google
+		"M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z",
+		// 13 - meta
+		"M6.915 4.03c-1.968 0-3.683 1.28-4.871 3.113C.704 9.208 0 11.883 0 14.449c0 .706.07 1.369.21 1.973a6.624 6.624 0 0 0 .265.86 5.297 5.297 0 0 0 .371.761c.696 1.159 1.818 1.927 3.593 1.927 1.497 0 2.633-.671 3.965-2.444.76-1.012 1.144-1.626 2.663-4.32l.756-1.339.186-.325c.061.1.121.196.183.3l2.152 3.595c.724 1.21 1.665 2.556 2.47 3.314 1.046.987 1.992 1.22 3.06 1.22 1.075 0 1.876-.355 2.455-.843a3.743 3.743 0 0 0 .81-.973c.542-.939.861-2.127.861-3.745 0-2.72-.681-5.357-2.084-7.45-1.282-1.912-2.957-2.93-4.716-2.93-1.047 0-2.088.467-3.053 1.308-.652.57-1.257 1.29-1.82 2.05-.69-.875-1.335-1.547-1.958-2.056-1.182-.966-2.315-1.303-3.454-1.303zm10.16 2.053c1.147 0 2.188.758 2.992 1.999 1.132 1.748 1.647 4.195 1.647 6.4 0 1.548-.368 2.9-1.839 2.9-.58 0-1.027-.23-1.664-1.004-.496-.601-1.343-1.878-2.832-4.358l-.617-1.028a44.908 44.908 0 0 0-1.255-1.98c.07-.109.141-.224.211-.327 1.12-1.667 2.118-2.602 3.358-2.602zm-10.201.553c1.265 0 2.058.791 2.675 1.446.307.327.737.871 1.234 1.579l-1.02 1.566c-.757 1.163-1.882 3.017-2.837 4.338-1.191 1.649-1.81 1.817-2.486 1.817-.524 0-1.038-.237-1.383-.794-.263-.426-.464-1.13-.464-2.046 0-2.221.63-4.535 1.66-6.088.454-.687.964-1.226 1.533-1.533a2.264 2.264 0 0 1 1.088-.285z",
+		// 14 - hubspot
+		"M18.164 7.93V5.084a2.198 2.198 0 001.267-1.978v-.067A2.2 2.2 0 0017.238.845h-.067a2.2 2.2 0 00-2.193 2.193v.067a2.196 2.196 0 001.252 1.973l.013.006v2.852a6.22 6.22 0 00-2.969 1.31l.012-.01-7.828-6.095A2.497 2.497 0 104.3 4.656l-.012.006 7.697 5.991a6.176 6.176 0 00-1.038 3.446c0 1.343.425 2.588 1.147 3.607l-.013-.02-2.342 2.343a1.968 1.968 0 00-.58-.095h-.002a2.033 2.033 0 102.033 2.033 1.978 1.978 0 00-.1-.595l.005.014 2.317-2.317a6.247 6.247 0 104.782-11.134l-.036-.005zm-.964 9.378a3.206 3.206 0 113.215-3.207v.002a3.206 3.206 0 01-3.207 3.207z",
+		// 15 - tiktok
+		"M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z",
+		// 16 - play
+		"M8,5.14V19.14L19,12.14L8,5.14Z",
 	];
+	var ICON_COUNT = ICON_PATHS.length;
+	// Path2D objects are immutable and reused for every atlas rebuild; no
+	// path parsing happens after init.
+	var ICON_SHAPES = ICON_PATHS.map(function (d) {
+		return new Path2D(d);
+	});
+	// The plain play glyph is optically small next to the full-bleed marks
+	// (its source art only occupies 11x14 of the 24-unit grid). Scale and
+	// centre it so it reads at the same weight in the collage.
+	var ICON_TWEAKS = {
+		16: { s: 1.4, x: -1.5, y: -0.14 },
+	};
 
 	function buildAtlas() {
 		var cv = document.createElement("canvas");
-		cv.width = cv.height = CELL * 4;
+		cv.width = CELL * ATLAS_COLS;
+		cv.height = CELL * ATLAS_ROWS;
 		var g = cv.getContext("2d");
-		ICONS.forEach(function (fn, i) {
+		g.fillStyle = "#fff";
+		ICON_SHAPES.forEach(function (shape, i) {
+			var tweak = ICON_TWEAKS[i];
+			var s = ICON_S * (tweak ? tweak.s : 1);
 			g.save();
-			g.translate((i % 4) * CELL + CELL / 2, Math.floor(i / 4) * CELL + CELL / 2);
-			g.scale(K, K);
-			g.fillStyle = "#fff";
-			g.strokeStyle = "#fff";
-			fn(g);
+			g.translate(
+				(i % ATLAS_COLS) * CELL + CELL / 2,
+				Math.floor(i / ATLAS_COLS) * CELL + CELL / 2
+			);
+			// 24-unit SVG grid -> 20 logo units -> atlas pixels.
+			g.scale(K * s, K * s);
+			g.translate(
+				-ICON_VIEWBOX / 2 + (tweak ? tweak.x : 0),
+				-ICON_VIEWBOX / 2 + (tweak ? tweak.y : 0)
+			);
+			g.fill(shape);
 			g.restore();
 		});
 		var t = new THREE.CanvasTexture(cv);
 		t.generateMipmaps = true;
 		t.minFilter = THREE.LinearMipmapLinearFilter;
 		t.magFilter = THREE.LinearFilter;
-		t.anisotropy = 4;
+		t.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
 		return t;
 	}
 
@@ -586,6 +545,11 @@ export function runHeroGather(
 		var r = Math.min(1, Math.sqrt(x * x + y * y) / 255);
 		var a = (Math.atan2(y, x) + Math.PI) / (Math.PI * 2);
 		order[i] = 0.6 * r + 0.4 * a;
+		// Rotate through the full icon set. The old type column only had 13
+		// entries; this keeps each tile's authored scale/rotation/colour but
+		// lets the brand and utility marks coexist in the collage.
+		var type = (t[4] + i * 3) % ICON_COUNT;
+		var colorIndex = (t[5] < 2 ? 0 : 2) + (x < 0 ? 0 : 1);
 		put(
 			i,
 			x,
@@ -593,8 +557,8 @@ export function runHeroGather(
 			(rnd() - 0.5) * 70,
 			(-t[2] * Math.PI) / 180,
 			t[3],
-			t[4],
-			t[5],
+			type,
+			colorIndex,
 			t[6],
 			order[i],
 			1
@@ -611,7 +575,7 @@ export function runHeroGather(
 			(rnd() - 0.5) * 220,
 			(rnd() - 0.5) * 1.2,
 			0.9 + rnd() * 1.4,
-			Math.floor(rnd() * 13),
+			Math.floor(rnd() * ICON_COUNT),
 			ci,
 			0.25 + rnd() * 0.3,
 			0,
@@ -743,13 +707,30 @@ export function runHeroGather(
 		"uniform sampler2D uAtlas; uniform sampler2D uMask;",
 		"varying vec2 vUv; varying vec3 vColor; varying float vAlpha; varying float vType; varying float vClip; varying vec2 vMaskPos;",
 		"void main(){",
-		"  float col = mod(vType, 4.); float row = floor(vType / 4.);",
-		"  vec2 uv = vec2((col + vUv.x) / 4., 1. - (row + 1.) / 4. + vUv.y / 4.);",
+		"  float col = mod(vType, " +
+			ATLAS_COLS +
+			".0); float row = floor(vType / " +
+			ATLAS_COLS +
+			".0);",
+		"  vec2 uv = vec2((col + vUv.x) / " +
+			ATLAS_COLS +
+			".0, 1. - (row + 1.) / " +
+			ATLAS_ROWS +
+			".0 + vUv.y / " +
+			ATLAS_ROWS +
+			".0);",
 		"  float a = texture2D(uAtlas, uv).a;",
-		"  float m = texture2D(uMask, vMaskPos / 360. + .5).a;",
-		"  a *= mix(1., m, vClip);",
+		// Reject fully transparent glyph pixels before the mask fetch: most
+		// fragments in a quad are empty, and unclipped icons skip the second
+		// texture sample entirely until they settle into the silhouette.
+		"  if (a < .01) discard;",
 		"  a *= vAlpha;",
 		"  if (a < .01) discard;",
+		"  if (vClip > .001) {",
+		"    float m = texture2D(uMask, vMaskPos / 360. + .5).a;",
+		"    a *= mix(1., m, vClip);",
+		"    if (a < .01) discard;",
+		"  }",
 		"  gl_FragColor = vec4(vColor, a);",
 		"}",
 	].join("\n");
@@ -774,6 +755,12 @@ export function runHeroGather(
 	var W = 1,
 		H = 1,
 		gScale = 1;
+	var rectLeft = 0,
+		rectTop = 0,
+		rectValid = false;
+	var lgCache = { scale: NaN, scaleMobile: NaN, offsetX: NaN, offsetY: NaN };
+	var resizeRaf = 0;
+
 	function layout() {
 		var desk = W >= 1080,
 			size,
@@ -806,6 +793,10 @@ export function runHeroGather(
 		var r = hero.getBoundingClientRect();
 		W = Math.max(1, r.width);
 		H = Math.max(1, r.height);
+		// Reuse this layout read for pointer coordinates as well.
+		rectLeft = r.left;
+		rectTop = r.top;
+		rectValid = true;
 		renderer.setPixelRatio(currentPR());
 		renderer.setSize(W, H, false);
 		camera.aspect = W / H;
@@ -815,24 +806,44 @@ export function runHeroGather(
 		camera.updateProjectionMatrix();
 		layout();
 	}
+	// ResizeObserver can fire in bursts while a window is being dragged.
+	// Coalesce those into one layout/render-target update per frame.
+	function scheduleResize() {
+		if (resizeRaf || disposed) return;
+		resizeRaf = requestAnimationFrame(function () {
+			resizeRaf = 0;
+			if (!disposed) resize();
+		});
+	}
 	resize();
 	var ro = null;
 	if (window.ResizeObserver) {
-		ro = new ResizeObserver(resize);
+		ro = new ResizeObserver(scheduleResize);
 		ro.observe(hero);
-	} else window.addEventListener("resize", resize);
+	} else window.addEventListener("resize", scheduleResize);
 
 	// ------------------------------------------------------------------
 	// Pointer interaction
 	// ------------------------------------------------------------------
 	var ptr = { px: 0, py: 0, sx: 9999, sy: 9999, on: 0, target: 0, nx: 0, ny: 0, seen: false };
+	var localTmp = [0, 0];
 	function toLocal(px, py) {
-		return [(px - W / 2 - group.position.x) / gScale, (H / 2 - py - group.position.y) / gScale];
+		localTmp[0] = (px - W / 2 - group.position.x) / gScale;
+		localTmp[1] = (H / 2 - py - group.position.y) / gScale;
+		return localTmp;
+	}
+	function refreshRect() {
+		var r = hero.getBoundingClientRect();
+		rectLeft = r.left;
+		rectTop = r.top;
+		rectValid = true;
 	}
 	function onMove(e) {
-		var r = hero.getBoundingClientRect();
-		ptr.px = e.clientX - r.left;
-		ptr.py = e.clientY - r.top;
+		// getBoundingClientRect() only after a scroll/resize invalidates the
+		// cached value, instead of on every pointer event.
+		if (!rectValid) refreshRect();
+		ptr.px = e.clientX - rectLeft;
+		ptr.py = e.clientY - rectTop;
 		ptr.nx = (ptr.px / W) * 2 - 1;
 		ptr.ny = (ptr.py / H) * 2 - 1;
 		ptr.target = 1;
@@ -843,11 +854,26 @@ export function runHeroGather(
 			ptr.seen = true;
 		}
 	}
+	function invalidateRect() {
+		rectValid = false;
+	}
 	var clickT0 = -10,
 		chipI = 0;
+	// DOM effects created by clicks are tracked so a dispose mid-animation
+	// cannot leave orphaned nodes or live tweens behind.
+	var fxEls = [];
+	function releaseFx(el) {
+		var i = fxEls.indexOf(el);
+		if (i !== -1) fxEls.splice(i, 1);
+		if (el.parentNode) el.parentNode.removeChild(el);
+	}
 	function splash(e) {
 		if (getP() > 0.79) return; // parked: the portal owns the stage now
 		if (e.target.closest && e.target.closest("a,button")) return;
+		// A touch can start without a prior pointerenter, and the hero may
+		// have shifted since the last scroll. One rect read per click is
+		// cheap and keeps the splash anchored to the real pointer position.
+		rectValid = false;
 		onMove(e);
 		var l = toLocal(ptr.px, ptr.py);
 		U.uClick.value.set(l[0], l[1], 0, 1);
@@ -861,6 +887,7 @@ export function runHeroGather(
 		ring.style.cssText =
 			"left:" + ptr.px + "px;top:" + ptr.py + "px;width:" + D + "px;height:" + D + "px;";
 		hero.appendChild(ring);
+		fxEls.push(ring);
 		gsap.set(ring, { xPercent: -50, yPercent: -50, scale: 0, opacity: 0.5 });
 		gsap.to(ring, { scale: 1, duration: 0.9, ease: "power2.out" });
 		gsap.to(ring, {
@@ -868,7 +895,7 @@ export function runHeroGather(
 			duration: 0.9,
 			ease: "power2.in",
 			onComplete: function () {
-				ring.remove();
+				releaseFx(ring);
 			},
 		});
 
@@ -881,6 +908,7 @@ export function runHeroGather(
 		chip.style.left = ptr.px + "px";
 		chip.style.top = ptr.py - 28 + "px";
 		hero.appendChild(chip);
+		fxEls.push(chip);
 		gsap.fromTo(
 			chip,
 			{ xPercent: -50, yPercent: -50, y: 0, opacity: 0, scale: 0.8 },
@@ -893,7 +921,7 @@ export function runHeroGather(
 			delay: 0.85,
 			ease: "power2.in",
 			onComplete: function () {
-				chip.remove();
+				releaseFx(chip);
 			},
 		});
 	}
@@ -903,27 +931,46 @@ export function runHeroGather(
 	function onUp(e) {
 		if (e.pointerType === "touch") ptr.target = 0;
 	}
-	hero.addEventListener("pointermove", onMove);
-	hero.addEventListener("pointerdown", splash);
-	hero.addEventListener("pointerleave", onLeave);
-	hero.addEventListener("pointerup", onUp);
-	hero.addEventListener("pointercancel", onLeave);
+	var passiveOpts = { passive: true };
+	hero.addEventListener("pointermove", onMove, passiveOpts);
+	hero.addEventListener("pointerenter", invalidateRect, passiveOpts);
+	hero.addEventListener("pointerdown", splash, passiveOpts);
+	hero.addEventListener("pointerleave", onLeave, passiveOpts);
+	hero.addEventListener("pointerup", onUp, passiveOpts);
+	hero.addEventListener("pointercancel", onLeave, passiveOpts);
+	// The hero moves with the page; only re-read its box lazily after scroll.
+	// Capture-phase on document also notices scrollable ancestors.
+	document.addEventListener("scroll", invalidateRect, { passive: true, capture: true });
 
 	// ------------------------------------------------------------------
 	// Intro: icons pop into a scattered cloud, then gather into the logo silhouette
 	// ------------------------------------------------------------------
-	var counters = [].slice.call(heroEl.querySelectorAll("[data-to]"));
+	// Counter targets are parsed once; writes only happen when the rounded
+	// number actually changes, so the intro does not force a text layout
+	// every frame.
+	var counters = [].slice.call(heroEl.querySelectorAll("[data-to]")).map(function (el) {
+		return {
+			el: el,
+			pre: el.getAttribute("data-pre") || "",
+			to: parseFloat(el.getAttribute("data-to")) || 0,
+			suf: el.getAttribute("data-suf") || "",
+			shown: NaN,
+		};
+	});
 	function setCounters(p) {
-		counters.forEach(function (el) {
-			el.textContent =
-				(el.getAttribute("data-pre") || "") +
-				Math.round(parseFloat(el.getAttribute("data-to")) * p) +
-				(el.getAttribute("data-suf") || "");
-		});
+		for (var i = 0; i < counters.length; i++) {
+			var c = counters[i];
+			var v = Math.round(c.to * p);
+			if (v !== c.shown) {
+				c.shown = v;
+				c.el.textContent = c.pre + v + c.suf;
+			}
+		}
 	}
 	var tl = null,
 		introDone = false;
 	function play() {
+		if (disposed) return;
 		if (tl) tl.kill();
 		// Scroll takes over uProgress only once the intro lands, so the tween
 		// and the scrub never fight over the same uniform.
@@ -971,10 +1018,10 @@ export function runHeroGather(
 		tiltY = 0;
 	var rafId = 0,
 		running = true,
-		inView = true,
-		disposed = false;
-	var emaMs = 16,
-		drawn = 0;
+		inView = true;
+	var emaMs = 16.67,
+		drawn = 0,
+		lastFrameTs = 0;
 
 	var io = null;
 	if (window.IntersectionObserver) {
@@ -991,18 +1038,35 @@ export function runHeroGather(
 		hero.classList.add("no-gl");
 		running = false;
 		if (rafId) cancelAnimationFrame(rafId);
+		rafId = 0;
+		lastFrameTs = 0;
 	}
 	canvas.addEventListener("webglcontextlost", onContextLost);
 
-	function tick() {
+	function tick(ts) {
 		if (disposed) return;
 		rafId = requestAnimationFrame(tick);
 		var dt = Math.min(clock.getDelta(), 0.06);
-		if (!running || !inView) return;
+		if (!running || !inView) {
+			lastFrameTs = 0;
+			return;
+		}
 		var p = getP();
-		if (p > 0.65) return; // flood circle done (PORTAL_RANGE ends at 0.6):
-		// the opaque flood covers the stage, so hold the frame, draw nothing
-		var cost0 = performance.now();
+		if (p > 0.65) {
+			// flood circle done (PORTAL_RANGE ends at 0.6): the opaque flood
+			// covers the stage, so hold the frame and draw nothing
+			lastFrameTs = 0;
+			return;
+		}
+		// Real frame interval (not just CPU submit time) catches GPU-bound
+		// frames too. The first frame after a pause is skipped so a tab
+		// switch cannot trigger a pixel-ratio step-down.
+		if (lastFrameTs) {
+			var frameMs = ts - lastFrameTs;
+			if (frameMs > 0 && frameMs < 100) emaMs += (frameMs - emaMs) * 0.05;
+		}
+		lastFrameTs = ts;
+
 		time += dt;
 		U.uTime.value = time;
 		var m = reduce ? 0 : 1;
@@ -1048,10 +1112,17 @@ export function runHeroGather(
 		U.uMouseOn.value = ptr.on;
 
 		// re-apply logo size/offset if edited live from the console
-		var LG = CONFIG.logo,
-			lk = LG.scale + "|" + LG.scaleMobile + "|" + LG.offsetX + "|" + LG.offsetY;
-		if (lk !== tick._lk) {
-			tick._lk = lk;
+		var LG = CONFIG.logo;
+		if (
+			LG.scale !== lgCache.scale ||
+			LG.scaleMobile !== lgCache.scaleMobile ||
+			LG.offsetX !== lgCache.offsetX ||
+			LG.offsetY !== lgCache.offsetY
+		) {
+			lgCache.scale = LG.scale;
+			lgCache.scaleMobile = LG.scaleMobile;
+			lgCache.offsetX = LG.offsetX;
+			lgCache.offsetY = LG.offsetY;
 			layout();
 		}
 
@@ -1072,8 +1143,6 @@ export function runHeroGather(
 
 		// Adaptive pixel ratio: while the average frame stays over ~29ms,
 		// step down the ladder. Never steps back up mid-visit.
-		var cost = performance.now() - cost0;
-		emaMs += (cost - emaMs) * 0.05;
 		drawn += 1;
 		if (drawn % 120 === 0 && emaMs > 29 && prStep < PR_STEPS.length - 1) {
 			prStep += 1;
@@ -1083,19 +1152,42 @@ export function runHeroGather(
 	tick();
 
 	return function () {
+		if (disposed) return;
 		disposed = true;
 		if (rafId) cancelAnimationFrame(rafId);
+		if (resizeRaf) cancelAnimationFrame(resizeRaf);
 		if (tl) tl.kill();
 		if (io) io.disconnect();
 		if (ro) ro.disconnect();
-		else window.removeEventListener("resize", resize);
+		else window.removeEventListener("resize", scheduleResize);
+		document.removeEventListener("scroll", invalidateRect, true);
 		canvas.removeEventListener("webglcontextlost", onContextLost);
 		hero.removeEventListener("pointermove", onMove);
+		hero.removeEventListener("pointerenter", invalidateRect);
 		hero.removeEventListener("pointerdown", splash);
 		hero.removeEventListener("pointerleave", onLeave);
 		hero.removeEventListener("pointerup", onUp);
 		hero.removeEventListener("pointercancel", onLeave);
-		if (renderer) renderer.dispose();
+		// Click effects may still be mid-flight when the section unmounts.
+		var fxs = fxEls.slice();
+		for (var i = 0; i < fxs.length; i++) {
+			if (hasGsap) gsap.killTweensOf(fxs[i]);
+			releaseFx(fxs[i]);
+		}
+		fxEls.length = 0;
+		if (geo) geo.dispose();
+		if (base) base.dispose();
+		if (icons && icons.material) icons.material.dispose();
+		if (U.uAtlas.value) U.uAtlas.value.dispose();
+		if (maskTex) maskTex.dispose();
+		if (renderer) {
+			// Leave the shared canvas transparent instead of showing the last
+			// frame. The context itself is preserved so a StrictMode-style
+			// remount can draw on the same canvas immediately.
+			renderer.setClearColor(0x000000, 0);
+			renderer.clear();
+			renderer.dispose();
+		}
 		if (window.analyttHero && window.analyttHero.replay === play) delete window.analyttHero;
 	};
 }
