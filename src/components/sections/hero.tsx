@@ -817,12 +817,11 @@ export function HeroStage({
 						</h1>
 
 						{sub && (
-							<TextReveal
-								as="p"
+							<p
 								className={`mt-[10px] md:mt-[18px] max-w-[30em] text-sm md:text-base md:leading-relaxed sm:mt-6 ${dark ? "text-primary-200" : "text-ink-500"}`}
-								text={sub}
-								delay={0.1 + lines.length * 0.1}
-							/>
+							>
+								{sub}
+							</p>
 						)}
 
 						{ctaHref && (
@@ -845,7 +844,7 @@ export function HeroStage({
 						>
 							<div
 								aria-hidden
-								className="mb-[18px] h-px bg-accent-500 sm:mb-[16px]"
+								className="mb-5 h-0 md:h-px bg-accent-500 sm:mb-[16px]"
 								style={{
 									maskImage:
 										"linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
@@ -866,12 +865,12 @@ export function HeroStage({
 															"data-suf": m[3],
 														}
 													: {})}
-												className={`block font-display text-[clamp(1.35rem,2.2vw,1.5rem)] md:text-[clamp(1.35rem,2.2vw,1.9rem)] font-bold tracking-tightest ${dark ? "text-primary-50" : ""}`}
+												className={`block font-display text-[clamp(1.35rem,2.2vw,1.2rem)] md:text-[clamp(1.35rem,2.2vw,1.9rem)] text-center mdfont-bold tracking-tightest ${dark ? "text-primary-50" : ""}`}
 											>
 												{item.value}
 											</b>
 											<span
-												className={`mt-0.5 block max-w-[11em] text-xs md:text-[.78rem] leading-snug ${dark ? "text-primary-300" : "text-ink-400"}`}
+												className={`mt-0.5 block max-w-[11em] text-xs md:text-[.78rem] leading-snug text-center ${dark ? "text-primary-300" : "text-ink-400"}`}
 											>
 												{item.label}
 											</span>
@@ -914,10 +913,10 @@ export function HeroStage({
 										<img
 											src={logo.src}
 											alt={copy === 0 ? logo.alt : ""}
-											className="h-5 w-auto opacity-80 transition-opacity hover:opacity-100 md:h-8"
+											className="h-4 w-auto opacity-80 transition-opacity hover:opacity-100 md:h-6"
 										/>
 										<span
-											className={`whitespace-nowrap text-sm font-medium tracking-tight ${dark ? "text-primary-200" : "text-primary-700"}`}
+											className={`whitespace-nowrap text-xs md:text-sm font-medium tracking-tight ${dark ? "text-primary-200" : "text-primary-700"}`}
 										>
 											{p.label}
 										</span>
