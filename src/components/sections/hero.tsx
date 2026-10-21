@@ -12,7 +12,7 @@ import {
 import { MdiIcon } from "@/lib/icons/resolve-icon";
 import { DynamicImage } from "@/components/media/dynamic-image";
 import type { HeroPartner, HeroPanel, HeroProof, HeroSection } from "@/lib/content/types";
-import { HeroGatherLite } from "@/components/graphics/hero-gather-lite";
+// import { HeroGatherLite } from "@/components/graphics/hero-gather-lite";
 import { useLiteScene } from "@/lib/hooks/use-lite-scene";
 import { smooth } from "@/lib/motion/smooth";
 import dynamic from "next/dynamic";
@@ -23,7 +23,7 @@ import { TextReveal } from "../graphics/text-reveal";
  * first paint is always the lite mark, desktops upgrade after hydration. */
 const HeroGather = dynamic(
 	() => import("@/components/graphics/hero-gather").then((m) => m.HeroGather),
-	{ ssr: false },
+	{ ssr: false }
 );
 
 /**
@@ -47,6 +47,7 @@ const HeroGather = dynamic(
  */
 
 /** Fallback tunnel when the content layer carries no panels (legacy CMS entries). */
+/*
 const FALLBACK_PANELS: HeroPanel[] = [
 	{
 		kind: "cpl",
@@ -205,7 +206,7 @@ const FALLBACK_PANELS: HeroPanel[] = [
 		logoDark: { src: "/img/partners/linkedin-light.svg", alt: "LinkedIn" },
 	},
 ];
-
+*/
 /** Positional icon per layout — an explicit `icon` in content always wins. */
 const DEFAULT_ICON: Record<HeroPanel["kind"], string> = {
 	cpl: "chartBox",
@@ -296,7 +297,7 @@ const FALLBACK = {
 	eyebrow: "Free digital audit: find where your budget is leaking",
 	headline: "Performance marketing &\ngrowth infrastructure.",
 	sub: "We are a specialist performance marketing partner in paid media, measurement infrastructure, and growth strategy. Trusted by SMEs, startups, and B2B/B2C companies scaling across Africa.",
-	cta: "Get Started"
+	cta: "Get Started",
 } as const;
 
 /** Fallback proof strip (legacy CMS entries without one). */
@@ -671,14 +672,6 @@ export function HeroStage({
 	/** Explicit prop wins, then content, then the light stage. Tunnel panels
 	 *  flip with the variant through `panelTones` + the icon tone helpers. */
 	const dark = (variant ?? hero?.variant ?? "light") === "dark";
-	const reduce = useReducedMotion();
-	/* Lite devices (mobile / low-compute / save-data / reduced-motion) get
-	 * the zero-WebGL scene and never download three.js — see `useLiteScene`.
-	 * SSR-first paint is always lite; capable desktops upgrade on hydrate. */
-	const lite = useLiteScene();
-	/* Static when the wrapper parks motion (or no progress is passed) —
-	 * every animated style below keys off `live`. */
-	const live = !reduce && progress;
 	const p = progress;
 
 	/* ---- viewport size for the canvas drift ---- */
@@ -764,48 +757,29 @@ export function HeroStage({
 						? "bg-primary-950 bg-[radial-gradient(55%_70%_at_70%_48%,rgba(240,79,38,.16),transparent_70%),radial-gradient(45%_55%_at_8%_100%,transparent_70%,transparent_70%)]"
 						: "bg-paper bg-[radial-gradient(55%_70%_at_70%_48%,rgba(240,79,38,.11),transparent_70%),radial-gradient(45%_55%_at_8%_100%,transparent_70%,transparent_70%)]"
 				}`}
-				style={live ? { opacity: glowOpacity, rotate: orbitTurn } : undefined}
+				style={{ opacity: glowOpacity, rotate: orbitTurn }}
 			/>
 
-			{/* Gather scene — lite SVG on mobile / low-compute, full WebGL on
-			    capable desktops (code-split, never downloaded by lite). */}
-			{/* <motion.div
+			<motion.div
 				aria-hidden
 				className="absolute inset-0"
-				style={live ? { x: canvasX, scale: canvasScale } : undefined}
+				style={{ x: canvasX, scale: canvasScale }}
 			>
-				{lite ? (
-					<HeroGatherLite progress={live ? p : undefined} />
-				) : (
-					<HeroGather progress={live ? p : undefined} />
-				)}
-			</motion.div> */}
-
-            <motion.div
-				aria-hidden
-				className="absolute inset-0"
-				style={live ? { x: canvasX, scale: canvasScale } : undefined}
-			>
-				<HeroGather progress={live ? p : undefined} />
+				<HeroGather progress={p} />
 			</motion.div>
-
 
 			{/* Copy block — bottom on mobile, vertically centered on desktop.
 			    Rides out on `chapterOut`, then leaves the tab order once fully
 			    transparent so the portal owns the stage. */}
 			<motion.div
 				className="relative z-30 flex flex-1 items-end px-5 sm:px-[clamp(20px,6vw,96px)] md:items-center"
-				style={
-					live
-						? {
-								opacity: copyOpacity,
-								y: copyY,
-								visibility: parked ? "hidden" : "visible",
-							}
-						: undefined
-				}
+				style={{
+					opacity: copyOpacity,
+					y: copyY,
+					visibility: parked ? "hidden" : "visible",
+				}}
 			>
-				<div className="mx-auto w-full max-w-7xl ">
+				<div className="mx-auto w-full max-w-7xl pb-16 md:pb-1">
 					<div className="w-full max-w-[760px]">
 						<a
 							href={ctaHref}
@@ -844,7 +818,7 @@ export function HeroStage({
 						{sub && (
 							<TextReveal
 								as="p"
-								className={`mt-[18px] max-w-[30em]  leading-relaxed sm:mt-6 ${dark ? "text-primary-200" : "text-ink-500"}`}
+								className={`mt-[10px] md:mt-[18px] max-w-[30em] text-sm md:text-base md:leading-relaxed sm:mt-6 ${dark ? "text-primary-200" : "text-ink-500"}`}
 								text={sub}
 								delay={0.1 + lines.length * 0.1}
 							/>
@@ -853,12 +827,12 @@ export function HeroStage({
 						{ctaHref && (
 							<motion.div
 								data-rise
-								className="mt-[26px] flex flex-wrap items-center gap-4 sm:mt-[34px] sm:gap-[22px]"
-								style={live ? { opacity: toolbarOpacity } : undefined}
+								className="mt-4 md:mt-[26px] flex flex-wrap items-center gap-4 sm:gap-[22px]"
+								style={{ opacity: toolbarOpacity }}
 							>
 								<a
 									href={ctaHref}
-									className="group/btn inline-flex items-center gap-3 rounded-full bg-accent px-7 py-4 text-[.95rem] font-semibold text-white shadow-[0_10px_30px_-10px_rgba(240,79,38,.6)] transition hover:bg-accent-600"
+									className="group/btn inline-flex items-center gap-3 rounded-full bg-accent px-7 py-3 text-[.95rem] font-semibold text-white shadow-[0_10px_30px_-10px_rgba(240,79,38,.6)] transition hover:bg-accent-600"
 								>
 									{cta}
 									<svg
@@ -878,12 +852,12 @@ export function HeroStage({
 						)}
 
 						<motion.div
-							className="mt-[30px] sm:mt-11"
-							style={live ? { opacity: toolbarOpacity } : undefined}
+							className="mt-[10px] md:mt-11"
+							style={{ opacity: toolbarOpacity }}
 						>
 							<div
 								aria-hidden
-								className="mb-[18px] h-px bg-accent-500 sm:mb-[22px]"
+								className="mb-[18px] h-px bg-accent-500 sm:mb-[16px]"
 								style={{
 									maskImage:
 										"linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
@@ -904,12 +878,12 @@ export function HeroStage({
 															"data-suf": m[3],
 														}
 													: {})}
-												className={`block font-display text-[clamp(1.35rem,2.2vw,1.9rem)] font-bold tracking-tightest ${dark ? "text-primary-50" : ""}`}
+												className={`block font-display text-[clamp(1.35rem,2.2vw,1.5rem)] md:text-[clamp(1.35rem,2.2vw,1.9rem)] font-bold tracking-tightest ${dark ? "text-primary-50" : ""}`}
 											>
 												{item.value}
 											</b>
 											<span
-												className={`mt-0.5 block max-w-[11em] text-[.78rem] leading-snug ${dark ? "text-primary-300" : "text-ink-400"}`}
+												className={`mt-0.5 block max-w-[11em] text-xs md:text-[.78rem] leading-snug ${dark ? "text-primary-300" : "text-ink-400"}`}
 											>
 												{item.label}
 											</span>
@@ -926,23 +900,14 @@ export function HeroStage({
 			<motion.div
 				className={`relative z-30 mx-auto w-full max-w-7xl overflow-hidden  py-5 px-5 sm:px-[clamp(20px,6vw,96px)] ${dark ? "border-primary-50/15" : "border-primary-900/15"}`}
 				aria-label="Partners"
-				style={
-					live
-						? {
-								maskImage:
-									"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
-								WebkitMaskImage:
-									"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
-								opacity: footerOpacity,
-								visibility: footGone ? "hidden" : "visible",
-							}
-						: {
-								maskImage:
-									"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
-								WebkitMaskImage:
-									"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
-							}
-				}
+				style={{
+					maskImage:
+						"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+					WebkitMaskImage:
+						"linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+					opacity: footerOpacity,
+					visibility: footGone ? "hidden" : "visible",
+				}}
 			>
 				<div className="flex w-max animate-marquee motion-reduce:animate-none">
 					{[0, 1].map((copy) => (
@@ -961,7 +926,7 @@ export function HeroStage({
 										<img
 											src={logo.src}
 											alt={copy === 0 ? logo.alt : ""}
-											className="h-7 w-auto opacity-80 transition-opacity hover:opacity-100 md:h-8"
+											className="h-5 w-auto opacity-80 transition-opacity hover:opacity-100 md:h-8"
 										/>
 										<span
 											className={`whitespace-nowrap text-sm font-medium tracking-tight ${dark ? "text-primary-200" : "text-primary-700"}`}
