@@ -27,19 +27,20 @@ export const brother = localFont({
 });
 
 export const sans = localFont({
-  src: [
-    { path: './GoogleSansFlex/google-sans-flex-latin-100-normal.woff2', weight: '100', style: 'normal' },
-    { path: './GoogleSansFlex/google-sans-flex-latin-200-normal.woff2', weight: '200', style: 'normal' },
-    { path: './GoogleSansFlex/google-sans-flex-latin-300-normal.woff2', weight: '300', style: 'normal' },
-    { path: './GoogleSansFlex/google-sans-flex-latin-400-normal.woff2', weight: '400', style: 'normal' },
-    { path: './GoogleSansFlex/google-sans-flex-latin-500-normal.woff2', weight: '500', style: 'normal' },
-    { path: './GoogleSansFlex/google-sans-flex-latin-600-normal.woff2', weight: '600', style: 'normal' },
-    { path: './GoogleSansFlex/google-sans-flex-latin-700-normal.woff2', weight: '700', style: 'normal' },
-    { path: './GoogleSansFlex/google-sans-flex-latin-800-normal.woff2', weight: '800', style: 'normal' },
-    { path: './GoogleSansFlex/google-sans-flex-latin-900-normal.woff2', weight: '900', style: 'normal' },
-  ],
-  variable: '--font-sans',
-  display: 'swap',
+	//   src: [
+	//     { path: './GoogleSansFlex/google-sans-flex-latin-100-normal.woff2', weight: '100', style: 'normal' },
+	//     { path: './GoogleSansFlex/google-sans-flex-latin-200-normal.woff2', weight: '200', style: 'normal' },
+	//     { path: './GoogleSansFlex/google-sans-flex-latin-300-normal.woff2', weight: '300', style: 'normal' },
+	//     { path: './GoogleSansFlex/google-sans-flex-latin-400-normal.woff2', weight: '400', style: 'normal' },
+	//     { path: './GoogleSansFlex/google-sans-flex-latin-500-normal.woff2', weight: '500', style: 'normal' },
+	//     { path: './GoogleSansFlex/google-sans-flex-latin-600-normal.woff2', weight: '600', style: 'normal' },
+	//     { path: './GoogleSansFlex/google-sans-flex-latin-700-normal.woff2', weight: '700', style: 'normal' },
+	//     { path: './GoogleSansFlex/google-sans-flex-latin-800-normal.woff2', weight: '800', style: 'normal' },
+	//     { path: './GoogleSansFlex/google-sans-flex-latin-900-normal.woff2', weight: '900', style: 'normal' },
+	//   ],
+	src: "./mont/Mont-Variable-Regular.woff2",
+	variable: "--font-sans",
+	display: "swap",
 });
 
 export const mono = localFont({
