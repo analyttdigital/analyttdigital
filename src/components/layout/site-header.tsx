@@ -763,7 +763,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 					<div className="flex min-w-0">{brandNode}</div>
 					<LayoutGroup id={id}>
 						<nav
-							className={`min-w-0 [@container_site-header_(max-width:759px)]:hidden ${variant === "centered" ? "mx-auto" : "ml-4 "} ${classes?.nav ?? ""}`}
+							className={`min-w-0 [@container_site-header_(max-width:759px)]:hidden ${variant === "centered" ? "mx-auto" : "ml-auto "} ${classes?.nav ?? ""}`}
 							aria-label={label}
 							onKeyDown={onNavKeyDown}
 							onPointerLeave={() => setHovered(null)}
@@ -881,7 +881,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 						</nav>
 					</LayoutGroup>
 					<div
-						className={`ml-auto flex items-center gap-2 ${variant === "centered" ? "justify-self-end" : ""}`}
+						className={`flex items-center gap-2 ${variant === "centered" ? "justify-self-end" : ""}`}
 					>
 						{secondaryAction &&
 							actionNode(
