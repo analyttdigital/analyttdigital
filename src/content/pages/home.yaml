@@ -561,6 +561,36 @@ sections:
       headline: Proof, not promises.
       body: 'Engagements measured to the shilling: the proof behind the promises.'
       cases:
+        - client: GreenBay.market
+          industry: E-commerce
+          depth: Case 06
+          headline: From scattered listings to a unified marketplace presence.
+          body: >-
+            A marketplace platform (greenbay.market) with strong seller
+            onboarding but no demand-side engine. We built category landing
+            pages, a merchant content programme and paid acquisition focused on
+            high-intent shopping queries. Seller listings and buyer traffic grew
+            together.
+          metric: E-commerce
+          metricLabel: marketplace growth across sellers and buyers
+          image:
+            src: /media/uploads/home/sections/4/value/cases/5/image/src.jpg
+            alt: Greenbay-market
+        - client: ShipShap
+          industry: Logistics · SaaS
+          depth: Case 07
+          headline: Acquisition engine for a platform trusted by 5,000+ merchants.
+          body: >-
+            A sell-pay-ship platform (shipshap.com) serving merchants across 10
+            countries. We ran intent-led search campaigns around shipping and
+            payments keywords, tightened signup funnels and built a merchant
+            testimonial pipeline. Merchant acquisition became predictable and
+            repeatable.
+          metric: 5,000+
+          metricLabel: merchants served on the platform
+          image:
+            src: /media/uploads/home/sections/4/value/cases/6/image/src.png
+            alt: ShipShap
         - client: Mandevu BeardCare
           industry: Retail · Nairobi
           depth: Case 01
@@ -627,37 +657,7 @@ sections:
           metricLabel: increase in lead generation
           image:
             src: /media/uploads/home/sections/4/value/cases/4/image/src.png
-            alt: Simkar Group
-        - client: GreenBay.market
-          industry: E-commerce
-          depth: Case 06
-          headline: From scattered listings to a unified marketplace presence.
-          body: >-
-            A marketplace platform (greenbay.market) with strong seller
-            onboarding but no demand-side engine. We built category landing
-            pages, a merchant content programme and paid acquisition focused on
-            high-intent shopping queries. Seller listings and buyer traffic grew
-            together.
-          metric: E-commerce
-          metricLabel: marketplace growth across sellers and buyers
-          image:
-            src: /media/uploads/home/sections/4/value/cases/5/image/src.jpg
-            alt: Greenbay-market
-        - client: ShipShap
-          industry: Logistics · SaaS
-          depth: Case 07
-          headline: Acquisition engine for a platform trusted by 5,000+ merchants.
-          body: >-
-            A sell-pay-ship platform (shipshap.com) serving merchants across 10
-            countries. We ran intent-led search campaigns around shipping and
-            payments keywords, tightened signup funnels and built a merchant
-            testimonial pipeline. Merchant acquisition became predictable and
-            repeatable.
-          metric: 5,000+
-          metricLabel: merchants served on the platform
-          image:
-            src: /media/uploads/home/sections/4/value/cases/6/image/src.png
-            alt: ShipShap
+            alt: Simkar Group        
   - discriminant: cta-banner
     value:
       eyebrow: Free Audit
