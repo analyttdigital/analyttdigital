@@ -28,9 +28,9 @@ function ProofCard({ kase, index, total }: { kase: WorkCase; index: number; tota
       className="group relative flex h-full min-h-[420px] flex-col rounded-[28px] border border-primary-800/10  p-6 transition-shadow duration-300 hover:shadow-[0_30px_60px_-30px_rgb(var(--color-primary-800)/0.45)]"
     >
       {/* Media banner — photo first, honest slot when artless. */}
-      <div className="relative h-24 w-full shrink-0 overflow-hidden rounded-2xl">
+      <div className="relative h-48 w-full shrink-0 overflow-hidden rounded-2xl">
         {photo ? (
-          <DynamicImage image={photo} className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" sizes="480px" />
+          <DynamicImage image={photo} className="absolute inset-0 h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.03]" sizes="360px" />
         ) : (
           <MediaSlot
             image={null}
