@@ -27,7 +27,7 @@ import { motionTokens } from "@/lib/motion/motion-tokens";
 import { aboutRevealDistance } from "@/lib/motion/portal";
 import { useScrolled } from "@/lib/hooks";
 import type { ContentImage, LayoutContent } from "@/lib/content/types";
-import { s } from "framer-motion/client";
+import { useRouter } from "next/router";
 
 export type SiteHeaderVariant = "simple" | "centered" | "mega";
 
@@ -438,6 +438,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 	},
 	ref
 ) {
+    const router = useRouter(); 
 	const id = useId();
 	const reduced = !!useReducedMotion();
 	/* Without an explicit threshold, the header turns solid once the About
@@ -448,7 +449,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 	useEffect(() => {
 		if (scrollThreshold != null) return;
         const measure = () => {
-            const distance = aboutRevealDistance();
+            const distance = router.pathname === '/'? aboutRevealDistance() : 1;
             setBridgeAt(distance || 0 + 25);
         };
 		measure();

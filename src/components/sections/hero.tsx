@@ -12,6 +12,7 @@ import {
 import { MdiIcon } from "@/lib/icons/resolve-icon";
 import { DynamicImage } from "@/components/media/dynamic-image";
 import type { HeroPartner, HeroPanel, HeroProof, HeroSection } from "@/lib/content/types";
+import { GlowButton } from "@/components/graphics/glow-button";
 // import { HeroGatherLite } from "@/components/graphics/hero-gather-lite";
 import { useLiteScene } from "@/lib/hooks/use-lite-scene";
 import { smooth } from "@/lib/motion/smooth";
@@ -830,24 +831,11 @@ export function HeroStage({
 								className="mt-4 md:mt-[26px] flex flex-wrap items-center gap-4 sm:gap-[22px]"
 								style={{ opacity: toolbarOpacity }}
 							>
-								<a
-									href={ctaHref}
-									className="group/btn inline-flex items-center gap-3 rounded-full bg-accent px-7 py-3 text-[.95rem] font-semibold text-white shadow-[0_10px_30px_-10px_rgba(240,79,38,.6)] transition hover:bg-accent-600"
-								>
-									{cta}
-									<svg
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										strokeWidth="2.2"
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										aria-hidden="true"
-										className="h-4 w-4 transition-transform group-hover/btn:translate-x-1"
-									>
-										<path d="M5 12h14M13 6l6 6-6 6" />
-									</svg>
-								</a>
+								<GlowButton
+									data={{ label: cta, href: ctaHref }}
+									className="w-auto"
+									tone="ember"
+								/>
 							</motion.div>
 						)}
 
