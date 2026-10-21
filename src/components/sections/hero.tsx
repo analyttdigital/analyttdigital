@@ -844,7 +844,7 @@ export function HeroStage({
 						>
 							<div
 								aria-hidden
-								className="mb-5 h-0 md:h-px bg-accent-500 sm:mb-[16px]"
+								className="mb-5 h-0 lg:h-px bg-accent-500 sm:mb-[16px]"
 								style={{
 									maskImage:
 										"linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
