@@ -839,17 +839,17 @@ sections:
         - quote: >-
             We finally started seeing real ROI from our ads. Leads became more
             consistent, costs went down, and reporting was clear and honest.
-          name: Analytt Digital Client
+          name: GreenBay Market
         - quote: >-
             Our cost per lead was dominating every board meeting. They cut the
             junk keywords and built pages by intent. The weekly review is the
             most useful meeting on my calendar.
-          name: Analytt Digital Client
+          name: Kings Bliss Developers
         - quote: >-
             The report is one page I can read without a translator: spend,
             bookings, and what changes next week. I have stopped dreading the
             agency call.
-          name: Analytt Digital Client
+          name: ShipShap
   - discriminant: cta
     value:
       eyebrow: Start
