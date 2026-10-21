@@ -769,7 +769,7 @@ export function HeroStage({
 
 			{/* Gather scene — lite SVG on mobile / low-compute, full WebGL on
 			    capable desktops (code-split, never downloaded by lite). */}
-			<motion.div
+			{/* <motion.div
 				aria-hidden
 				className="absolute inset-0"
 				style={live ? { x: canvasX, scale: canvasScale } : undefined}
@@ -779,6 +779,14 @@ export function HeroStage({
 				) : (
 					<HeroGather progress={live ? p : undefined} />
 				)}
+			</motion.div> */}
+
+            <motion.div
+				aria-hidden
+				className="absolute inset-0"
+				style={live ? { x: canvasX, scale: canvasScale } : undefined}
+			>
+				<HeroGather progress={live ? p : undefined} />
 			</motion.div>
 
 
