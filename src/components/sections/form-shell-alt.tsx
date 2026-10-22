@@ -1,6 +1,9 @@
+'use client';
+
 import { InViewTitle } from '@/components/graphics/in-view-title';
 import { MdiIcon } from '@/lib/icons/resolve-icon';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
+import type { FormEvent } from 'react';
 import type { DataProps, FormShellSection } from '@/lib/content/types';
 
 /**
@@ -8,12 +11,30 @@ import type { DataProps, FormShellSection } from '@/lib/content/types';
  *
  * Where `FormShell` stacks the head above one full-width ledger panel, the
  * alt splits the panel: the ask (headline, body, fallback mailto card with
- * the note) holds the left column and the same honest disabled fields run
- * the right. No backend is wired either way — fields stay disabled and the
- * ask routes to the content-layer fallback. Same fields, no new copy.
+ * the note) holds the left column and the fields run on the right. The
+ * Formspree form ID is deployment configuration, rather than editable page
+ * content, so the contact page can keep its existing content shape.
  */
 export function FormShellAlt({ data, classes, className, id }: DataProps<FormShellSection, 'panel'>) {
   const fields = data?.fields ?? [];
+  const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_CONTACT_FORM_ID;
+  const formAction = formspreeId ? `https://formspree.io/f/${formspreeId}` : undefined;
+  const formId = 'contact-form';
+  const fallbackHref = data?.fallbackHref || 'mailto:hello@analyttdigital.com';
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    if (formAction) return;
+
+    // Keep the contact page useful in local or preview deployments before its
+    // public Formspree ID has been added.
+    event.preventDefault();
+    const body = Array.from(new FormData(event.currentTarget).entries())
+      .map(([name, value]) => `${name}: ${value}`)
+      .join('\n');
+    const separator = fallbackHref.includes('?') ? '&' : '?';
+    window.location.href = `${fallbackHref}${separator}subject=${encodeURIComponent(data?.headline ?? '')}&body=${encodeURIComponent(body)}`;
+  }
+
   return (
     <section id={id} className={`relative overflow-hidden bg-paper py-24 md:py-32 ${className ?? ''}`}>
       <div className="relative mx-auto w-full max-w-7xl px-5 md:px-8">
@@ -42,12 +63,16 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                 </p>
               ) : null}
               <div className="mt-8 flex flex-wrap items-center gap-4">
-                <span className="inline-flex cursor-not-allowed items-center gap-2.5 rounded-full bg-ink-950/40 px-6 py-3.5 text-sm font-medium text-paper-50">
+                <button
+                  type="submit"
+                  form={formId}
+                  className="inline-flex items-center gap-2.5 rounded-full bg-ink-950 px-6 py-3.5 text-sm font-medium text-paper-50 transition-opacity duration-200 hover:opacity-85"
+                >
                   {data?.submitLabel}
                   <MdiIcon name="arrowRight" size={0.8} />
-                </span>
+                </button>
                 <a
-                  href={data?.fallbackHref || 'mailto:hello@analyttdigital.com'}
+                  href={fallbackHref}
                   className="inline-flex items-center gap-2.5 rounded-full border border-ink-950/15 px-6 py-3.5 text-sm font-medium text-ink-950 transition-colors duration-200 hover:border-ink-950/30"
                 >
                   {data?.fallbackLabel}
@@ -59,7 +84,13 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                 </p>
               ) : null}
             </div>
-            <form aria-label={data?.headline} onSubmit={(e) => e.preventDefault()}>
+            <form
+              id={formId}
+              action={formAction}
+              method="POST"
+              aria-label={data?.headline}
+              onSubmit={handleSubmit}
+            >
               <div className="grid gap-5">
                 {fields.map((field) =>
                   field.kind === 'textarea' ? (
@@ -70,9 +101,9 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                       <textarea
                         name={field.name}
                         rows={5}
-                        disabled
                         placeholder={field.label}
-                        className="w-full rounded-2xl border border-ink-950/15 bg-paper px-4 py-3 text-sm text-ink-500 opacity-60"
+                        required
+                        className="w-full rounded-2xl border border-ink-950/15 bg-paper px-4 py-3 text-sm text-ink-500"
                       />
                     </label>
                   ) : (
@@ -83,9 +114,9 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                       <input
                         type={field.kind}
                         name={field.name}
-                        disabled
                         placeholder={field.label}
-                        className="w-full rounded-full border border-ink-950/15 bg-paper px-4 py-3 text-sm text-ink-500 opacity-60"
+                        required
+                        className="w-full rounded-full border border-ink-950/15 bg-paper px-4 py-3 text-sm text-ink-500"
                       />
                     </label>
                   ),

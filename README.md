@@ -71,6 +71,13 @@ GitHub repo. See `.env.example` for the full list:
 | `KEYSTATIC_GITHUB_CLIENT_ID/SECRET` | admin login (GitHub app) | only needed for the `/keystatic` UI in GitHub mode   |
 | `KEYSTATIC_SECRET`               | admin login          | random string for signing the login session                   |
 
+## Contact form
+
+The contact-page form posts directly to Formspree. Create a Formspree form and
+set `NEXT_PUBLIC_FORMSPREE_CONTACT_FORM_ID` to the form ID in the service's
+endpoint (`https://formspree.io/f/<form-id>`). The ID is designed to be public;
+do not put a Formspree account API key in this variable.
+
 Setup for GitHub mode:
 
 1. Create a OAuth app with callback

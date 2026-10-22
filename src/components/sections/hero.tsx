@@ -831,9 +831,9 @@ export function HeroStage({
 								style={{ opacity: toolbarOpacity }}
 							>
 								<GlowButton
-									data={{ label: cta, href: ctaHref }}
+									data={{ label: cta, href: ctaHref, leadIcon: "message" }}
 									className="w-auto"
-									tone="ember"
+                                    tone="ember"
 								/>
 							</motion.div>
 						)}

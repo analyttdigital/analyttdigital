@@ -54,6 +54,7 @@ import {
 	mdiWaves,
 	mdiYoutube,
 	mdiGift,
+	mdiMessage,
 } from "@mdi/js";
 
 /**
@@ -119,8 +120,9 @@ export const mdi = {
 	// Stands in for TikTok — MDI ships no TikTok glyph.
 	musicNote: mdiMusicNoteOutline,
 	check: mdiCheck,
-    sparkles: mdiCreation,
-    gift: mdiGift
+	sparkles: mdiCreation,
+	gift: mdiGift,
+	message: mdiMessage,
 } as const;
 
 export type MdiName = keyof typeof mdi;
