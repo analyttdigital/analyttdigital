@@ -399,33 +399,12 @@ const beliefFields = {
   ),
 };
 
-const barToneField = (label = 'Bar tone') =>
-  fields.select({
-    label,
-    options: [
-      { label: 'Soft', value: 'soft' },
-      { label: 'Mid', value: 'mid' },
-      { label: 'Deep', value: 'deep' },
-      { label: 'Field', value: 'field' },
-      { label: 'Ember', value: 'ember' },
-    ],
-    defaultValue: 'mid',
-  });
-
 const processFields = {
   eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'Our Process' }),
   headline: fields.text({ label: 'Headline', defaultValue: 'A rigorous, data-driven process,' }),
   headlineAccent: fields.text({ label: 'Headline accent (ember)', defaultValue: 'from day one to compounding growth.' }),
   lede: fields.text({ label: 'Intro paragraph', defaultValue: '', multiline: true }),
-  chapterTitle: fields.text({ label: 'Legacy rail title (unused)', defaultValue: '' }),
   cardTitle: fields.text({ label: 'Card title', defaultValue: 'Five steps, one system' }),
-  cardSub: fields.text({ label: 'Card subtitle', defaultValue: 'Pick a step, or let it play through.' }),
-  playLabel: fields.text({ label: 'Play label', defaultValue: 'Play' }),
-  pauseLabel: fields.text({ label: 'Pause label', defaultValue: 'Pause' }),
-  stepOfTemplate: fields.text({ label: 'Step counter (use {n} and {total})', defaultValue: 'Step {n} of {total}' }),
-  illustrativeNote: fields.text({ label: 'Visual note', defaultValue: 'Illustrative' }),
-  image: imageField('Stage backdrop (filled — empty hides it)'),
-  dwellMs: fields.integer({ label: 'Autoplay hold per step (ms)', defaultValue: 7000 }),
   steps: fields.array(
     fields.object({
       n: fields.text({ label: 'Index (e.g. 01)' }),
@@ -435,61 +414,6 @@ const processFields = {
         label: 'Chips',
         itemLabel: (props) => props.value || 'Chip',
       }),
-      visual: fields.object(
-        {
-          kind: fields.select({
-            label: 'Visual',
-            options: [
-              { label: 'Funnel with leak', value: 'funnel' },
-              { label: 'Channel mix + targets', value: 'channels' },
-              { label: 'Launch checklist', value: 'checklist' },
-              { label: 'Weekly bars', value: 'weekly' },
-              { label: 'Scale bars + markets', value: 'scale' },
-            ],
-            defaultValue: 'funnel',
-          }),
-          title: fields.text({ label: 'Visual eyebrow (weekly/scale)', defaultValue: '' }),
-          leakNote: fields.text({ label: 'Leak caption (funnel)', defaultValue: '' }),
-          rows: fields.array(
-            fields.object({
-              label: fields.text({ label: 'Label' }),
-              width: fields.integer({ label: 'Width % (0–100)', defaultValue: 50 }),
-              tone: barToneField(),
-            }),
-            { label: 'Funnel rows', itemLabel: (props) => props.fields.label.value || 'Row' },
-          ),
-          mixTitle: fields.text({ label: 'Mix title (channels)', defaultValue: '' }),
-          channels: fields.array(
-            fields.object({
-              label: fields.text({ label: 'Channel' }),
-              pct: fields.integer({ label: 'Share %', defaultValue: 25 }),
-              tone: barToneField(),
-            }),
-            { label: 'Channels', itemLabel: (props) => props.fields.label.value || 'Channel' },
-          ),
-          targetsTitle: fields.text({ label: 'Targets title (channels)', defaultValue: '' }),
-          targets: fields.array(fields.text({ label: 'Target' }), {
-            label: 'Targets',
-            itemLabel: (props) => props.value?.slice(0, 32) || 'Target',
-          }),
-          items: fields.array(fields.text({ label: 'Item' }), {
-            label: 'Checklist items',
-            itemLabel: (props) => props.value?.slice(0, 32) || 'Item',
-          }),
-          doneNote: fields.text({ label: 'Done row note (checklist)', defaultValue: '' }),
-          doneTag: fields.text({ label: 'Done row tag (checklist)', defaultValue: '' }),
-          values: fields.array(fields.integer({ label: 'Value', defaultValue: 50 }), {
-            label: 'Bar values (weekly/scale)',
-            itemLabel: (props) => String(props.value ?? ''),
-          }),
-          winnerNote: fields.text({ label: 'Winner badge (weekly)', defaultValue: '' }),
-          tags: fields.array(fields.text({ label: 'Tag' }), {
-            label: 'Market tags (scale)',
-            itemLabel: (props) => props.value || 'Tag',
-          }),
-        },
-        { label: 'Step visual' },
-      ),
     }),
     { label: 'Process steps', itemLabel: (props) => props.fields.title.value || 'Step' },
   ),
@@ -1038,9 +962,15 @@ export const pageFields = {
       'insights-alt': fields.object(insightsFields, { label: 'Insights alt content' }),
       cta: fields.object(ctaFields, { label: 'CTA content' }),
       'cta-alt': fields.object(ctaFields, { label: 'CTA alt content' }),
-      // Both CTA variants share the CTA content shape — same fields,
-      // different presentation.
-      'cta-banner': fields.object(ctaFields, { label: 'CTA banner content' }),
+      // The CTA variants share the CTA content shape — same fields,
+      // different presentation — except the banner, which alone carries a
+      // panel background (drawn by `CtaBanner`'s `background` support). The
+      // reader defers a blank image ref to the code default, so blanking
+      // falls back to the default backdrop instead of hiding it.
+      'cta-banner': fields.object(
+        { ...ctaFields, image: imageField('Panel background (blank falls back to the default)') },
+        { label: 'CTA banner content' },
+      ),
       'cta-split': fields.object(ctaFields, { label: 'CTA split content' }),
       'page-hero': fields.object(pageHeroFields, { label: 'Page hero content' }),
       'page-hero-alt': fields.object(pageHeroFields, { label: 'Page hero alt content' }),

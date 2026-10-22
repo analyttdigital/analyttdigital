@@ -250,61 +250,19 @@ export type BeliefSection = {
   terrain?: TerrainData;
 };
 
-export type ProcessBarTone = 'soft' | 'mid' | 'deep' | 'field' | 'ember';
-
-export type ProcessFunnelRow = { label: string; width: number; tone: ProcessBarTone };
-
-export type ProcessChannel = { label: string; pct: number; tone: ProcessBarTone };
-
-/** Per-step visual spec — flat, mirroring the Keystatic object: `kind` picks
- *  the layout and only its fields are read. Widths/pcts are 0–100, raw values
- *  are scaled to the tallest bar. The pictures stay illustrative, exactly as
- *  the card's note says. */
-export type ProcessVisual = {
-  kind: 'funnel' | 'channels' | 'checklist' | 'weekly' | 'scale';
-  title?: string;
-  leakNote?: string;
-  rows?: ProcessFunnelRow[];
-  mixTitle?: string;
-  channels?: ProcessChannel[];
-  targetsTitle?: string;
-  targets?: string[];
-  items?: string[];
-  doneNote?: string;
-  doneTag?: string;
-  values?: number[];
-  winnerNote?: string;
-  tags?: string[];
-};
-
 export type ProcessStep = {
   n: string;
   title: string;
   desc: string;
   chips: string[];
-  /** Figure beside the copy. Content pages compose steps without one, so the
-   *  player falls back to a copy-only card. */
-  visual?: ProcessVisual;
 };
 
 export type ProcessSection = {
   eyebrow: string;
   headline: string;
   headlineAccent: string;
-  lede: string;  chapterTitle?: string;
+  lede: string;
   cardTitle: string;
-  /* The player chrome below carries the full instrument's own words. A step
-   * list without figures (content pages) leaves them out, and the player
-   * renders the copy card with its own defaults. */
-  cardSub?: string;
-  playLabel?: string;
-  pauseLabel?: string;
-  stepOfTemplate?: string;
-  illustrativeNote?: string;
-  /** Filled stage backdrop — empty `src` hides it. */
-  image?: ContentImage;
-  /** Ms each step holds while autoplaying. */
-  dwellMs?: number;
   steps: ProcessStep[];
   closing: string;
   cta: string;
@@ -425,6 +383,9 @@ export type CtaSection = {
   ctaHref: string;
   note: string;
   portalLabel?: string;
+  /** Panel background behind the ember ask — only the `cta-banner` variant
+   *  draws it (empty `src` hides it). */
+  image?: ContentImage;
 };
 
 /* ------------------- M1 content-page section kit ------------------- */

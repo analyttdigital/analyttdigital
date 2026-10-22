@@ -418,14 +418,6 @@ sections:
         steps that take you from a deep audit to growth that is predictable, not
         accidental.
       cardTitle: Five steps, one system
-      cardSub: Pick a step, or let it play through.
-      playLabel: Play
-      pauseLabel: Pause
-      stepOfTemplate: Step {n} of {total}
-      illustrativeNote: Illustrative
-      image:
-        src: /media/uploads/home/sections/2/value/image/src.png
-      dwellMs: 7000
       steps: []
   - discriminant: capabilities
     value:
@@ -668,6 +660,8 @@ sections:
       cta: Start with a free audit
       ctaHref: mailto:hello@analyttdigital.com
       note: No deck. No obligation. Just the findings.
+      image:
+        src: /media/banner-1.png
   - discriminant: problem-alt
     value:
       eyebrow: The Problem

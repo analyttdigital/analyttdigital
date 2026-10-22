@@ -121,16 +121,16 @@ function SectionBlock({ section, sections, latestPosts }: { section: Section; se
 					<BeliefAlt data={section} />
 			);
 		case "process": {
-			// Read in normal flow — no pin, no runway, no cover trick. The
-			// chapter sweeps its own step index off its own position in the
-			// viewport (see `ProcessChapter`), and the page's `cta-banner`
-			// block renders as its own standalone section below.
+			// Static ruled index in normal flow — no pin, no runway, no
+			// cover trick, nothing scroll-driven (see `ProcessChapter`).
+			// The page's `cta-banner` block renders as its own standalone
+			// section right after the closing row.
 			return (
 				<>
-					<ProcessChapter id="process" process={section} />
-                    {section.closing && <ScrollSection variant="fade-up">
-                        <ProcessClosing process={section} />
-                    </ScrollSection>}
+					<ProcessChapter id="process" data={section} />
+					{section.closing && <ScrollSection variant="fade-up">
+						<ProcessClosing process={section} />
+					</ScrollSection>}
 				</>
 			);
 		}
@@ -206,9 +206,10 @@ function SectionBlock({ section, sections, latestPosts }: { section: Section; se
 					<CtaAlt data={section} />
 			);
 		// Standalone ember panel — the same CtaBanner content shape the
-		// process chapter used to consume as its bridge.
+		// process chapter used to consume as its bridge. `image` is the
+		// panel backdrop (dark gradient overlay keeps the copy legible).
 		case "cta-banner":
-			return <CtaBanner data={section} />;
+			return <CtaBanner data={section} background={section.image} />;
 		case "cta-split":
 			return (
 					<CtaSplit data={section} />
