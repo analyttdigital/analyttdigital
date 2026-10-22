@@ -1,3 +1,4 @@
+import Link from '@/components/ui/link';
 import { InViewTitle } from '@/components/ui/in-view-title';
 import { MdiIcon } from '@/lib/icons/resolve-icon';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
@@ -50,13 +51,13 @@ export function CtaAlt({ data, classes, className, id }: DataProps<CtaSection, '
                 {data?.eyebrow}
               </p>
               <p className="mt-6">
-                <a
+                <Link
                   href={data?.ctaHref || '#'}
                   className="inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-ink-950 px-6 py-3.5 text-sm font-medium text-paper-50 transition-colors duration-200 hover:bg-primary-700"
                 >
                   {data?.cta}
                   <MdiIcon name="arrowRight" size={0.8} />
-                </a>
+                </Link>
               </p>
               {data?.note ? (
                 <p className="mt-5 text-[12.5px] leading-[1.8] text-ink-500">

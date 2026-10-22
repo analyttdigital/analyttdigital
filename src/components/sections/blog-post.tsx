@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/components/ui/link';
 import type { ReactElement } from 'react';
 import { DocumentRenderer, type DocumentRendererProps } from '@keystatic/core/renderer';
 
@@ -240,12 +240,12 @@ export function BlogPostView({
                     <strong className="font-semibold text-ink-900">{children}</strong>
                   ),
                   link: ({ children, href }: any): any => (
-                    <a
+                    <Link
                       href={href}
                       className="font-medium text-accent-600 underline decoration-accent-500/40 underline-offset-4 transition-colors duration-200 hover:text-accent-500"
                     >
                       {children}
-                    </a>
+                    </Link>
                   ),
                 },
                 block: {

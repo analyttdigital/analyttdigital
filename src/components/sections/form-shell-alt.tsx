@@ -1,5 +1,6 @@
 'use client';
 
+import Link from '@/components/ui/link';
 import { InViewTitle } from '@/components/ui/in-view-title';
 import { MdiIcon } from '@/lib/icons/resolve-icon';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
@@ -119,12 +120,12 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                   {state.submitting ? 'Sending…' : data?.submitLabel}
                   <MdiIcon name="arrowRight" size={0.8} />
                 </button>
-                <a
+                <Link
                   href={fallbackHref}
                   className="inline-flex items-center gap-2.5 rounded-full border border-ink-950/15 px-6 py-3.5 text-sm font-medium text-ink-950 transition-colors duration-200 hover:border-ink-950/30"
                 >
                   {data?.fallbackLabel}
-                </a>
+                </Link>
               </div>
               {data?.note ? (
                 <p className="mt-6 font-mono text-[10px] capitalize text-ink-400">

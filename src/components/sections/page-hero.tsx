@@ -1,3 +1,4 @@
+import Link from '@/components/ui/link';
 import { InViewTitle } from '@/components/ui/in-view-title';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
 import { MdiIcon } from '@/lib/icons/resolve-icon';
@@ -47,21 +48,21 @@ export function PageHero({ data, classes, className, id }: DataProps<PageHeroSec
           {data?.cta || data?.secondaryCta ? (
             <div data-rise="2" className="mt-10 flex flex-wrap items-center gap-4">
               {data?.cta ? (
-                <a
+                <Link
                   href={data.ctaHref || '#'}
                   className="inline-flex items-center gap-2.5 rounded-full bg-ink-950 px-6 py-3.5 text-sm font-medium text-paper-50 transition-colors duration-200 hover:bg-primary-700"
                 >
                   {data.cta}
                   <MdiIcon name="arrowRight" size={0.8} />
-                </a>
+                </Link>
               ) : null}
               {data?.secondaryCta ? (
-                <a
+                <Link
                   href={data.secondaryCtaHref || '#'}
                   className="inline-flex items-center gap-2.5 rounded-full border border-ink-950/15 px-6 py-3.5 text-sm font-medium text-ink-950 transition-colors duration-200 hover:border-ink-950/30"
                 >
                   {data.secondaryCta}
-                </a>
+                </Link>
               ) : null}
             </div>
           ) : null}

@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/components/ui/link';
 
 import { MediaSlot } from '@/components/media/dynamic-image';
 import { useChrome } from '@/lib/content/chrome';

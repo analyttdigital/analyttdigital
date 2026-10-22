@@ -1,5 +1,6 @@
 'use client';
 
+import Link from '@/components/ui/link';
 import { DynamicImage, MediaSlot } from '@/components/media/dynamic-image';
 import { InViewTitle } from '@/components/ui/in-view-title';
 import { MdiIcon } from '@/lib/icons/resolve-icon';
@@ -118,13 +119,13 @@ export function Work({ data, classes, className, id }: DataProps<WorkSection, 'p
                 ) : null}
                 <div data-rise="2" className="mt-9 flex flex-wrap items-center gap-6">
                   {data?.cta ? (
-                    <a
+                    <Link
                       href={data.ctaHref || '#'}
                       className="inline-flex items-center gap-3 rounded-full bg-ink-950 px-7 py-4 text-[.95rem] font-semibold text-paper-50 transition hover:bg-accent-600"
                     >
                       {data.cta}
                       <MdiIcon name="arrowRight" size={0.85} />
-                    </a>
+                    </Link>
                   ) : null}
                 </div>
               </div>

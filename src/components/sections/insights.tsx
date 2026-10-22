@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/components/ui/link';
 
 import { Band } from '@/components/layout/band';
 import { InViewTitle } from '@/components/ui/in-view-title';

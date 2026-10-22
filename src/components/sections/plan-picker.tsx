@@ -1,5 +1,6 @@
 'use client';
 
+import Link from '@/components/ui/link';
 import { useState } from 'react';
 
 import { InViewTitle } from '@/components/ui/in-view-title';
@@ -79,13 +80,13 @@ export function PlanPicker({ data, classes, className, id }: DataProps<PlanPicke
             })}
           </div>
           <div data-rise="2" className="mt-8 flex flex-wrap items-center gap-4">
-            <a
+            <Link
               href={href || '#'}
               className="inline-flex items-center gap-2.5 rounded-full bg-ink-950 px-6 py-3.5 text-sm font-medium text-paper-50 transition-colors duration-200 hover:bg-primary-700"
             >
               {data?.cta}
               <MdiIcon name="arrowRight" size={0.8} />
-            </a>
+            </Link>
             {data?.note ? (
               <p className="font-mono text-[10px] capitalize  text-ink-400">
                 {data.note}

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from '@/components/ui/link';
 import { useEffect, useRef, useState } from "react";
 import {
 	motion,
@@ -782,7 +783,7 @@ export function HeroStage({
 			>
 				<div className="mx-auto w-full max-w-7xl pb-3 md:pb-1">
 					<div className="w-full max-w-[760px]">
-						<a
+						<Link
 							href={ctaHref}
 							className={`mb-5 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-md transition-all ${
 								dark
@@ -795,7 +796,7 @@ export function HeroStage({
 						>
 							{eyebrow}
 							<MdiIcon name="arrowRight" className="text-accent-300" size={0.55} />
-						</a>
+						</Link>
 
 						<h1
 							className={`font-display text-[clamp(1.6rem,4.2vw,3.6rem)] font-bold leading-[1.02] tracking-tightest ${

@@ -1,5 +1,5 @@
 import NextLink, { LinkProps as NextLinkProps } from "next/link";
-import type { AnchorHTMLAttributes, ReactElement, ReactNode } from "react";
+import { forwardRef, type AnchorHTMLAttributes, type ReactNode } from "react";
 
 export type LinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> &
 	NextLinkProps & {
@@ -14,7 +14,7 @@ const isInternalLink = (href: NextLinkProps["href"]): boolean => {
 	);
 };
 
-export default function Link(props: LinkProps): ReactElement {
+const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(props, ref) {
 	const {
 		href,
 		children,
@@ -24,12 +24,24 @@ export default function Link(props: LinkProps): ReactElement {
 	} = props;
 
 	if (!isInternalLink(href?.toString())) {
-        return (
-            <a {...anchorProps} href={href?.toString()} target={target || "_blank"} rel={rel || "noopener noreferrer"}>
+		return (
+			<a
+				{...anchorProps}
+				ref={ref}
+				href={href?.toString()}
+				target={target || "_blank"}
+				rel={rel || "noopener noreferrer"}
+			>
 				{children}
 			</a>
-		);		
+		);
 	}
 
-	return <NextLink {...props}>{children}</NextLink>;
-}
+	return (
+		<NextLink {...props} ref={ref}>
+			{children}
+		</NextLink>
+	);
+});
+
+export default Link;

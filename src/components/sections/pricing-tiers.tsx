@@ -1,3 +1,4 @@
+import Link from '@/components/ui/link';
 import { InViewTitle } from '@/components/ui/in-view-title';
 import { MdiIcon } from '@/lib/icons/resolve-icon';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
@@ -72,7 +73,7 @@ export function PricingTiers({ data, classes, className, id }: DataProps<Pricing
                     </p>
                   ) : null}
                   <p className="mt-auto pt-7">
-                    <a
+                    <Link
                       href={tier.ctaHref || '#'}
                       className={
                         tier.featured
@@ -82,7 +83,7 @@ export function PricingTiers({ data, classes, className, id }: DataProps<Pricing
                     >
                       {tier.cta}
                       <MdiIcon name="arrowRight" size={0.8} />
-                    </a>
+                    </Link>
                   </p>
                 </article>
               </li>

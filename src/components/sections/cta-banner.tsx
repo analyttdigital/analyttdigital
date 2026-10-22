@@ -1,5 +1,6 @@
 'use client';
 
+import Link from '@/components/ui/link';
 import { DynamicImage } from '@/components/media/dynamic-image';
 import { InViewTitle } from '@/components/ui/in-view-title';
 import { MdiIcon } from '@/lib/icons/resolve-icon';
@@ -70,13 +71,13 @@ export function CtaBanner({
               </p>
             ) : null}
             <div data-rise="2" className="relative mt-9 flex flex-col items-center gap-4">
-              <a
+              <Link
                 href={data?.ctaHref || '#'}
                 className="inline-flex items-center gap-2.5 rounded-full bg-paper-50 px-8 py-4 text-base font-semibold text-ink-950 shadow-[0_14px_36px_-14px_rgb(0_0_0/0.5)] transition hover:scale-[1.02] hover:bg-paper-100 active:scale-[0.98]"
               >
                 {data?.cta}
                 <MdiIcon name="arrowRight" size={0.85} />
-              </a>
+              </Link>
               {data?.note ? (
                 <p className="font-mono text-[10px] capitalize  text-paper-50/70">
                   {data.note}

@@ -1,3 +1,4 @@
+import Link from '@/components/ui/link';
 import { InViewTitle } from '@/components/ui/in-view-title';
 import { MdiIcon } from '@/lib/icons/resolve-icon';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
@@ -46,7 +47,7 @@ export function ContactChannelsAlt({
             >
               {channels.map((channel, i) => (
                 <li key={`${channel.label}-${i}`} data-rise={Math.min(i + 1, 3)} className="border-b border-ink-950/10">
-                  <a
+                  <Link
                     href={channel.href}
                     className="group grid items-center gap-4 py-6 sm:grid-cols-[auto_minmax(0,1fr)_auto_auto] sm:gap-8"
                   >
@@ -71,7 +72,7 @@ export function ContactChannelsAlt({
                       size={0.9}
                       className="hidden text-ink-300 transition-all duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent-500 sm:block"
                     />
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ol>

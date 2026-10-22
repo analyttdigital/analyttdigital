@@ -1,3 +1,4 @@
+import Link from '@/components/ui/link';
 import { InViewTitle } from '@/components/ui/in-view-title';
 import { formatPostDate, postHref } from '@/lib/content/blog';
 import { useLocale } from '@/lib/content/chrome';
@@ -62,7 +63,7 @@ export function InsightsAlt({ data, classes, className, id }: DataProps<Insights
             >
               {rows.map((row) => (
                 <li key={row.key} data-rise={1} className="border-b border-ink-950/10">
-                  <a
+                  <Link
                     href={row.href}
                     className="group grid gap-2 py-7 transition-colors duration-200 md:grid-cols-[auto_minmax(0,1fr)_auto] md:items-baseline md:gap-8"
                   >
@@ -86,7 +87,7 @@ export function InsightsAlt({ data, classes, className, id }: DataProps<Insights
                       size={0.9}
                       className="hidden text-ink-300 transition-all duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent-500 md:block"
                     />
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ol>

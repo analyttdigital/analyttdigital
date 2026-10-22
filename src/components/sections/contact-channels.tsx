@@ -1,3 +1,4 @@
+import Link from '@/components/ui/link';
 import { InViewTitle } from '@/components/ui/in-view-title';
 import { MdiIcon } from '@/lib/icons/resolve-icon';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
@@ -47,7 +48,7 @@ export function ContactChannels({
           >
             {channels.map((channel, i) => (
               <li key={`${channel.label}-${i}`} data-rise={Math.min(i + 1, 3)}>
-                <a href={channel.href} className="group flex h-full flex-col gap-4">
+                <Link href={channel.href} className="group flex h-full flex-col gap-4">
                   <span className="grid h-11 w-11 place-items-center rounded-full bg-ink-950 text-paper-50 transition-colors duration-200 group-hover:bg-primary-700">
                     <MdiIcon name={channel.icon || 'asterisk'} size={0.9} />
                   </span>
@@ -64,7 +65,7 @@ export function ContactChannels({
                       {channel.note}
                     </span>
                   ) : null}
-                </a>
+                </Link>
               </li>
             ))}
           </ol>

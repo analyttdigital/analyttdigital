@@ -1,3 +1,4 @@
+import Link from '@/components/ui/link';
 import { DynamicImage, MediaSlot } from '@/components/media/dynamic-image';
 import { InViewTitle } from '@/components/ui/in-view-title';
 import { useChrome } from '@/lib/content/chrome';
@@ -41,13 +42,13 @@ export function WorkAlt({ data, classes, className, id }: DataProps<WorkSection,
             ) : null}
             {data?.cta ? (
               <p className="mt-8">
-                <a
+                <Link
                   href={data.ctaHref || '#'}
                   className="inline-flex items-center gap-2.5 rounded-full bg-ink-950 px-6 py-3.5 text-sm font-medium text-paper-50 transition-colors duration-200 hover:bg-primary-700"
                 >
                   {data.cta}
                   <MdiIcon name="arrowRight" size={0.8} />
-                </a>
+                </Link>
               </p>
             ) : null}
           </div>
