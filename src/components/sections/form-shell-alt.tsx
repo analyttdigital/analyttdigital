@@ -6,7 +6,7 @@ import { MdiIcon } from '@/lib/icons/resolve-icon';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
 import { useForm, ValidationError } from '@formspree/react';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import type { DataProps, FormField, FormShellSection } from '@/lib/content/types';
 
@@ -28,8 +28,26 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
   const [state, submitToFormspree] = useForm(formspreeId ?? '');
   const [fieldValues, setFieldValues] = useState<Record<string, string | string[]>>({});
   const formRef = useRef<HTMLFormElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const formId = 'contact-form';
   const fallbackHref = data?.fallbackHref || 'mailto:hello@analyttdigital.com';
+  const isQuotePopup =
+    router.isReady &&
+    new URLSearchParams(router.asPath.split('?')[1]?.split('#')[0] ?? '').get('quote') === '1';
+
+  const closeQuotePopup = useCallback(() => {
+    const [pathAndQuery, hash = ''] = router.asPath.split('#');
+    const [pathname, search = ''] = pathAndQuery.split('?');
+    const params = new URLSearchParams(search);
+    params.delete('quote');
+    const query = params.toString();
+
+    return router.replace(
+      `${pathname}${query ? `?${query}` : ''}${hash ? `#${hash}` : ''}`,
+      undefined,
+      { shallow: true, scroll: false },
+    );
+  }, [router]);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -62,6 +80,24 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
   }, [fields, router.asPath, router.isReady]);
 
   useEffect(() => {
+    if (!isQuotePopup) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    closeButtonRef.current?.focus();
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') closeQuotePopup();
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [closeQuotePopup, isQuotePopup]);
+
+  useEffect(() => {
     if (!state.succeeded) return;
     formRef.current?.reset();
     setFieldValues({});
@@ -84,10 +120,33 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
   }
 
   return (
-    <section id={id ?? 'get-quote'} className={`relative overflow-hidden bg-paper py-24 md:py-32 ${className ?? ''}`}>
-      <div className="relative mx-auto w-full max-w-7xl px-5 md:px-8">
+    <section
+      id={id ?? 'get-quote'}
+      className={
+        isQuotePopup
+          ? 'fixed inset-0 z-50 overflow-y-auto bg-ink-950/70 p-4 backdrop-blur-sm md:p-8'
+          : `relative overflow-hidden bg-paper py-24 md:py-32 ${className ?? ''}`
+      }
+      onMouseDown={
+        isQuotePopup
+          ? (event) => {
+              if (event.target === event.currentTarget) closeQuotePopup();
+            }
+          : undefined
+      }
+    >
+      <div
+        className={
+          isQuotePopup
+            ? 'relative mx-auto w-full max-w-5xl py-6 md:py-10'
+            : 'relative mx-auto w-full max-w-7xl px-5 md:px-8'
+        }
+      >
         <GsapReveal>
           <div
+            role={isQuotePopup ? 'dialog' : undefined}
+            aria-modal={isQuotePopup ? true : undefined}
+            aria-label={isQuotePopup ? data?.headline : undefined}
             data-rise
             className={[
               'grid gap-10 rounded-[2rem] bg-paper-50 p-7 ring-1 ring-ink-950/10 md:p-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-14',
@@ -97,7 +156,17 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
               .filter(Boolean)
               .join(' ')}
           >
-            <div>
+            {isQuotePopup ? (
+              <button
+                ref={closeButtonRef}
+                type="button"
+                onClick={closeQuotePopup}
+                className="absolute right-5 top-5 z-10 rounded-full border border-ink-950/15 px-4 py-2 font-mono text-[10px] text-red-500 transition-colors hover:border-red-700/30 hover:text-ink-950 md:right-8  md:top-8"
+              >
+                Close
+              </button>
+            ) : null}
+            <div className="mt-8">
               <p className="label text-ink-500">{data?.eyebrow}</p>
               <InViewTitle
                 text={(data?.headline ?? '').replace(/\n/g, ' ')}
@@ -139,7 +208,7 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
               aria-label={data?.headline}
               onSubmit={handleSubmit}
             >
-              <div className="grid gap-5">
+              <div className="grid gap-5 mt-8">
                 {fields.map((field) => {
                   if (field.dependsOn && fieldValues[field.dependsOn] !== field.dependsOnValue) {
                     return null;

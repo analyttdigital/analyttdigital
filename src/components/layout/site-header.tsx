@@ -445,17 +445,18 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 	 * bridge starts revealing inside the hero portal flood (measured from
 	 * the portal runway, so it tracks viewport height and layout). Falls
 	 * back to 256px when no hero portal is on the page. */
-	const [bridgeAt, setBridgeAt] = useState<number | null>(null);
+    const [bridgeAt, setBridgeAt] = useState<number | null>(null);
+    const pathname = router.pathname;
 	useEffect(() => {
 		if (scrollThreshold != null) return;
-        const measure = () => {
-            const distance = router.pathname === '/'? aboutRevealDistance() : 1;
-            setBridgeAt(distance || 0 + 25);
-        };
+		const measure = () => {
+			const distance = pathname === "/" ? aboutRevealDistance() : 1;
+			setBridgeAt(distance || 0 + 25);
+		};
 		measure();
 		window.addEventListener("resize", measure);
 		return () => window.removeEventListener("resize", measure);
-	}, [scrollThreshold]);
+	}, [scrollThreshold, pathname]);
 	const scrolled = useScrolled(scrollThreshold ?? bridgeAt ?? 256, scrollContainer);
 	const [innerCurrent, setInnerCurrent] = useState(defaultCurrent);
 	const current = currentProp ?? innerCurrent;
