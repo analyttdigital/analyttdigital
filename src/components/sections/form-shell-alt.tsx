@@ -160,7 +160,8 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                                     if (field.kind === 'radio') {
                                       return { ...current, [field.name]: option.value };
                                     }
-                                    const selected = Array.isArray(current[field.name]) ? current[field.name] : [];
+                                    const existing = current[field.name];
+                                    const selected = Array.isArray(existing) ? existing : [];
                                     return {
                                       ...current,
                                       [field.name]: selected.includes(option.value)
