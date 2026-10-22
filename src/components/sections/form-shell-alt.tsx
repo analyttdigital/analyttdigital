@@ -4,19 +4,8 @@ import { InViewTitle } from '@/components/graphics/in-view-title';
 import { MdiIcon } from '@/lib/icons/resolve-icon';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
 import { useForm, ValidationError } from '@formspree/react';
-import Script from 'next/script';
-import { useCallback, useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import type { DataProps, FormShellSection } from '@/lib/content/types';
-
-declare global {
-  interface Window {
-    grecaptcha?: {
-      render: (container: HTMLElement, options: Record<string, unknown>) => number;
-      reset: (widgetId?: number) => void;
-    };
-  }
-}
 
 /**
  * FormShellAlt — the inquiry split: ask left, fields right.
@@ -30,73 +19,13 @@ declare global {
 export function FormShellAlt({ data, classes, className, id }: DataProps<FormShellSection, 'panel'>) {
   const fields = data?.fields ?? [];
   const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_CONTACT_FORM_ID;
-  const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
   const [state, submitToFormspree] = useForm(formspreeId ?? '');
-  const [captchaScriptReady, setCaptchaScriptReady] = useState(false);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const [captchaError, setCaptchaError] = useState<string | null>(null);
-  const [verifyingCaptcha, setVerifyingCaptcha] = useState(false);
-  const captchaElement = useRef<HTMLDivElement>(null);
-  const captchaWidgetId = useRef<number | null>(null);
   const formId = 'contact-form';
   const fallbackHref = data?.fallbackHref || 'mailto:hello@analyttdigital.com';
 
-  const renderCaptcha = useCallback(() => {
-    if (!recaptchaSiteKey || !captchaElement.current || !window.grecaptcha || captchaWidgetId.current !== null) {
-      return;
-    }
-
-    captchaWidgetId.current = window.grecaptcha.render(captchaElement.current, {
-      sitekey: recaptchaSiteKey,
-      callback: (token: string) => {
-        setCaptchaToken(token);
-        setCaptchaError(null);
-      },
-      'expired-callback': () => setCaptchaToken(null),
-      'error-callback': () => setCaptchaError('The security check could not load. Please try again.'),
-    });
-  }, [recaptchaSiteKey]);
-
-  useEffect(() => {
-    if (captchaScriptReady) renderCaptcha();
-  }, [captchaScriptReady, renderCaptcha]);
-
-  const resetCaptcha = useCallback(() => {
-    setCaptchaToken(null);
-    if (captchaWidgetId.current !== null) window.grecaptcha?.reset(captchaWidgetId.current);
-  }, []);
-
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     if (formspreeId) {
-      if (!recaptchaSiteKey || !captchaToken) {
-        setCaptchaError('Please complete the security check before sending your message.');
-        return;
-      }
-
-      setCaptchaError(null);
-      setVerifyingCaptcha(true);
-      try {
-        const response = await fetch('/api/recaptcha/verify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token: captchaToken }),
-        });
-
-        if (!response.ok) {
-          setCaptchaError('The security check was not accepted. Please try again.');
-          resetCaptcha();
-          return;
-        }
-
-        await submitToFormspree(event);
-      } catch {
-        setCaptchaError('We could not verify the security check. Please try again.');
-        resetCaptcha();
-      } finally {
-        setVerifyingCaptcha(false);
-      }
+      void submitToFormspree(event);
       return;
     }
 
@@ -141,10 +70,10 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                 <button
                   type="submit"
                   form={formId}
-                  disabled={state.submitting || verifyingCaptcha}
-                  className="inline-flex items-center gap-2.5 rounded-full bg-ink-950 px-6 py-3.5 text-sm font-medium text-paper-50 transition-opacity duration-200 hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-60"
+                  disabled={state.submitting}
+                  className="inline-flex items-center gap-2.5 rounded-full bg-ink-950 px-6 py-3.5 text-sm font-medium text-paper-50 transition-opacity duration-200 hover:opacity-85"
                 >
-                  {state.submitting || verifyingCaptcha ? 'Sending…' : data?.submitLabel}
+                  {state.submitting ? 'Sending…' : data?.submitLabel}
                   <MdiIcon name="arrowRight" size={0.8} />
                 </button>
                 <a
@@ -196,22 +125,6 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                   ),
                 )}
               </div>
-              {recaptchaSiteKey ? (
-                <>
-                  <Script
-                    src="https://www.google.com/recaptcha/api.js?render=explicit"
-                    strategy="afterInteractive"
-                    onLoad={() => setCaptchaScriptReady(true)}
-                    onError={() => setCaptchaError('The security check could not load. Please try again.')}
-                  />
-                  <div ref={captchaElement} className="mt-5" />
-                </>
-              ) : null}
-              {captchaError ? (
-                <p className="mt-5 text-sm text-red-700" role="alert">
-                  {captchaError}
-                </p>
-              ) : null}
               {state.succeeded ? (
                 <p className="mt-5 text-sm text-ink-700" role="status">
                   Thanks — your message has been sent.
