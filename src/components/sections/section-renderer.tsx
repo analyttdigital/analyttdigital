@@ -11,6 +11,7 @@ import { ContactChannels } from '@/components/sections/contact-channels';
 import { ContactChannelsAlt } from '@/components/sections/contact-channels-alt';
 import { Cta } from '@/components/sections/cta';
 import { CtaAlt } from '@/components/sections/cta-alt';
+import { CtaBanner } from '@/components/sections/cta-banner';
 import { CtaSplit } from '@/components/sections/cta-split';
 import { Exclusions } from '@/components/sections/exclusions';
 import { ExclusionsAlt } from '@/components/sections/exclusions-alt';
@@ -34,7 +35,7 @@ import { PricingTiers } from '@/components/sections/pricing-tiers';
 import { PricingTiersAlt } from '@/components/sections/pricing-tiers-alt';
 import { Problem } from '@/components/sections/problem';
 import { ProblemAlt } from '@/components/sections/problem-alt';
-import { ProcessChapter, ProcessClosing, ProcessBridge } from '@/components/sections/process-chapter';
+import { ProcessChapter, ProcessClosing } from '@/components/sections/process-chapter';
 import { ProcessAlt } from '@/components/sections/process-alt';
 import { HowWeWork } from '@/components/sections/how-we-work';
 import { NextSteps } from '@/components/sections/next-steps';
@@ -44,7 +45,7 @@ import { TeamGrid } from '@/components/sections/team-grid';
 import { TeamGridAlt } from '@/components/sections/team-grid-alt';
 import { Work } from '@/components/sections/work';
 import { WorkAlt } from '@/components/sections/work-alt';
-import type { AboutSection as AboutContent, BlogPost, CtaSection, Section } from "@/lib/content/types";
+import type { AboutSection as AboutContent, BlogPost, Section } from "@/lib/content/types";
 import {
   PORTAL_BRIDGE_RANGE,
   PORTAL_ORIGIN,
@@ -120,39 +121,13 @@ function SectionBlock({ section, sections, latestPosts }: { section: Section; se
 					<BeliefAlt data={section} />
 			);
 		case "process": {
-			// The shrink exit starts after the last step has had dwell: steps
-			// sweep the runway uniformly, so the last of `n` steps goes active
-			// at (n-1)/n — the exit opens half a step-window later.
-			const n = Math.max(section.steps?.length ?? 1, 1);
-			const exitStart = 1 - 0.5 / n;
-			// The bridge is the page's cta-banner block: consumed here, hidden
-			// standalone below — the process `image` is its panel background.
-            
-			const banner = sections.find(
-				(s): s is { type: "cta-banner" } & CtaSection => s.type === "cta-banner"
-			);
+			// Read in normal flow — no pin, no runway, no cover trick. The
+			// chapter sweeps its own step index off its own position in the
+			// viewport (see `ProcessChapter`), and the page's `cta-banner`
+			// block renders as its own standalone section below.
 			return (
 				<>
-					<ScrollSection
-						id="process"
-						variant="shrink"
-						runway={200}
-						range={[exitStart, 1]}
-						// The bridge shares the stage's exit window, so the ask
-						// crossfades up as the step card dissolves — the runway
-						// resolves onto the CTA, not onto bare paper.
-						bridgeRange={[exitStart, 1]}
-						bridge={
-							banner ? <ProcessBridge process={section} banner={banner} /> : undefined
-						}
-						// The cover trick: pulled up over the hero's held flood on an
-						// opaque ground (`bg-background` is not a theme token, so the
-						// process ground `bg-paper` stands in).
-						className="relative z-10 -mt-[100svh] bg-paper"
-						snap="magnetic"
-					>
-						{(p) => <ProcessChapter process={section} progress={p} />}
-					</ScrollSection>
+					<ProcessChapter id="process" process={section} />
                     {section.closing && <ScrollSection variant="fade-up">
                         <ProcessClosing process={section} />
                     </ScrollSection>}
@@ -230,9 +205,10 @@ function SectionBlock({ section, sections, latestPosts }: { section: Section; se
 			return (
 					<CtaAlt data={section} />
 			);
-		// Consumed as the process bridge above — never rendered standalone.
+		// Standalone ember panel — the same CtaBanner content shape the
+		// process chapter used to consume as its bridge.
 		case "cta-banner":
-			return null;
+			return <CtaBanner data={section} />;
 		case "cta-split":
 			return (
 					<CtaSplit data={section} />
