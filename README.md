@@ -73,10 +73,10 @@ GitHub repo. See `.env.example` for the full list:
 
 ## Contact form
 
-The contact-page form posts directly to Formspree. Create a Formspree form and
-set `NEXT_PUBLIC_FORMSPREE_CONTACT_FORM_ID` to the form ID in the service's
-endpoint (`https://formspree.io/f/<form-id>`). The ID is designed to be public;
-do not put a Formspree account API key in this variable.
+The contact-page form submits through Formspree's React client. Create a
+Formspree form and set `NEXT_PUBLIC_FORMSPREE_CONTACT_FORM_ID` to the form ID
+in the service's endpoint (`https://formspree.io/f/<form-id>`). The ID is
+designed to be public; do not put a Formspree account API key in this variable.
 
 Setup for GitHub mode:
 
