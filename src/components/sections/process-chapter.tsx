@@ -74,7 +74,7 @@ export function ProcessChapter({
 									<MdiIcon
 										name={processStepIcons[i % processStepIcons.length]}
 										size={5}
-										className="pointer-events-none absolute -bottom-8 -right-4 select-none text-ink-950/[0.05] md:-bottom-12 md:-right-8"
+										className="pointer-events-none absolute -bottom-2 -right-1 select-none text-ink-950/[0.05] md:-bottom-4 md:-right-2"
 									/>
 									<div className="flex items-baseline gap-4 md:block">
 										<span className="num text-[clamp(1.5rem,2.6vw,2.4rem)] leading-none text-accent-500 transition-colors duration-200 group-hover:text-accent-600">
