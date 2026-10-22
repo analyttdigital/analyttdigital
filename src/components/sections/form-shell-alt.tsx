@@ -5,7 +5,7 @@ import { MdiIcon } from '@/lib/icons/resolve-icon';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
 import { useForm, ValidationError } from '@formspree/react';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import type { DataProps, FormField, FormShellSection } from '@/lib/content/types';
 
@@ -26,6 +26,7 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
   const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_CONTACT_FORM_ID;
   const [state, submitToFormspree] = useForm(formspreeId ?? '');
   const [fieldValues, setFieldValues] = useState<Record<string, string | string[]>>({});
+  const formRef = useRef<HTMLFormElement>(null);
   const formId = 'contact-form';
   const fallbackHref = data?.fallbackHref || 'mailto:hello@analyttdigital.com';
 
@@ -58,6 +59,12 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
 
     setFieldValues(initialValues);
   }, [fields, router.asPath, router.isReady]);
+
+  useEffect(() => {
+    if (!state.succeeded) return;
+    formRef.current?.reset();
+    setFieldValues({});
+  }, [state.succeeded]);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     if (formspreeId) {
@@ -126,6 +133,7 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
               ) : null}
             </div>
             <form
+              ref={formRef}
               id={formId}
               aria-label={data?.headline}
               onSubmit={handleSubmit}
