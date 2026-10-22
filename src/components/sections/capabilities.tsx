@@ -105,34 +105,36 @@ export function Capabilities({ capabilities }: { capabilities?: CapabilitiesSect
 				<ol className="mt-14 grid gap-5 md:grid-cols-2 lg:mt-16">
 					{rows.map(({ item, i }) => (
 						<li key={`${order}-${item.title}`} data-rise={Math.min(i + 1, 3)}>
-							<article className="group relative h-full overflow-hidden rounded-[26px] border border-primary-800/15 bg-white p-7 transition duration-300 hover:-translate-y-1 hover:border-accent-500/40 hover:shadow-[0_28px_56px_-32px_rgb(var(--color-primary-800)/0.55)] sm:p-9">
+							<article className="group relative isolate h-full overflow-hidden rounded-[26px] border border-primary-800/15 bg-white p-7 transition duration-300 hover:-translate-y-1 hover:border-accent-500/40 hover:shadow-[0_28px_56px_-32px_rgb(var(--color-primary-800)/0.55)] sm:p-9">
 								{/* Positional watermark — one faint glyph per card. */}
 								<MdiIcon
 									name={item.icon || capabilityIcons[i % capabilityIcons.length]}
 									size={10}
-									className="pointer-events-none absolute -top-6 -right-6 select-none text-primary-50/50 -z-1 transition duration-500 group-hover:-rotate-6 group-hover:scale-110"
+									className="pointer-events-none absolute -top-6 -right-6 z-0 select-none text-primary-50/50 transition duration-500 group-hover:-rotate-6 group-hover:scale-110"
 								/>
-								<div className="flex items-center justify-between text-[11px] font-medium text-primary-800 z-50">
-									<span className="flex items-center gap-2">
-										<b className="text-accent-600">
-											{String(i + 1).padStart(2, "0")}
-										</b>
-										<i
-											aria-hidden
-											className="h-1 w-1 rounded-full bg-primary-800/40"
-										/>
-										{item.tag}
-									</span>
-								</div>
-								<h3 className="mt-6 max-w-[11em] font-display z-50 text-[1.5rem] font-mono leading-[1.1] tracking-[-.02em] text-ink-950 sm:text-[2rem]">
-									{item.title}
-								</h3>
-								<p className="mt-3 max-w-[30em] text-sm leading-relaxed text-ink-500">
-									{item.body}
-								</p>
+								<div className="relative z-10">
+									<div className="flex items-center justify-between text-[11px] font-medium text-primary-800">
+										<span className="flex items-center gap-2">
+											<b className="text-accent-600">
+												{String(i + 1).padStart(2, "0")}
+											</b>
+											<i
+												aria-hidden
+												className="h-1 w-1 rounded-full bg-primary-800/40"
+											/>
+											{item.tag}
+										</span>
+									</div>
+									<h3 className="mt-6 max-w-[11em] font-display text-[1.5rem] font-mono leading-[1.1] tracking-[-.02em] text-ink-950 sm:text-[2rem]">
+										{item.title}
+									</h3>
+									<p className="mt-3 max-w-[30em] text-sm leading-relaxed text-ink-500">
+										{item.body}
+									</p>
 
-								<div className="relative mt-7 rounded-2xl bg-ink-950/5 p-4 sm:p-5">
-									<CapabilityReadout readout={item.readout} />
+									<div className="relative mt-7 rounded-2xl bg-ink-950/5 p-4 sm:p-5">
+										<CapabilityReadout readout={item.readout} />
+									</div>
 								</div>
 							</article>
 						</li>
