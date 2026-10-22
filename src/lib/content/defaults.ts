@@ -1176,7 +1176,7 @@ const enPricingPlans: PageDoc = {
 					tagline: "Tailor it for you",
 					body: "For unique needs, in-house teams needing support, or projects that don't fit a tier. Let us know what assistance you need, and we'll build a scope around it.",
 					cta: "Custom Quote",
-					ctaHref: "/contact/",
+					ctaHref: "/pricing-plans/?plan=custom#get-quote",
 					bestFor: "Specific needs, in-house teams",
 					featured: false,
 					features: [
@@ -1191,7 +1191,7 @@ const enPricingPlans: PageDoc = {
 					tagline: "Ideal for SMEs and Early-Stage Brands",
 					body: "Everything you need to get a structured, data-driven marketing foundation in place.",
 					cta: "Choose Starter",
-					ctaHref: "/contact/",
+					ctaHref: "/pricing-plans/?plan=starter#get-quote",
 					bestFor: "Local businesses, entry-level growth",
 					featured: false,
 					features: [
@@ -1211,7 +1211,7 @@ const enPricingPlans: PageDoc = {
 					tagline: "For Brands Ready to Scale ROI and Reach",
 					body: "Our most popular plan. Built for businesses with product-market fit who are ready to accelerate.",
 					cta: "Choose Growth",
-					ctaHref: "/contact/",
+					ctaHref: "/pricing-plans/?plan=growth#get-quote",
 					bestFor: "E-commerce, funded startups, regional brands",
 					featured: true,
 					features: [
@@ -1231,7 +1231,7 @@ const enPricingPlans: PageDoc = {
 					tagline: "Engineered for Aggressive Scaling and Global Brands",
 					body: "Full-service, high-touch performance marketing for businesses operating at scale.",
 					cta: "Choose Scale",
-					ctaHref: "/contact/",
+					ctaHref: "/pricing-plans/?plan=scale#get-quote",
 					bestFor: "High-growth, Pan-African, enterprise brands",
 					featured: false,
 					features: [

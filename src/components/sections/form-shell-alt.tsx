@@ -4,9 +4,12 @@ import { InViewTitle } from '@/components/graphics/in-view-title';
 import { MdiIcon } from '@/lib/icons/resolve-icon';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
 import { useForm, ValidationError } from '@formspree/react';
-import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
-import type { DataProps, FormShellSection } from '@/lib/content/types';
+import type { DataProps, FormField, FormShellSection } from '@/lib/content/types';
+
+const EMPTY_FIELDS: FormField[] = [];
 
 /**
  * FormShellAlt — the inquiry split: ask left, fields right.
@@ -18,12 +21,43 @@ import type { DataProps, FormShellSection } from '@/lib/content/types';
  * content, so the contact page can keep its existing content shape.
  */
 export function FormShellAlt({ data, classes, className, id }: DataProps<FormShellSection, 'panel'>) {
-  const fields = data?.fields ?? [];
+  const fields = data?.fields ?? EMPTY_FIELDS;
+  const router = useRouter();
   const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_CONTACT_FORM_ID;
   const [state, submitToFormspree] = useForm(formspreeId ?? '');
-  const [fieldValues, setFieldValues] = useState<Record<string, string>>({});
+  const [fieldValues, setFieldValues] = useState<Record<string, string | string[]>>({});
   const formId = 'contact-form';
   const fallbackHref = data?.fallbackHref || 'mailto:hello@analyttdigital.com';
+
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    const params = new URLSearchParams(router.asPath.split('?')[1]?.split('#')[0] ?? '');
+    const initialValues: Record<string, string | string[]> = {};
+
+    fields.forEach((field) => {
+      const values = params.getAll(field.name);
+      if (values.length === 0) return;
+
+      if (field.kind === 'checkboxes') {
+        const allowedValues = new Set((field.options ?? []).map((option) => option.value));
+        const selectedValues = values.filter((value) => allowedValues.has(value));
+        if (selectedValues.length > 0) initialValues[field.name] = selectedValues;
+        return;
+      }
+
+      const value = values[0];
+      if (field.kind === 'select' || field.kind === 'radio') {
+        const allowedValues = new Set((field.options ?? []).map((option) => option.value));
+        if (allowedValues.has(value)) initialValues[field.name] = value;
+        return;
+      }
+
+      initialValues[field.name] = value;
+    });
+
+    setFieldValues(initialValues);
+  }, [fields, router.asPath, router.isReady]);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     if (formspreeId) {
@@ -42,7 +76,7 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
   }
 
   return (
-    <section id={id} className={`relative overflow-hidden bg-paper py-24 md:py-32 ${className ?? ''}`}>
+    <section id={id ?? 'get-quote'} className={`relative overflow-hidden bg-paper py-24 md:py-32 ${className ?? ''}`}>
       <div className="relative mx-auto w-full max-w-7xl px-5 md:px-8">
         <GsapReveal>
           <div
@@ -116,10 +150,24 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                                 name={field.name}
                                 value={option.value}
                                 required={field.kind === 'radio'}
-                                onChange={
+                                checked={
                                   field.kind === 'radio'
-                                    ? () => setFieldValues((current) => ({ ...current, [field.name]: option.value }))
-                                    : undefined
+                                    ? fieldValues[field.name] === option.value
+                                    : Array.isArray(fieldValues[field.name]) && fieldValues[field.name].includes(option.value)
+                                }
+                                onChange={() =>
+                                  setFieldValues((current) => {
+                                    if (field.kind === 'radio') {
+                                      return { ...current, [field.name]: option.value };
+                                    }
+                                    const selected = Array.isArray(current[field.name]) ? current[field.name] : [];
+                                    return {
+                                      ...current,
+                                      [field.name]: selected.includes(option.value)
+                                        ? selected.filter((value) => value !== option.value)
+                                        : [...selected, option.value],
+                                    };
+                                  })
                                 }
                                 className="mt-0.5 accent-accent-500"
                               />
@@ -138,7 +186,7 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                         <select
                           name={field.name}
                           required
-                          value={fieldValues[field.name] ?? ''}
+                          value={typeof fieldValues[field.name] === 'string' ? fieldValues[field.name] : ''}
                           onChange={(event) =>
                             setFieldValues((current) => ({ ...current, [field.name]: event.target.value }))
                           }
@@ -167,6 +215,10 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                         rows={5}
                         placeholder={field.label}
                         required
+                        value={typeof fieldValues[field.name] === 'string' ? fieldValues[field.name] : ''}
+                        onChange={(event) =>
+                          setFieldValues((current) => ({ ...current, [field.name]: event.target.value }))
+                        }
                         className="w-full rounded-2xl border border-ink-950/15 bg-paper px-4 py-3 text-sm text-ink-500"
                       />
                     </label>
@@ -180,6 +232,10 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                         name={field.name}
                         placeholder={field.label}
                         required
+                        value={typeof fieldValues[field.name] === 'string' ? fieldValues[field.name] : ''}
+                        onChange={(event) =>
+                          setFieldValues((current) => ({ ...current, [field.name]: event.target.value }))
+                        }
                         className="w-full rounded-full border border-ink-950/15 bg-paper px-4 py-3 text-sm text-ink-500"
                       />
                     </label>
