@@ -17,7 +17,7 @@ const VIEWPORT = { once: true, margin: '0px 0px -6% 0px' } as const;
  * `prefers-reduced-motion`.
  *
  * The two *loops* on the page — the packets travelling the traces and the
- * pixel resolve — are authored once, in `src/components/graphics`, and are
+ * pixel resolve — are authored once, in `src/components/ui`, and are
  * not repeated here. One authored moment, not an effect on every section.
  */
 

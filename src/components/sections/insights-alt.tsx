@@ -1,4 +1,4 @@
-import { InViewTitle } from '@/components/graphics/in-view-title';
+import { InViewTitle } from '@/components/ui/in-view-title';
 import { formatPostDate, postHref } from '@/lib/content/blog';
 import { useLocale } from '@/lib/content/chrome';
 import type { DataProps, InsightsSection } from '@/lib/content/types';

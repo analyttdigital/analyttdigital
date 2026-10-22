@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 
 import { Band } from '@/components/layout/band';
-import { InViewTitle } from '@/components/graphics/in-view-title';
+import { InViewTitle } from '@/components/ui/in-view-title';
 import { CapabilityReadout } from '@/components/sections/capability-readout';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
 import { MdiIcon, capabilityIcons } from '@/lib/icons/resolve-icon';

@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { ReactElement } from 'react';
 import { DocumentRenderer, type DocumentRendererProps } from '@keystatic/core/renderer';
 
-import { InViewTitle } from '@/components/graphics/in-view-title';
+import { InViewTitle } from '@/components/ui/in-view-title';
 import { DynamicImage } from '@/components/media/dynamic-image';
 import { fillTemplate, formatPostDate } from '@/lib/content/blog';
 import type { BlogPost, BlogPostCopy, DataProps, Locale } from '@/lib/content/types';

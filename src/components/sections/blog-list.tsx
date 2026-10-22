@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 import { Band } from '@/components/layout/band';
-import { InViewTitle } from '@/components/graphics/in-view-title';
+import { InViewTitle } from '@/components/ui/in-view-title';
 import { BlogCard } from '@/components/sections/blog-card';
 import { fillTemplate } from '@/lib/content/blog';
 import type { BlogListing, DataProps, Locale } from '@/lib/content/types';

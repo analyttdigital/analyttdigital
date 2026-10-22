@@ -1,7 +1,7 @@
 import Image from 'next/image';
 
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
-import { InViewTitle } from '@/components/graphics/in-view-title';
+import { InViewTitle } from '@/components/ui/in-view-title';
 import { useChrome } from '@/lib/content/chrome';
 import { MdiIcon } from '@/lib/icons/resolve-icon';
 import type { DataProps, LayoutContent } from '@/lib/content/types';

@@ -1,4 +1,4 @@
-import { InViewTitle } from '@/components/graphics/in-view-title';
+import { InViewTitle } from '@/components/ui/in-view-title';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
 import type { BeliefSection, DataProps } from '@/lib/content/types';
 

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
-import { PixelDither } from '@/components/graphics/pixel-dither';
-import { TraceField, type Anchor } from '@/components/graphics/trace-field';
+import { PixelDither } from '@/components/ui/pixel-dither';
+import { TraceField, type Anchor } from '@/components/ui/trace-field';
 import { MaskedLine } from '@/lib/motion/reveal';
 
 /**

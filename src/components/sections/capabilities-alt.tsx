@@ -1,4 +1,4 @@
-import { InViewTitle } from '@/components/graphics/in-view-title';
+import { InViewTitle } from '@/components/ui/in-view-title';
 import type { CapabilitiesSection, DataProps } from '@/lib/content/types';
 import { MdiIcon, capabilityIcons } from '@/lib/icons/resolve-icon';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';

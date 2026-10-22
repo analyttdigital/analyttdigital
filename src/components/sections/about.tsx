@@ -3,7 +3,7 @@
 import { useRef } from 'react';
 import { useInView } from 'framer-motion';
 
-import { BridgeAbout } from '@/components/graphics/bridge-about';
+import { BridgeAbout } from '@/components/ui/bridge-about';
 import type { AboutSection as AboutContent, DataProps } from '@/lib/content/types';
 
 /**

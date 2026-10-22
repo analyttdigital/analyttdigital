@@ -1,5 +1,5 @@
-import { ActivityTerrain } from '@/components/graphics/activity-terrain';
-import { InViewTitle } from '@/components/graphics/in-view-title';
+import { ActivityTerrain } from '@/components/ui/activity-terrain';
+import { InViewTitle } from '@/components/ui/in-view-title';
 import { Reveal } from '@/lib/motion/reveal';
 import type { BeliefSection, DataProps } from '@/lib/content/types';
 

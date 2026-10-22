@@ -1,7 +1,7 @@
 'use client';
 
 import { DynamicImage, MediaSlot } from '@/components/media/dynamic-image';
-import { InViewTitle } from '@/components/graphics/in-view-title';
+import { InViewTitle } from '@/components/ui/in-view-title';
 import { MdiIcon } from '@/lib/icons/resolve-icon';
 import { CountUp } from '@/lib/motion/counter';
 import { useChrome } from '@/lib/content/chrome';

@@ -1,5 +1,5 @@
 import { DynamicImage } from '@/components/media/dynamic-image';
-import { InViewTitle } from '@/components/graphics/in-view-title';
+import { InViewTitle } from '@/components/ui/in-view-title';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
 import type { DataProps, IndustriesSection } from '@/lib/content/types';
 

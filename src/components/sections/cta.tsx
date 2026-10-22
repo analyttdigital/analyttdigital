@@ -3,8 +3,8 @@
 import dynamic from 'next/dynamic';
 import { useReducedMotion } from 'framer-motion';
 
-import { GlowButton } from '@/components/graphics/glow-button';
-import { InViewTitle } from '@/components/graphics/in-view-title';
+import { GlowButton } from '@/components/ui/glow-button';
+import { InViewTitle } from '@/components/ui/in-view-title';
 import { GsapReveal, Magnetic } from '@/lib/motion/gsap-reveal';
 import type { CtaSection } from '@/lib/content/types';
 
@@ -21,7 +21,7 @@ import type { CtaSection } from '@/lib/content/types';
  * portal label, headline, body, action, note.
  */
 
-const SignalOrb = dynamic(() => import('@/components/graphics/signal-orb'), { ssr: false });
+const SignalOrb = dynamic(() => import('@/components/ui/signal-orb'), { ssr: false });
 
 export function Cta({ cta }: { cta?: CtaSection }) {
   const reduce = useReducedMotion();

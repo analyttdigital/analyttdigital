@@ -1,5 +1,5 @@
-import { GlowButton } from '@/components/graphics/glow-button';
-import { InViewTitle } from '@/components/graphics/in-view-title';
+import { GlowButton } from '@/components/ui/glow-button';
+import { InViewTitle } from '@/components/ui/in-view-title';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
 import type { DataProps, PlanPickerSection } from '@/lib/content/types';
 

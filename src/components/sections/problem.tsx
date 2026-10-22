@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { InViewTitle } from '@/components/graphics/in-view-title';
+import { InViewTitle } from '@/components/ui/in-view-title';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
 import { useChrome } from '@/lib/content/chrome';
 import type { DataProps, ProblemSection } from '@/lib/content/types';

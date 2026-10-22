@@ -12,18 +12,18 @@ import {
 import { MdiIcon } from "@/lib/icons/resolve-icon";
 import { DynamicImage } from "@/components/media/dynamic-image";
 import type { HeroPartner, HeroPanel, HeroProof, HeroSection } from "@/lib/content/types";
-import { GlowButton } from "@/components/graphics/glow-button";
-// import { HeroGatherLite } from "@/components/graphics/hero-gather-lite";
+import { GlowButton } from "@/components/ui/glow-button";
+// import { HeroGatherLite } from "@/components/ui/hero-gather-lite";
 import { useLiteScene } from "@/lib/hooks/use-lite-scene";
 import { smooth } from "@/lib/motion/smooth";
 import dynamic from "next/dynamic";
-import { TextReveal } from "../graphics/text-reveal";
+import { TextReveal } from "../ui/text-reveal";
 
 /* The WebGL gather pulls three.js + gsap — code-split so lite devices
  * (mobile / low-compute / save-data) never download it. SSR off: the
  * first paint is always the lite mark, desktops upgrade after hydration. */
 const HeroGather = dynamic(
-	() => import("@/components/graphics/hero-gather").then((m) => m.HeroGather),
+	() => import("@/components/ui/hero-gather").then((m) => m.HeroGather),
 	{ ssr: false }
 );
 

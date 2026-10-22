@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 import { Band } from '@/components/layout/band';
-import { InViewTitle } from '@/components/graphics/in-view-title';
+import { InViewTitle } from '@/components/ui/in-view-title';
 import { MediaSlot } from '@/components/media/dynamic-image';
 import { GsapReveal, TiltCard } from '@/lib/motion/gsap-reveal';
 import { MdiIcon } from '@/lib/icons/resolve-icon';

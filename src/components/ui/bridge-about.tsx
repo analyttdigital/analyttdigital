@@ -2,7 +2,7 @@
 
 import { useId, useMemo, useState } from 'react';
 
-import { InViewTitle } from '@/components/graphics/in-view-title';
+import { InViewTitle } from '@/components/ui/in-view-title';
 import type { AboutSection } from '@/lib/content/types';
 
 /**
