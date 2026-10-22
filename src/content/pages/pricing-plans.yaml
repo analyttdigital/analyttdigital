@@ -22,7 +22,7 @@ sections:
         - name: Custom
           tagline: Tailor it for you
           body: For unique needs, in-house teams needing support, or projects that don't fit a tier. Let us know what assistance you need, and we'll build a scope around it.
-          cta: Request a Custom Quote
+          cta: Custom Quote
           ctaHref: /contact/
           bestFor: Specific needs, in-house teams
           featured: false

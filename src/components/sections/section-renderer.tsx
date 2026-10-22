@@ -121,8 +121,7 @@ function SectionBlock({ section, sections, latestPosts }: { section: Section; se
 					<BeliefAlt data={section} />
 			);
 		case "process": {
-			// Static ruled index in normal flow — no pin, no runway, no
-			// cover trick, nothing scroll-driven (see `ProcessChapter`).
+			// The chapter pins for one scroll interval per process step.
 			// The page's `cta-banner` block renders as its own standalone
 			// section right after the closing row.
 			return (
