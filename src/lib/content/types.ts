@@ -432,10 +432,18 @@ export type ContactChannelsSection = {
   channels: ContactChannel[];
 };
 
+export type FormFieldOption = {
+  value: string;
+  label: string;
+};
+
 export type FormField = {
   name: string;
   label: string;
-  kind: 'text' | 'email' | 'textarea';
+  kind: 'text' | 'email' | 'textarea' | 'select' | 'radio' | 'checkboxes';
+  options?: FormFieldOption[];
+  dependsOn?: string;
+  dependsOnValue?: string;
 };
 
 export type FormShellSection = {

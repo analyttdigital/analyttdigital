@@ -1293,6 +1293,55 @@ const enPricingPlans: PageDoc = {
 			note: "Not sure yet? Book a free session and we'll recommend the right plan.",
 		},
 		{
+			type: "form-shell-alt",
+			eyebrow: "Get a quote",
+			headline: "Tell us what you need.",
+			body: "Share a few details and we'll follow up with a quote tailored to your business.",
+			submitLabel: "Request a quote",
+			fallbackHref: "mailto:hello@analyttdigital.com",
+			fallbackLabel: "Or email us directly",
+			note: "We reply within one business day.",
+			fields: [
+				{ name: "firstName", label: "First Name", kind: "text" },
+				{ name: "lastName", label: "Last Name", kind: "text" },
+				{ name: "email", label: "Email", kind: "email" },
+				{
+					name: "plan",
+					label: "Which plan best fits your business right now? (Select one)",
+					kind: "select",
+					options: [
+						{ value: "custom", label: "Custom Plan (Flexible)" },
+						{ value: "starter", label: "Starter" },
+						{ value: "growth", label: "Growth" },
+						{ value: "scale", label: "Scale" },
+					],
+				},
+				{
+					name: "customPlanServices",
+					label: "Custom Plan (Flexible)",
+					kind: "checkboxes",
+					dependsOn: "plan",
+					dependsOnValue: "custom",
+					options: [
+						{ value: "Media Buying (Meta, TikTok – 2 platforms)", label: "Media Buying (Meta, TikTok – 2 platforms)" },
+						{ value: "Content Creation and Posting on channels", label: "Content Creation and Posting on channels" },
+						{ value: "Monthly Report", label: "Monthly Report" },
+						{ value: "1x Strategy Session/month", label: "1x Strategy Session/month" },
+					],
+				},
+				{
+					name: "startWhen",
+					label: "When would you like to start?",
+					kind: "radio",
+					options: [
+						{ value: "Immediately", label: "Immediately" },
+						{ value: "Within 1-3 Months", label: "Within 1-3 Months" },
+						{ value: "Just Exploring", label: "Just Exploring" },
+					],
+				},
+			],
+		},
+		{
 			type: "cta-split",
 			eyebrow: "Get a free 30-minute consultation",
 			headline: "We'll recommend the right plan.",
@@ -2619,4 +2668,3 @@ export const defaults: Record<
     blog: { copy: enBlogCopy, postCopy: enBlogPostCopy, posts: enBlogPosts },
   },
 };
-

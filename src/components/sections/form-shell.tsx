@@ -44,8 +44,37 @@ export function FormShell({ data, classes, className, id }: DataProps<FormShellS
           >
             <form aria-label={data?.headline} onSubmit={(e) => e.preventDefault()}>
               <div className="grid gap-5 sm:grid-cols-2">
-                {fields.map((field) =>
-                  field.kind === 'textarea' ? (
+                {fields.map((field) => {
+                  if (field.kind === 'select' || field.kind === 'radio' || field.kind === 'checkboxes') {
+                    return field.kind === 'select' ? (
+                      <label key={field.name} className="grid gap-2">
+                        <span className="font-mono text-[10px] capitalize text-ink-400">{field.label}</span>
+                        <select
+                          name={field.name}
+                          disabled
+                          className="w-full rounded-full border border-ink-950/15 bg-paper px-4 py-3 text-sm text-ink-500 opacity-60"
+                        >
+                          {(field.options ?? []).map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                    ) : (
+                      <fieldset key={field.name} disabled className="grid gap-2">
+                        <legend className="font-mono text-[10px] capitalize text-ink-400">{field.label}</legend>
+                        {(field.options ?? []).map((option) => (
+                          <label key={option.value} className="flex items-center gap-2 text-sm text-ink-500 opacity-60">
+                            <input type={field.kind === 'radio' ? 'radio' : 'checkbox'} name={field.name} value={option.value} />
+                            {option.label}
+                          </label>
+                        ))}
+                      </fieldset>
+                    );
+                  }
+
+                  return field.kind === 'textarea' ? (
                     <label key={field.name} className="grid gap-2 sm:col-span-2">
                       <span className="font-mono text-[10px] capitalize  text-ink-400">
                         {field.label}
@@ -71,8 +100,8 @@ export function FormShell({ data, classes, className, id }: DataProps<FormShellS
                         className="w-full rounded-full border border-ink-950/15 bg-paper px-4 py-3 text-sm text-ink-500 opacity-60"
                       />
                     </label>
-                  ),
-                )}
+                  );
+                })}
               </div>
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 <span className="inline-flex cursor-not-allowed items-center gap-2.5 rounded-full bg-ink-950/40 px-6 py-3.5 text-sm font-medium text-paper-50">

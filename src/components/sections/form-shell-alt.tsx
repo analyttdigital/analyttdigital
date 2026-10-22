@@ -4,6 +4,7 @@ import { InViewTitle } from '@/components/graphics/in-view-title';
 import { MdiIcon } from '@/lib/icons/resolve-icon';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
 import { useForm, ValidationError } from '@formspree/react';
+import { useState } from 'react';
 import type { FormEvent } from 'react';
 import type { DataProps, FormShellSection } from '@/lib/content/types';
 
@@ -20,6 +21,7 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
   const fields = data?.fields ?? [];
   const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_CONTACT_FORM_ID;
   const [state, submitToFormspree] = useForm(formspreeId ?? '');
+  const [fieldValues, setFieldValues] = useState<Record<string, string>>({});
   const formId = 'contact-form';
   const fallbackHref = data?.fallbackHref || 'mailto:hello@analyttdigital.com';
 
@@ -95,8 +97,67 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
               onSubmit={handleSubmit}
             >
               <div className="grid gap-5">
-                {fields.map((field) =>
-                  field.kind === 'textarea' ? (
+                {fields.map((field) => {
+                  if (field.dependsOn && fieldValues[field.dependsOn] !== field.dependsOnValue) {
+                    return null;
+                  }
+
+                  if (field.kind === 'checkboxes' || field.kind === 'radio') {
+                    return (
+                      <fieldset key={field.name} className="grid gap-3">
+                        <legend className="font-mono text-[10px] text-ink-400">
+                          {field.label}
+                        </legend>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          {(field.options ?? []).map((option) => (
+                            <label key={option.value} className="flex items-start gap-3 text-sm text-ink-700">
+                              <input
+                                type={field.kind === 'radio' ? 'radio' : 'checkbox'}
+                                name={field.name}
+                                value={option.value}
+                                required={field.kind === 'radio'}
+                                onChange={
+                                  field.kind === 'radio'
+                                    ? () => setFieldValues((current) => ({ ...current, [field.name]: option.value }))
+                                    : undefined
+                                }
+                                className="mt-0.5 accent-accent-500"
+                              />
+                              <span>{option.label}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </fieldset>
+                    );
+                  }
+
+                  if (field.kind === 'select') {
+                    return (
+                      <label key={field.name} className="grid gap-2">
+                        <span className="font-mono text-[10px] text-ink-400">{field.label}</span>
+                        <select
+                          name={field.name}
+                          required
+                          value={fieldValues[field.name] ?? ''}
+                          onChange={(event) =>
+                            setFieldValues((current) => ({ ...current, [field.name]: event.target.value }))
+                          }
+                          className="w-full rounded-full border border-ink-950/15 bg-paper px-4 py-3 text-sm text-ink-500"
+                        >
+                          <option value="" disabled>
+                            Select one
+                          </option>
+                          {(field.options ?? []).map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                    );
+                  }
+
+                  return field.kind === 'textarea' ? (
                     <label key={field.name} className="grid gap-2">
                       <span className="font-mono text-[10px] capitalize text-ink-400">
                         {field.label}
@@ -122,8 +183,8 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                         className="w-full rounded-full border border-ink-950/15 bg-paper px-4 py-3 text-sm text-ink-500"
                       />
                     </label>
-                  ),
-                )}
+                  );
+                })}
               </div>
               {state.succeeded ? (
                 <p className="mt-5 text-sm text-ink-700" role="status">
