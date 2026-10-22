@@ -1,6 +1,7 @@
 import Image from 'next/image';
 
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
+import Link from '@/components/ui/link';
 import { InViewTitle } from '@/components/ui/in-view-title';
 import { useChrome } from '@/lib/content/chrome';
 import { MdiIcon } from '@/lib/icons/resolve-icon';
@@ -79,9 +80,9 @@ export function SiteFooter({
               {contactHref || content?.contactNote ? (
                 <p data-rise="1" className="mt-5 max-w-[38ch] text-sm leading-relaxed text-paper-50/80">
                   {contactHref ? (
-                    <a href={contactHref} className="font-medium text-paper-50 underline decoration-paper-50/40 underline-offset-4 transition-colors hover:text-white">
+                    <Link href={contactHref} className="font-medium text-paper-50 underline decoration-paper-50/40 underline-offset-4 transition-colors hover:text-white">
                       {contactLabel}
-                    </a>
+                    </Link>
                   ) : null}
                   {contactHref && content?.contactNote ? ' · ' : null}
                   {content?.contactNote ?? null}
@@ -93,16 +94,16 @@ export function SiteFooter({
                 </p>
               ) : null}
               <p data-rise="2" className="mt-8 flex flex-wrap items-center gap-4">
-                <a
+                <Link
                   href={content?.footerCtaHref || '#'}
                   className="inline-flex items-center gap-2.5 rounded-full bg-paper-50 px-6 py-3.5 text-sm font-medium text-ink-950 transition-colors duration-200 hover:bg-paper-100"
                 >
                   {content?.footerCta ?? 'Start with a free audit'}
                   <MdiIcon name="arrowRight" size={0.8} />
-                </a>
-                <a href="#main" className="text-sm font-medium text-paper-50/80 underline decoration-paper-50/30 underline-offset-4 transition-colors hover:text-paper-50">
+                </Link>
+                <Link href="#main" className="text-sm font-medium text-paper-50/80 underline decoration-paper-50/30 underline-offset-4 transition-colors hover:text-paper-50">
                   {chrome.backToTop}
-                </a>
+                </Link>
               </p>
             </div>
             {/* The index — CMS link columns beside the signal list, Work's
@@ -117,9 +118,9 @@ export function SiteFooter({
                   <ul className="mt-4 space-y-2.5">
                     {column.links.map((link) => (
                       <li key={link.label}>
-                        <a href={link.href} className="text-[14.5px] font-medium text-ink-950 underline decoration-ink-950/15 underline-offset-4 transition-colors hover:text-accent-600">
+                        <Link href={link.href} className="text-[14.5px] font-medium text-ink-950 underline decoration-ink-950/15 underline-offset-4 transition-colors hover:text-accent-600">
                           {link.label}
-                        </a>
+                        </Link>
                       </li>
                     ))}
                   </ul>
@@ -137,7 +138,7 @@ export function SiteFooter({
                   const external = /^(https?:|mailto:|tel:)/.test(link.href);
                   return (
                     <li key={link.label} className={i > 0 ? 'border-t border-ink-950/10' : ''}>
-                      <a
+                      <Link
                         href={link.href}
                         title={link.label}
                         aria-label={link.label}
@@ -151,7 +152,7 @@ export function SiteFooter({
                           size={0.7}
                           className="text-ink-300 transition-all duration-200 group-hover:-translate-y-px group-hover:translate-x-px group-hover:text-accent-500"
                         />
-                      </a>
+                      </Link>
                     </li>
                   );
                 })}
@@ -191,17 +192,17 @@ export function SiteFooter({
               </p>
             </div>
             <div data-rise="2" className="relative mt-9 flex flex-col items-center gap-4">
-              <a
+              <Link
                 href={content?.footerCtaHref || '#'}
                 className="inline-flex items-center gap-2.5 rounded-full bg-paper-50 px-8 py-4 text-base font-semibold text-ink-950 shadow-[0_14px_36px_-14px_rgb(0_0_0/0.5)] transition hover:scale-[1.02] hover:bg-paper-100 active:scale-[0.98]"
               >
                 {content?.footerCta ?? 'Start with a free audit'}
                 <MdiIcon name="arrowRight" size={0.85} />
-              </a>
+              </Link>
               {phone ? (
-                <a href={phone.href} className="font-mono text-[10px] capitalize text-paper-50/70 underline underline-offset-4 hover:text-paper-50">
+                <Link href={phone.href} className="font-mono text-[10px] capitalize text-paper-50/70 underline underline-offset-4 hover:text-paper-50">
                   {phone.label === phone.href ? phone.href : `${phone.label}: ${phone.href.replace('tel:', '')}`}
-                </a>
+                </Link>
               ) : null}
             </div>
           </div>

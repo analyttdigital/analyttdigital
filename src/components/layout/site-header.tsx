@@ -20,6 +20,7 @@ import type {
 	RefObject,
 } from "react";
 import Image from "next/image";
+import Link from "@/components/ui/link";
 import { AnimatePresence, LayoutGroup, motion, useIsPresent, useReducedMotion } from "framer-motion";
 import type { Transition, Variants } from "framer-motion";
 import { MdiIcon } from "@/lib/icons/resolve-icon";
@@ -393,13 +394,13 @@ type DestinationProps = Omit<HTMLAttributes<HTMLElement>, "onClick" | "children"
 /** Renders an anchor when the destination has an href and a button otherwise, so demos and real sites share one path. */
 function Destination({ link, onChoose, children, ...rest }: DestinationProps) {
 	return link.href ? (
-		<a
+		<Link
 			{...(rest as AnchorHTMLAttributes<HTMLAnchorElement>)}
 			href={link.href}
 			onClick={onChoose}
 		>
 			{children}
-		</a>
+		</Link>
 	) : (
 		<button
 			{...(rest as ButtonHTMLAttributes<HTMLButtonElement>)}
@@ -685,9 +686,9 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 			closeMenu();
 		};
 		return action.href ? (
-			<a className={`inline-flex h-9 cursor-pointer items-center justify-center whitespace-nowrap border border-transparent px-3.5 text-sm font-medium rounded-full no-underline transition-[transform,background-color,opacity] duration-150 active:scale-[0.97] motion-reduce:transform-none motion-reduce:transition-none ${kind === "secondary" ? "bg-transparent text-primary-500 hover:bg-primary-800 hover:text-paper" : "bg-accent text-paper hover:opacity-90"} ${extra}`} href={action.href} onClick={onClick}>
+			<Link className={`inline-flex h-9 cursor-pointer items-center justify-center whitespace-nowrap border border-transparent px-3.5 text-sm font-medium rounded-full no-underline transition-[transform,background-color,opacity] duration-150 active:scale-[0.97] motion-reduce:transform-none motion-reduce:transition-none ${kind === "secondary" ? "bg-transparent text-primary-500 hover:bg-primary-800 hover:text-paper" : "bg-accent text-paper hover:opacity-90"} ${extra}`} href={action.href} onClick={onClick}>
 				{action.label}
-			</a>
+			</Link>
 		) : (
 			<button type="button" className={`inline-flex h-9 cursor-pointer items-center justify-center whitespace-nowrap border border-transparent px-3.5 text-sm font-medium rounded-full no-underline transition-[transform,background-color,opacity] duration-150 active:scale-[0.97] motion-reduce:transform-none motion-reduce:transition-none ${kind === "secondary" ? "bg-transparent text-primary-500 hover:bg-primary-800 hover:text-paper" : "bg-accent text-paper hover:opacity-90"} ${extra}`} onClick={onClick}>
 				{action.label}
