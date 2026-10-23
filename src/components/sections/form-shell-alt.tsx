@@ -215,20 +215,19 @@ export function FormShellAlt({
 						className={[
 							"grid gap-10 rounded-[2rem] bg-paper-50 p-7 ring-1 ring-ink-950/10 md:p-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-14",
 							isQuotePopup &&
-								"w-full max-h-[90dvh] overflow-y-auto overscroll-contain md:h-[90dvh] md:overflow-hidden",
+								"w-full max-h-[90dvh] overflow-y-auto overscroll-contain lg:h-[90dvh] lg:overflow-hidden",
 							classes?.panel,
 							className,
 						]
 							.filter(Boolean)
 							.join(" ")}
 					>
-
 						{isQuotePopup ? (
 							<button
 								ref={closeButtonRef}
 								type="button"
 								onClick={closeQuotePopup}
-								className="absolute right-5 top-5 z-10 rounded-full border border-ink-950/15 px-4 py-2 font-mono text-[10px] bg-paper text-red-500 transition-colors hover:border-red-600/30 hover:text-red-600 md:right-8  md:top-8 my-6"
+								className="absolute right-5 top-12 z-10 rounded-full border border-ink-950/15 px-4 py-2 font-mono text-[10px] bg-paper text-red-500 transition-colors hover:border-red-600/30 hover:text-red-600 lg:right-4  lg:top-9 "
 							>
 								Close
 							</button>
@@ -268,15 +267,15 @@ export function FormShellAlt({
 								</p>
 							) : null}
 						</div>
-						<div className="md:min-h-0 md:overflow-y-auto md:overscroll-contain md:px-2">
+						<div className="h-full mt-8  lg:mt-12 lg:overflow-hidden">
 							<form
 								ref={formRef}
 								id={formId}
 								aria-label={data?.headline}
 								onSubmit={handleSubmit}
-								
+								className="flex flex-col h-full pb-12 lg:overflow-hidden"
 							>
-								<div className="grid gap-5 my-8  md:my-12 ">
+								<div className="grid gap-5 flex-grow lg:overflow-y-auto lg:overscroll-contain md:px-2  ">
 									{fields.map((field) => {
 										if (
 											field.dependsOn &&
@@ -479,7 +478,7 @@ export function FormShellAlt({
 									})}
 								</div>
 
-								<div className="sticky bottom-0 bg-paper-50 pt-4">
+								<div className="bg-paper-50 pt-4">
 									{state.succeeded ? (
 										<p className="mt-5 text-sm text-green-700" role="status">
 											Thanks. Your message has been sent.
