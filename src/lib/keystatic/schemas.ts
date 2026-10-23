@@ -663,6 +663,7 @@ const formShellFields = {
         ],
         defaultValue: 'text',
       }),
+      required: fields.checkbox({ label: 'Required', defaultValue: false }),
       options: fields.array(
         fields.object({
           value: fields.text({ label: 'Option value' }),

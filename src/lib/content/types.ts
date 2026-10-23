@@ -441,6 +441,7 @@ export type FormField = {
   name: string;
   label: string;
   kind: 'text' | 'email' | 'textarea' | 'select' | 'radio' | 'checkboxes';
+  required?: boolean;
   options?: FormFieldOption[];
   dependsOn?: string;
   dependsOnValue?: string;

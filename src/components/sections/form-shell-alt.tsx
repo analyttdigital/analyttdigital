@@ -7,6 +7,7 @@ import { GsapReveal } from '@/lib/motion/gsap-reveal';
 import { useForm, ValidationError } from '@formspree/react';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { FormEvent, ReactNode } from 'react';
 import type { DataProps, FormField, FormShellSection } from '@/lib/content/types';
 
@@ -14,6 +15,10 @@ const EMPTY_FIELDS: FormField[] = [];
 
 function OptionalGsapReveal({ children, enabled }: { children: ReactNode; enabled: boolean }) {
   return enabled ? <GsapReveal>{children}</GsapReveal> : <>{children}</>;
+}
+
+function RequiredMarker({ required }: { required?: boolean }) {
+  return required ? <span aria-hidden="true"> *</span> : null;
 }
 
 /**
@@ -123,12 +128,12 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
     window.location.href = `${fallbackHref}${separator}subject=${encodeURIComponent(data?.headline ?? '')}&body=${encodeURIComponent(body)}`;
   }
 
-  return (
+  const section = (
     <section
       id={id ?? 'get-quote'}
       className={
         isQuotePopup
-          ? 'fixed inset-0 z-50 overflow-y-auto bg-ink-950/70 p-4 backdrop-blur-sm md:p-8'
+          ? 'fixed inset-0 z-[100] overflow-y-auto bg-ink-950/70 p-4 backdrop-blur-sm md:p-8'
           : `relative overflow-hidden bg-paper py-24 md:py-32 ${className ?? ''}`
       }
       onMouseDown={
@@ -222,7 +227,7 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                     return (
                       <fieldset key={field.name} className="grid gap-3">
                         <legend className="font-mono text-[10px] text-ink-400">
-                          {field.label}
+                          {field.label}<RequiredMarker required={field.required} />
                         </legend>
                         <div className="grid gap-3 sm:grid-cols-2">
                           {(field.options ?? []).map((option) => (
@@ -231,7 +236,7 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                                 type={field.kind === 'radio' ? 'radio' : 'checkbox'}
                                 name={field.name}
                                 value={option.value}
-                                required={field.kind === 'radio'}
+                                required={field.required}
                                 checked={
                                   field.kind === 'radio'
                                     ? fieldValues[field.name] === option.value
@@ -265,10 +270,12 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                   if (field.kind === 'select') {
                     return (
                       <label key={field.name} className="grid gap-2">
-                        <span className="font-mono text-[10px] text-ink-400">{field.label}</span>
+                        <span className="font-mono text-[10px] text-ink-400">
+                          {field.label}<RequiredMarker required={field.required} />
+                        </span>
                         <select
                           name={field.name}
-                          required
+                          required={field.required}
                           value={typeof fieldValues[field.name] === 'string' ? fieldValues[field.name] : ''}
                           onChange={(event) =>
                             setFieldValues((current) => ({ ...current, [field.name]: event.target.value }))
@@ -291,13 +298,13 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                   return field.kind === 'textarea' ? (
                     <label key={field.name} className="grid gap-2">
                       <span className="font-mono text-[10px] capitalize text-ink-400">
-                        {field.label}
+                        {field.label}<RequiredMarker required={field.required} />
                       </span>
                       <textarea
                         name={field.name}
                         rows={5}
                         placeholder={field.label}
-                        required
+                        required={field.required}
                         value={typeof fieldValues[field.name] === 'string' ? fieldValues[field.name] : ''}
                         onChange={(event) =>
                           setFieldValues((current) => ({ ...current, [field.name]: event.target.value }))
@@ -308,13 +315,13 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                   ) : (
                     <label key={field.name} className="grid gap-2">
                       <span className="font-mono text-[10px] capitalize text-ink-400">
-                        {field.label}
+                        {field.label}<RequiredMarker required={field.required} />
                       </span>
                       <input
                         type={field.kind}
                         name={field.name}
                         placeholder={field.label}
-                        required
+                        required={field.required}
                         value={typeof fieldValues[field.name] === 'string' ? fieldValues[field.name] : ''}
                         onChange={(event) =>
                           setFieldValues((current) => ({ ...current, [field.name]: event.target.value }))
@@ -340,4 +347,6 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
       </div>
     </section>
   );
+
+  return isQuotePopup ? createPortal(section, document.body) : section;
 }

@@ -46,18 +46,23 @@ sections:
         - name: firstName
           label: First Name
           kind: text
+          required: true
         - name: lastName
           label: Last Name
           kind: text
+          required: true
         - name: email
           label: Email
           kind: email
+          required: true
         - name: subject
           label: Subject
           kind: text
+          required: true
         - name: message
           label: Your Message
           kind: textarea
+          required: true
   - discriminant: cta-split
     value:
       eyebrow: Prefer to talk first?
