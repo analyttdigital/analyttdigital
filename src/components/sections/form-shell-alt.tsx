@@ -7,10 +7,14 @@ import { GsapReveal } from '@/lib/motion/gsap-reveal';
 import { useForm, ValidationError } from '@formspree/react';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { FormEvent } from 'react';
+import type { FormEvent, ReactNode } from 'react';
 import type { DataProps, FormField, FormShellSection } from '@/lib/content/types';
 
 const EMPTY_FIELDS: FormField[] = [];
+
+function OptionalGsapReveal({ children, enabled }: { children: ReactNode; enabled: boolean }) {
+  return enabled ? <GsapReveal>{children}</GsapReveal> : <>{children}</>;
+}
 
 /**
  * FormShellAlt — the inquiry split: ask left, fields right.
@@ -142,12 +146,12 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
             : 'relative mx-auto w-full max-w-7xl px-5 md:px-8'
         }
       >
-        <GsapReveal>
+        <OptionalGsapReveal enabled={!isQuotePopup}>
           <div
             role={isQuotePopup ? 'dialog' : undefined}
             aria-modal={isQuotePopup ? true : undefined}
             aria-label={isQuotePopup ? data?.headline : undefined}
-            data-rise
+            data-rise={isQuotePopup ? undefined : ''}
             className={[
               'grid gap-10 rounded-[2rem] bg-paper-50 p-7 ring-1 ring-ink-950/10 md:p-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-14',
               classes?.panel,
@@ -161,7 +165,7 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                 ref={closeButtonRef}
                 type="button"
                 onClick={closeQuotePopup}
-                className="absolute right-5 top-5 z-10 rounded-full border border-ink-950/15 px-4 py-2 font-mono text-[10px] text-red-500 transition-colors hover:border-red-700/30 hover:text-ink-950 md:right-8  md:top-8"
+                className="absolute right-5 top-5 z-10 rounded-full border border-ink-950/15 px-4 py-2 font-mono text-[10px] text-red-500 transition-colors hover:border-red-700/30 hover:text-ink-950 md:right-8  md:top-8 mt-6"
               >
                 Close
               </button>
@@ -332,7 +336,7 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
               />
             </form>
           </div>
-        </GsapReveal>
+        </OptionalGsapReveal>
       </div>
     </section>
   );
