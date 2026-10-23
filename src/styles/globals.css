@@ -133,7 +133,7 @@ body {
 /* Browser surfaces — the parts we did not draw still carry the design */
 /* ------------------------------------------------------------------ */
 ::selection {
-  background: rgb(var(--color-accent-100));
+  background: rgb(var(--color-accent-200));
   color: rgb(var(--color-primary-900));
 }
 
@@ -156,7 +156,7 @@ select {
    field's own deep band. */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgb(var(--color-accent-600)) rgb(var(--color-primary-950));
+  scrollbar-color: rgb(var(--color-accent-600)) transparent;
 }
 ::-webkit-scrollbar {
   width: 8px;
@@ -166,11 +166,11 @@ select {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgb(var(--color-accent-600));
+  background: rgb(var(--color-accent-500));
   border: 3px solid rgb(var(--color-primary-950));
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(var(--color-accent-500));
+  background: rgb(var(--color-accent-600));
 }
 
 a,

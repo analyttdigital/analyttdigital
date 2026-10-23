@@ -211,7 +211,7 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                 Close
               </button>
             ) : null}
-            <div className="mt-8">
+            <div className="mt-8 form-shell-header">
               <p className="label text-ink-500">{data?.eyebrow}</p>
               <InViewTitle
                 text={(data?.headline ?? '').replace(/\n/g, ' ')}
@@ -298,24 +298,31 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                         <span className="font-mono text-[10px] text-ink-400">
                           {field.label}<RequiredMarker required={field.required} />
                         </span>
-                        <select
-                          name={field.name}
-                          required={field.required}
-                          value={typeof fieldValues[field.name] === 'string' ? fieldValues[field.name] : ''}
-                          onChange={(event) =>
-                            setFieldValues((current) => ({ ...current, [field.name]: event.target.value }))
-                          }
-                          className="w-full rounded-full border border-ink-950/15 bg-paper px-4 py-3 text-sm text-ink-500"
-                        >
-                          <option value="" disabled>
-                            Select one
-                          </option>
-                          {(field.options ?? []).map((option) => (
-                            <option key={option.value} value={option.value}>
-                              {option.label}
+                        <div className="relative">
+                          <select
+                            name={field.name}
+                            required={field.required}
+                            value={typeof fieldValues[field.name] === 'string' ? fieldValues[field.name] : ''}
+                            onChange={(event) =>
+                              setFieldValues((current) => ({ ...current, [field.name]: event.target.value }))
+                            }
+                            className="w-full appearance-none rounded-full border border-ink-950/15 bg-paper px-4 py-3 pr-12 text-sm text-ink-500"
+                          >
+                            <option value="" disabled>
+                              Select one
                             </option>
-                          ))}
-                        </select>
+                            {(field.options ?? []).map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
+                          <MdiIcon
+                            name="chevronDown"
+                            size={0.8}
+                            className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-ink-400"
+                          />
+                        </div>
                       </label>
                     );
                   }
@@ -377,7 +384,7 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                 className="mt-6 inline-flex items-center gap-2.5 rounded-full bg-ink-950 px-6 py-3.5 text-sm font-medium text-paper-50 transition-opacity duration-200 hover:opacity-85"
               >
                 {state.submitting ? 'Sending…' : data?.submitLabel}
-                <MdiIcon name="arrowRight" size={0.8} />
+                <MdiIcon name="send" size={0.8} />
               </button>
               {recaptchaSiteKey ? (
                 <p className="mt-4 max-w-[44ch] text-[11px] leading-relaxed text-ink-400">
