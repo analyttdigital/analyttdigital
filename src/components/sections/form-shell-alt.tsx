@@ -1,25 +1,25 @@
-'use client';
+"use client";
 
-import Link from '@/components/ui/link';
-import { InViewTitle } from '@/components/ui/in-view-title';
-import { MdiIcon } from '@/lib/icons/resolve-icon';
-import { GsapReveal } from '@/lib/motion/gsap-reveal';
-import { useForm, ValidationError } from '@formspree/react';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
-import { useRouter } from 'next/router';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
-import type { FormEvent, ReactNode } from 'react';
-import type { DataProps, FormField, FormShellSection } from '@/lib/content/types';
+import Link from "@/components/ui/link";
+import { InViewTitle } from "@/components/ui/in-view-title";
+import { MdiIcon } from "@/lib/icons/resolve-icon";
+import { GsapReveal } from "@/lib/motion/gsap-reveal";
+import { useForm, ValidationError } from "@formspree/react";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import type { FormEvent, ReactNode } from "react";
+import type { DataProps, FormField, FormShellSection } from "@/lib/content/types";
 
 const EMPTY_FIELDS: FormField[] = [];
 
 function OptionalGsapReveal({ children, enabled }: { children: ReactNode; enabled: boolean }) {
-  return enabled ? <GsapReveal>{children}</GsapReveal> : <>{children}</>;
+	return enabled ? <GsapReveal>{children}</GsapReveal> : <>{children}</>;
 }
 
 function RequiredMarker({ required }: { required?: boolean }) {
-  return required ? <span aria-hidden="true"> *</span> : null;
+	return required ? <span aria-hidden="true"> *</span> : null;
 }
 
 /**
@@ -31,405 +31,508 @@ function RequiredMarker({ required }: { required?: boolean }) {
  * Formspree form ID is deployment configuration, rather than editable page
  * content, so the contact page can keep its existing content shape.
  */
-export function FormShellAlt({ data, classes, className, id }: DataProps<FormShellSection, 'panel'>) {
-  const fields = data?.fields ?? EMPTY_FIELDS;
-  const planField = fields.find((field) => field.name === 'plan');
-  const router = useRouter();
-  const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_CONTACT_FORM_ID;
-  const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
-  const { executeRecaptcha } = useGoogleReCaptcha();
-  const [state, submitToFormspree] = useForm(formspreeId ?? '');
-  const [fieldValues, setFieldValues] = useState<Record<string, string | string[]>>({});
-  const [recaptchaError, setRecaptchaError] = useState<string | null>(null);
-  const selectedPlanValue = typeof fieldValues.plan === 'string' ? fieldValues.plan : null;
-  const selectedPlanLabel = selectedPlanValue
-    ? planField?.options?.find((option) => option.value === selectedPlanValue)?.label ?? selectedPlanValue
-    : null;
-  const formRef = useRef<HTMLFormElement>(null);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const formId = 'contact-form';
-  const fallbackHref = data?.fallbackHref || 'mailto:hello@analyttdigital.com';
-  const isQuotePopup =
-    router.isReady &&
-    new URLSearchParams(router.asPath.split('?')[1]?.split('#')[0] ?? '').get('quote') === '1';
+export function FormShellAlt({
+	data,
+	classes,
+	className,
+	id,
+}: DataProps<FormShellSection, "panel">) {
+	const fields = data?.fields ?? EMPTY_FIELDS;
+	const planField = fields.find((field) => field.name === "plan");
+	const router = useRouter();
+	const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_CONTACT_FORM_ID;
+	const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+	const { executeRecaptcha } = useGoogleReCaptcha();
+	const [state, submitToFormspree] = useForm(formspreeId ?? "");
+	const [fieldValues, setFieldValues] = useState<Record<string, string | string[]>>({});
+	const [recaptchaError, setRecaptchaError] = useState<string | null>(null);
+	const [recaptchaSubmitting, setRecaptchaSubmitting] = useState<boolean>(false);
+	const selectedPlanValue = typeof fieldValues.plan === "string" ? fieldValues.plan : null;
+	const selectedPlanLabel = selectedPlanValue
+		? (planField?.options?.find((option) => option.value === selectedPlanValue)?.label ??
+			selectedPlanValue)
+		: null;
+	const formRef = useRef<HTMLFormElement>(null);
+	const closeButtonRef = useRef<HTMLButtonElement>(null);
+	const formId = "contact-form";
+	const fallbackHref = data?.fallbackHref || "mailto:hello@analyttdigital.com";
+	const isQuotePopup =
+		router.isReady &&
+		new URLSearchParams(router.asPath.split("?")[1]?.split("#")[0] ?? "").get("quote") === "1";
 
-  const closeQuotePopup = useCallback(() => {
-    const [pathAndQuery, hash = ''] = router.asPath.split('#');
-    const [pathname, search = ''] = pathAndQuery.split('?');
-    const params = new URLSearchParams(search);
-    params.delete('quote');
-    const query = params.toString();
+	const closeQuotePopup = useCallback(() => {
+		const [pathAndQuery, hash = ""] = router.asPath.split("#");
+		const [pathname, search = ""] = pathAndQuery.split("?");
+		const params = new URLSearchParams(search);
+		params.delete("quote");
+		const query = params.toString();
 
-    return router.replace(
-      `${pathname}${query ? `?${query}` : ''}${hash ? `#${hash}` : ''}`,
-      undefined,
-      { shallow: true, scroll: false },
-    );
-  }, [router]);
+		return router.replace(
+			`${pathname}${query ? `?${query}` : ""}${hash ? `#${hash}` : ""}`,
+			undefined,
+			{ shallow: true, scroll: false }
+		);
+	}, [router]);
 
-  useEffect(() => {
-    if (!router.isReady) return;
+	useEffect(() => {
+		if (!router.isReady) return;
 
-    const params = new URLSearchParams(router.asPath.split('?')[1]?.split('#')[0] ?? '');
-    const initialValues: Record<string, string | string[]> = {};
+		const params = new URLSearchParams(router.asPath.split("?")[1]?.split("#")[0] ?? "");
+		const initialValues: Record<string, string | string[]> = {};
 
-    fields.forEach((field) => {
-      const values = params.getAll(field.name);
-      if (values.length === 0) return;
+		fields.forEach((field) => {
+			const values = params.getAll(field.name);
+			if (values.length === 0) return;
 
-      if (field.kind === 'checkboxes') {
-        const allowedValues = new Set((field.options ?? []).map((option) => option.value));
-        const selectedValues = values.filter((value) => allowedValues.has(value));
-        if (selectedValues.length > 0) initialValues[field.name] = selectedValues;
-        return;
-      }
+			if (field.kind === "checkboxes") {
+				const allowedValues = new Set((field.options ?? []).map((option) => option.value));
+				const selectedValues = values.filter((value) => allowedValues.has(value));
+				if (selectedValues.length > 0) initialValues[field.name] = selectedValues;
+				return;
+			}
 
-      const value = values[0];
-      if (field.kind === 'select' || field.kind === 'radio') {
-        const allowedValues = new Set((field.options ?? []).map((option) => option.value));
-        if (allowedValues.has(value)) initialValues[field.name] = value;
-        return;
-      }
+			const value = values[0];
+			if (field.kind === "select" || field.kind === "radio") {
+				const allowedValues = new Set((field.options ?? []).map((option) => option.value));
+				if (allowedValues.has(value)) initialValues[field.name] = value;
+				return;
+			}
 
-      initialValues[field.name] = value;
-    });
+			initialValues[field.name] = value;
+		});
 
-    setFieldValues(initialValues);
-  }, [fields, router.asPath, router.isReady]);
+		setFieldValues(initialValues);
+	}, [fields, router.asPath, router.isReady]);
 
-  useEffect(() => {
-    if (!isQuotePopup) return;
+	useEffect(() => {
+		if (!isQuotePopup) return;
 
-    const previousBodyOverflow = document.body.style.overflow;
-    const previousHtmlOverflow = document.documentElement.style.overflow;
-    document.body.style.overflow = 'hidden';
-    document.documentElement.style.overflow = 'hidden';
-    closeButtonRef.current?.focus();
+		const previousBodyOverflow = document.body.style.overflow;
+		const previousHtmlOverflow = document.documentElement.style.overflow;
+		document.body.style.overflow = "hidden";
+		document.documentElement.style.overflow = "hidden";
+		closeButtonRef.current?.focus();
 
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') closeQuotePopup();
-    }
+		function handleKeyDown(event: KeyboardEvent) {
+			if (event.key === "Escape") closeQuotePopup();
+		}
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.body.style.overflow = previousBodyOverflow;
-      document.documentElement.style.overflow = previousHtmlOverflow;
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [closeQuotePopup, isQuotePopup]);
+		window.addEventListener("keydown", handleKeyDown);
+		return () => {
+			document.body.style.overflow = previousBodyOverflow;
+			document.documentElement.style.overflow = previousHtmlOverflow;
+			window.removeEventListener("keydown", handleKeyDown);
+		};
+	}, [closeQuotePopup, isQuotePopup]);
 
-  useEffect(() => {
-    if (!state.succeeded) return;
-    formRef.current?.reset();
-    setFieldValues({});
-  }, [state.succeeded]);
+	useEffect(() => {
+		if (!state.succeeded) return;
+		formRef.current?.reset();
+		setFieldValues({});
+	}, [state.succeeded]);
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    if (formspreeId && recaptchaSiteKey) {
-      event.preventDefault();
+	async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+		const form = event.currentTarget;
+		if (formspreeId && recaptchaSiteKey) {
+			event.preventDefault();
 
-      if (!executeRecaptcha) {
-        setRecaptchaError('reCAPTCHA is still loading. Please try again in a moment.');
-        return;
-      }
+			if (!executeRecaptcha) {
+				setRecaptchaError("reCAPTCHA is still loading. Please try again in a moment.");
+				return;
+			}
 
-      try {
-        const token = await executeRecaptcha('contact_submit');
-        const response = await fetch('/api/recaptcha/verify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token }),
-        });
-        const result = (await response.json()) as { success?: boolean; error?: string };
+			try {
+				setRecaptchaSubmitting(true);
+				const token = await executeRecaptcha("contact_submit");
+				const response = await fetch("/api/recaptcha/verify", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ token }),
+				});
+				const result = (await response.json()) as { success?: boolean; error?: string };
 
-        if (!response.ok || !result.success) {
-          setRecaptchaError(result.error ?? 'reCAPTCHA verification failed. Please try again.');
-          return;
-        }
+				if (!response.ok || !result.success) {
+					setRecaptchaError(result.error ?? "reCAPTCHA verification failed. Please try again.");
+					setRecaptchaSubmitting(false);
+					return;
+				}
+				setRecaptchaSubmitting(false);
+				setRecaptchaError(null);
+				void submitToFormspree(new FormData(form));
+			} catch {
+				setRecaptchaSubmitting(false);
+				setRecaptchaError("We could not verify reCAPTCHA. Please try again.");
+			}
 
-        setRecaptchaError(null);
-        void submitToFormspree(event);
-      } catch {
-        setRecaptchaError('We could not verify reCAPTCHA. Please try again.');
-      }
+			return;
+		}
 
-      return;
-    }
+		if (formspreeId) {
+			void submitToFormspree(event);
+			return;
+		}
 
-    if (formspreeId) {
-      void submitToFormspree(event);
-      return;
-    }
+		// Keep the contact page useful in local or preview deployments before its
+		// public Formspree ID has been added.
+		event.preventDefault();
+		const body = Array.from(new FormData(event.currentTarget).entries())
+			.map(([name, value]) => `${name}: ${value}`)
+			.join("\n");
+		const separator = fallbackHref.includes("?") ? "&" : "?";
+		window.location.href = `${fallbackHref}${separator}subject=${encodeURIComponent(data?.headline ?? "")}&body=${encodeURIComponent(body)}`;
+	}
 
-    // Keep the contact page useful in local or preview deployments before its
-    // public Formspree ID has been added.
-    event.preventDefault();
-    const body = Array.from(new FormData(event.currentTarget).entries())
-      .map(([name, value]) => `${name}: ${value}`)
-      .join('\n');
-    const separator = fallbackHref.includes('?') ? '&' : '?';
-    window.location.href = `${fallbackHref}${separator}subject=${encodeURIComponent(data?.headline ?? '')}&body=${encodeURIComponent(body)}`;
-  }
+	const section = (
+		<section
+			id={id ?? "get-quote"}
+			data-lenis-prevent={isQuotePopup ? "" : undefined}
+			className={
+				isQuotePopup
+					? "fixed inset-0 z-[100] overflow-hidden bg-ink-950/70 p-4 backdrop-blur-sm md:p-8"
+					: `relative overflow-hidden bg-paper py-24 md:py-32 ${className ?? ""}`
+			}
+			onMouseDown={
+				isQuotePopup
+					? (event) => {
+							if (event.target === event.currentTarget) closeQuotePopup();
+						}
+					: undefined
+			}
+		>
+			<div
+				className={
+					isQuotePopup
+						? "relative mx-auto flex h-full w-full max-w-5xl items-center"
+						: "relative mx-auto w-full max-w-7xl px-5 md:px-8"
+				}
+			>
+				<OptionalGsapReveal enabled={!isQuotePopup}>
+					<div
+						role={isQuotePopup ? "dialog" : undefined}
+						aria-modal={isQuotePopup ? true : undefined}
+						aria-label={isQuotePopup ? data?.headline : undefined}
+						data-rise={isQuotePopup ? undefined : ""}
+						className={[
+							"grid gap-10 rounded-[2rem] bg-paper-50 p-7 ring-1 ring-ink-950/10 md:p-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-14",
+							isQuotePopup &&
+								"w-full max-h-[90dvh] overflow-y-auto overscroll-contain md:h-[90dvh] md:overflow-hidden",
+							classes?.panel,
+							className,
+						]
+							.filter(Boolean)
+							.join(" ")}
+					>
 
-  const section = (
-      <section
-        id={id ?? 'get-quote'}
-        data-lenis-prevent={isQuotePopup ? '' : undefined}
-        className={
-        isQuotePopup
-          ? 'fixed inset-0 z-[100] overflow-hidden bg-ink-950/70 p-4 backdrop-blur-sm md:p-8'
-          : `relative overflow-hidden bg-paper py-24 md:py-32 ${className ?? ''}`
-      }
-      onMouseDown={
-        isQuotePopup
-          ? (event) => {
-              if (event.target === event.currentTarget) closeQuotePopup();
-            }
-          : undefined
-      }
-    >
-      <div
-        className={
-          isQuotePopup
-            ? 'relative mx-auto flex h-full w-full max-w-5xl items-center'
-            : 'relative mx-auto w-full max-w-7xl px-5 md:px-8'
-        }
-      >
-        <OptionalGsapReveal enabled={!isQuotePopup}>
-          <div
-            role={isQuotePopup ? 'dialog' : undefined}
-            aria-modal={isQuotePopup ? true : undefined}
-            aria-label={isQuotePopup ? data?.headline : undefined}
-            data-rise={isQuotePopup ? undefined : ''}
-            className={[
-               'grid gap-10 rounded-[2rem] bg-paper-50 p-7 ring-1 ring-ink-950/10 md:p-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-14',
-               isQuotePopup && 'w-full max-h-[90dvh] overflow-y-auto overscroll-contain md:h-[90dvh] md:overflow-hidden',
-               classes?.panel,
-              className,
-            ]
-              .filter(Boolean)
-              .join(' ')}
-          >
-            {isQuotePopup ? (
-              <button
-                ref={closeButtonRef}
-                type="button"
-                onClick={closeQuotePopup}
-                className="absolute right-5 top-5 z-10 rounded-full border border-ink-950/15 px-4 py-2 font-mono text-[10px] bg-paper text-red-500 transition-colors hover:border-red-600/30 hover:text-red-600 md:right-8  md:top-8 mt-6"
-              >
-                Close
-              </button>
-            ) : null}
-            <div className="mt-8 form-shell-header">
-              <p className="label text-ink-500">{data?.eyebrow}</p>
-              <InViewTitle
-                text={(data?.headline ?? '').replace(/\n/g, ' ')}
-                variant="blur"
-                as="h2"
-                className="title mt-6 max-w-[14ch] text-[clamp(1.8rem,3.4vw,2.4rem)] text-ink-950"
-              />
-              {data?.body ? (
-                <p className="mt-5 max-w-[44ch] text-sm leading-[1.85] text-ink-500">
-                  {data.body}
-                </p>
-              ) : null}
-              {selectedPlanLabel ? (
-                <div className="mt-5 rounded-2xl bg-paper-100 px-4 py-3 ring-1 ring-ink-950/10 md:mt-6 md:px-5 md:py-4">
-                  <p className="font-mono text-[9px] capitalize text-ink-400 md:text-[10px]">Selected plan</p>
-                  <p className="mt-1 text-sm font-medium text-ink-950 md:text-base">{selectedPlanLabel}</p>
-                </div>
-              ) : null}
-              <Link
-                href={fallbackHref}
-                className="mt-8 inline-flex items-center gap-2.5 rounded-full border border-ink-950/15 px-6 py-3.5 text-sm font-medium text-ink-950 transition-colors duration-200 hover:border-ink-950/30"
-              >
-                {data?.fallbackLabel}
-              </Link>
-              {data?.note ? (
-                <p className="mt-6 font-mono text-[10px] capitalize text-ink-400">
-                  {data.note}
-                </p>
-              ) : null}
-            </div>
-            <div className="md:min-h-0 md:overflow-y-auto md:overscroll-contain md:px-2">
-              <form
-                ref={formRef}
-                id={formId}
-                aria-label={data?.headline}
-                onSubmit={handleSubmit}
-              >
-              <div className="grid gap-5 mt-8">
-                {fields.map((field) => {
-                  if (field.dependsOn && fieldValues[field.dependsOn] !== field.dependsOnValue) {
-                    return null;
-                  }
+						{isQuotePopup ? (
+							<button
+								ref={closeButtonRef}
+								type="button"
+								onClick={closeQuotePopup}
+								className="absolute right-5 top-5 z-10 rounded-full border border-ink-950/15 px-4 py-2 font-mono text-[10px] bg-paper text-red-500 transition-colors hover:border-red-600/30 hover:text-red-600 md:right-8  md:top-8 my-6"
+							>
+								Close
+							</button>
+						) : null}
+						<div className="mt-8 md:mt-4 form-shell-header">
+							<p className="label text-ink-500">{data?.eyebrow}</p>
+							<InViewTitle
+								text={(data?.headline ?? "").replace(/\n/g, " ")}
+								variant="blur"
+								as="h2"
+								className="title mt-6 max-w-[14ch] text-[clamp(1.8rem,3.4vw,2.4rem)] text-ink-950"
+							/>
+							{data?.body ? (
+								<p className="mt-5 max-w-[44ch] text-sm leading-[1.85] text-ink-500">
+									{data.body}
+								</p>
+							) : null}
+							{selectedPlanLabel ? (
+								<div className="mt-5 rounded-2xl bg-paper-100 px-4 py-3 ring-1 ring-ink-950/10 md:mt-6 md:px-5 md:py-4">
+									<p className="font-mono text-[9px] capitalize text-ink-400 md:text-[10px]">
+										Selected plan
+									</p>
+									<p className="mt-1 text-sm font-medium text-ink-950 md:text-base">
+										{selectedPlanLabel}
+									</p>
+								</div>
+							) : null}
+							<Link
+								href={fallbackHref}
+								className="mt-8 inline-flex items-center gap-2.5 rounded-full border border-ink-950/15 px-6 py-3.5 text-sm font-medium text-ink-950 transition-colors duration-200 hover:border-ink-950/30"
+							>
+								{data?.fallbackLabel}
+							</Link>
+							{data?.note ? (
+								<p className="mt-6 font-mono text-[10px] capitalize text-ink-400">
+									{data.note}
+								</p>
+							) : null}
+						</div>
+						<div className="md:min-h-0 md:overflow-y-auto md:overscroll-contain md:px-2">
+							<form
+								ref={formRef}
+								id={formId}
+								aria-label={data?.headline}
+								onSubmit={handleSubmit}
+								
+							>
+								<div className="grid gap-5 my-8  md:my-12 ">
+									{fields.map((field) => {
+										if (
+											field.dependsOn &&
+											fieldValues[field.dependsOn] !== field.dependsOnValue
+										) {
+											return null;
+										}
 
-                  if (field.kind === 'checkboxes' || field.kind === 'radio') {
-                    return (
-                      <fieldset key={field.name} className="grid gap-3">
-                        <legend className="font-mono text-[10px] text-ink-400">
-                          {field.label}<RequiredMarker required={field.required} />
-                        </legend>
-                        <div className="grid gap-3 sm:grid-cols-2">
-                          {(field.options ?? []).map((option) => (
-                            <label key={option.value} className="flex items-start gap-3 text-sm text-ink-700">
-                              <input
-                                type={field.kind === 'radio' ? 'radio' : 'checkbox'}
-                                name={field.name}
-                                value={option.value}
-                                required={field.required}
-                                checked={
-                                  field.kind === 'radio'
-                                    ? fieldValues[field.name] === option.value
-                                    : Array.isArray(fieldValues[field.name]) && fieldValues[field.name].includes(option.value)
-                                }
-                                onChange={() =>
-                                  setFieldValues((current) => {
-                                    if (field.kind === 'radio') {
-                                      return { ...current, [field.name]: option.value };
-                                    }
-                                    const existing = current[field.name];
-                                    const selected = Array.isArray(existing) ? existing : [];
-                                    return {
-                                      ...current,
-                                      [field.name]: selected.includes(option.value)
-                                        ? selected.filter((value) => value !== option.value)
-                                        : [...selected, option.value],
-                                    };
-                                  })
-                                }
-                                className="mt-0.5 accent-accent-500"
-                              />
-                              <span>{option.label}</span>
-                            </label>
-                          ))}
-                        </div>
-                      </fieldset>
-                    );
-                  }
+										if (field.kind === "checkboxes" || field.kind === "radio") {
+											return (
+												<fieldset key={field.name} className="grid gap-3">
+													<legend className="font-mono text-[10px] text-ink-400">
+														{field.label}
+														<RequiredMarker required={field.required} />
+													</legend>
+													<div className="grid gap-3 sm:grid-cols-2">
+														{(field.options ?? []).map((option) => (
+															<label
+																key={option.value}
+																className="flex items-start gap-3 text-sm text-ink-700"
+															>
+																<input
+																	type={
+																		field.kind === "radio"
+																			? "radio"
+																			: "checkbox"
+																	}
+																	name={field.name}
+																	value={option.value}
+																	required={field.required}
+																	checked={
+																		field.kind === "radio"
+																			? fieldValues[
+																					field.name
+																				] === option.value
+																			: Array.isArray(
+																					fieldValues[
+																						field.name
+																					]
+																				) &&
+																				fieldValues[
+																					field.name
+																				].includes(
+																					option.value
+																				)
+																	}
+																	onChange={() =>
+																		setFieldValues(
+																			(current) => {
+																				if (
+																					field.kind ===
+																					"radio"
+																				) {
+																					return {
+																						...current,
+																						[field.name]:
+																							option.value,
+																					};
+																				}
+																				const existing =
+																					current[
+																						field.name
+																					];
+																				const selected =
+																					Array.isArray(
+																						existing
+																					)
+																						? existing
+																						: [];
+																				return {
+																					...current,
+																					[field.name]:
+																						selected.includes(
+																							option.value
+																						)
+																							? selected.filter(
+																									(
+																										value
+																									) =>
+																										value !==
+																										option.value
+																								)
+																							: [
+																									...selected,
+																									option.value,
+																								],
+																				};
+																			}
+																		)
+																	}
+																	className="mt-0.5 accent-accent-500"
+																/>
+																<span>{option.label}</span>
+															</label>
+														))}
+													</div>
+												</fieldset>
+											);
+										}
 
-                  if (field.kind === 'select') {
-                    return (
-                      <label key={field.name} className="grid gap-2">
-                        <span className="font-mono text-[10px] text-ink-400">
-                          {field.label}<RequiredMarker required={field.required} />
-                        </span>
-                        <div className="relative">
-                          <select
-                            name={field.name}
-                            required={field.required}
-                            value={typeof fieldValues[field.name] === 'string' ? fieldValues[field.name] : ''}
-                            onChange={(event) =>
-                              setFieldValues((current) => ({ ...current, [field.name]: event.target.value }))
-                            }
-                            className="w-full appearance-none rounded-full border border-ink-950/15 bg-paper px-4 py-3 pr-12 text-sm text-ink-500"
-                          >
-                            <option value="" disabled>
-                              Select one
-                            </option>
-                            {(field.options ?? []).map((option) => (
-                              <option key={option.value} value={option.value}>
-                                {option.label}
-                              </option>
-                            ))}
-                          </select>
-                          <MdiIcon
-                            name="chevronDown"
-                            size={0.8}
-                            className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-ink-400"
-                          />
-                        </div>
-                      </label>
-                    );
-                  }
+										if (field.kind === "select") {
+											return (
+												<label key={field.name} className="grid gap-2">
+													<span className="font-mono text-[10px] text-ink-400">
+														{field.label}
+														<RequiredMarker required={field.required} />
+													</span>
+													<div className="relative">
+														<select
+															name={field.name}
+															required={field.required}
+															value={
+																typeof fieldValues[field.name] ===
+																"string"
+																	? fieldValues[field.name]
+																	: ""
+															}
+															onChange={(event) =>
+																setFieldValues((current) => ({
+																	...current,
+																	[field.name]:
+																		event.target.value,
+																}))
+															}
+															className="w-full appearance-none rounded-full border border-ink-950/15 bg-paper px-4 py-3 pr-12 text-sm text-ink-500"
+														>
+															<option value="" disabled>
+																Select one
+															</option>
+															{(field.options ?? []).map((option) => (
+																<option
+																	key={option.value}
+																	value={option.value}
+																>
+																	{option.label}
+																</option>
+															))}
+														</select>
+														<MdiIcon
+															name="chevronDown"
+															size={0.8}
+															className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-ink-400"
+														/>
+													</div>
+												</label>
+											);
+										}
 
-                  return field.kind === 'textarea' ? (
-                    <label key={field.name} className="grid gap-2">
-                      <span className="font-mono text-[10px] capitalize text-ink-400">
-                        {field.label}<RequiredMarker required={field.required} />
-                      </span>
-                      <textarea
-                        name={field.name}
-                        rows={5}
-                        placeholder={field.label}
-                        required={field.required}
-                        value={typeof fieldValues[field.name] === 'string' ? fieldValues[field.name] : ''}
-                        onChange={(event) =>
-                          setFieldValues((current) => ({ ...current, [field.name]: event.target.value }))
-                        }
-                        className="w-full rounded-2xl border border-ink-950/15 bg-paper px-4 py-3 text-sm text-ink-500"
-                      />
-                    </label>
-                  ) : (
-                    <label key={field.name} className="grid gap-2">
-                      <span className="font-mono text-[10px] capitalize text-ink-400">
-                        {field.label}<RequiredMarker required={field.required} />
-                      </span>
-                      <input
-                        type={field.kind}
-                        name={field.name}
-                        placeholder={field.label}
-                        required={field.required}
-                        value={typeof fieldValues[field.name] === 'string' ? fieldValues[field.name] : ''}
-                        onChange={(event) =>
-                          setFieldValues((current) => ({ ...current, [field.name]: event.target.value }))
-                        }
-                        className="w-full rounded-full border border-ink-950/15 bg-paper px-4 py-3 text-sm text-ink-500"
-                      />
-                    </label>
-                  );
-                })}
-              </div>
-              {state.succeeded ? (
-                <p className="mt-5 text-sm text-ink-700" role="status">
-                  Thanks — your message has been sent.
-                </p>
-              ) : null}
-              <ValidationError
-                errors={state.errors}
-                className="mt-5 text-sm text-red-700"
-              />
-              {recaptchaError ? (
-                <p className="mt-5 text-sm text-red-700" role="alert">
-                  {recaptchaError}
-                </p>
-              ) : null}
-              <div className="sticky -bottom-6 bg-paper-50 pt-4">
-                <button
-                  type="submit"
-                  disabled={state.submitting}
-                  className="inline-flex items-center gap-2.5 rounded-full bg-ink-950 px-6 py-3.5 text-sm font-medium text-paper-50 transition-opacity duration-200 hover:opacity-85"
-                >
-                  {state.submitting ? 'Sending…' : data?.submitLabel}
-                  <MdiIcon name="send" size={0.8} />
-                </button>
-                {recaptchaSiteKey ? (
-                  <p className="mt-4 max-w-[44ch] text-[11px] leading-relaxed text-ink-400">
-                    This site is protected by reCAPTCHA and the Google{' '}
-                    <a
-                      href="https://policies.google.com/privacy"
-                      className="underline underline-offset-2 hover:text-ink-700"
-                    >
-                      Privacy Policy
-                    </a>{' '}
-                    and{' '}
-                    <a
-                      href="https://policies.google.com/terms"
-                      className="underline underline-offset-2 hover:text-ink-700"
-                    >
-                      Terms of Service
-                    </a>{' '}
-                    apply.
-                  </p>
-                ) : null}
-              </div>
-              </form>
-            </div>
-          </div>
-        </OptionalGsapReveal>
-      </div>
-    </section>
-  );
+										return field.kind === "textarea" ? (
+											<label key={field.name} className="grid gap-2">
+												<span className="font-mono text-[10px] capitalize text-ink-400">
+													{field.label}
+													<RequiredMarker required={field.required} />
+												</span>
+												<textarea
+													name={field.name}
+													rows={5}
+													placeholder={field.label}
+													required={field.required}
+													value={
+														typeof fieldValues[field.name] === "string"
+															? fieldValues[field.name]
+															: ""
+													}
+													onChange={(event) =>
+														setFieldValues((current) => ({
+															...current,
+															[field.name]: event.target.value,
+														}))
+													}
+													className="w-full rounded-2xl border border-ink-950/15 bg-paper px-4 py-3 text-sm text-ink-500"
+												/>
+											</label>
+										) : (
+											<label key={field.name} className="grid gap-2">
+												<span className="font-mono text-[10px] capitalize text-ink-400">
+													{field.label}
+													<RequiredMarker required={field.required} />
+												</span>
+												<input
+													type={field.kind}
+													name={field.name}
+													placeholder={field.label}
+													required={field.required}
+													value={
+														typeof fieldValues[field.name] === "string"
+															? fieldValues[field.name]
+															: ""
+													}
+													onChange={(event) =>
+														setFieldValues((current) => ({
+															...current,
+															[field.name]: event.target.value,
+														}))
+													}
+													className="w-full rounded-full border border-ink-950/15 bg-paper px-4 py-3 text-sm text-ink-500"
+												/>
+											</label>
+										);
+									})}
+								</div>
 
-  return isQuotePopup ? createPortal(section, document.body) : section;
+								<div className="sticky bottom-0 bg-paper-50 pt-4">
+									{state.succeeded ? (
+										<p className="mt-5 text-sm text-green-700" role="status">
+											Thanks. Your message has been sent.
+										</p>
+									) : null}
+									<ValidationError
+										errors={state.errors}
+										className="mt-5 text-sm text-red-700"
+									/>
+									{recaptchaError ? (
+										<p className="mt-5 text-sm text-red-700" role="alert">
+											{recaptchaError}
+										</p>
+									) : null}
+									<button
+										type="submit"
+										disabled={state.submitting || recaptchaSubmitting}
+										className="inline-flex items-center gap-2.5 rounded-full bg-ink-950 px-6 py-3.5 text-sm font-medium text-paper-50 transition-opacity duration-200 hover:opacity-85"
+									>
+										{recaptchaSubmitting
+											? "Validating..."
+											: state.submitting
+												? "Sending…"
+												: data?.submitLabel}
+										<MdiIcon name="send" size={0.8} />
+									</button>
+									{recaptchaSiteKey ? (
+										<p className="mt-4 w-full max-w-3xl text-[11px] leading-relaxed text-ink-400">
+											This site is protected by reCAPTCHA and the Google{" "}
+											<Link
+												href="https://policies.google.com/privacy"
+												className="underline underline-offset-2 hover:text-ink-700"
+											>
+												Privacy Policy
+											</Link>{" "}
+											and{" "}
+											<Link
+												href="https://policies.google.com/terms"
+												className="underline underline-offset-2 hover:text-ink-700"
+											>
+												Terms of Service
+											</Link>{" "}
+											apply.
+										</p>
+									) : null}
+								</div>
+							</form>
+						</div>
+					</div>
+				</OptionalGsapReveal>
+			</div>
+		</section>
+	);
+
+	return isQuotePopup ? createPortal(section, document.body) : section;
 }
