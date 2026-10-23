@@ -133,7 +133,7 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
       id={id ?? 'get-quote'}
       className={
         isQuotePopup
-          ? 'fixed inset-0 z-[100] overflow-y-auto bg-ink-950/70 p-4 backdrop-blur-sm md:p-8'
+          ? 'fixed inset-0 z-[100] overflow-hidden bg-ink-950/70 p-4 backdrop-blur-sm md:p-8'
           : `relative overflow-hidden bg-paper py-24 md:py-32 ${className ?? ''}`
       }
       onMouseDown={
@@ -147,7 +147,7 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
       <div
         className={
           isQuotePopup
-            ? 'relative mx-auto w-full max-w-5xl py-6 md:py-10'
+            ? 'relative mx-auto flex h-full w-full max-w-5xl items-center'
             : 'relative mx-auto w-full max-w-7xl px-5 md:px-8'
         }
       >
@@ -159,6 +159,7 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
             data-rise={isQuotePopup ? undefined : ''}
             className={[
               'grid gap-10 rounded-[2rem] bg-paper-50 p-7 ring-1 ring-ink-950/10 md:p-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-14',
+              isQuotePopup && 'w-full max-h-[90dvh] overflow-y-auto overscroll-contain',
               classes?.panel,
               className,
             ]
@@ -188,23 +189,12 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                   {data.body}
                 </p>
               ) : null}
-              <div className="mt-8 flex flex-wrap items-center gap-4">
-                <button
-                  type="submit"
-                  form={formId}
-                  disabled={state.submitting}
-                  className="inline-flex items-center gap-2.5 rounded-full bg-ink-950 px-6 py-3.5 text-sm font-medium text-paper-50 transition-opacity duration-200 hover:opacity-85"
-                >
-                  {state.submitting ? 'Sending…' : data?.submitLabel}
-                  <MdiIcon name="arrowRight" size={0.8} />
-                </button>
-                <Link
-                  href={fallbackHref}
-                  className="inline-flex items-center gap-2.5 rounded-full border border-ink-950/15 px-6 py-3.5 text-sm font-medium text-ink-950 transition-colors duration-200 hover:border-ink-950/30"
-                >
-                  {data?.fallbackLabel}
-                </Link>
-              </div>
+              <Link
+                href={fallbackHref}
+                className="mt-8 inline-flex items-center gap-2.5 rounded-full border border-ink-950/15 px-6 py-3.5 text-sm font-medium text-ink-950 transition-colors duration-200 hover:border-ink-950/30"
+              >
+                {data?.fallbackLabel}
+              </Link>
               {data?.note ? (
                 <p className="mt-6 font-mono text-[10px] capitalize text-ink-400">
                   {data.note}
@@ -341,6 +331,14 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                 errors={state.errors}
                 className="mt-5 text-sm text-red-700"
               />
+              <button
+                type="submit"
+                disabled={state.submitting}
+                className="mt-6 inline-flex items-center gap-2.5 rounded-full bg-ink-950 px-6 py-3.5 text-sm font-medium text-paper-50 transition-opacity duration-200 hover:opacity-85"
+              >
+                {state.submitting ? 'Sending…' : data?.submitLabel}
+                <MdiIcon name="arrowRight" size={0.8} />
+              </button>
             </form>
           </div>
         </OptionalGsapReveal>

@@ -132,9 +132,8 @@ body {
 /* ------------------------------------------------------------------ */
 /* Browser surfaces — the parts we did not draw still carry the design */
 /* ------------------------------------------------------------------ */
-
 ::selection {
-  background: rgb(var(--color-paper-50));
+  background: rgb(var(--color-accent-100));
   color: rgb(var(--color-primary-900));
 }
 
@@ -164,7 +163,7 @@ select {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: rgb(var(--color-primary-950));
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: rgb(var(--color-accent-600));
