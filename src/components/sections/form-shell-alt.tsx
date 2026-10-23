@@ -33,6 +33,7 @@ function RequiredMarker({ required }: { required?: boolean }) {
  */
 export function FormShellAlt({ data, classes, className, id }: DataProps<FormShellSection, 'panel'>) {
   const fields = data?.fields ?? EMPTY_FIELDS;
+  const planField = fields.find((field) => field.name === 'plan');
   const router = useRouter();
   const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_CONTACT_FORM_ID;
   const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
@@ -40,6 +41,10 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
   const [state, submitToFormspree] = useForm(formspreeId ?? '');
   const [fieldValues, setFieldValues] = useState<Record<string, string | string[]>>({});
   const [recaptchaError, setRecaptchaError] = useState<string | null>(null);
+  const selectedPlanValue = typeof fieldValues.plan === 'string' ? fieldValues.plan : null;
+  const selectedPlanLabel = selectedPlanValue
+    ? planField?.options?.find((option) => option.value === selectedPlanValue)?.label ?? selectedPlanValue
+    : null;
   const formRef = useRef<HTMLFormElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const formId = 'contact-form';
@@ -95,8 +100,10 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
   useEffect(() => {
     if (!isQuotePopup) return;
 
-    const previousOverflow = document.body.style.overflow;
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
     document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
     closeButtonRef.current?.focus();
 
     function handleKeyDown(event: KeyboardEvent) {
@@ -105,7 +112,8 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
 
     window.addEventListener('keydown', handleKeyDown);
     return () => {
-      document.body.style.overflow = previousOverflow;
+      document.body.style.overflow = previousBodyOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [closeQuotePopup, isQuotePopup]);
@@ -164,9 +172,10 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
   }
 
   const section = (
-    <section
-      id={id ?? 'get-quote'}
-      className={
+      <section
+        id={id ?? 'get-quote'}
+        data-lenis-prevent={isQuotePopup ? '' : undefined}
+        className={
         isQuotePopup
           ? 'fixed inset-0 z-[100] overflow-hidden bg-ink-950/70 p-4 backdrop-blur-sm md:p-8'
           : `relative overflow-hidden bg-paper py-24 md:py-32 ${className ?? ''}`
@@ -193,9 +202,9 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
             aria-label={isQuotePopup ? data?.headline : undefined}
             data-rise={isQuotePopup ? undefined : ''}
             className={[
-              'grid gap-10 rounded-[2rem] bg-paper-50 p-7 ring-1 ring-ink-950/10 md:p-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-14',
-              isQuotePopup && 'w-full max-h-[90dvh] overflow-y-auto overscroll-contain',
-              classes?.panel,
+               'grid gap-10 rounded-[2rem] bg-paper-50 p-7 ring-1 ring-ink-950/10 md:p-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-14',
+               isQuotePopup && 'w-full max-h-[90dvh] overflow-y-auto overscroll-contain md:h-[90dvh] md:overflow-hidden',
+               classes?.panel,
               className,
             ]
               .filter(Boolean)
@@ -224,6 +233,12 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                   {data.body}
                 </p>
               ) : null}
+              {selectedPlanLabel ? (
+                <div className="mt-5 rounded-2xl bg-paper-100 px-4 py-3 ring-1 ring-ink-950/10 md:mt-6 md:px-5 md:py-4">
+                  <p className="font-mono text-[9px] capitalize text-ink-400 md:text-[10px]">Selected plan</p>
+                  <p className="mt-1 text-sm font-medium text-ink-950 md:text-base">{selectedPlanLabel}</p>
+                </div>
+              ) : null}
               <Link
                 href={fallbackHref}
                 className="mt-8 inline-flex items-center gap-2.5 rounded-full border border-ink-950/15 px-6 py-3.5 text-sm font-medium text-ink-950 transition-colors duration-200 hover:border-ink-950/30"
@@ -236,12 +251,13 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                 </p>
               ) : null}
             </div>
-            <form
-              ref={formRef}
-              id={formId}
-              aria-label={data?.headline}
-              onSubmit={handleSubmit}
-            >
+            <div className="md:min-h-0 md:overflow-y-auto md:overscroll-contain md:px-2">
+              <form
+                ref={formRef}
+                id={formId}
+                aria-label={data?.headline}
+                onSubmit={handleSubmit}
+              >
               <div className="grid gap-5 mt-8">
                 {fields.map((field) => {
                   if (field.dependsOn && fieldValues[field.dependsOn] !== field.dependsOnValue) {
@@ -378,34 +394,37 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                   {recaptchaError}
                 </p>
               ) : null}
-              <button
-                type="submit"
-                disabled={state.submitting}
-                className="mt-6 inline-flex items-center gap-2.5 rounded-full bg-ink-950 px-6 py-3.5 text-sm font-medium text-paper-50 transition-opacity duration-200 hover:opacity-85"
-              >
-                {state.submitting ? 'Sending…' : data?.submitLabel}
-                <MdiIcon name="send" size={0.8} />
-              </button>
-              {recaptchaSiteKey ? (
-                <p className="mt-4 max-w-[44ch] text-[11px] leading-relaxed text-ink-400">
-                  This site is protected by reCAPTCHA and the Google{' '}
-                  <a
-                    href="https://policies.google.com/privacy"
-                    className="underline underline-offset-2 hover:text-ink-700"
-                  >
-                    Privacy Policy
-                  </a>{' '}
-                  and{' '}
-                  <a
-                    href="https://policies.google.com/terms"
-                    className="underline underline-offset-2 hover:text-ink-700"
-                  >
-                    Terms of Service
-                  </a>{' '}
-                  apply.
-                </p>
-              ) : null}
-            </form>
+              <div className="sticky -bottom-6 bg-paper-50 pt-4">
+                <button
+                  type="submit"
+                  disabled={state.submitting}
+                  className="inline-flex items-center gap-2.5 rounded-full bg-ink-950 px-6 py-3.5 text-sm font-medium text-paper-50 transition-opacity duration-200 hover:opacity-85"
+                >
+                  {state.submitting ? 'Sending…' : data?.submitLabel}
+                  <MdiIcon name="send" size={0.8} />
+                </button>
+                {recaptchaSiteKey ? (
+                  <p className="mt-4 max-w-[44ch] text-[11px] leading-relaxed text-ink-400">
+                    This site is protected by reCAPTCHA and the Google{' '}
+                    <a
+                      href="https://policies.google.com/privacy"
+                      className="underline underline-offset-2 hover:text-ink-700"
+                    >
+                      Privacy Policy
+                    </a>{' '}
+                    and{' '}
+                    <a
+                      href="https://policies.google.com/terms"
+                      className="underline underline-offset-2 hover:text-ink-700"
+                    >
+                      Terms of Service
+                    </a>{' '}
+                    apply.
+                  </p>
+                ) : null}
+              </div>
+              </form>
+            </div>
           </div>
         </OptionalGsapReveal>
       </div>
