@@ -206,7 +206,7 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                 ref={closeButtonRef}
                 type="button"
                 onClick={closeQuotePopup}
-                className="absolute right-5 top-5 z-10 rounded-full border border-ink-950/15 px-4 py-2 font-mono text-[10px] bg-paper text-red-500 transition-colors hover:border-red-700/30 hover:text-ink-950 md:right-8  md:top-8 mt-6"
+                className="absolute right-5 top-5 z-10 rounded-full border border-ink-950/15 px-4 py-2 font-mono text-[10px] bg-paper text-red-500 transition-colors hover:border-red-600/30 hover:text-red-600 md:right-8  md:top-8 mt-6"
               >
                 Close
               </button>
