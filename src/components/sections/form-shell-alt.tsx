@@ -5,6 +5,7 @@ import { InViewTitle } from '@/components/ui/in-view-title';
 import { MdiIcon } from '@/lib/icons/resolve-icon';
 import { GsapReveal } from '@/lib/motion/gsap-reveal';
 import { useForm, ValidationError } from '@formspree/react';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -34,8 +35,11 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
   const fields = data?.fields ?? EMPTY_FIELDS;
   const router = useRouter();
   const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_CONTACT_FORM_ID;
+  const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [state, submitToFormspree] = useForm(formspreeId ?? '');
   const [fieldValues, setFieldValues] = useState<Record<string, string | string[]>>({});
+  const [recaptchaError, setRecaptchaError] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const formId = 'contact-form';
@@ -112,7 +116,38 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
     setFieldValues({});
   }, [state.succeeded]);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    if (formspreeId && recaptchaSiteKey) {
+      event.preventDefault();
+
+      if (!executeRecaptcha) {
+        setRecaptchaError('reCAPTCHA is still loading. Please try again in a moment.');
+        return;
+      }
+
+      try {
+        const token = await executeRecaptcha('contact_submit');
+        const response = await fetch('/api/recaptcha/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token }),
+        });
+        const result = (await response.json()) as { success?: boolean; error?: string };
+
+        if (!response.ok || !result.success) {
+          setRecaptchaError(result.error ?? 'reCAPTCHA verification failed. Please try again.');
+          return;
+        }
+
+        setRecaptchaError(null);
+        void submitToFormspree(event);
+      } catch {
+        setRecaptchaError('We could not verify reCAPTCHA. Please try again.');
+      }
+
+      return;
+    }
+
     if (formspreeId) {
       void submitToFormspree(event);
       return;
@@ -331,6 +366,11 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                 errors={state.errors}
                 className="mt-5 text-sm text-red-700"
               />
+              {recaptchaError ? (
+                <p className="mt-5 text-sm text-red-700" role="alert">
+                  {recaptchaError}
+                </p>
+              ) : null}
               <button
                 type="submit"
                 disabled={state.submitting}
@@ -339,6 +379,25 @@ export function FormShellAlt({ data, classes, className, id }: DataProps<FormShe
                 {state.submitting ? 'Sending…' : data?.submitLabel}
                 <MdiIcon name="arrowRight" size={0.8} />
               </button>
+              {recaptchaSiteKey ? (
+                <p className="mt-4 max-w-[44ch] text-[11px] leading-relaxed text-ink-400">
+                  This site is protected by reCAPTCHA and the Google{' '}
+                  <a
+                    href="https://policies.google.com/privacy"
+                    className="underline underline-offset-2 hover:text-ink-700"
+                  >
+                    Privacy Policy
+                  </a>{' '}
+                  and{' '}
+                  <a
+                    href="https://policies.google.com/terms"
+                    className="underline underline-offset-2 hover:text-ink-700"
+                  >
+                    Terms of Service
+                  </a>{' '}
+                  apply.
+                </p>
+              ) : null}
             </form>
           </div>
         </OptionalGsapReveal>

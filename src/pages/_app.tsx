@@ -1,4 +1,5 @@
 import type { AppProps } from 'next/app';
+import type { ReactNode } from 'react';
 
 import { SiteLayout } from '@/components/layout/site-layout';
 import { LocaleProvider } from '@/lib/content/chrome';
@@ -19,9 +20,25 @@ import { useEffect, useRef } from "react";
 import PageTransitionLoader from "@/components/layout/PageTransitionLoader";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import '../styles/globals.css';
 
 type Props = AppProps & { pageProps: PageProps };
+
+function ReCaptchaProvider({ children }: { children: ReactNode }) {
+  const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+
+  if (!siteKey) return <>{children}</>;
+
+  return (
+    <GoogleReCaptchaProvider
+      reCaptchaKey={siteKey}
+      scriptProps={{ async: true, defer: true, appendTo: 'head' }}
+    >
+      {children}
+    </GoogleReCaptchaProvider>
+  );
+}
 
 export default function App({ Component, pageProps, router }: Props) {
     const lenisRef = useRef<LenisRef>(null);
@@ -54,6 +71,7 @@ export default function App({ Component, pageProps, router }: Props) {
   const locale: Locale = (pageProps as PageProps).locale ?? defaultLocale;
 
 	return (
+		<ReCaptchaProvider>
 		<div className={fontsClass}>
 			<ReactLenis root options={{ autoRaf: false }} ref={lenisRef}>
 				{/* Error pages (404/500) carry no bundle, so they render from code
@@ -98,5 +116,6 @@ export default function App({ Component, pageProps, router }: Props) {
 			<Analytics />
 			<SpeedInsights />
 		</div>
+		</ReCaptchaProvider>
 	);
 }
