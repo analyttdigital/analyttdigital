@@ -640,42 +640,56 @@ const contactChannelsFields = {
 };
 
 const formShellFields = {
-  eyebrow: fields.text({ label: 'Eyebrow', defaultValue: 'Message us' }),
-  headline: fields.text({ label: 'Headline', defaultValue: 'General inquiries.' }),
-  body: fields.text({ label: 'Body', defaultValue: '', multiline: true }),
-  submitLabel: fields.text({ label: 'Submit label', defaultValue: 'Send message' }),
-  fallbackHref: fields.text({ label: 'Fallback href', defaultValue: 'mailto:hello@analyttdigital.com' }),
-  fallbackLabel: fields.text({ label: 'Fallback label', defaultValue: 'Or email us directly' }),
-  note: fields.text({ label: 'Note (empty hides it)', defaultValue: '', multiline: true }),
-  fields: fields.array(
-    fields.object({
-      name: fields.text({ label: 'Field name' }),
-      label: fields.text({ label: 'Field label' }),
-      kind: fields.select({
-        label: 'Field kind',
-        options: [
-          { label: 'Text', value: 'text' },
-          { label: 'Email', value: 'email' },
-          { label: 'Textarea', value: 'textarea' },
-          { label: 'Select', value: 'select' },
-          { label: 'Radio buttons', value: 'radio' },
-          { label: 'Checkboxes', value: 'checkboxes' },
-        ],
-        defaultValue: 'text',
-      }),
-      required: fields.checkbox({ label: 'Required', defaultValue: false }),
-      options: fields.array(
-        fields.object({
-          value: fields.text({ label: 'Option value' }),
-          label: fields.text({ label: 'Option label' }),
-        }),
-        { label: 'Options', itemLabel: (props) => props.fields.label.value || 'Option' },
-      ),
-      dependsOn: fields.text({ label: 'Show when field name (optional)', defaultValue: '' }),
-      dependsOnValue: fields.text({ label: 'Show when field value (optional)', defaultValue: '' }),
-    }),
-    { label: 'Fields', itemLabel: (props) => props.fields.label.value || 'Field' },
-  ),
+	formspreeForm: fields.select({
+		label: "Formspree ID",
+		options: [
+			{ label: "Contact", value: "contact" },
+			{ label: "Get Quote", value: "get-quote" },
+		],
+		defaultValue: "contact",
+	}),
+	eyebrow: fields.text({ label: "Eyebrow", defaultValue: "Message us" }),
+	headline: fields.text({ label: "Headline", defaultValue: "General inquiries." }),
+	body: fields.text({ label: "Body", defaultValue: "", multiline: true }),
+	submitLabel: fields.text({ label: "Submit label", defaultValue: "Send message" }),
+	fallbackHref: fields.text({
+		label: "Fallback href",
+		defaultValue: "mailto:hello@analyttdigital.com",
+	}),
+	fallbackLabel: fields.text({ label: "Fallback label", defaultValue: "Or email us directly" }),
+	note: fields.text({ label: "Note (empty hides it)", defaultValue: "", multiline: true }),
+	fields: fields.array(
+		fields.object({
+			name: fields.text({ label: "Field name" }),
+			label: fields.text({ label: "Field label" }),
+			kind: fields.select({
+				label: "Field kind",
+				options: [
+					{ label: "Text", value: "text" },
+					{ label: "Email", value: "email" },
+					{ label: "Textarea", value: "textarea" },
+					{ label: "Select", value: "select" },
+					{ label: "Radio buttons", value: "radio" },
+					{ label: "Checkboxes", value: "checkboxes" },
+				],
+				defaultValue: "text",
+			}),
+			required: fields.checkbox({ label: "Required", defaultValue: false }),
+			options: fields.array(
+				fields.object({
+					value: fields.text({ label: "Option value" }),
+					label: fields.text({ label: "Option label" }),
+				}),
+				{ label: "Options", itemLabel: (props) => props.fields.label.value || "Option" }
+			),
+			dependsOn: fields.text({ label: "Show when field name (optional)", defaultValue: "" }),
+			dependsOnValue: fields.text({
+				label: "Show when field value (optional)",
+				defaultValue: "",
+			}),
+		}),
+		{ label: "Fields", itemLabel: (props) => props.fields.label.value || "Field" }
+	),
 };
 
 const faqFields = {

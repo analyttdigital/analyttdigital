@@ -40,7 +40,10 @@ export function FormShellAlt({
 	const fields = data?.fields ?? EMPTY_FIELDS;
 	const planField = fields.find((field) => field.name === "plan");
 	const router = useRouter();
-	const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_CONTACT_FORM_ID;
+	const formspreeId =
+		data.formspreeForm === "get-quote"
+			? process.env.NEXT_PUBLIC_FORMSPREE_GETQUOTE_FORM_ID
+			: process.env.NEXT_PUBLIC_FORMSPREE_CONTACT_FORM_ID;
 	const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 	const { executeRecaptcha } = useGoogleReCaptcha();
 	const [state, submitToFormspree] = useForm(formspreeId ?? "");

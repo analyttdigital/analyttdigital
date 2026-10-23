@@ -925,7 +925,8 @@ const enContact: PageDoc = {
 			],
 		},
 		{
-			type: "form-shell-alt",
+            type: "form-shell-alt",
+            formspreeForm: "contact",
 			eyebrow: "General inquiries",
 			headline: "Send us a message.",
 			body: "Fill out the form below and our team will get back to you within one business day.",
@@ -1254,14 +1255,32 @@ const enPricingPlans: PageDoc = {
 			columns: ["Feature", "Custom", "Starter", "Growth", "Scale"],
 			rows: [
 				{ feature: "Media Buying Platforms", cells: ["2", "2", "4", "All + Programmatic"] },
-				{ feature: "SEO", cells: ["Not included", "Starter Pack", "Growth Plan", "International + AI"] },
-				{ feature: "Strategy Sessions", cells: ["Monthly", "Monthly", "Bi-weekly", "Weekly"] },
+				{
+					feature: "SEO",
+					cells: ["Not included", "Starter Pack", "Growth Plan", "International + AI"],
+				},
+				{
+					feature: "Strategy Sessions",
+					cells: ["Monthly", "Monthly", "Bi-weekly", "Weekly"],
+				},
 				{ feature: "Creatives / Month", cells: ["Not included", "4", "8", "24"] },
-				{ feature: "Analytics Setup", cells: ["Not included", "Basic", "Advanced + Pixel", "Predictive + Deep"] },
+				{
+					feature: "Analytics Setup",
+					cells: ["Not included", "Basic", "Advanced + Pixel", "Predictive + Deep"],
+				},
 				{ feature: "CRO", cells: ["Not included", "Basic", "A/B + Audits", "Full Funnel"] },
-				{ feature: "Reporting", cells: ["Monthly", "Monthly", "Bi-weekly", "Weekly Executive"] },
-				{ feature: "Landing Pages", cells: ["Not included", "Design", "Full Funnel", "Custom"] },
-				{ feature: "Dedicated Lead", cells: ["Not included", "Strategist", "Shared", "Dedicated Lead"] },
+				{
+					feature: "Reporting",
+					cells: ["Monthly", "Monthly", "Bi-weekly", "Weekly Executive"],
+				},
+				{
+					feature: "Landing Pages",
+					cells: ["Not included", "Design", "Full Funnel", "Custom"],
+				},
+				{
+					feature: "Dedicated Lead",
+					cells: ["Not included", "Strategist", "Shared", "Dedicated Lead"],
+				},
 			],
 		},
 		{
@@ -1272,9 +1291,18 @@ const enPricingPlans: PageDoc = {
 			note: "We'll always be upfront about what's included before you sign anything.",
 			items: [
 				{ title: "Ad spend", body: "Ad spend is separate from management fees." },
-				{ title: "Third-party tools", body: "Third-party tools (e.g. Hotjar, Klaviyo, premium SEO tools) are billed at cost." },
-				{ title: "Extra content production", body: "Content production beyond the included creative count is quoted separately." },
-				{ title: "Scale content production", body: "International SEO at Scale includes localized content strategy; content production is scoped separately." },
+				{
+					title: "Third-party tools",
+					body: "Third-party tools (e.g. Hotjar, Klaviyo, premium SEO tools) are billed at cost.",
+				},
+				{
+					title: "Extra content production",
+					body: "Content production beyond the included creative count is quoted separately.",
+				},
+				{
+					title: "Scale content production",
+					body: "International SEO at Scale includes localized content strategy; content production is scoped separately.",
+				},
 			],
 		},
 		{
@@ -1283,10 +1311,26 @@ const enPricingPlans: PageDoc = {
 			headline: "Which plan is right for you?",
 			body: "Pick the closest fit; we'll confirm it on a free call.",
 			options: [
-				{ value: "starter", label: "Choose Starter", hint: "You're an SME or early-stage brand getting your first structured marketing system in place." },
-				{ value: "growth", label: "Choose Growth", hint: "You have product-market fit and want to scale ROI across multiple channels." },
-				{ value: "scale", label: "Choose Scale", hint: "You're operating at significant scale, expanding across Africa or globally, and need a dedicated growth partner." },
-				{ value: "custom", label: "Choose Custom", hint: "You have specific needs, an in-house team, or a scope that doesn't fit a standard tier." },
+				{
+					value: "starter",
+					label: "Choose Starter",
+					hint: "You're an SME or early-stage brand getting your first structured marketing system in place.",
+				},
+				{
+					value: "growth",
+					label: "Choose Growth",
+					hint: "You have product-market fit and want to scale ROI across multiple channels.",
+				},
+				{
+					value: "scale",
+					label: "Choose Scale",
+					hint: "You're operating at significant scale, expanding across Africa or globally, and need a dedicated growth partner.",
+				},
+				{
+					value: "custom",
+					label: "Choose Custom",
+					hint: "You have specific needs, an in-house team, or a scope that doesn't fit a standard tier.",
+				},
 			],
 			cta: "Book a free audit",
 			ctaHref: "/digital-audit/",
@@ -1294,6 +1338,7 @@ const enPricingPlans: PageDoc = {
 		},
 		{
 			type: "form-shell-alt",
+			formspreeForm: "get-quote",
 			eyebrow: "Get a quote",
 			headline: "Tell us what you need.",
 			body: "Share a few details and we'll follow up with a quote tailored to your business.",
@@ -1327,8 +1372,14 @@ const enPricingPlans: PageDoc = {
 					dependsOn: "plan",
 					dependsOnValue: "custom",
 					options: [
-						{ value: "Media Buying (Meta, TikTok – 2 platforms)", label: "Media Buying (Meta, TikTok – 2 platforms)" },
-						{ value: "Content Creation and Posting on channels", label: "Content Creation and Posting on channels" },
+						{
+							value: "Media Buying (Meta, TikTok – 2 platforms)",
+							label: "Media Buying (Meta, TikTok – 2 platforms)",
+						},
+						{
+							value: "Content Creation and Posting on channels",
+							label: "Content Creation and Posting on channels",
+						},
 						{ value: "Monthly Report", label: "Monthly Report" },
 						{ value: "1x Strategy Session/month", label: "1x Strategy Session/month" },
 					],
@@ -1368,11 +1419,26 @@ const enPricingPlans: PageDoc = {
 			headline: "Questions, answered.",
 			body: "Contracts, spend, upgrades, and single-service scopes.",
 			items: [
-				{ question: "Do you require long contracts?", answer: "We recommend a 90-day initial engagement to gather data and prove the model, then move to rolling monthly terms." },
-				{ question: "Is ad spend included in the plan price?", answer: "No, ad spend is paid directly to the platforms (Google, Meta, etc.). Our fees cover strategy, management, creative, and reporting." },
-				{ question: "Can I upgrade or downgrade later?", answer: "Yes. Plans are flexible. Most clients start on Starter or Growth and scale up as results compound." },
-				{ question: "Do you offer one-off projects?", answer: "Sometimes. Contact us to discuss. We'll tell you honestly if a one-off engagement makes sense or if you'd be better served by a retainer." },
-				{ question: "What if I only need one service (e.g. SEO)?", answer: "We can scope single-service engagements. Reach out and we'll quote accordingly." },
+				{
+					question: "Do you require long contracts?",
+					answer: "We recommend a 90-day initial engagement to gather data and prove the model, then move to rolling monthly terms.",
+				},
+				{
+					question: "Is ad spend included in the plan price?",
+					answer: "No, ad spend is paid directly to the platforms (Google, Meta, etc.). Our fees cover strategy, management, creative, and reporting.",
+				},
+				{
+					question: "Can I upgrade or downgrade later?",
+					answer: "Yes. Plans are flexible. Most clients start on Starter or Growth and scale up as results compound.",
+				},
+				{
+					question: "Do you offer one-off projects?",
+					answer: "Sometimes. Contact us to discuss. We'll tell you honestly if a one-off engagement makes sense or if you'd be better served by a retainer.",
+				},
+				{
+					question: "What if I only need one service (e.g. SEO)?",
+					answer: "We can scope single-service engagements. Reach out and we'll quote accordingly.",
+				},
 			],
 		},
 	],
