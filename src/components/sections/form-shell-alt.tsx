@@ -161,15 +161,7 @@ export function FormShellAlt({
 				}
                 setRecaptchaSubmitting(false);
                 setRecaptchaError(null);
-                const formData = new FormData();
-
-                //Change submit data from keys Field Names to Field Labels
-				for (const [name, value] of new FormData(form).entries()) {
-					const field = fields.find((item) => item.name === name);
-					formData.append(field?.label ?? name, value);
-				}
-				void submitToFormspree(formData);
-        
+				void submitToFormspree(new FormData(form));
 			} catch {
 				setRecaptchaSubmitting(false);
 				setRecaptchaError("We could not verify reCAPTCHA. Please try again.");
