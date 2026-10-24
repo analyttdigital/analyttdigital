@@ -128,29 +128,20 @@ function AttributionFigure({ readout }: { readout: Readout }) {
           const width = (v / 100) * W;
           const seg = (
             <rect
-              className="cap-seg-fill"
-              style={{ animationDelay: `${i * 90}ms` }}
-              x={x}
-              y={y}
-              width={Math.max(width, 0.5)}
-              height="14"
-              fill={i === 2 ? `url(#${hatchId})` : 'currentColor'}
-              opacity={i === 0 ? 0.72 : i === 1 ? 0.3 : 1}
+                  className="cap-seg-fill"
+                  style={{ animationDelay: `${i * 90}ms` }}
+                  x={x}
+                  y={y}
+                  width={Math.max(width, 0.5)}
+                  height="14"
+                  fill={i === 2 ? `url(#${hatchId})` : 'currentColor'}
+                  opacity={i === 0 ? 0.72 : i === 1 ? 0.3 : 1}
+                  key={ `cap-seg-${i}`}
             />
           );
           x += width;
           return seg;
         })}
-        {/* <line
-          x1="0"
-          y1={y + 14}
-          x2={W}
-          y2={y + 14}
-          stroke="currentColor"
-          strokeWidth="1"
-          vectorEffect="non-scaling-stroke"
-          opacity="0.24"
-        /> */}
       </g>
     );
   };
