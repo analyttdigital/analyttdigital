@@ -159,9 +159,17 @@ export function FormShellAlt({
 					setRecaptchaSubmitting(false);
 					return;
 				}
-				setRecaptchaSubmitting(false);
-				setRecaptchaError(null);
-				void submitToFormspree(new FormData(form));
+                setRecaptchaSubmitting(false);
+                setRecaptchaError(null);
+                const formData = new FormData();
+
+                //Change submit data from keys Field Names to Field Labels
+				for (const [name, value] of new FormData(form).entries()) {
+					const field = fields.find((item) => item.name === name);
+					formData.append(field?.label ?? name, value);
+				}
+				void submitToFormspree(formData);
+        
 			} catch {
 				setRecaptchaSubmitting(false);
 				setRecaptchaError("We could not verify reCAPTCHA. Please try again.");
@@ -171,7 +179,12 @@ export function FormShellAlt({
 		}
 
 		if (formspreeId) {
-			void submitToFormspree(event);
+			const formData = new FormData();
+			for (const [name, value] of new FormData(event.currentTarget).entries()) {
+				const field = fields.find((item) => item.name === name);
+				formData.append(field?.label ?? name, value);
+			}
+			void submitToFormspree(formData);
 			return;
 		}
 
@@ -179,7 +192,10 @@ export function FormShellAlt({
 		// public Formspree ID has been added.
 		event.preventDefault();
 		const body = Array.from(new FormData(event.currentTarget).entries())
-			.map(([name, value]) => `${name}: ${value}`)
+			.map(([name, value]) => {
+				const field = fields.find((item) => item.name === name);
+				return `${field?.label ?? name}: ${value}`;
+			})
 			.join("\n");
 		const separator = fallbackHref.includes("?") ? "&" : "?";
 		window.location.href = `${fallbackHref}${separator}subject=${encodeURIComponent(data?.headline ?? "")}&body=${encodeURIComponent(body)}`;
