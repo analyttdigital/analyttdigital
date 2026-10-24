@@ -294,7 +294,7 @@ export function FormShellAlt({
 								onSubmit={handleSubmit}
 								className="flex flex-col h-full pb-12 lg:overflow-hidden"
 							>
-								<div className="grid gap-5 flex-grow lg:overflow-y-auto lg:overscroll-contain md:px-2  ">
+								<div className="grid gap-5 flex-grow lg:overflow-y-auto lg:overscroll-contain md:px-2  pb-6">
 									{fields.map((field) => {
 										if (
 											field.dependsOn &&
